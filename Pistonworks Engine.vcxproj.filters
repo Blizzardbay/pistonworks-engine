@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="engine_files">
+      <UniqueIdentifier>{3c831831-a6c2-4ccb-894a-508b94ed92ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine_files\engine_headers">
+      <UniqueIdentifier>{819a8584-ca24-4898-ac0e-deedfc9f9292}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine_files\engine_source">
+      <UniqueIdentifier>{862876fa-9f10-4011-b89d-54d7c3f1211b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine_files\engine_resource">
+      <UniqueIdentifier>{217cee98-592e-4da5-ae74-8c9672ba83c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="internal_engine_files">
+      <UniqueIdentifier>{970ab09d-f84e-49ad-bfce-d1e27641706d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="internal_engine_files\internal_engine_resource">
+      <UniqueIdentifier>{b036c942-0005-4e3e-8487-e1a70ca65c1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="internal_engine_files\internal_engine_source">
+      <UniqueIdentifier>{1fd76c67-06e6-4ff5-8a06-9965e27f42bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="internal_engine_files\internal_engine_headers">
+      <UniqueIdentifier>{bfd3c362-3625-4fcd-adb4-4f414232fba0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="engine_files\engine_headers\engine_constant.h">
+      <Filter>engine_files\engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_files\engine_headers\engine_error.h">
+      <Filter>engine_files\engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_files\engine_headers\engine_queue.h">
+      <Filter>engine_files\engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_files\engine_headers\engine_input.h">
+      <Filter>engine_files\engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_files\engine_resource\template.h">
+      <Filter>engine_files\engine_resource</Filter>
+    </ClInclude>
+    <ClInclude Include="internal_engine_files\internal_engine_headers\ie_camera.h">
+      <Filter>internal_engine_files\internal_engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="internal_engine_files\internal_engine_headers\ie_game_scene.h">
+      <Filter>internal_engine_files\internal_engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="internal_engine_files\internal_engine_headers\ie_mesh.h">
+      <Filter>internal_engine_files\internal_engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="internal_engine_files\internal_engine_headers\ie_model.h">
+      <Filter>internal_engine_files\internal_engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="internal_engine_files\internal_engine_headers\ie_shader.h">
+      <Filter>internal_engine_files\internal_engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="internal_engine_files\internal_engine_headers\ie_texture.h">
+      <Filter>internal_engine_files\internal_engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_files\engine_headers\engine_control.h">
+      <Filter>engine_files\engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="internal_engine_files\internal_engine_headers\ie_default_event.h">
+      <Filter>internal_engine_files\internal_engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="internal_engine_files\internal_engine_headers\ie_event.h">
+      <Filter>internal_engine_files\internal_engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="internal_engine_files\internal_engine_headers\ie_player.h">
+      <Filter>internal_engine_files\internal_engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_files\engine_headers\engine_math.h">
+      <Filter>engine_files\engine_headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="engine_files\engine_source\engine_control.cpp">
+      <Filter>engine_files\engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_files\engine_source\engine_input.cpp">
+      <Filter>engine_files\engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_files\engine_source\engine_queue.cpp">
+      <Filter>engine_files\engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="internal_engine_files\internal_engine_source\ie_game_scene.cpp">
+      <Filter>internal_engine_files\internal_engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="internal_engine_files\internal_engine_source\ie_mesh.cpp">
+      <Filter>internal_engine_files\internal_engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="internal_engine_files\internal_engine_source\ie_model.cpp">
+      <Filter>internal_engine_files\internal_engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="internal_engine_files\internal_engine_source\ie_shader.cpp">
+      <Filter>internal_engine_files\internal_engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="internal_engine_files\internal_engine_source\ie_texture.cpp">
+      <Filter>internal_engine_files\internal_engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_files\engine_resource\template.cpp">
+      <Filter>engine_files\engine_resource</Filter>
+    </ClCompile>
+    <ClCompile Include="internal_engine_files\internal_engine_source\ie_event.cpp">
+      <Filter>internal_engine_files\internal_engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="internal_engine_files\internal_engine_source\ie_default_event.cpp">
+      <Filter>internal_engine_files\internal_engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="internal_engine_files\internal_engine_source\ie_player.cpp">
+      <Filter>internal_engine_files\internal_engine_source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="engine_files\engine_resource\fragment_shader.shader">
+      <Filter>engine_files\engine_resource</Filter>
+    </None>
+    <None Include="engine_files\engine_resource\test_scene.pwsf">
+      <Filter>engine_files\engine_resource</Filter>
+    </None>
+    <None Include="engine_files\engine_resource\vertex_shader.shader">
+      <Filter>engine_files\engine_resource</Filter>
+    </None>
+    <None Include="engine_editor_preset.pwedf">
+      <Filter>engine_files\engine_resource</Filter>
+    </None>
+    <None Include="engine_files\engine_resource\test_objects.pwsf">
+      <Filter>engine_files\engine_resource</Filter>
+    </None>
+  </ItemGroup>
+</Project>
