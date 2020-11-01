@@ -2,7 +2,7 @@
 #define H_ENGINE_CONSTANT
 
 //(HEADER_ONLY)
-//
+
 /* C++ Headers           */
 #include <chrono>
 /* Project Headers       */
