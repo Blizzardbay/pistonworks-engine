@@ -49,12 +49,13 @@ namespace pw {
 			previous_time = current_time;
 			current_time = std::chrono::system_clock::now();
 			delta_time = current_time - previous_time;
-			if (delta_time.count() >= Engine_Constant::Get_FPS_Constant()) {
+			if (delta_time >= Engine_Constant::Get_FPS_Constant()) {
+				delta_time = std::chrono::duration_cast<std::chrono::duration<double, std::milli>>(Engine_Constant::Get_FPS_Constant());
 			}
 		}
-		static float Get_Delta_Time() { return delta_time.count(); }
+		static std::chrono::duration<double, std::milli> Get_Delta_Time() { return delta_time; }
 
-		static const float Get_FPS_Constant() { return fps_constant; }
+		static const std::chrono::duration<double, std::milli> Get_FPS_Constant() { return fps_constant; }
 
 /* Public Variables         */
 	public:
@@ -73,8 +74,8 @@ namespace pw {
 
 		static std::chrono::system_clock::time_point  previous_time;
 		static std::chrono::system_clock::time_point current_time;
-		static std::chrono::system_clock::duration delta_time;
-		static const float fps_constant;
+		static std::chrono::duration<double, std::milli> delta_time;
+		static const std::chrono::duration<double, std::milli> fps_constant;
 	};
 /* Functions                */
 }

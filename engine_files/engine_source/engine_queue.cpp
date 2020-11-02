@@ -51,7 +51,7 @@ namespace pw {
 		int less_index = 0;
 		for (size_t i = 1; i < scene_vector.size(); i++) {
 			key = scene_vector.at(i);
-			less_index = i - 1;
+			less_index = (int)i - 1;
 
 			while (less_index >= 0 && scene_vector.at(less_index).Get_Order_Number() > key.Get_Order_Number())
 			{

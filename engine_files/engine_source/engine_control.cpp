@@ -17,11 +17,11 @@ namespace pw {
 
 	const char* Engine_Constant::window_name = "";
 
-	float Engine_Constant::previous_time = 0.0f;
-	float Engine_Constant::current_time = 0.0f;
-	float Engine_Constant::delta_time = 0.0f;
+	std::chrono::system_clock::time_point Engine_Constant::previous_time;
+	std::chrono::system_clock::time_point Engine_Constant::current_time;
+	std::chrono::duration<double, std::milli> Engine_Constant::delta_time(0);
 
-	const float Engine_Constant::fps_constant = (1.0f / 60.0f);
+	const std::chrono::duration<double, std::milli> Engine_Constant::fps_constant(1000.0f / 30.0f);
 /* Class Members            */
 	void Engine_Control::Init_Engine(const char* display_name, short int display_width, short int display_height) {
 #ifdef PW_DEBUG_MODE
@@ -141,15 +141,15 @@ namespace pw {
 
 		Engine_Queue::Load_From_Dir("engine_files/engine_resource/");
 
-		float start_time = (float)glfwGetTime();
-		float end_time = (float)glfwGetTime();
-		float elapsed_time = end_time - start_time;
+		std::chrono::system_clock::time_point start_time = std::chrono::system_clock::now();
+		std::chrono::system_clock::time_point end_time = std::chrono::system_clock::now();
+		std::chrono::duration<double, std::milli> elapsed_time = end_time - start_time;
 
 		int frames = 0;
 
 		while (pw::Engine_Control::Should_Close()) {
 			elapsed_time = end_time - start_time;
-			if (elapsed_time >= 1.0f) {
+			if (elapsed_time >= (std::chrono::seconds)1) {
 				std::string str = Engine_Constant::Get_Window_Name();
 				str.insert(str.size(), " Fps:");
 				str.insert(str.size(), std::to_string(frames).c_str());
@@ -158,33 +158,31 @@ namespace pw {
 				glfwSetWindowTitle(this->main_window, str.c_str());
 			}
 			Engine_Constant::Calc_Delta_Time();
-			if (Engine_Constant::Get_Delta_Time() <= Engine_Constant::Get_FPS_Constant()) {
-				glfwPollEvents();
+			
+			/* Engine Loop */
+			glfwPollEvents();
 
-				frames++;
+			Engine_Input::Poll_Active_Events();
 
-				Engine_Input::Poll_Active_Events();
+			glClearColor(0.0f, 0.16f, 0.16f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT);
 
-				glClearColor(0.0f, 0.16f, 0.16f, 1.0f);
-				glClear(GL_COLOR_BUFFER_BIT);
+			shader.Update_Projection(camera);
 
-				shader.Update_Projection(camera);
+			Engine_Queue::Run_Queue(shader);
 
-				Engine_Queue::Run_Queue(shader);
-				/*
-				move.Update_Position(glm::vec2(
-					floorf(Engine_Input::Get_Cursor_Position().x / 32.0f) * 32.0f,
-					ceilf(Engine_Input::Get_Cursor_Position().y / 32.0f) * 32.0f));
-				move.Render(shader);
-				*/
+			IE_Player::Draw_Player(shader);
 
-				IE_Player::Draw_Player(shader);
+			Update_Engine_State();
 
-				Update_Engine_State();
-				auto duration = std::chrono::duration_cast<std::chrono::seconds>((std::chrono::duration<float>)(Engine_Constant::Get_FPS_Constant() - Engine_Constant::Get_Delta_Time()));
-				std::this_thread::sleep_for(duration);
-			}
-			end_time = (float)glfwGetTime();
+			frames++;
+
+			/* Wait until next frame */
+			std::chrono::duration<double, std::milli> calc(Engine_Constant::Get_FPS_Constant() - Engine_Constant::Get_Delta_Time());
+			auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(calc);
+			std::this_thread::sleep_for(duration);
+
+			end_time = std::chrono::system_clock::now();
 		}
 		IE_Player::Delete_Player();
 	}
@@ -211,3 +209,11 @@ int main(int argc, char* argv[]) {
 	engine.Terminate_Engine();
 	return 0;
 }
+/*
+old code
+/*
+				move.Update_Position(glm::vec2(
+					floorf(Engine_Input::Get_Cursor_Position().x / 32.0f) * 32.0f,
+					ceilf(Engine_Input::Get_Cursor_Position().y / 32.0f) * 32.0f));
+				move.Render(shader);
+*/

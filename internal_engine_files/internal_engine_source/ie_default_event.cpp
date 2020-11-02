@@ -12,16 +12,16 @@ namespace pw {
 		function_arr[(int)Default_Functions::CHANGE_SCENE] = IE_Default_Event::Change_Scene;
 	}
 	void IE_Default_Event::Move_Right() {
-		IE_Player::Set_Player_X_Position(IE_Player::Get_Player_X_Position() + 1);
+		IE_Player::Set_Player_X_Position(IE_Player::Get_Player_X_Position() + 2);
 	}
 	void IE_Default_Event::Move_Left() {
-		IE_Player::Set_Player_X_Position(IE_Player::Get_Player_X_Position() - 1);
+		IE_Player::Set_Player_X_Position(IE_Player::Get_Player_X_Position() - 2);
 	}
 	void IE_Default_Event::Move_Up() {
-		IE_Player::Set_Player_Y_Position(IE_Player::Get_Player_Y_Position() + 1);
+		IE_Player::Set_Player_Y_Position(IE_Player::Get_Player_Y_Position() + 2);
 	}
 	void IE_Default_Event::Move_Down() {
-		IE_Player::Set_Player_Y_Position(IE_Player::Get_Player_Y_Position() - 1);
+		IE_Player::Set_Player_Y_Position(IE_Player::Get_Player_Y_Position() - 2);
 	}
 	void IE_Default_Event::Change_Scene() {
 		Engine_Queue::Change_Scene(Engine_Queue::Get_Scene_Index() + 1);
