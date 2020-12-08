@@ -2,6 +2,7 @@
 namespace pw {
 /* IE_Shader                */
 /* Static Declarations      */
+	IE_Shader IE_Shader::this_shader = IE_Shader();
 /* Class Members            */
 	IE_Shader::IE_Shader() :
 		program_id{ 0 }, vertex_shader{ 0 }, fragment_shader{ 0 },
@@ -33,6 +34,8 @@ namespace pw {
 		glValidateProgram(program_id);
 
 		Check_Error(program_id, GL_VALIDATE_STATUS, true, "Program Is Invalid Error: ");
+
+		this_shader = *this;
 	}
 	void IE_Shader::Use() {
 		glUseProgram(program_id);
@@ -87,7 +90,7 @@ namespace pw {
 
 		return shader;
 	}
-	void IE_Shader::Check_Error(GLuint object_id, GLenum error, bool is_program, const char* custom_error_msg) {
+	void IE_Shader::Check_Error(unsigned int object_id, GLenum error, bool is_program, const char* custom_error_msg) {
 		GLint success = 0;
 		GLchar error_message[1024] = { 0 };
 

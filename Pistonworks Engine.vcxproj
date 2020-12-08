@@ -26,6 +26,7 @@
     <ClInclude Include="engine_files\engine_headers\engine_math.h" />
     <ClInclude Include="engine_files\engine_headers\engine_queue.h" />
     <ClInclude Include="engine_files\engine_resource\template.h" />
+    <ClInclude Include="internal_engine_files\internal_engine_headers\ie_animation.h" />
     <ClInclude Include="internal_engine_files\internal_engine_headers\ie_camera.h" />
     <ClInclude Include="internal_engine_files\internal_engine_headers\ie_default_event.h" />
     <ClInclude Include="internal_engine_files\internal_engine_headers\ie_event.h" />
@@ -41,6 +42,7 @@
     <ClCompile Include="engine_files\engine_source\engine_control.cpp" />
     <ClCompile Include="engine_files\engine_source\engine_input.cpp" />
     <ClCompile Include="engine_files\engine_source\engine_queue.cpp" />
+    <ClCompile Include="internal_engine_files\internal_engine_source\ie_animation.cpp" />
     <ClCompile Include="internal_engine_files\internal_engine_source\ie_default_event.cpp" />
     <ClCompile Include="internal_engine_files\internal_engine_source\ie_event.cpp" />
     <ClCompile Include="internal_engine_files\internal_engine_source\ie_game_scene.cpp" />

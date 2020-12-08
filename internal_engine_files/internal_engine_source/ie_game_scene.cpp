@@ -4,22 +4,20 @@ namespace pw {
 /* IE_Game_Scene            */
 /* Static Declarations      */
 /* Class Members            */
-	IE_Game_Scene::IE_Game_Scene(std::vector<Scene_Model*> scene_models) :
-			scene_models(scene_models) {
-	}
-	IE_Game_Scene::IE_Game_Scene(std::string& scene_str) :
-			scene_models(NULL), order_number(NULL) {
-		this->IE_Game_Scene::IE_Game_Scene(Load_Scene_From_String(scene_str));
-	}
-	IE_Game_Scene::IE_Game_Scene(const char* level_location) :
-			scene_models(NULL), order_number(NULL) {
+	IE_Game_Scene::IE_Game_Scene(PW_CSTRING level_location) :
+			scene_models(NULL), order_number(NULL), collision_models(NULL) {
 		if (level_location != NULL) {
-			this->IE_Game_Scene::IE_Game_Scene(Load_Scene_From_String(Load_Scene_From_File(level_location)));
+			scene_models = this->Load_Scene_From_String(this->Load_Scene_From_File(level_location));
 		}
 	}
-	void IE_Game_Scene::Render(IE_Shader shader) {
+	void IE_Game_Scene::Render() {
+		if (collision_models.size() != 0) {
+			for (size_t i = 0; i < collision_models.size(); i++) {
+				collision_models.at(i)->Handle_Collision();
+			}
+		}
 		for (size_t i = 0; i < scene_models.size(); i++) {
-			scene_models.at(i)->Render(shader);
+			scene_models.at(i)->Render();
 		}
 	}
 	void IE_Game_Scene::Delete() {
@@ -28,15 +26,20 @@ namespace pw {
 			delete scene_models.at(i);
 			scene_models.at(i) = nullptr;
 		}
+		for (size_t i = 0; i < collision_models.size(); i++) {
+			collision_models.at(i)->Delete();
+			delete collision_models.at(i);
+			collision_models.at(i) = nullptr;
+		}
 	}
-	std::vector<Scene_Model*> IE_Game_Scene::Load_Scene_From_String(std::string scene_str) {
+	std::vector<Scene_Model*> IE_Game_Scene::Load_Scene_From_String(PW_STRING scene_str) {
 		std::vector<Scene_Model*> models;
-		size_t index_front = 0;
-		size_t index_back = 0;
-		size_t index_prevf = 0;
-		size_t index_prevb = 0;
-		std::string str = "";
-		std::string str2 = "";
+		PW_UINT index_front = 0;
+		PW_UINT index_back = 0;
+		PW_UINT index_prevf = 0;
+		PW_UINT index_prevb = 0;
+		PW_STRING str = "";
+		PW_STRING str2 = "";
 		//Get order
 		index_front = scene_str.find("*");
 		index_back = scene_str.find("*", index_front + 1);
@@ -66,46 +69,87 @@ namespace pw {
 				texture = IE_Texture(str.c_str());
 			}
 			else {
-				str = IE_Texture::Find_Texture(str2.c_str());
-				texture = IE_Texture(str.c_str());
+				index_front = scene_str.find("[");
+				index_back = scene_str.find("]", index_front);
+				str = scene_str.substr(index_front + 1, index_back - index_front - 1);
+				str2 = IE_Texture::Find_Texture(str.c_str());
+				texture = IE_Texture(str2.c_str());
 				model_color = glm::vec3(-1.0f);
 			}
 			str.clear();
 			str2.clear();
-			//Get the texture data
-			index_front = scene_str.find("[");
-			index_back = scene_str.find("]", index_front);
+			//Find out if it has animation data
+			PW_INT boolean_expression = 0;
+			PW_BOOL animated = false;
+			PW_UINT animation_length = 0;
+			PW_UINT animation_frames = 0;
+			PW_UINT animation_size_x = 0;
+
+			index_prevb = index_back;
+
+			index_front = scene_str.find("[", index_prevb);
+			index_back = scene_str.find("=", index_front);
 			str = scene_str.substr(index_front + 1, index_back - index_front - 1);
+			boolean_expression = std::stoi(str);
+			if (boolean_expression == 1) {
+				animated = true;
+			}
 			str.clear();
-			//Get the texture data
-			index_front = scene_str.find("[");
+			if (animated == true) {
+				index_front = index_back;
+				index_back = scene_str.find(",", index_front);
+				str = scene_str.substr(index_front + 1, index_back - index_front - 1);
+				animation_length = std::stoi(str);
+				index_front = index_back;
+				index_back = scene_str.find(",", index_front);
+				str = scene_str.substr(index_front + 1, index_back - index_front - 1);
+				animation_frames = std::stoi(str);
+				index_front = index_back;
+				index_back = scene_str.find(",", index_front);
+				str = scene_str.substr(index_front + 1, index_back - index_front - 1);
+				animation_size_x = std::stoi(str);
+				str.clear();
+			}
+			//Find out if it has collision data
+			boolean_expression = 0;
+			PW_BOOL collidable = false;
+
+			index_prevb = index_back;
+
+			index_front = scene_str.find("[", index_prevb);
 			index_back = scene_str.find("]", index_front);
 			str = scene_str.substr(index_front + 1, index_back - index_front - 1);
+			boolean_expression = std::stoi(str);
+			if (boolean_expression == 1) {
+				collidable = true;
+			}
 			str.clear();
 			//Get the model data
-			int model_type = 0;
+			PW_INT model_type = 0;
 			glm::vec2 position(1.0f);
-			float rotation = 0.0f;
+			PW_FLOAT rotation = 0.0f;
 			glm::vec2 size(1.0f);
 			//Model Type
-			index_front = scene_str.find("(");
-			index_back = scene_str.find(",");
 			index_prevb = index_back;
-			str = scene_str.substr(index_front + 1, index_back - index_front);
+
+			index_front = scene_str.find("(", index_prevb);
+			index_back = scene_str.find(",", index_prevb);
+			index_prevb = index_back;
+			str = scene_str.substr(index_front + 1, index_back - index_front - 1);
 			model_type = std::stoi(str.c_str());
 			str.clear();
 			//Model Position
-			index_front = scene_str.find("=");
+			index_front = scene_str.find("=", index_prevb + 1);
 			index_prevf = index_front;
 			index_back = scene_str.find(",",index_prevb + 1);
 			index_prevb = index_back;
-			str = scene_str.substr(index_front + 1, index_back - index_front);
-			position.x = std::stof(str.c_str()) * 32;
+			str = scene_str.substr(index_front + 1, index_back - index_front - 1);
+			position.x = std::stof(str.c_str()) * 32.0f;
 			str.clear();
 			index_front = index_back;
 			index_back = scene_str.find("=", index_prevf + 1);
-			str = scene_str.substr(index_front + 1, index_back - index_front);
-			position.y = std::stof(str.c_str()) * 32;
+			str = scene_str.substr(index_front + 1, index_back - index_front - 1);
+			position.y = std::stof(str.c_str()) * 32.0f;
 			str.clear();
 			//Model Rotation
 			index_front = scene_str.find(",", index_prevb + 1);
@@ -127,14 +171,80 @@ namespace pw {
 			str = scene_str.substr(index_front + 1, index_back - index_front - 1);
 			size.y = std::stof(str.c_str());
 			str.clear();
-			IE_Model model = IE_Model();
-			if (model_color.x != -1.0f) {
-				model = IE_Model((IE_Model::Model_Types)model_type, texture, position, rotation, size, model_color);
+			index_front = index_back;
+			index_back = scene_str.find(")", index_prevf + 1);
+			str = scene_str.substr(index_front + 1, index_back - index_front - 1);
+			PW_CHAR type = str.at(0);
+			str.clear();
+			Scene_Model* scene_model = NULL;
+			if (type == 'd') {
+				if (model_color.x != -1.0f) {
+					IE_Dynamic_Model model = IE_Dynamic_Model();
+					model = IE_Dynamic_Model((IE_Dynamic_Model::Model_Types)model_type, texture, position, rotation, size, model_color);
+					if (collidable == true) {
+						if (animated == true) {
+							scene_model = new AActor_Model(model, IE_Animation::IE_Animation(animation_length, animation_frames, animation_size_x));
+							collision_models.push_back(static_cast<AActor_Model*>(scene_model));
+						}
+						else {
+							scene_model = new Actor_Model(model);
+							collision_models.push_back(static_cast<Actor_Model*>(scene_model));
+						}
+					}
+					else {
+						if (animated == true) {
+							scene_model = new AActor_Model(model, IE_Animation::IE_Animation(animation_length, animation_frames, animation_size_x));
+						}
+						else {
+							scene_model = new Actor_Model(model);
+						}
+					}
+				}
+				else {
+					IE_Dynamic_Model model = IE_Dynamic_Model();
+					model = IE_Dynamic_Model((IE_Dynamic_Model::Model_Types)model_type, texture, position, rotation, size);
+					if (collidable == true) {
+						if (animated == true) {
+							scene_model = new AActor_Model(model, IE_Animation::IE_Animation(animation_length, animation_frames, animation_size_x));
+							collision_models.push_back(static_cast<AActor_Model*>(scene_model));
+						}
+						else {
+							scene_model = new Actor_Model(model);
+							collision_models.push_back(static_cast<Actor_Model*>(scene_model));
+						}
+					}
+					else {
+						if (animated == true) {
+							scene_model = new AActor_Model(model, IE_Animation::IE_Animation(animation_length, animation_frames, animation_size_x));
+						}
+						else {
+							scene_model = new Actor_Model(model);
+						}
+					}
+				}
 			}
 			else {
-				model = IE_Model((IE_Model::Model_Types)model_type, texture, position, rotation, size);
+				if (model_color.x != -1.0f) {
+					IE_Static_Model model = IE_Static_Model();
+					model = IE_Static_Model((IE_Static_Model::Model_Types)model_type, texture, position, rotation, size, model_color);
+					if (animated == true) {
+						scene_model = new AAsset_Model(model, IE_Animation::IE_Animation(animation_length, animation_frames, animation_size_x));
+					}
+					else {
+						scene_model = new Asset_Model(model);
+					}
+				}
+				else {
+					IE_Static_Model model = IE_Static_Model();
+					model = IE_Static_Model((IE_Static_Model::Model_Types)model_type, texture, position, rotation, size);
+					if (animated == true) {
+						scene_model = new AAsset_Model(model,IE_Animation::IE_Animation(animation_length, animation_frames, animation_size_x));
+					}
+					else {
+						scene_model = new Asset_Model(model);
+					}
+				}
 			}
-			Scene_Model* scene_model = new Asset_Model(model);
 			models.push_back(scene_model);
 			scene_model = nullptr;
 			delete scene_model;
@@ -144,8 +254,8 @@ namespace pw {
 		scene_str.clear();
 		return models;
 	}
-	std::string IE_Game_Scene::Load_Scene_From_File(const char* file_location) {
-		std::string content = "";
+	PW_STRING IE_Game_Scene::Load_Scene_From_File(PW_CSTRING file_location) {
+		PW_STRING content = "";
 		std::ifstream fileStream(file_location, std::ios::in);
 
 		if (!fileStream.is_open()) {
@@ -153,7 +263,7 @@ namespace pw {
 			return "";
 		}
 
-		std::string line = "";
+		PW_STRING line = "";
 		while (!fileStream.eof()) {
 			std::getline(fileStream, line);
 			content.append(line);

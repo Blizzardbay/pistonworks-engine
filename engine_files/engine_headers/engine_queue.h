@@ -27,14 +27,14 @@ namespace pw {
 	private:
 /* Public Functions/Macros  */
 	public:
-		static void Run_Queue(IE_Shader shader);
+		static void Run_Queue();
 
 		static void Load_From_Dir(const char* dir);
 		
 		static void Add_Game_Scene(IE_Game_Scene scene);
 
 		static void Change_Scene(size_t new_index) { index = new_index; }
-		static size_t Get_Scene_Index() { return index; }
+		static size_t Scene_Index() { return index; }
 /* Public Variables         */
 	public:
 /* Private Functions/Macros */

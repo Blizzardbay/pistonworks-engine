@@ -75,6 +75,9 @@
     <ClInclude Include="engine_files\engine_headers\engine_math.h">
       <Filter>engine_files\engine_headers</Filter>
     </ClInclude>
+    <ClInclude Include="internal_engine_files\internal_engine_headers\ie_animation.h">
+      <Filter>internal_engine_files\internal_engine_headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="engine_files\engine_source\engine_control.cpp">
@@ -111,6 +114,9 @@
       <Filter>internal_engine_files\internal_engine_source</Filter>
     </ClCompile>
     <ClCompile Include="internal_engine_files\internal_engine_source\ie_player.cpp">
+      <Filter>internal_engine_files\internal_engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="internal_engine_files\internal_engine_source\ie_animation.cpp">
       <Filter>internal_engine_files\internal_engine_source</Filter>
     </ClCompile>
   </ItemGroup>

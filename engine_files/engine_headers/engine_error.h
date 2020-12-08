@@ -14,6 +14,7 @@
 #include <GLFW\glfw3.h>
 #include <stb_image.h>
 /* Engine Headers        */
+#include "engine_constant.h"
 /* Engine Macro Includes */
 /* Engine Macros         */
 #ifdef _DEBUG
@@ -44,7 +45,7 @@ namespace pw {
 		}
 		static void PW_GLFW_Handle(const int result, const int line, const char* file) {
 			if (result == GLFW_FALSE) {
-				printf("|GLFW Function Error: %s\n|The Error Is On Line: %d\n|In File: %s\n", "Function Error", PW_LINE_, PW_FILE_);
+				printf("|GLFW Function Error: %s\n|The Error Is On Line: %d\n|In File: %s\n", "Function Error", line, file);
 				return;
 			}
 #ifdef PW_DEBUG_MODE
@@ -80,7 +81,7 @@ namespace pw {
 		}
 		static void PW_STBI_Handle(unsigned char* result, const int line, const char* file) {
 			if (result == NULL) {
-				printf("|STBI Function Error: %s\n|The Error Is On Line: %d\n|In File: %s\n", stbi_failure_reason(), PW_LINE_, PW_FILE_);
+				printf("|STBI Function Error: %s\n|The Error Is On Line: %d\n|In File: %s\n", stbi_failure_reason(), line, file);
 				return;
 			}
 		}

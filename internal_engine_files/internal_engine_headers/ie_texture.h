@@ -28,37 +28,81 @@ namespace pw {
 			PINK, CYAN, ORANGE, MAGENTA,
 			WHITE, BLACK, LIME, DARK_CYAN,
 			PURPLE, LIGHT_BLUE, BROWN,
-			DARK_GREY, GREY
+			DARK_GREY, GREY, Color_Count
 		};
 		IE_Texture();
-		IE_Texture(const char* file_location);
+		IE_Texture(PW_CSTRING file_location);
 		~IE_Texture() {};
 
 	private:
 /* Public Functions/Macros  */
 	public:
-		void Bind(unsigned int unit);
-		void Delete();
+		PW_VOID Bind(PW_UINT unit);
+		PW_VOID Delete();
 
-		static std::string Find_Texture(const char* name);
-		static std::string Find_Color_Texture(const char* d_bits, Default_Texture id, glm::vec3& color);
+		static PW_STRING Find_Texture(PW_CSTRING name);
+		static PW_STRING Find_Color_Texture(PW_CSTRING d_bits, Default_Texture id, glm::vec3& color);
 
-		static void Change_Texture_Dir(const char* new_dir) { has_user_dir_changed = true; user_dir = new_dir; }
+		static PW_VOID Change_Texture_Dir(PW_CSTRING new_dir) { has_user_dir_changed = true; user_dir = new_dir; }
+
+		static glm::vec3 Color(Default_Texture color_id) { return Engine_Colors[(PW_UINT)color_id]; }
 /* Public Variables         */
 	public:
 /* Private Functions/Macros */
 	private:
 /* Private Variables        */
 	private:
-		GLuint texture_id;
+		PW_UINT texture_id;
 
-		GLuint texture_width;
-		GLuint texture_height;
+		PW_UINT texture_width;
+		PW_UINT texture_height;
 
-		GLint texture_bit_depth;
+		PW_INT texture_bit_depth;
 
-		static bool has_user_dir_changed;
-		static const char* user_dir;
+		static PW_BOOL has_user_dir_changed;
+		static PW_CSTRING user_dir;
+
+		static glm::vec3 Engine_Colors[(PW_UINT)Default_Texture::Color_Count];
+	};
+	/*                                             */
+	/*[ (IE_Icon)                                   ]
+	 Handles icons in opengl.
+	*/
+	class IE_Icon {
+/* Default Class Structures */
+	public:
+		IE_Icon();
+		IE_Icon(PW_CSTRING file_location);
+		~IE_Icon() {};
+
+	private:
+/* Public Functions/Macros  */
+	public:
+		PW_VOID Delete();
+
+		static PW_STRING Find_Icon(PW_CSTRING name);
+
+		static PW_VOID Change_Icon_Dir(PW_CSTRING new_dir) { has_user_dir_changed = true; user_dir = new_dir; }
+
+		PW_BYTE* Data() { return icon_data; }
+
+		PW_UINT Width() { return icon_width; }
+		PW_UINT Height() { return icon_height; }
+/* Public Variables         */
+	public:
+/* Private Functions/Macros */
+	private:
+/* Private Variables        */
+	private:
+		PW_UINT icon_width;
+		PW_UINT icon_height;
+
+		PW_INT icon_bit_depth;
+
+		PW_BYTE* icon_data;
+
+		static PW_BOOL has_user_dir_changed;
+		static PW_CSTRING user_dir;
 	};
 /* Functions                */
 /* Macros                   */

@@ -15,7 +15,8 @@ namespace pw {
 
 	Input_Event_Key Engine_Input::keys[1024] = { Input_Event_Key() };
 
-	std::vector<Input_Event_Key> Engine_Input::current_active_keys;
+	std::map<unsigned int, Input_Event_Key> Engine_Input::current_active_keys = std::map<unsigned int, Input_Event_Key>();
+
 /* Class Members            */
 	void Engine_Input::Init_Default_Binds() {
 		for (size_t i = 0; i < 1024; i++) {
@@ -43,7 +44,6 @@ namespace pw {
 			}
 			// For when a key is hit set the key that was hit to true
 			if (key >= 0 && key <= 1024) {
-				this_window->current_key_code = key;
 				if (Is_Key(key) == true) {
 					Handle_Events(key, action);
 				}
@@ -52,20 +52,18 @@ namespace pw {
 		else {
 			// For when a key is released by the user
 			if (action == GLFW_RELEASE) {
-				for (size_t i = 0; i < current_active_keys.size(); i++) {
-					if (current_active_keys.at(i).Get_Key() == key) {
-						current_active_keys.at(i).~Input_Event_Key();
-						current_active_keys.erase(current_active_keys.begin() + i, current_active_keys.begin() + i + 1);
-						break;
+				if (keys[key].Get_Press_Setting() != true) {
+					if (Is_Key(key)) {
+						current_active_keys.at(key).~Input_Event_Key();
+						current_active_keys.erase(key);
 					}
 				}
-				this_window->current_key_code = NULL;
 			}
 		}
 	}
 	void Engine_Input::Handle_Mouse(GLFWwindow* window, GLdouble mouse_xpos, GLdouble mouse_ypos) {
 		//printf("X pos: %.f\n", mouse_xpos);
-		//printf("Y pos: %.f\n", Engine_Constant::Get_Buffer_Height() - mouse_ypos);
+		//printf("Y pos: %.f\n", Engine_Constant::Window_Height() - mouse_ypos);
 		/* For gaining access to the current window using callbacks */
 		Engine_Input* this_window = static_cast<Engine_Input*>(glfwGetWindowUserPointer(window));
 		// For the first time running of the function
@@ -88,22 +86,22 @@ namespace pw {
 		glClearColor(0.0f, 0.16f, 0.16f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		GLint buffer_width = 0;
-		GLint buffer_height = 0;
+		GLint buffer_width = window_width;
+		GLint buffer_height = window_height;
 
 		PW_GLFW_VOID_CALL(glfwGetFramebufferSize(main_window, &buffer_width, &buffer_height));
 
-		Engine_Constant::Set_Buffer_Width(buffer_width);
-		Engine_Constant::Set_Buffer_Height(buffer_height);
-		Engine_Constant::Set_Hafe_Buffer_Width(buffer_width);
-		Engine_Constant::Set_Hafe_Buffer_Height(buffer_height);
-		
+		Engine_Constant::Set_Window_Width(buffer_width);
+		Engine_Constant::Set_Window_Height(buffer_height);
+		Engine_Constant::Set_Hafe_Window_Width(buffer_width / 2);
+		Engine_Constant::Set_Hafe_Window_Height(buffer_height / 2);
+
 		glfwSwapBuffers(main_window);
 	}
 	glm::vec2 Engine_Input::Get_Cursor_Position() {
 		glm::vec2 positions(1.0f);
 		positions.x = cursor_last_xpos;
-		positions.y = Engine_Constant::Get_Buffer_Height() - cursor_last_ypos;
+		positions.y = Engine_Constant::Window_Height() - cursor_last_ypos;
 		return positions;
 	}
 	void Engine_Input::Handle_Events(GLint key, GLint action) {
@@ -112,7 +110,7 @@ namespace pw {
 		}
 		else {
 			keys[key].event_();
-			current_active_keys.push_back(keys[key]);
+			current_active_keys.insert(std::make_pair(key, keys[key]));
 		}
 	}
 	bool Engine_Input::Is_Key(GLint key) {
@@ -124,8 +122,8 @@ namespace pw {
 		}
 	}
 	void Engine_Input::Poll_Active_Events() {
-		for (size_t i = 0; i < current_active_keys.size(); i++) {
-			current_active_keys.at(i).event_();
+		for (auto i = current_active_keys.begin(); i != current_active_keys.end(); i++) {
+			current_active_keys.at(i->first).event_();
 		}
 	}
 	void Engine_Input::Create_New_Bind(GLint key_code, void(*function_ptr)(), bool only_play_once) {

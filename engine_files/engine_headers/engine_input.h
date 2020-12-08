@@ -5,6 +5,7 @@
 
 /* C++ Headers           */
 #include <vector>
+#include <map>
 /* Project Headers       */
 #ifndef PW_GLEW_H
 #define PW_GLEW_H
@@ -109,7 +110,7 @@ namespace pw {
 
 		static Input_Event_Key keys[1024];
 
-		static std::vector<Input_Event_Key> current_active_keys;
+		static std::map<unsigned int, Input_Event_Key> current_active_keys;
 	};
 /* Functions                */
 }

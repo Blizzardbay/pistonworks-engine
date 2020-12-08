@@ -36,24 +36,28 @@ namespace pw {
 
 		void Update_Matrices(glm::mat4 model, bool model_is_colored);
 		void Update_Projection(IE_Camera camera);
-		unsigned int Get() { return program_id; }
+		unsigned int Shader_Id() { return program_id; }
+
+		static IE_Shader Get_Shader() { return this_shader; }
 /* Public Variables         */
 	public:
 /* Private Functions/Macros */
 	private:
 		static std::string Load_Shader(const std::string& file_name);
-		static GLuint Compile_Shader(const std::string shader_code, GLenum shader_type);
-		static void Check_Error(GLuint object_id, GLenum error, bool is_program, const char* custom_error_msg);
+		static unsigned int Compile_Shader(const std::string shader_code, GLenum shader_type);
+		static void Check_Error(unsigned int object_id, GLenum error, bool is_program, const char* custom_error_msg);
 /* Private Variables        */
 	private:
-		GLuint program_id;
+		static IE_Shader this_shader;
 
-		GLuint vertex_shader;
-		GLuint fragment_shader;
+		unsigned int program_id;
 
-		GLuint model_uniform;
-		GLuint view_uniform;
-		GLuint projection_uniform;
+		unsigned int vertex_shader;
+		unsigned int fragment_shader;
+
+		unsigned int model_uniform;
+		unsigned int view_uniform;
+		unsigned int projection_uniform;
 	};
 /* Functions                */
 /* Macros                   */

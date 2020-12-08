@@ -38,6 +38,7 @@ namespace pw {
 /* Public Functions/Macros  */
 	public:
 		static void Init_Default_Input_Callbacks();
+		static float Get_Move_Increment() { return move_increment; }
 /* Public Variables         */
 	public:
 		static void (*function_arr[(int)Default_Functions::DEFAULT_FUCNTION_COUNT])();
@@ -51,6 +52,7 @@ namespace pw {
 		static void Change_Scene();
 /* Private Variables        */
 	private:
+		static float move_increment;
 	};
 /* Functions                */
 /* Macros                   */

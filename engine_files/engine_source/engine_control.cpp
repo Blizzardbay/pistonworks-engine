@@ -8,22 +8,21 @@ namespace pw {
 	int Engine_Error::PW_LINE_ = 0;
 	const char* Engine_Error::PW_FILE_ = "";
 
-	GLfloat Engine_Constant::window_width = 0.0f;
-	GLfloat Engine_Constant::window_height = 0.0f;
-	GLint Engine_Constant::buffer_width = 0;
-	GLint Engine_Constant::buffer_height = 0;
-	GLint Engine_Constant::hafe_buffer_width = 0;
-	GLint Engine_Constant::hafe_buffer_height = 0;
+	PW_SUINT Engine_Constant::window_width = 0;
+	PW_SUINT Engine_Constant::window_height = 0;
+	PW_SUINT Engine_Constant::hafe_window_width = 0;
+	PW_SUINT Engine_Constant::hafe_window_height = 0;
 
-	const char* Engine_Constant::window_name = "";
+	PW_CSTRING Engine_Constant::window_name = (PW_CSTRING) "";
 
 	std::chrono::system_clock::time_point Engine_Constant::previous_time;
 	std::chrono::system_clock::time_point Engine_Constant::current_time;
-	std::chrono::duration<double, std::milli> Engine_Constant::delta_time(0);
+	std::chrono::duration<PW_FLOAT, std::milli> Engine_Constant::delta_time(0);
 
-	const std::chrono::duration<double, std::milli> Engine_Constant::fps_constant(1000.0f / 30.0f);
+	const std::chrono::duration<PW_FLOAT, std::milli> Engine_Constant::fps_constant(16.7000008f);
+
 /* Class Members            */
-	void Engine_Control::Init_Engine(const char* display_name, short int display_width, short int display_height) {
+	PW_VOID Engine_Control::Init_Engine(PW_CSTRING display_name, PW_SINT display_width, PW_SINT display_height) {
 #ifdef PW_DEBUG_MODE
 		printf("|****************************************\n");
 		printf("|Initialization Code\n");
@@ -47,11 +46,10 @@ namespace pw {
 		printf("|Display Creation Code\n");
 		printf("|****************************************\n");
 #endif // PW_DEBUG_MODE
-
 		// For creating a window to use for the application
 		main_window = glfwCreateWindow(
 			display_width, display_height,
-			display_name,
+			(const char*)display_name,
 			NULL, NULL);
 		// For checking if any errors occurred
 		if (!main_window) {
@@ -63,16 +61,17 @@ namespace pw {
 		}
 #endif // !PW_DEBUG_MODE
 
-		GLint buffer_width = 0;
-		GLint buffer_height = 0;
+		PW_INT buffer_width = display_width;
+		PW_INT buffer_height = display_height;
 
 		// For retrieving the buffer sizes for our given window
 		PW_GLFW_VOID_CALL(glfwGetFramebufferSize(main_window, &buffer_width, &buffer_height));
 
-		Engine_Constant::Set_Buffer_Width(buffer_width);
-		Engine_Constant::Set_Buffer_Height(buffer_height);
-		Engine_Constant::Set_Hafe_Buffer_Width(buffer_width);
-		Engine_Constant::Set_Hafe_Buffer_Height(buffer_height);
+		Engine_Constant::Set_Window_Width(buffer_width);
+		Engine_Constant::Set_Window_Height(buffer_height);
+		Engine_Constant::Set_Hafe_Window_Width(buffer_width / 2);
+		Engine_Constant::Set_Hafe_Window_Height(buffer_height / 2);
+		Engine_Constant::Set_Window_Name(display_name);
 
 		// For setting the current context for GLEW to use 
 		PW_GLFW_VOID_CALL(glfwMakeContextCurrent(main_window));
@@ -96,24 +95,29 @@ namespace pw {
 		PW_GL_CALL(glewInit() == GLEW_OK);
 
 		// Enable Transparent textures
-		glEnable(GL_BLEND);
 
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		IE_Icon icon_data = IE_Icon(IE_Icon::Find_Icon("Test_Icon.png").c_str());
+		GLFWimage* icon = new GLFWimage();
+		icon->width = icon_data.Width();
+		icon->height = icon_data.Height();
+		icon->pixels = icon_data.Data();
 
-		// For enabling testing of depth in a window
-		//glEnable(GL_DEPTH_TEST);
+		PW_GLFW_VOID_CALL(glfwSetWindowIcon(main_window, 1, icon));
+
+		icon_data.Delete();
+		delete icon;
+		icon = nullptr;
+
+		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		//glEnable(GL_BLEND);
 		// For setting up view port size
-		PW_GL_VOID_CALL(glViewport(0, 0, Engine_Constant::GetBufferWidth(), Engine_Constant::GetBufferHeight()));
+		PW_GL_VOID_CALL(glViewport(0, 0, Engine_Constant::Window_Width(), Engine_Constant::Window_Height()));
 		// For specifying which instance of the window will be used for callback
 		PW_GLFW_VOID_CALL(glfwSetWindowUserPointer(main_window, this));
 
 		PW_GL_VOID_CALL(glEnable(GL_DEBUG_OUTPUT));
-
-		Engine_Constant::Set_Window_Width(display_width);
-		Engine_Constant::Set_Window_Height(display_height);
-		Engine_Constant::Set_Window_Name(display_name);
 	}
-	void Engine_Control::Run_Engine() {
+	PW_VOID Engine_Control::Run_Engine() {
 #ifdef PW_DEBUG_MODE
 		printf("|****************************************\n");
 		printf("|Shader Creation\n");
@@ -132,7 +136,7 @@ namespace pw {
 
 		glm::vec3 player_color(0.0f);
 		IE_Texture texture_2 = IE_Texture(IE_Texture::Find_Color_Texture("D16", IE_Texture::Default_Texture::BLUE, player_color).c_str());
-		IE_Model model = IE_Model(IE_Model::Model_Types::SQUARE, texture_2, glm::vec2(400.0f, 400.0f), 0.0f, glm::vec2(32.0f, 32.0f),player_color);
+		IE_Dynamic_Model model = IE_Dynamic_Model(IE_Dynamic_Model::Model_Types::SQUARE, texture_2, glm::vec2(400.0f, 400.0f), 0.0f, glm::vec2(32.0f, 32.0f),player_color);
 		IE_Player::Init_Player(model);
 
 		Engine_Input::Set_Default_Binds(true);
@@ -143,23 +147,27 @@ namespace pw {
 
 		std::chrono::system_clock::time_point start_time = std::chrono::system_clock::now();
 		std::chrono::system_clock::time_point end_time = std::chrono::system_clock::now();
-		std::chrono::duration<double, std::milli> elapsed_time = end_time - start_time;
+		std::chrono::duration<PW_FLOAT, std::milli> elapsed_time = end_time - start_time;
 
-		int frames = 0;
+		PW_INT frames = 0;
+		PW_INT last_frames = 0;
 
 		while (pw::Engine_Control::Should_Close()) {
 			elapsed_time = end_time - start_time;
-			if (elapsed_time >= (std::chrono::seconds)1) {
-				std::string str = Engine_Constant::Get_Window_Name();
-				str.insert(str.size(), " Fps:");
-				str.insert(str.size(), std::to_string(frames).c_str());
-				frames = 0;
-				start_time = end_time;
-				glfwSetWindowTitle(this->main_window, str.c_str());
+			if (last_frames != frames) {
+				if (elapsed_time >= (std::chrono::duration<float, std::milli>)1000) {
+					std::string str = (const char*)Engine_Constant::Window_Name();
+					str.insert(str.size(), " Fps:");
+					str.insert(str.size(), std::to_string(frames));
+					frames = 0;
+					start_time = end_time;
+					glfwSetWindowTitle(this->main_window, str.c_str());
+					last_frames = frames;
+				}
 			}
 			Engine_Constant::Calc_Delta_Time();
-			
-			/* Engine Loop */
+
+			/* engine loop */
 			glfwPollEvents();
 
 			Engine_Input::Poll_Active_Events();
@@ -169,16 +177,18 @@ namespace pw {
 
 			shader.Update_Projection(camera);
 
-			Engine_Queue::Run_Queue(shader);
+			//IE_Player::Set_Player_Y_Position(IE_Player::Player_Y_Position() - 1);
 
-			IE_Player::Draw_Player(shader);
+			Engine_Queue::Run_Queue();
+
+			IE_Player::Draw_Player();
 
 			Update_Engine_State();
 
 			frames++;
 
-			/* Wait until next frame */
-			std::chrono::duration<double, std::milli> calc(Engine_Constant::Get_FPS_Constant() - Engine_Constant::Get_Delta_Time());
+			/* wait until next frame */
+			std::chrono::duration<PW_FLOAT, std::milli> calc(Engine_Constant::Delta_Time());
 			auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(calc);
 			std::this_thread::sleep_for(duration);
 
@@ -186,25 +196,25 @@ namespace pw {
 		}
 		IE_Player::Delete_Player();
 	}
-	void Engine_Control::Terminate_Engine() {
+	PW_VOID Engine_Control::Terminate_Engine() {
 		PW_GLFW_VOID_CALL(glfwDestroyWindow(main_window));
 		main_window = nullptr;
 		PW_GLFW_VOID_CALL(glfwTerminate());
 	}
-	void Engine_Control::Create_Callbacks() const {
+	PW_VOID Engine_Control::Create_Callbacks() const {
 		/* Set up callback functions for handling key/mouse input */
 		PW_GLFW_VOID_CALL(glfwSetKeyCallback(main_window, Engine_Input::Handle_Keys));
 		PW_GLFW_VOID_CALL(glfwSetCursorPosCallback(main_window, Engine_Input::Handle_Mouse));
 		/* Handle resizing events with ease                       */
 		PW_GLFW_VOID_CALL(glfwSetFramebufferSizeCallback(main_window, Engine_Input::Handle_Resize));
 	}
-	void Engine_Control::Update_Engine_State() {
+	PW_VOID Engine_Control::Update_Engine_State() {
 		PW_GLFW_VOID_CALL(glfwSwapBuffers(main_window));
 	}
 }
 int main(int argc, char* argv[]) {
 	pw::Engine_Control engine{};
-	engine.Init_Engine("Pistonworks Window");
+	engine.Init_Engine((PW_CSTRING)"Pistonworks Window");
 	engine.Run_Engine();
 	engine.Terminate_Engine();
 	return 0;
@@ -217,3 +227,40 @@ old code
 					ceilf(Engine_Input::Get_Cursor_Position().y / 32.0f) * 32.0f));
 				move.Render(shader);
 */
+/*for (size_t i = 0; i < m_vertices_count; i++) {
+			glm::vec2 vertex_m_1(
+				m_model.Get_Position().x + (m_vertices[i].Get_Vertex_Position().x * m_model.Get_Model_Size().x),
+				m_model.Get_Position().y + (m_vertices[i].Get_Vertex_Position().y * m_model.Get_Model_Size().y)
+			);
+			glm::vec2 vertex_m_2(
+				m_model.Get_Position().x + (m_vertices[(i + 1) % m_vertices_count].Get_Vertex_Position().x * m_model.Get_Model_Size().x),
+				m_model.Get_Position().y + (m_vertices[(i + 1) % m_vertices_count].Get_Vertex_Position().y * m_model.Get_Model_Size().y)
+			);
+
+			for (size_t j = 0; j < s_vertices_count; j++) {
+				glm::vec2 vertex_s_1(
+					this->Get_Position().x + (s_vertices[j].Get_Vertex_Position().x * this->Get_Model_Size().x),
+					this->Get_Position().y + (s_vertices[j].Get_Vertex_Position().y * this->Get_Model_Size().y)
+				);
+				glm::vec2 vertex_s_2(
+					this->Get_Position().x + (s_vertices[(j + 1) % s_vertices_count].Get_Vertex_Position().x * this->Get_Model_Size().x),
+					this->Get_Position().y + (s_vertices[(j + 1) % s_vertices_count].Get_Vertex_Position().y * this->Get_Model_Size().y)
+				);
+
+				float h = (((vertex_m_1.x - vertex_m_2.x) * (vertex_s_1.y - vertex_s_2.y)) - ((vertex_m_1.y - vertex_m_2.y) * (vertex_s_1.x - vertex_s_2.x)));
+				float t = (((vertex_m_1.x - vertex_s_1.x) * (vertex_s_1.y - vertex_s_2.y)) - ((vertex_m_1.y - vertex_s_1.y) * (vertex_s_1.x - vertex_s_2.x))) / h;
+				float u = -((((vertex_m_1.x - vertex_m_2.x) * (vertex_m_1.y - vertex_s_1.y)) - ((vertex_m_1.y - vertex_m_2.y) * (vertex_m_1.x - vertex_s_1.x))) / h);
+
+				model_functions_c[(int)m_model.Get_Model_Type() - 1](m_model.Get_Mesh_Ref(), glm::vec3(0.0f, 0.0f, 1.0f));
+
+				if ((t >= 0.0f && t <= 1.0f) && (u >= 0.0f && u <= 1.0f)) {
+					found_collision = true;
+					model_functions_c[(int)m_model.Get_Model_Type() - 1](m_model.Get_Mesh_Ref(), glm::vec3(1.0f, 1.0f, 0.0f));
+					break;
+				}
+			}
+			if (found_collision == true) {
+				break;
+			}
+		}
+	}*/

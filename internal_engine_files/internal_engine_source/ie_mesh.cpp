@@ -4,12 +4,12 @@ namespace pw {
 /* Static Declarations      */
 /* Class Members            */
 	IE_Mesh::IE_Mesh() :
-		draw_count(0), vertex_array_object(0), vertex_buffer_object(0), vertex_texture_object(0),
-		vertex_color_object(0), vertex_element_object(0) {
+		vertices(0), draw_count(0),vertex_count(0), vertex_array_object(0),
+		vertex_buffer_object(0), vertex_texture_object(0), vertex_color_object(0), vertex_element_object(0) {
 	}
-	IE_Mesh::IE_Mesh(ID_Vertex_Data* vertices, const short unsigned int vertex_count, unsigned int* indices, const short unsigned int indice_count) :
-			draw_count(indice_count), vertex_array_object(0), vertex_buffer_object(0), vertex_texture_object(0),
-			vertex_color_object(0), vertex_element_object(0) {
+	IE_Mesh::IE_Mesh(ID_Vertex_Data* vertices, const PW_SUINT vertex_count, PW_UINT* indices, const PW_SUINT indice_count) :
+			vertices(vertices), draw_count(indice_count), vertex_count(vertex_count), vertex_array_object(0),
+			vertex_buffer_object(0), vertex_texture_object(0), vertex_color_object(0), vertex_element_object(0) {
 		glGenVertexArrays(1, &vertex_array_object);
 		glBindVertexArray(vertex_array_object);
 
@@ -18,9 +18,9 @@ namespace pw {
 		glm::vec3* color_data = new glm::vec3[vertex_count];
 
 		for (size_t i = 0; i < vertex_count; i++) {
-			vertex_position_arr[i] = vertices[i].Get_Vertex_Position();
-			texture_data_arr[i] = vertices[i].Get_Texture_Coord();
-			color_data[i] = vertices[i].Get_Color_Data();
+			vertex_position_arr[i] = vertices[i].Vertex_Position();
+			texture_data_arr[i] = vertices[i].Texture_Coord();
+			color_data[i] = vertices[i].Color_Data();
 		}
 
 		// Use the vertex_buffer_object for positions inside the vertex shader
@@ -85,6 +85,14 @@ namespace pw {
 
 		return *this;
 	}
+	bool IE_Mesh::operator==(const IE_Mesh& rhs) {
+		if (this->draw_count == rhs.draw_count) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 	void IE_Mesh::Draw() {
 		glBindVertexArray(vertex_array_object);
 
@@ -94,5 +102,29 @@ namespace pw {
 	}
 	void IE_Mesh::Delete() {
 		glDeleteVertexArrays(1, &vertex_array_object);
+	}
+	void IE_Mesh::Change_Color_Data(glm::vec3 new_color_data) {
+		glm::vec3* color_data = new glm::vec3[vertex_count];
+		for (size_t i = 0; i < vertex_count; i++) {
+			color_data[i] = new_color_data;
+		}
+		glBindBuffer(GL_ARRAY_BUFFER, vertex_color_object);
+		glBufferData(GL_ARRAY_BUFFER, vertex_count * sizeof(color_data[0]), &color_data[0], GL_STATIC_DRAW);
+
+		delete[] color_data;
+		color_data = nullptr;
+	}
+	PW_VOID IE_Mesh::Change_Texture_Data(ID_Vertex_Data* new_texture_data) {
+		glm::vec2* texture_data_arr = new glm::vec2[vertex_count];
+
+		for (size_t i = 0; i < vertex_count; i++) {
+			texture_data_arr[i] = new_texture_data[i].Texture_Coord();
+		}
+
+		glBindBuffer(GL_ARRAY_BUFFER, vertex_texture_object);
+		glBufferData(GL_ARRAY_BUFFER, vertex_count * sizeof(texture_data_arr[0]), &texture_data_arr[0], GL_STATIC_DRAW);
+
+		delete[] texture_data_arr;
+		texture_data_arr = nullptr;
 	}
 }

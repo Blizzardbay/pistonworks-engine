@@ -31,13 +31,13 @@ namespace pw {
 	private:
 /* Public Functions/Macros  */
 	public:
-		void Set_Vertex_Position(glm::vec3 vertex_position) { this->vertex_position = vertex_position; }
-		void Set_Texture_Coord(glm::vec2 texture_coord) { this->texture_coord = texture_coord; }
-		void Set_Color_Data(glm::vec3 color_data) { this->color_data = color_data; }
+		PW_VOID Set_Vertex_Position(glm::vec3 vertex_position) { this->vertex_position = vertex_position; }
+		PW_VOID Set_Texture_Coord(glm::vec2 texture_coord) { this->texture_coord = texture_coord; }
+		PW_VOID Set_Color_Data(glm::vec3 color_data) { this->color_data = color_data; }
 
-		glm::vec3 Get_Vertex_Position() { return this->vertex_position; }
-		glm::vec2 Get_Texture_Coord() { return this->texture_coord; }
-		glm::vec3 Get_Color_Data() { return this->color_data; }
+		glm::vec3 Vertex_Position() { return this->vertex_position; }
+		glm::vec2 Texture_Coord() { return this->texture_coord; }
+		glm::vec3 Color_Data() { return this->color_data; }
 /* Public Variables         */
 	public:
 /* Private Functions/Macros */
@@ -56,29 +56,43 @@ namespace pw {
 /* Default Class Structures */
 	public:
 		IE_Mesh();
-		IE_Mesh(ID_Vertex_Data* vertices, const short unsigned int vertex_count, unsigned int* indices,const short unsigned int indice_count);
+		IE_Mesh(ID_Vertex_Data* vertices, const PW_SUINT vertex_count, PW_UINT* indices,const PW_SUINT indice_count);
 		~IE_Mesh() {};
 
 		IE_Mesh(const IE_Mesh& other_ie_mesh);
 		IE_Mesh operator=(const IE_Mesh& rhs);
+		PW_BOOL operator==(const IE_Mesh& rhs);
 	private:
 /* Public Functions/Macros  */
 	public:
-		void Draw();
-		void Delete();
+		PW_VOID Draw();
+		PW_VOID Delete();
+
+		ID_Vertex_Data* Vertices() { return vertices; }
+		ID_Vertex_Data*& Vertices_Ref() { return vertices; }
+		PW_UINT Vertex_Count() { return vertex_count; }
+
+		PW_VOID Update_Vertices(ID_Vertex_Data* new_vertices) { delete vertices; vertices = new_vertices; }
+
+		PW_VOID Change_Color_Data(glm::vec3 new_color_data);
+
+		PW_VOID Change_Texture_Data(ID_Vertex_Data* new_texture_data);
 /* Public Variables         */
 	public:
 /* Private Functions/Macros */
 	private:
 /* Private Variables        */
 	private:
-		unsigned int draw_count;
+		ID_Vertex_Data* vertices;
 
-		GLuint vertex_array_object;
-		GLuint vertex_buffer_object;
-		GLuint vertex_texture_object;
-		GLuint vertex_color_object;
-		GLuint vertex_element_object;
+		PW_UINT draw_count;
+		PW_UINT vertex_count;
+
+		PW_UINT vertex_array_object;
+		PW_UINT vertex_buffer_object;
+		PW_UINT vertex_texture_object;
+		PW_UINT vertex_color_object;
+		PW_UINT vertex_element_object;
 	};
 /* Functions                */
 /* Macros                   */

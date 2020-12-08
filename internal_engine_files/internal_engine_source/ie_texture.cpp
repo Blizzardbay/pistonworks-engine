@@ -2,20 +2,40 @@
 namespace pw {
 /* IE_Texture               */
 /* Static Declarations      */
-	bool IE_Texture::has_user_dir_changed = false;
-	const char* IE_Texture::user_dir = "\0";
+	PW_BOOL IE_Texture::has_user_dir_changed = false;
+	PW_CSTRING IE_Texture::user_dir = "\0";
+
+	glm::vec3 IE_Texture::Engine_Colors[(PW_UINT)Default_Texture::Color_Count]{
+		glm::vec3(1.0000000f, 0.0000000f, 0.0000000f),
+		glm::vec3(0.0000000f, 0.5019607f, 0.0000000f),
+		glm::vec3(0.0500000f, 0.0500000f, 1.0000000f),
+		glm::vec3(1.0000000f, 1.0000000f, 0.0000000f),
+		glm::vec3(1.0000000f, 0.7529411f, 0.7960784f),
+		glm::vec3(0.0000000f, 1.0000000f, 1.0000000f),
+		glm::vec3(1.0000000f, 0.5000000f, 0.0000000f),
+		glm::vec3(1.0000000f, 0.0000000f, 1.0000000f),
+		glm::vec3(1.0000000f, 1.0000000f, 1.0000000f),
+		glm::vec3(0.0000000f, 0.0000000f, 0.0000000f),
+		glm::vec3(0.0000000f, 1.0000000f, 0.0000000f),
+		glm::vec3(0.0000000f, 0.5450980f, 0.5450980f),
+		glm::vec3(0.5019607f, 0.0000000f, 0.5019607f),
+		glm::vec3(0.6784313f, 0.8470588f, 0.9019607f),
+		glm::vec3(0.5450980f, 0.2705882f, 0.0745098f),
+		glm::vec3(0.4117647f, 0.4117647f, 0.4117647f),
+		glm::vec3(0.7450980f, 0.7450980f, 0.7450980f)
+	};
 /* Class Members            */
 	IE_Texture::IE_Texture() :
 		texture_id(0), texture_width(0), texture_height(0), texture_bit_depth(0) {
 	}
-	IE_Texture::IE_Texture(const char* file_location) :
+	IE_Texture::IE_Texture(PW_CSTRING file_location) :
 			texture_id(0), texture_width(0), texture_height(0), texture_bit_depth(0) {
 		if (file_location != NULL) {
-			unsigned char* texture_data = nullptr;
+			PW_BYTE* texture_data = nullptr;
 
 			stbi_set_flip_vertically_on_load(true);
 
-			PW_STBI_CALL(texture_data = stbi_load(file_location, (int*)&texture_width, (int*)&texture_height, &texture_bit_depth, STBI_rgb_alpha));
+			PW_STBI_CALL(texture_data = stbi_load(file_location, (PW_INT*)&texture_width, (PW_INT*)&texture_height, &texture_bit_depth, 0));
 
 			glGenTextures(1, &texture_id);
 			glBindTexture(GL_TEXTURE_2D, texture_id);
@@ -23,8 +43,8 @@ namespace pw {
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture_width, texture_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture_data);
 
@@ -34,7 +54,7 @@ namespace pw {
 			texture_data = nullptr;
 		}
 	}
-	void IE_Texture::Bind(unsigned int unit) {
+	void IE_Texture::Bind(PW_UINT unit) {
 		assert(unit >= 0 && unit <= 31);
 
 		glActiveTexture(GL_TEXTURE0 + unit);
@@ -43,20 +63,20 @@ namespace pw {
 	void IE_Texture::Delete() {
 		glDeleteTextures(1, &texture_id);
 	}
-	std::string IE_Texture::Find_Texture(const char* name) {
+	PW_STRING IE_Texture::Find_Texture(PW_CSTRING name) {
 		if (has_user_dir_changed == true) {
-			std::string file_path = user_dir;
+			PW_STRING file_path = user_dir;
 			file_path.append(name);
 			return file_path;
 		}
 		else {
-			std::string file_path = "internal_engine_files/internal_engine_resource/textures/";
+			PW_STRING file_path = "internal_engine_files/internal_engine_resource/textures/";
 			file_path.append(name);
 			return file_path;
 		}
 	}
-	std::string IE_Texture::Find_Color_Texture(const char* d_bits, Default_Texture id, glm::vec3& color) {
-		std::string file_path = d_bits;
+	PW_STRING IE_Texture::Find_Color_Texture(PW_CSTRING d_bits, Default_Texture id, glm::vec3& color) {
+		PW_STRING file_path = d_bits;
 		if (file_path == "D16") {
 			file_path = "internal_engine_files/internal_engine_resource/d16px/White.png";
 		}
@@ -70,78 +90,48 @@ namespace pw {
 				}
 			}
 		}
-		switch (id) {
-			case Default_Texture::RED: {
-				color = glm::vec3(1.0f, 0.0f, 0.0f);
-				break;
-			}
-			case Default_Texture::GREEN: {
-				color = glm::vec3(0.0f, 0.5019607f, 0.0f);
-				break;
-			}
-			case Default_Texture::BLUE: {
-				color = glm::vec3(0.0f, 0.0f, 1.0f);
-				break;
-			}
-			case Default_Texture::YELLOW: {
-				color = glm::vec3(1.0f, 1.0f, 0.0f);
-				break;
-			}
-			case Default_Texture::PINK: {
-				color = glm::vec3(1.0f, 0.7529411f, 0.7960784f);
-				break;
-			}
-			case Default_Texture::CYAN: {
-				color = glm::vec3(0.0f, 1.0f, 1.0f);
-				break;
-			}
-			case Default_Texture::ORANGE: {
-				color = glm::vec3(1.0f, 0.5f, 0.0f);
-				break;
-			}
-			case Default_Texture::MAGENTA: {
-				color = glm::vec3(1.0f, 0.0f, 1.0f);
-				break;
-			}
-			case Default_Texture::WHITE: {
-				color = glm::vec3(1.0f, 1.0f, 1.0f);
-				break;
-			}
-			case Default_Texture::BLACK: {
-				color = glm::vec3(0.0f, 0.0f, 0.0f);
-				break;
-			}
-			case Default_Texture::LIME: {
-				color = glm::vec3(0.0f, 1.0f, 0.0f);
-				break;
-			}
-			case Default_Texture::DARK_CYAN: {
-				color = glm::vec3(0.0f, 0.545098f, 0.545098f);
-				break;
-			}
-			case Default_Texture::PURPLE: {
-				color = glm::vec3(0.5019607f, 0.0f, 0.5019607f);
-				break;
-			}
-			case Default_Texture::LIGHT_BLUE: {
-				color = glm::vec3(0.6784313f,0.8470588f,0.9019607f);
-				break;
-			}
-			case Default_Texture::BROWN: {
-				color = glm::vec3();
-				break;
-			}
-			case Default_Texture::DARK_GREY: {
-				color = glm::vec3();
-				break;
-			}
-			case Default_Texture::GREY: {
-				color = glm::vec3();
-				break;
-			}
-			default:
-				break;
-		}
+		color = Color(id);
 		return file_path;
 	}
+/* IE_Texture               */
+/* Static Declarations      */
+	PW_BOOL IE_Icon::has_user_dir_changed = false;
+	PW_CSTRING IE_Icon::user_dir = "\0";
+/* Class Members            */
+	IE_Icon::IE_Icon() :
+			icon_width(0), icon_height(0), icon_bit_depth(0), icon_data(nullptr) {
+	}
+	IE_Icon::IE_Icon(PW_CSTRING file_location) :
+			icon_width(0), icon_height(0), icon_bit_depth(0), icon_data(0) {
+		if (file_location != NULL) {
+			PW_BYTE* icon_data = nullptr;
+
+			stbi_set_flip_vertically_on_load(true);
+
+			PW_STBI_CALL(icon_data = stbi_load(file_location, (PW_INT*)&icon_width, (PW_INT*)&icon_height, &icon_bit_depth, 0));
+			
+			this->icon_data = new PW_BYTE[sizeof(icon_data)];
+
+			this->icon_data = icon_data;
+
+			icon_data = nullptr;
+		}
+	}
+	void IE_Icon::Delete() {
+		delete[] icon_data;
+		icon_data = nullptr;
+	}
+	PW_STRING IE_Icon::Find_Icon(PW_CSTRING name) {
+		if (has_user_dir_changed == true) {
+			PW_STRING file_path = user_dir;
+			file_path.append(name);
+			return file_path;
+		}
+		else {
+			PW_STRING file_path = "internal_engine_files/internal_engine_resource/icons/";
+			file_path.append(name);
+			return file_path;
+		}
+	}
+
 }

@@ -42,12 +42,12 @@ namespace pw {
 	private:
 /* Public Functions/Macros  */
 	public:
-		void Init_Engine(const char* display_name, short int display_width = 800, short int display_height = 608);
-		void Run_Engine();
-		void Terminate_Engine();
-		void Create_Callbacks() const;
-		void Update_Engine_State();
-		bool Should_Close() const { return !glfwWindowShouldClose(this->main_window); }
+		PW_VOID Init_Engine(PW_CSTRING display_name, PW_SINT display_width = 800, PW_SINT display_height = 608);
+		PW_VOID Run_Engine();
+		PW_VOID Terminate_Engine();
+		PW_VOID Create_Callbacks() const;
+		PW_VOID Update_Engine_State();
+		PW_BOOL Should_Close() const { return !glfwWindowShouldClose(this->main_window); }
 /* Public Variables         */
 	public:
 /* Private Functions/Macros */

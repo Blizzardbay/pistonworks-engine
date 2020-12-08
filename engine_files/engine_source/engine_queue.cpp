@@ -6,7 +6,7 @@ namespace pw {
 	size_t Engine_Queue::index = 0;
 	std::vector<IE_Game_Scene> Engine_Queue::scene_vector;
 /* Class Members            */
-	void Engine_Queue::Run_Queue(IE_Shader shader) {
+	void Engine_Queue::Run_Queue() {
 		if (index >= scene_vector.size()) {
 			index = 0;
 		}
@@ -15,7 +15,7 @@ namespace pw {
 				index = 0;
 			}
 		}
-		scene_vector.at(index).Render(shader);
+		scene_vector.at(index).Render();
 	}
 	void Engine_Queue::Load_From_Dir(const char* dir) {
 		std::string file_list = "";
