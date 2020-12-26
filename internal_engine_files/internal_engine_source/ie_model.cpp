@@ -428,19 +428,19 @@ namespace pw {
 /* Class Members            */
 	IE_Dynamic_Model::IE_Dynamic_Model() :
 			model_texture(NULL), model_position(NULL), model_last_position(NULL), model_rotation(NULL),
-			model_size(NULL), model_mesh(nullptr), model_type(IE_Dynamic_Model::Model_Types::UNINIT), model_is_colored(false),
-			model_color(NULL), model_matrix(0.0f) {
+			model_size(NULL), model_mesh(NULL), model_type(IE_Dynamic_Model::Model_Types::UNINIT), model_is_colored(false),
+			model_color(NULL), model_matrix(0.0f), collided(false) {
 	}
 	IE_Dynamic_Model::IE_Dynamic_Model(Model_Types type, IE_Texture texture, glm::vec2 model_position, PW_FLOAT model_rotation, glm::vec2 model_size) :
 			model_texture(texture), model_position(model_position, 0.0f), model_last_position(NULL), model_rotation(model_rotation),
-			model_size(model_size), model_mesh(nullptr), model_type(type), model_is_colored(false),
-			model_color(glm::vec3(0.0f, 0.0f, 0.0f)), model_matrix(0.0f) {
+			model_size(model_size), model_mesh(NULL), model_type(type), model_is_colored(false),
+			model_color(glm::vec3(0.0f, 0.0f, 0.0f)), model_matrix(0.0f), collided(false) {
 		model_functions_noc[(int)model_type - 1](this->model_mesh);
 	}
 	IE_Dynamic_Model::IE_Dynamic_Model(Model_Types type, IE_Texture texture, glm::vec2 model_position, PW_FLOAT model_rotation, glm::vec2 model_size, glm::vec3 model_color) :
 			model_texture(texture), model_position(model_position, 0.0f), model_last_position(NULL), model_rotation(model_rotation),
-			model_size(model_size), model_mesh(nullptr), model_type(type), model_is_colored(true),
-			model_color(model_color), model_matrix(0.0f) {
+			model_size(model_size), model_mesh(NULL), model_type(type), model_is_colored(true),
+			model_color(model_color), model_matrix(0.0f), collided(false) {
 		model_functions_c[(int)model_type - 1](this->model_mesh, this->model_color);
 	}
 	PW_VOID IE_Dynamic_Model::Render() {
@@ -530,19 +530,19 @@ namespace pw {
 								((0.5f * (line_r2e.x - line_r2s.x)) + line_r2e.x),
 								((0.5f * (line_r2e.y - line_r2s.y)) + line_r2e.y)
 							);
-							overlap.y += (1.0f - t1) * (line_r1e.y - line_r1s.y);
-							overlap.x += (1.0f - t1) * (line_r1e.x - line_r1s.x);
+							if (line_r2e.x - line_r2s.x == 0 || line_r2e.y - line_r2s.y == 0) {
+								
+							}
+							else {
+								overlap.x = (1.0f - t1) * (line_r1e.x - line_r1s.x);
+								overlap.y = (1.0f - t1) * (line_r1e.y - line_r1s.y);
+							}
 							break;
 						}
 					}
-					if (overlap != glm::vec2(0.0f)) {
-						if (abs(m_model.Position().y - m_model.Last_Postition().y) > overlap.y) {
-							m_model.Position_Reference().y += overlap.y * (i == 0 ? -1 : +1);
-						}
-						if (abs(m_model.Position().x - m_model.Last_Postition().x) > overlap.x) {
-							m_model.Position_Reference().x += overlap.x * (i == 0 ? -1 : +1);
-						}
-						break;
+					if (overlap != glm::vec2(0.0f, 0.0f)) {
+						m_model.Position_Reference().x += overlap.x * (i == 0 ? -1 : +1);
+						m_model.Position_Reference().y += overlap.y * (i == 0 ? -1 : +1);
 					}
 				}
 			}
@@ -576,6 +576,7 @@ namespace pw {
 			return model;
 		}
 		else {
+			collided = false;
 			return model_matrix;
 		}
 	}

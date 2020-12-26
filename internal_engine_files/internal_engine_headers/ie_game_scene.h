@@ -23,18 +23,18 @@ namespace pw {
 		 A name tag for Asset models and Actor models.
 		*/
 	class Scene_Model {
-		/* Default Class Structures */
+/* Default Class Structures */
 	public:
 	private:
-		/* Public Functions/Macros  */
+/* Public Functions/Macros  */
 	public:
 		virtual PW_VOID Render() {}
 		virtual PW_VOID Delete() {}
-		/* Public Variables         */
+/* Public Variables         */
 	public:
-		/* Private Functions/Macros */
+/* Private Functions/Macros */
 	private:
-		/* Private Variables        */
+/* Private Variables        */
 	private:
 	};
 	/*                                             */
@@ -42,7 +42,7 @@ namespace pw {
 	 A data class for holding model and use data.
 	*/
 	class Asset_Model : public Scene_Model {
-		/* Default Class Structures */
+/* Default Class Structures */
 	public:
 		Asset_Model() :
 			model(IE_Static_Model::Model_Types::UNINIT, 0, glm::vec2(0.0f, 0.0f), 0.0f, glm::vec2(0.0f, 0.0f)) {
@@ -52,17 +52,17 @@ namespace pw {
 		}
 		virtual ~Asset_Model() {}
 	private:
-		/* Public Functions/Macros  */
+/* Public Functions/Macros  */
 	public:
 		PW_VOID Render() { model.Render(); }
 		PW_VOID Delete() { model.Delete(); }
 
 		IE_Static_Model& Model() { return model; }
-		/* Public Variables         */
+/* Public Variables         */
 	public:
-		/* Private Functions/Macros */
+/* Private Functions/Macros */
 	private:
-		/* Private Variables        */
+/* Private Variables        */
 	private:
 		IE_Static_Model model;
 	};
@@ -71,35 +71,29 @@ namespace pw {
 	 A data class for holding model and use data.
 	*/
 	class AAsset_Model : public Scene_Model {
-		/* Default Class Structures */
+/* Default Class Structures */
 	public:
-		AAsset_Model() :
-			model(IE_Static_Model::IE_Static_Model(IE_Static_Model::Model_Types::UNINIT, 0, glm::vec2(0.0f, 0.0f), 0.0f, glm::vec2(0.0f, 0.0f))),
-			animation() {
-		}
 		AAsset_Model(IE_Static_Model model, IE_Animation animation) :
 			model(IE_Static_Model::IE_Static_Model(model)), animation(animation) {
 		}
 		virtual ~AAsset_Model() {}
 	private:
-		/* Public Functions/Macros  */
+/* Public Functions/Macros  */
 	public:
-		PW_VOID Render() { model.Render(); }//.Change_Frame(model.Model().Mesh_Reference()->Vertices_Ref(), model.Model().Mesh()->Vertex_Count()); model.Render(); }
-		PW_VOID Delete() { model.Delete(); }
+		PW_VOID Render() { model.Render(); }
+		PW_VOID Delete() { model.Delete(); animation.Delete();}
 
 		Asset_Model Model() { return model; }
 
 		PW_VOID Run_Animation() {
-			animation.Change_Frame(model.Model().Mesh_Reference()->Vertices_Ref(),
-				model.Model().Mesh()->Vertex_Count(),
-				IE_Static_Model::model_vertices[(int)model.Model().Model_Type() - 1]);
+			animation.Change_Frame();
 			model.Model().Mesh_Reference()->Change_Texture_Data(model.Model().Mesh_Reference()->Vertices());
 		}
-		/* Public Variables         */
+/* Public Variables         */
 	public:
-		/* Private Functions/Macros */
+/* Private Functions/Macros */
 	private:
-		/* Private Variables        */
+/* Private Variables        */
 	private:
 		Asset_Model model;
 		IE_Animation animation;
@@ -109,7 +103,7 @@ namespace pw {
 	 A data class for holding model and use data.
 	*/
 	class Actor_Model : public Scene_Model {
-		/* Default Class Structures */
+/* Default Class Structures */
 	public:
 		Actor_Model() :
 				model(IE_Dynamic_Model::Model_Types::UNINIT, 0, glm::vec2(0.0f, 0.0f), 0.0f, glm::vec2(0.0f, 0.0f)) {
@@ -119,7 +113,7 @@ namespace pw {
 		}
 		virtual ~Actor_Model() {}
 	private:
-		/* Public Functions/Macros  */
+/* Public Functions/Macros  */
 	public:
 		PW_VOID Render() { model.Render(); }
 		PW_VOID Delete() { model.Delete(); }
@@ -127,11 +121,11 @@ namespace pw {
 		PW_VOID Handle_Collision() { model.Handle_Collisions(IE_Player::Get_Model()); }
 
 		IE_Dynamic_Model& Model() { return model; }
-		/* Public Variables         */
+/* Public Variables         */
 	public:
-		/* Private Functions/Macros */
+/* Private Functions/Macros */
 	private:
-		/* Private Variables        */ 
+/* Private Variables        */ 
 	private:
 		IE_Dynamic_Model model;
 	};
@@ -140,35 +134,28 @@ namespace pw {
 	 A data class for holding model and use data.
 	*/
 	class AActor_Model : public Actor_Model {
-		/* Default Class Structures */
+/* Default Class Structures */
 	public:
-		AActor_Model() :
-			model(IE_Dynamic_Model::IE_Dynamic_Model(IE_Dynamic_Model::Model_Types::UNINIT, 0, glm::vec2(0.0f, 0.0f), 0.0f, glm::vec2(0.0f, 0.0f))),
-			animation() {
-		}
 		AActor_Model(IE_Dynamic_Model model, IE_Animation animation) :
 			model(IE_Dynamic_Model::IE_Dynamic_Model(model)), animation(animation) {
 		}
 		virtual ~AActor_Model() {}
 	private:
-		/* Public Functions/Macros  */
+/* Public Functions/Macros  */
 	public:
 		PW_VOID Render() { Run_Animation(); model.Render(); }
-		PW_VOID Delete() { model.Delete(); }
+		PW_VOID Delete() { model.Delete(); animation.Delete(); }
 
 		PW_VOID Handle_Collision() { model.Model().Handle_Collisions(IE_Player::Get_Model()); }
 
 		Actor_Model& Model() { return model; }
 
-		PW_VOID Run_Animation() { animation.Change_Frame(model.Model().Mesh_Reference()->Vertices_Ref(),
-			model.Model().Mesh()->Vertex_Count(),
-			IE_Dynamic_Model::model_vertices[(int)model.Model().Model_Type() - 1]);
-			model.Model().Mesh_Reference()->Change_Texture_Data(model.Model().Mesh_Reference()->Vertices()); }
-		/* Public Variables         */
+		PW_VOID Run_Animation() { model.Model().Mesh()->Change_Texture_Data(animation.Change_Frame()); }
+/* Public Variables         */
 	public:
-		/* Private Functions/Macros */
+/* Private Functions/Macros */
 	private:
-		/* Private Variables        */
+/* Private Variables        */
 	private:
 		Actor_Model model;
 		IE_Animation animation;
@@ -204,6 +191,7 @@ namespace pw {
 	private:
 		std::vector<Scene_Model*> scene_models;
 		std::vector<Actor_Model*> collision_models;
+		std::vector<IE_Animation*> animations;
 
 		PW_UINT order_number;
 	};

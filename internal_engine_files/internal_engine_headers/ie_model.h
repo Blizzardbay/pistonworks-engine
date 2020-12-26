@@ -11,10 +11,7 @@
 #include "ie_mesh.h"
 #include "ie_texture.h"
 #include "ie_shader.h"
-//#include "internal_engine_headers\ie_player.h"
-
 #include "engine_headers\engine_constant.h"
-#include "engine_headers\engine_math.h"
 /* Engine Macro Includes    */
 #include "engine_headers\engine_error.h"
 /* Engine Macros            */
@@ -417,10 +414,12 @@ namespace pw {
 		glm::vec2 Model_Size() { return model_size; }
 		IE_Mesh* Mesh() { return model_mesh; }
 		IE_Mesh*& Mesh_Reference() { return model_mesh; }
+		PW_BOOL Collided() { return collided; }
 
 		PW_VOID Set_Model_Color(glm::vec3 new_model_color) { model_color = new_model_color; model_functions_c[(int)this->model_type - 1](this->model_mesh, this->model_color); }
 		PW_VOID Update_Position(glm::vec2 position) { this->model_position.x = position.x; this->model_position.y = position.y; }
 		PW_VOID Update_Position(PW_FLOAT x_pos, PW_FLOAT y_pos) { this->model_position.x = x_pos; this->model_position.y = y_pos; };
+		PW_VOID Set_Collided(PW_BOOL new_state) { collided = new_state; }
 
 		PW_BOOL Handle_Collisions(IE_Dynamic_Model& m_model);
 /* Public Variables         */
@@ -445,6 +444,8 @@ namespace pw {
 		glm::vec3 model_last_position;
 		glm::vec2 model_size;
 		PW_FLOAT model_rotation;
+
+		PW_BOOL collided;
 
 		glm::mat4 model_matrix;
 	};

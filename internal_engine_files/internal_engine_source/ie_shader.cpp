@@ -15,7 +15,7 @@ namespace pw {
 
 		glDeleteProgram(program_id);
 	}
-	void IE_Shader::Create_Shader(const std::string& vertex_location, const std::string& fragment_location) {
+	PW_VOID IE_Shader::Create_Shader(const PW_STRING& vertex_location, const PW_STRING& fragment_location) {
 		PW_GL_CALL(program_id = glCreateProgram());
 
 		vertex_shader = Compile_Shader(Load_Shader(vertex_location), GL_VERTEX_SHADER);
@@ -37,27 +37,27 @@ namespace pw {
 
 		this_shader = *this;
 	}
-	void IE_Shader::Use() {
+	PW_VOID IE_Shader::Use() {
 		glUseProgram(program_id);
 	}
-	void IE_Shader::Update_Matrices(glm::mat4 model, bool model_is_colored) {
-		unsigned int model_location = glGetUniformLocation(program_id, "object_model");
-		unsigned int model_is_colored_location = glGetUniformLocation(program_id, "object_is_colored");
+	PW_VOID IE_Shader::Update_Matrices(glm::mat4 model, PW_BOOL model_is_colored) {
+		PW_UINT model_location = glGetUniformLocation(program_id, "object_model");
+		PW_UINT model_is_colored_location = glGetUniformLocation(program_id, "object_is_colored");
 
 		int int_model_is_colored = model_is_colored;
 
 		glUniformMatrix4fv(model_location, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform1iv(model_is_colored_location, 1, &int_model_is_colored);
 	}
-	void IE_Shader::Update_Projection(IE_Camera camera) {
-		unsigned int projection_location = glGetUniformLocation(program_id, "object_projection");
-		unsigned int camera_location = glGetUniformLocation(program_id, "object_view");
+	PW_VOID IE_Shader::Update_Projection(IE_Camera camera) {
+		PW_UINT projection_location = glGetUniformLocation(program_id, "object_projection");
+		PW_UINT camera_location = glGetUniformLocation(program_id, "object_view");
 
 		glUniformMatrix4fv(camera_location, 1, GL_FALSE, glm::value_ptr(camera.Update_Camera()));
 		glUniformMatrix4fv(projection_location, 1, GL_FALSE, glm::value_ptr(camera.Update_Projection()));
 	}
-	std::string IE_Shader::Load_Shader(const std::string& file_name) {
-		std::string content = "";
+	PW_STRING IE_Shader::Load_Shader(const PW_STRING& file_name) {
+		PW_STRING content = "";
 		std::ifstream fileStream(file_name, std::ios::in);
 
 		if (!fileStream.is_open()) {
@@ -65,7 +65,7 @@ namespace pw {
 			return "";
 		}
 
-		std::string line = "";
+		PW_STRING line = "";
 		while (!fileStream.eof()) {
 			std::getline(fileStream, line);
 			content.append(line + "\n");
@@ -73,7 +73,7 @@ namespace pw {
 		fileStream.close();
 		return content;
 	}
-	GLuint IE_Shader::Compile_Shader(const std::string shader_code, GLenum shader_type) {
+	GLuint IE_Shader::Compile_Shader(const PW_STRING shader_code, GLenum shader_type) {
 		GLuint shader = 0;
 
 		PW_GL_CALL(shader = glCreateShader(shader_type));
@@ -90,7 +90,7 @@ namespace pw {
 
 		return shader;
 	}
-	void IE_Shader::Check_Error(unsigned int object_id, GLenum error, bool is_program, const char* custom_error_msg) {
+	PW_VOID IE_Shader::Check_Error(PW_UINT object_id, GLenum error, PW_BOOL is_program, PW_CSTRING custom_error_msg) {
 		GLint success = 0;
 		GLchar error_message[1024] = { 0 };
 
@@ -98,7 +98,7 @@ namespace pw {
 			glGetProgramiv(object_id, error, &success);
 			if (success == GL_FALSE) {
 				glGetProgramInfoLog(object_id, sizeof(error_message), NULL, error_message);
-				printf("|%s:%s'\n", custom_error_msg, error_message);
+				printf("|%s:%s\n", custom_error_msg, error_message);
 			}
 		}
 		else {

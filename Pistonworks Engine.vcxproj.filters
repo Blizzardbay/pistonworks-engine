@@ -72,9 +72,6 @@
     <ClInclude Include="internal_engine_files\internal_engine_headers\ie_player.h">
       <Filter>internal_engine_files\internal_engine_headers</Filter>
     </ClInclude>
-    <ClInclude Include="engine_files\engine_headers\engine_math.h">
-      <Filter>engine_files\engine_headers</Filter>
-    </ClInclude>
     <ClInclude Include="internal_engine_files\internal_engine_headers\ie_animation.h">
       <Filter>internal_engine_files\internal_engine_headers</Filter>
     </ClInclude>
@@ -106,9 +103,6 @@
     </ClCompile>
     <ClCompile Include="engine_files\engine_resource\template.cpp">
       <Filter>engine_files\engine_resource</Filter>
-    </ClCompile>
-    <ClCompile Include="internal_engine_files\internal_engine_source\ie_event.cpp">
-      <Filter>internal_engine_files\internal_engine_source</Filter>
     </ClCompile>
     <ClCompile Include="internal_engine_files\internal_engine_source\ie_default_event.cpp">
       <Filter>internal_engine_files\internal_engine_source</Filter>

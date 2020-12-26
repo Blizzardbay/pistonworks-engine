@@ -5,6 +5,7 @@
 
 /* C++ Headers              */
 #include <chrono>
+#include <iomanip>
 /* Project Headers          */
 /* Engine Headers           */
 #include "internal_engine_headers\ie_mesh.h"
@@ -24,21 +25,22 @@ namespace pw {
 	class IE_Animation {
 /* Default Class Structures */
 	public:
-		IE_Animation();
-		IE_Animation(PW_UINT animation_length, PW_UINT frame_count, PW_UINT frame_size_x);
+		IE_Animation(PW_FLOAT animation_length, PW_UINT frame_count, PW_UINT frame_size_x, ID_Vertex_Data* vertices_default, PW_SIZE vertices_count, ID_Vertex_Data*& vertices);
 		~IE_Animation() {}
 	private:
 /* Public Functions/Macros  */
 	public:
-		PW_VOID Change_Frame(ID_Vertex_Data*& vertices, PW_UINT size, ID_Vertex_Data* vertices_default);
+		ID_Vertex_Data* Change_Frame();
+		PW_VOID Delete() { delete [] vertices_default; vertices_default = nullptr; delete[] vertices; vertices = nullptr; }
 /* Public Variables         */
 	public:
 /* Private Functions/Macros */
 	private:
+		PW_VOID Reset_Animation();
 /* Private Variables        */
 	private:
 		// Animation time between frames
-		PW_UINT animation_time;
+		PW_FLOAT animation_time;
 		// The time at which the next frame plays
 		std::chrono::system_clock::time_point activation_time;
 		// The number of frames
@@ -47,8 +49,11 @@ namespace pw {
 		PW_FLOAT animation_step;
 		// This current frame
 		PW_UINT current_frame;
-		// The size of one frame.x
-		PW_UINT frame_size_x;
+
+		ID_Vertex_Data* vertices_default;
+		ID_Vertex_Data* vertices;
+
+		PW_SIZE vertices_count;
 	};
 	/* Functions                */
 	/* Macros                   */

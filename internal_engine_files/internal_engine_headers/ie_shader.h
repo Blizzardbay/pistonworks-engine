@@ -31,33 +31,33 @@ namespace pw {
 	private:
 /* Public Functions/Macros  */
 	public:
-		void Create_Shader(const std::string& vertex_location, const std::string& fragment_location);
-		void Use();
+		PW_VOID Create_Shader(const PW_STRING& vertex_location, const PW_STRING& fragment_location);
+		PW_VOID Use();
 
-		void Update_Matrices(glm::mat4 model, bool model_is_colored);
-		void Update_Projection(IE_Camera camera);
-		unsigned int Shader_Id() { return program_id; }
+		PW_VOID Update_Matrices(glm::mat4 model, PW_BOOL model_is_colored);
+		PW_VOID Update_Projection(IE_Camera camera);
+		PW_UINT Shader_Id() { return program_id; }
 
 		static IE_Shader Get_Shader() { return this_shader; }
 /* Public Variables         */
 	public:
 /* Private Functions/Macros */
 	private:
-		static std::string Load_Shader(const std::string& file_name);
-		static unsigned int Compile_Shader(const std::string shader_code, GLenum shader_type);
-		static void Check_Error(unsigned int object_id, GLenum error, bool is_program, const char* custom_error_msg);
+		static PW_STRING Load_Shader(const PW_STRING& file_name);
+		static PW_UINT Compile_Shader(const PW_STRING shader_code, GLenum shader_type);
+		static PW_VOID Check_Error(unsigned int object_id, GLenum error, PW_BOOL is_program, PW_CSTRING custom_error_msg);
 /* Private Variables        */
 	private:
 		static IE_Shader this_shader;
 
-		unsigned int program_id;
+		PW_UINT program_id;
 
-		unsigned int vertex_shader;
-		unsigned int fragment_shader;
+		PW_UINT vertex_shader;
+		PW_UINT fragment_shader;
 
-		unsigned int model_uniform;
-		unsigned int view_uniform;
-		unsigned int projection_uniform;
+		PW_UINT model_uniform;
+		PW_UINT view_uniform;
+		PW_UINT projection_uniform;
 	};
 /* Functions                */
 /* Macros                   */

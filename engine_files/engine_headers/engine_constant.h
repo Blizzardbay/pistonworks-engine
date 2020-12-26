@@ -12,7 +12,6 @@
 #endif // !PW_GLEW_H
 /* Engine Headers        */
 /* Engine Macro Includes */
-#include "engine_error.h"
 /* Engine Macros         */
 /*************************/
 /*Type Def               */
@@ -25,6 +24,8 @@
 	typedef unsigned int PW_UINT;
 	typedef unsigned long int PW_LUINT;
 	typedef unsigned long long int PW_LLUINT;
+
+	typedef unsigned int PW_SIZE;
 #else 
 	typedef signed __int8 PW_SINT;
 	typedef signed __int16 PW_INT;
@@ -34,6 +35,8 @@
 	typedef unsigned __int16 PW_UINT;
 	typedef unsigned __int32 PW_LUINT;
 	typedef unsigned __int64 PW_LLUINT;
+
+	typedef unsigned __int16 PW_SIZE;
 #endif
 
 typedef std::string PW_STRING;
@@ -43,8 +46,8 @@ typedef std::string PW_STRING;
 	typedef const char* PW_CSTRING;
 #else
 	#if _MBCS
-	typedef wchar_t PW_CHAR;
-	typedef const wchar_t* PW_CSTRING;
+		typedef wchar_t PW_CHAR;
+		typedef const wchar_t* PW_CSTRING;
 #endif
 #endif
 

@@ -5,8 +5,8 @@
 namespace pw {
 /* Engine_Control           */
 /* Static Declarations      */
-	int Engine_Error::PW_LINE_ = 0;
-	const char* Engine_Error::PW_FILE_ = "";
+	PW_INT Engine_Error::PW_LINE_ = 0;
+	PW_CSTRING Engine_Error::PW_FILE_ = "";
 
 	PW_SUINT Engine_Constant::window_width = 0;
 	PW_SUINT Engine_Constant::window_height = 0;
@@ -24,9 +24,9 @@ namespace pw {
 /* Class Members            */
 	PW_VOID Engine_Control::Init_Engine(PW_CSTRING display_name, PW_SINT display_width, PW_SINT display_height) {
 #ifdef PW_DEBUG_MODE
-		printf("|****************************************\n");
-		printf("|Initialization Code\n");
-		printf("|****************************************\n");
+		printf("|----------------------------------------\n");
+		printf("|%s|Initialization Code\n", __TIME__);
+		printf("|----------------------------------------\n");
 #endif // !PW_DEBUG_CODE
 		// For Handling GLFW Errors
 		PW_GLFW_VOID_CALL(glfwSetErrorCallback(Engine_Error::PW_GLFW_Callback_Handle));
@@ -42,9 +42,9 @@ namespace pw {
 		// For allowing newer than are defined version code for able use
 		PW_GLFW_VOID_CALL(glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE));
 #ifdef PW_DEBUG_MODE
-		printf("|****************************************\n");
-		printf("|Display Creation Code\n");
-		printf("|****************************************\n");
+		printf("|----------------------------------------\n");
+		printf("|%s|Display Creation Code\n", __TIME__);
+		printf("|----------------------------------------\n");
 #endif // PW_DEBUG_MODE
 		// For creating a window to use for the application
 		main_window = glfwCreateWindow(
@@ -53,11 +53,11 @@ namespace pw {
 			NULL, NULL);
 		// For checking if any errors occurred
 		if (!main_window) {
-			printf("|GL Function Error: %s\n|The Error Is On Line: %d\n|In File: %s\n", "Function Error", __LINE__ - 1, __FILE__);
+			printf("|%s|GL Function Error: %s\n|The Error Is On Line: %d\n|In File: %s\n", __TIME__, "Function Error", __LINE__ - 6, __FILE__);
 		}
 #ifdef PW_DEBUG_MODE
 		else {
-			printf("|GLFW Function Succeed: %s\n", "No Error");
+			printf("|%s|GLFW Function Succeed: %s\n", __TIME__, "No Error");
 		}
 #endif // !PW_DEBUG_MODE
 
@@ -86,15 +86,17 @@ namespace pw {
 		glewExperimental = GL_TRUE;
 		// For checking if initializing GLEW failed
 #ifdef PW_DEBUG_MODE
-		printf("|****************************************\n");
-		printf("|Glew/Program Initialization\n");
-		printf("|%s\n", glGetString(GL_VERSION));
-		printf("|****************************************\n");
+		printf("|----------------------------------------\n");
+		printf("|%s|Glew/Program Initialization\n", __TIME__);
+		printf("|%s|%s\n", __TIME__, glGetString(GL_VERSION));
+		printf("|----------------------------------------\n");
 #endif // !PW_DEBUG_CODE
 
 		PW_GL_CALL(glewInit() == GLEW_OK);
 
 		// Enable Transparent textures
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_BLEND);
 
 		IE_Icon icon_data = IE_Icon(IE_Icon::Find_Icon("Test_Icon.png").c_str());
 		GLFWimage* icon = new GLFWimage();
@@ -108,8 +110,6 @@ namespace pw {
 		delete icon;
 		icon = nullptr;
 
-		//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		//glEnable(GL_BLEND);
 		// For setting up view port size
 		PW_GL_VOID_CALL(glViewport(0, 0, Engine_Constant::Window_Width(), Engine_Constant::Window_Height()));
 		// For specifying which instance of the window will be used for callback
@@ -119,18 +119,13 @@ namespace pw {
 	}
 	PW_VOID Engine_Control::Run_Engine() {
 #ifdef PW_DEBUG_MODE
-		printf("|****************************************\n");
-		printf("|Shader Creation\n");
-		printf("|****************************************\n");
+		printf("|----------------------------------------\n");
+		printf("|%s|Shader Creation\n", __TIME__);
+		printf("|----------------------------------------\n");
 #endif // !PW_DEBUG_CODE
 		IE_Shader shader {};
 		
 		shader.Create_Shader("engine_files/engine_resource/vertex_shader.shader", "engine_files/engine_resource/fragment_shader.shader");
-#ifdef PW_DEBUG_MODE
-		printf("|****************************************\n");
-		printf("|Texture Loading\n");
-		printf("|****************************************\n");
-#endif // !PW_DEBUG_CODE
 
 		IE_Camera camera( glm::vec3(0.0f,0.0f, 0.0f),glm::vec3(0.0f,1.0f,0.0f),-90.0f,0.0f,5.0f,1.0f );
 
@@ -177,8 +172,6 @@ namespace pw {
 
 			shader.Update_Projection(camera);
 
-			//IE_Player::Set_Player_Y_Position(IE_Player::Player_Y_Position() - 1);
-
 			Engine_Queue::Run_Queue();
 
 			IE_Player::Draw_Player();
@@ -194,9 +187,10 @@ namespace pw {
 
 			end_time = std::chrono::system_clock::now();
 		}
-		IE_Player::Delete_Player();
 	}
 	PW_VOID Engine_Control::Terminate_Engine() {
+		Engine_Queue::Clear_Queue();
+		IE_Player::Delete_Player();
 		PW_GLFW_VOID_CALL(glfwDestroyWindow(main_window));
 		main_window = nullptr;
 		PW_GLFW_VOID_CALL(glfwTerminate());
@@ -213,54 +207,9 @@ namespace pw {
 	}
 }
 int main(int argc, char* argv[]) {
-	pw::Engine_Control engine{};
+	pw::Engine_Control engine = pw::Engine_Control();
 	engine.Init_Engine((PW_CSTRING)"Pistonworks Window");
 	engine.Run_Engine();
 	engine.Terminate_Engine();
 	return 0;
 }
-/*
-old code
-/*
-				move.Update_Position(glm::vec2(
-					floorf(Engine_Input::Get_Cursor_Position().x / 32.0f) * 32.0f,
-					ceilf(Engine_Input::Get_Cursor_Position().y / 32.0f) * 32.0f));
-				move.Render(shader);
-*/
-/*for (size_t i = 0; i < m_vertices_count; i++) {
-			glm::vec2 vertex_m_1(
-				m_model.Get_Position().x + (m_vertices[i].Get_Vertex_Position().x * m_model.Get_Model_Size().x),
-				m_model.Get_Position().y + (m_vertices[i].Get_Vertex_Position().y * m_model.Get_Model_Size().y)
-			);
-			glm::vec2 vertex_m_2(
-				m_model.Get_Position().x + (m_vertices[(i + 1) % m_vertices_count].Get_Vertex_Position().x * m_model.Get_Model_Size().x),
-				m_model.Get_Position().y + (m_vertices[(i + 1) % m_vertices_count].Get_Vertex_Position().y * m_model.Get_Model_Size().y)
-			);
-
-			for (size_t j = 0; j < s_vertices_count; j++) {
-				glm::vec2 vertex_s_1(
-					this->Get_Position().x + (s_vertices[j].Get_Vertex_Position().x * this->Get_Model_Size().x),
-					this->Get_Position().y + (s_vertices[j].Get_Vertex_Position().y * this->Get_Model_Size().y)
-				);
-				glm::vec2 vertex_s_2(
-					this->Get_Position().x + (s_vertices[(j + 1) % s_vertices_count].Get_Vertex_Position().x * this->Get_Model_Size().x),
-					this->Get_Position().y + (s_vertices[(j + 1) % s_vertices_count].Get_Vertex_Position().y * this->Get_Model_Size().y)
-				);
-
-				float h = (((vertex_m_1.x - vertex_m_2.x) * (vertex_s_1.y - vertex_s_2.y)) - ((vertex_m_1.y - vertex_m_2.y) * (vertex_s_1.x - vertex_s_2.x)));
-				float t = (((vertex_m_1.x - vertex_s_1.x) * (vertex_s_1.y - vertex_s_2.y)) - ((vertex_m_1.y - vertex_s_1.y) * (vertex_s_1.x - vertex_s_2.x))) / h;
-				float u = -((((vertex_m_1.x - vertex_m_2.x) * (vertex_m_1.y - vertex_s_1.y)) - ((vertex_m_1.y - vertex_m_2.y) * (vertex_m_1.x - vertex_s_1.x))) / h);
-
-				model_functions_c[(int)m_model.Get_Model_Type() - 1](m_model.Get_Mesh_Ref(), glm::vec3(0.0f, 0.0f, 1.0f));
-
-				if ((t >= 0.0f && t <= 1.0f) && (u >= 0.0f && u <= 1.0f)) {
-					found_collision = true;
-					model_functions_c[(int)m_model.Get_Model_Type() - 1](m_model.Get_Mesh_Ref(), glm::vec3(1.0f, 1.0f, 0.0f));
-					break;
-				}
-			}
-			if (found_collision == true) {
-				break;
-			}
-		}
-	}*/

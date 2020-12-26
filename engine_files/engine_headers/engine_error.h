@@ -34,54 +34,50 @@ namespace pw {
 	private:
 		/* Public Functions/Macros  */
 	public:
-		// Acceptation to format
-		static int PW_LINE_;
-		// Acceptation to format
-		static const char* PW_FILE_;
-
-		static void PW_GLFW_Callback_Handle(int result, const char* description) {
-			printf("|GLFW Function Error: %s\n|Error Code: %d\n|The Error Is On Line: %d\n|In File: %s\n", description, result, PW_LINE_, PW_FILE_);
+		static PW_VOID PW_GLFW_Callback_Handle(PW_INT result, PW_CSTRING description) {
+			printf("|%s|GLFW Function Error: %s\n|Error Code: %d\n|The Error Is On Line: %d\n|In File: %s\n", __TIME__, description, result, PW_LINE_, PW_FILE_);
 			return;
 		}
-		static void PW_GLFW_Handle(const int result, const int line, const char* file) {
+		static PW_VOID PW_GLFW_Handle(const PW_INT result, const PW_INT line, PW_CSTRING file) {
 			if (result == GLFW_FALSE) {
-				printf("|GLFW Function Error: %s\n|The Error Is On Line: %d\n|In File: %s\n", "Function Error", line, file);
+				printf("|%s|GLFW Function Error: %s\n|The Error Is On Line: %d\n|In File: %s\n", __TIME__, "Function Error", line, file);
 				return;
 			}
-#ifdef PW_DEBUG_MODE
+		#ifdef PW_DEBUG_MODE
 			else {
-				printf("|GLFW Function Succeed: %s\n", "No Error");
+				printf("|%s|GLFW Function Succeed: %s\n", __TIME__, "No Error");
 				return;
 			}
-#endif // PW_DEBUG_MODE
+		#endif // PW_DEBUG_MODE
 		}
-		static void PW_GL_VOID_Handle(const GLenum result, const int line, const char* file) {
+		static PW_VOID PW_GL_VOID_Handle(const GLenum result, const PW_INT line, PW_CSTRING file) {
 			if (result != 0) {
-				printf("|GL Function Error: %s\n|The Error Is On Line: %d\n|In File: %s\n", glewGetErrorString(result), line, file);
+				printf("|%s|GL Function Error: %s\n|The Error Is On Line: %d\n|In File: %s\n", __TIME__, glewGetErrorString(result), line, file);
 				return;
 			}
-#ifdef PW_DEBUG_MODE
+		#ifdef PW_DEBUG_MODE
 			else {
-				printf("|GL Function Succeed: %s\n", glewGetErrorString(result));
+				printf("|%s|GL Function Succeed: %s\n", __TIME__, glewGetErrorString(result));
 				return;
 			}
-#endif // PW_DEBUG_MODE
+		#endif // PW_DEBUG_MODE
 		}
-		static void PW_GL_Handle(const GLenum result, const int line, const char* file) {
+		static PW_VOID PW_GL_Handle(const GLenum result, const PW_INT line, PW_CSTRING file) {
 			if (result <= 0) {
-				printf("|GL Function Error: %s\n|The Error Is On Line: %d\n|In File: %s\n", glewGetErrorString(result), line, file);
+				printf("|%s|GL Function Error: %s\n|The Error Is On Line: %d\n|In File: %s\n", __TIME__, glewGetErrorString(result), line, file);
 				return;
 			}
-#ifdef PW_DEBUG_MODE
+		#ifdef PW_DEBUG_MODE
 			else {
-				printf("|GL Function Succeed: No Error\n");
+				printf("|%s|GL Function Succeed: No Error\n", __TIME__);
 				return;
+
 			}
-#endif // PW_DEBUG_MODE
+		#endif // PW_DEBUG_MODE
 		}
-		static void PW_STBI_Handle(unsigned char* result, const int line, const char* file) {
+		static PW_VOID PW_STBI_Handle(PW_BYTE* result, const PW_INT line, PW_CSTRING file) {
 			if (result == NULL) {
-				printf("|STBI Function Error: %s\n|The Error Is On Line: %d\n|In File: %s\n", stbi_failure_reason(), line, file);
+				printf("|%s|STBI Function Error: %s\n|The Error Is On Line: %d\n|In File: %s\n", __TIME__, stbi_failure_reason(), line, file);
 				return;
 			}
 		}
@@ -92,6 +88,8 @@ namespace pw {
 		#define PW_STBI_CALL(x) { pw::Engine_Error::PW_STBI_Handle(x, __LINE__, __FILE__); }
 		/* Public Variables         */
 	public:
+		static PW_INT PW_LINE_;
+		static PW_CSTRING PW_FILE_;
 		/* Private Functions/Macros */
 	private:
 		/* Private Variables        */

@@ -37,22 +37,22 @@ namespace pw {
 	private:
 /* Public Functions/Macros  */
 	public:
-		static void Init_Default_Input_Callbacks();
-		static float Get_Move_Increment() { return move_increment; }
+		static PW_VOID Init_Default_Input_Callbacks();
+		static PW_FLOAT Get_Move_Increment() { return move_increment; }
 /* Public Variables         */
 	public:
-		static void (*function_arr[(int)Default_Functions::DEFAULT_FUCNTION_COUNT])();
+		static PW_VOID(*function_arr[(PW_INT)Default_Functions::DEFAULT_FUCNTION_COUNT])();
 /* Private Functions/Macros */
 	private:
-		static void Move_Right();
-		static void Move_Left();
-		static void Move_Up();
-		static void Move_Down();
+		static PW_VOID Move_Right();
+		static PW_VOID Move_Left();
+		static PW_VOID Move_Up();
+		static PW_VOID Move_Down();
 
-		static void Change_Scene();
+		static PW_VOID Change_Scene();
 /* Private Variables        */
 	private:
-		static float move_increment;
+		static PW_FLOAT move_increment;
 	};
 /* Functions                */
 /* Macros                   */

@@ -23,7 +23,6 @@
     <ClInclude Include="engine_files\engine_headers\engine_control.h" />
     <ClInclude Include="engine_files\engine_headers\engine_error.h" />
     <ClInclude Include="engine_files\engine_headers\engine_input.h" />
-    <ClInclude Include="engine_files\engine_headers\engine_math.h" />
     <ClInclude Include="engine_files\engine_headers\engine_queue.h" />
     <ClInclude Include="engine_files\engine_resource\template.h" />
     <ClInclude Include="internal_engine_files\internal_engine_headers\ie_animation.h" />
@@ -44,7 +43,6 @@
     <ClCompile Include="engine_files\engine_source\engine_queue.cpp" />
     <ClCompile Include="internal_engine_files\internal_engine_source\ie_animation.cpp" />
     <ClCompile Include="internal_engine_files\internal_engine_source\ie_default_event.cpp" />
-    <ClCompile Include="internal_engine_files\internal_engine_source\ie_event.cpp" />
     <ClCompile Include="internal_engine_files\internal_engine_source\ie_game_scene.cpp" />
     <ClCompile Include="internal_engine_files\internal_engine_source\ie_mesh.cpp" />
     <ClCompile Include="internal_engine_files\internal_engine_source\ie_model.cpp" />
@@ -74,7 +72,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
+    <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
@@ -87,7 +85,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
+    <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
@@ -130,6 +128,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(Solution)..\..\Visual Studio Includes\Open GL\glew-2.1.0\include;$(Solution)..\..\Visual Studio Includes\Open GL\glm;$(Solution)../../Visual Studio Includes/Open GL/glfw-3.3.2.bin.WIN32/include;$(Solution)..\..\Visual Studio Includes\Open GL\STB_Image\;$(Solution)engine_files\;$(Solution)internal_engine_files\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -147,6 +146,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(Solution)..\..\Visual Studio Includes\Open GL\glew-2.1.0\include;$(Solution)..\..\Visual Studio Includes\Open GL\glm;$(Solution)../../Visual Studio Includes/Open GL/glfw-3.3.2.bin.WIN32/include;$(Solution)..\..\Visual Studio Includes\Open GL\STB_Image\;$(Solution)engine_files\;$(Solution)internal_engine_files\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -166,6 +166,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(Solution)..\..\Visual Studio Includes\Open GL\glew-2.1.0\include;$(Solution)..\..\Visual Studio Includes\Open GL\glm;$(Solution)../../Visual Studio Includes/Open GL/glfw-3.3.2.bin.WIN32/include;$(Solution)..\..\Visual Studio Includes\Open GL\STB_Image\;$(Solution)engine_files\;$(Solution)internal_engine_files\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -175,6 +176,7 @@
       <AdditionalLibraryDirectories>$(Solution)..\..\Visual Studio Includes\Open GL\glew-2.1.0\lib\Release\Win32;$(Solution)../../Visual Studio Includes\Open GL\glfw-3.3.2.bin.WIN32\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glew32.lib;glew32s.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/NODEFAULTLIB:MSVCRT %(AdditionalOptions)</AdditionalOptions>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -187,6 +189,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(Solution)..\..\Visual Studio Includes\Open GL\glew-2.1.0\include;$(Solution)..\..\Visual Studio Includes\Open GL\glm;$(Solution)../../Visual Studio Includes/Open GL/glfw-3.3.2.bin.WIN32/include;$(Solution)..\..\Visual Studio Includes\Open GL\STB_Image\;$(Solution)engine_files\;$(Solution)internal_engine_files\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -196,6 +199,7 @@
       <AdditionalLibraryDirectories>$(Solution)..\..\Visual Studio Includes\Open GL\glew-2.1.0\lib\Release\Win32;$(Solution)../../Visual Studio Includes\Open GL\glfw-3.3.2.bin.WIN32\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glew32.lib;glew32s.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/NODEFAULTLIB:MSVCRT %(AdditionalOptions)</AdditionalOptions>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

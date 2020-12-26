@@ -26,11 +26,13 @@ namespace pw {
 			delete scene_models.at(i);
 			scene_models.at(i) = nullptr;
 		}
+		scene_models.erase(scene_models.begin(), scene_models.end());
+		scene_models.~vector();
 		for (size_t i = 0; i < collision_models.size(); i++) {
-			collision_models.at(i)->Delete();
-			delete collision_models.at(i);
 			collision_models.at(i) = nullptr;
 		}
+		collision_models.erase(collision_models.begin(), collision_models.end());
+		collision_models.~vector();
 	}
 	std::vector<Scene_Model*> IE_Game_Scene::Load_Scene_From_String(PW_STRING scene_str) {
 		std::vector<Scene_Model*> models;
@@ -55,6 +57,11 @@ namespace pw {
 			index_prevb = 0;
 			str = "";
 			str2 = "";
+			if (scene_str.at(0) == '/' && scene_str.at(0) == '/') {
+				index_back = scene_str.find(")", 0);
+				scene_str.erase(0, index_back + 1);
+				continue;
+			}
 			//Get the texture data
 			index_front = scene_str.find("[");
 			index_back = scene_str.find("-",index_front);
@@ -81,7 +88,7 @@ namespace pw {
 			//Find out if it has animation data
 			PW_INT boolean_expression = 0;
 			PW_BOOL animated = false;
-			PW_UINT animation_length = 0;
+			PW_FLOAT animation_length = 0.0f;
 			PW_UINT animation_frames = 0;
 			PW_UINT animation_size_x = 0;
 
@@ -99,13 +106,13 @@ namespace pw {
 				index_front = index_back;
 				index_back = scene_str.find(",", index_front);
 				str = scene_str.substr(index_front + 1, index_back - index_front - 1);
-				animation_length = std::stoi(str);
+				animation_length = std::stof(str);
 				index_front = index_back;
-				index_back = scene_str.find(",", index_front);
+				index_back = scene_str.find(",", index_front + 1);
 				str = scene_str.substr(index_front + 1, index_back - index_front - 1);
 				animation_frames = std::stoi(str);
 				index_front = index_back;
-				index_back = scene_str.find(",", index_front);
+				index_back = scene_str.find("=", index_front + 1);
 				str = scene_str.substr(index_front + 1, index_back - index_front - 1);
 				animation_size_x = std::stoi(str);
 				str.clear();
@@ -183,7 +190,14 @@ namespace pw {
 					model = IE_Dynamic_Model((IE_Dynamic_Model::Model_Types)model_type, texture, position, rotation, size, model_color);
 					if (collidable == true) {
 						if (animated == true) {
-							scene_model = new AActor_Model(model, IE_Animation::IE_Animation(animation_length, animation_frames, animation_size_x));
+							IE_Animation animation = IE_Animation::IE_Animation(
+								animation_length, animation_frames, animation_size_x,
+								model.Mesh()->Vertices(),
+								model.Mesh()->Vertex_Count(),
+								model.Mesh()->Vertices_Ref());
+							scene_model = new AActor_Model(model, animation);
+							IE_Animation* animation_ptr = new IE_Animation(animation);
+							animations.push_back(animation_ptr);
 							collision_models.push_back(static_cast<AActor_Model*>(scene_model));
 						}
 						else {
@@ -193,7 +207,14 @@ namespace pw {
 					}
 					else {
 						if (animated == true) {
-							scene_model = new AActor_Model(model, IE_Animation::IE_Animation(animation_length, animation_frames, animation_size_x));
+							IE_Animation animation = IE_Animation::IE_Animation(
+								animation_length, animation_frames, animation_size_x,
+								model.Mesh()->Vertices(),
+								model.Mesh()->Vertex_Count(),
+								model.Mesh()->Vertices_Ref());
+							scene_model = new AActor_Model(model, animation);
+							IE_Animation* animation_ptr = new IE_Animation(animation);
+							animations.push_back(animation_ptr);
 						}
 						else {
 							scene_model = new Actor_Model(model);
@@ -205,7 +226,14 @@ namespace pw {
 					model = IE_Dynamic_Model((IE_Dynamic_Model::Model_Types)model_type, texture, position, rotation, size);
 					if (collidable == true) {
 						if (animated == true) {
-							scene_model = new AActor_Model(model, IE_Animation::IE_Animation(animation_length, animation_frames, animation_size_x));
+							IE_Animation animation = IE_Animation::IE_Animation(
+								animation_length, animation_frames, animation_size_x,
+								model.Mesh()->Vertices(),
+								model.Mesh()->Vertex_Count(),
+								model.Mesh()->Vertices_Ref());
+							scene_model = new AActor_Model(model, animation);
+							IE_Animation* animation_ptr = new IE_Animation(animation);
+							animations.push_back(animation_ptr);
 							collision_models.push_back(static_cast<AActor_Model*>(scene_model));
 						}
 						else {
@@ -215,7 +243,14 @@ namespace pw {
 					}
 					else {
 						if (animated == true) {
-							scene_model = new AActor_Model(model, IE_Animation::IE_Animation(animation_length, animation_frames, animation_size_x));
+							IE_Animation animation = IE_Animation::IE_Animation(
+								animation_length, animation_frames, animation_size_x,
+								model.Mesh()->Vertices(),
+								model.Mesh()->Vertex_Count(),
+								model.Mesh()->Vertices_Ref());
+							scene_model = new AActor_Model(model, animation);
+							IE_Animation* animation_ptr = new IE_Animation(animation);
+							animations.push_back(animation_ptr);
 						}
 						else {
 							scene_model = new Actor_Model(model);
@@ -228,7 +263,14 @@ namespace pw {
 					IE_Static_Model model = IE_Static_Model();
 					model = IE_Static_Model((IE_Static_Model::Model_Types)model_type, texture, position, rotation, size, model_color);
 					if (animated == true) {
-						scene_model = new AAsset_Model(model, IE_Animation::IE_Animation(animation_length, animation_frames, animation_size_x));
+						IE_Animation animation = IE_Animation::IE_Animation(
+							animation_length, animation_frames, animation_size_x,
+							model.Mesh()->Vertices(),
+							model.Mesh()->Vertex_Count(),
+							model.Mesh()->Vertices_Ref());
+						scene_model = new AAsset_Model(model, animation);
+						IE_Animation* animation_ptr = new IE_Animation(animation);
+						animations.push_back(animation_ptr);
 					}
 					else {
 						scene_model = new Asset_Model(model);
@@ -238,7 +280,14 @@ namespace pw {
 					IE_Static_Model model = IE_Static_Model();
 					model = IE_Static_Model((IE_Static_Model::Model_Types)model_type, texture, position, rotation, size);
 					if (animated == true) {
-						scene_model = new AAsset_Model(model,IE_Animation::IE_Animation(animation_length, animation_frames, animation_size_x));
+						IE_Animation animation = IE_Animation::IE_Animation(
+							animation_length, animation_frames, animation_size_x,
+							model.Mesh()->Vertices(),
+							model.Mesh()->Vertex_Count(),
+							model.Mesh()->Vertices_Ref());
+						scene_model = new AAsset_Model(model, animation);
+						IE_Animation* animation_ptr = new IE_Animation(animation);
+						animations.push_back(animation_ptr);
 					}
 					else {
 						scene_model = new Asset_Model(model);

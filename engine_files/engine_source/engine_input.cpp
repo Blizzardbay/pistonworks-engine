@@ -2,38 +2,38 @@
 namespace pw {
 /* Engine_Input             */
 /* Static Declarations      */
-	GLint Engine_Input::current_key_code;
+	PW_INT Engine_Input::current_key_code;
 
-	GLfloat Engine_Input::cursor_last_xpos;
-	GLfloat Engine_Input::cursor_last_ypos;
+	PW_FLOAT Engine_Input::cursor_last_xpos;
+	PW_FLOAT Engine_Input::cursor_last_ypos;
 
-	GLfloat Engine_Input::cursor_pos_xchange;
-	GLfloat Engine_Input::cursor_pos_ychange;
+	PW_FLOAT Engine_Input::cursor_pos_xchange;
+	PW_FLOAT Engine_Input::cursor_pos_ychange;
 
-	bool Engine_Input::startup_state;
-	bool Engine_Input::has_default_binds = true;
+	PW_BOOL Engine_Input::startup_state;
+	PW_BOOL Engine_Input::has_default_binds = true;
 
 	Input_Event_Key Engine_Input::keys[1024] = { Input_Event_Key() };
 
-	std::map<unsigned int, Input_Event_Key> Engine_Input::current_active_keys = std::map<unsigned int, Input_Event_Key>();
+	std::map<PW_UINT, Input_Event_Key> Engine_Input::current_active_keys = std::map<PW_UINT, Input_Event_Key>();
 
 /* Class Members            */
-	void Engine_Input::Init_Default_Binds() {
+	PW_VOID Engine_Input::Init_Default_Binds() {
 		for (size_t i = 0; i < 1024; i++) {
 			keys[i].Set_Key(NULL);
 		}
 		if (has_default_binds == true) {
 			IE_Default_Event::Init_Default_Input_Callbacks();
 
-			Engine_Input::Create_New_Bind((int)'D', IE_Default_Event::function_arr[(int)IE_Default_Event::Default_Functions::MOVE_RIGHT]);
-			Engine_Input::Create_New_Bind((int)'A', IE_Default_Event::function_arr[(int)IE_Default_Event::Default_Functions::MOVE_LEFT]);
-			Engine_Input::Create_New_Bind((int)'W', IE_Default_Event::function_arr[(int)IE_Default_Event::Default_Functions::MOVE_UP]);
-			Engine_Input::Create_New_Bind((int)'S', IE_Default_Event::function_arr[(int)IE_Default_Event::Default_Functions::MOVE_DOWN]);
+			Engine_Input::Create_New_Bind((PW_INT)'D', IE_Default_Event::function_arr[(PW_INT)IE_Default_Event::Default_Functions::MOVE_RIGHT]);
+			Engine_Input::Create_New_Bind((PW_INT)'A', IE_Default_Event::function_arr[(PW_INT)IE_Default_Event::Default_Functions::MOVE_LEFT]);
+			Engine_Input::Create_New_Bind((PW_INT)'W', IE_Default_Event::function_arr[(PW_INT)IE_Default_Event::Default_Functions::MOVE_UP]);
+			Engine_Input::Create_New_Bind((PW_INT)'S', IE_Default_Event::function_arr[(PW_INT)IE_Default_Event::Default_Functions::MOVE_DOWN]);
 
-			Engine_Input::Create_New_Bind((int)'E', IE_Default_Event::function_arr[(int)IE_Default_Event::Default_Functions::CHANGE_SCENE], true);
+			Engine_Input::Create_New_Bind((PW_INT)'E', IE_Default_Event::function_arr[(PW_INT)IE_Default_Event::Default_Functions::CHANGE_SCENE], true);
 		}	
 	}
-	void Engine_Input::Handle_Keys(GLFWwindow* window, GLint key, GLint code, GLint action, GLint mode) {
+	PW_VOID Engine_Input::Handle_Keys(GLFWwindow* window, GLint key, GLint code, GLint action, GLint mode) {
 		/* For gaining access to the current window using callbacks */
 		Engine_Input* this_window = static_cast<Engine_Input*>(glfwGetWindowUserPointer(window));
 		// For when a key is pressed by the user
@@ -61,7 +61,7 @@ namespace pw {
 			}
 		}
 	}
-	void Engine_Input::Handle_Mouse(GLFWwindow* window, GLdouble mouse_xpos, GLdouble mouse_ypos) {
+	PW_VOID Engine_Input::Handle_Mouse(GLFWwindow* window, GLdouble mouse_xpos, GLdouble mouse_ypos) {
 		//printf("X pos: %.f\n", mouse_xpos);
 		//printf("Y pos: %.f\n", Engine_Constant::Window_Height() - mouse_ypos);
 		/* For gaining access to the current window using callbacks */
@@ -80,7 +80,7 @@ namespace pw {
 		this_window->cursor_last_xpos = (GLfloat)mouse_xpos;
 		this_window->cursor_last_ypos = (GLfloat)mouse_ypos;
 	}
-	void Engine_Input::Handle_Resize(GLFWwindow* main_window, int window_width, int window_height) {
+	PW_VOID Engine_Input::Handle_Resize(GLFWwindow* main_window, int window_width, int window_height) {
 		glViewport(0, 0, window_width, window_height);
 
 		glClearColor(0.0f, 0.16f, 0.16f, 1.0f);
@@ -104,7 +104,7 @@ namespace pw {
 		positions.y = Engine_Constant::Window_Height() - cursor_last_ypos;
 		return positions;
 	}
-	void Engine_Input::Handle_Events(GLint key, GLint action) {
+	PW_VOID Engine_Input::Handle_Events(PW_INT key, PW_INT action) {
 		if (keys[key].Get_Press_Setting() == true && action == GLFW_PRESS) {
 			keys[key].event_();
 		}
@@ -113,7 +113,7 @@ namespace pw {
 			current_active_keys.insert(std::make_pair(key, keys[key]));
 		}
 	}
-	bool Engine_Input::Is_Key(GLint key) {
+	PW_BOOL Engine_Input::Is_Key(PW_INT key) {
 		if (keys[key].Get_Key() != NULL) {
 			return true;
 		}
@@ -121,12 +121,12 @@ namespace pw {
 			return false;
 		}
 	}
-	void Engine_Input::Poll_Active_Events() {
+	PW_VOID Engine_Input::Poll_Active_Events() {
 		for (auto i = current_active_keys.begin(); i != current_active_keys.end(); i++) {
 			current_active_keys.at(i->first).event_();
 		}
 	}
-	void Engine_Input::Create_New_Bind(GLint key_code, void(*function_ptr)(), bool only_play_once) {
+	PW_VOID Engine_Input::Create_New_Bind(PW_INT key_code, PW_VOID(*function_ptr)(), PW_BOOL only_play_once) {
 		keys[(key_code)].Set_Key(key_code);
 		keys[(key_code)].event_ = function_ptr;
 		keys[(key_code)].Set_Press_Setting(only_play_once);

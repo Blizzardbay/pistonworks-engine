@@ -25,16 +25,16 @@ namespace pw {
 	private:
 /* Public Functions/Macros  */
 	public:
-		static void Init_Player(IE_Dynamic_Model player_model);
+		static PW_VOID Init_Player(IE_Dynamic_Model player_model);
 
-		static void Draw_Player();
-		static void Delete_Player() { player_model.Delete(); }
+		static PW_VOID Draw_Player();
+		static PW_VOID Delete_Player() { player_model.Delete(); }
 
-		static float Player_X_Position() { return player_model.Position().x; }
-		static float Player_Y_Position() { return player_model.Position().y; }
+		static PW_FLOAT Player_X_Position() { return player_model.Position().x; }
+		static PW_FLOAT Player_Y_Position() { return player_model.Position().y; }
 
-		static void Set_Player_X_Position(float x_pos) { player_model.Update_Position(x_pos, IE_Player::Player_Y_Position()); }
-		static void Set_Player_Y_Position(float y_pos) { player_model.Update_Position(IE_Player::Player_X_Position(), y_pos); }
+		static PW_VOID Set_Player_X_Position(PW_FLOAT x_pos) { player_model.Update_Position(x_pos, IE_Player::Player_Y_Position()); }
+		static PW_VOID Set_Player_Y_Position(PW_FLOAT y_pos) { player_model.Update_Position(IE_Player::Player_X_Position(), y_pos); }
 
 		static IE_Dynamic_Model& Get_Model() { return player_model; }
 /* Public Variables         */

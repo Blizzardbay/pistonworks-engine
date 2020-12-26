@@ -39,11 +39,11 @@ namespace pw {
 		static glm::mat4 Update_Projection() {
 			return glm::perspective(glm::radians(45.0f),1.0f,0.1f, 100.0f);
 		}
-		void SetCameraPosition(glm::vec3 new_camera_position) { camera_position = new_camera_position; }
+		PW_VOID SetCameraPosition(glm::vec3 new_camera_position) { camera_position = new_camera_position; }
 
-		float Get_Camera_Position_X() { return camera_position.x; }
-		float Get_Camera_Position_Y() { return camera_position.y; }
-		float Get_Camera_Position_Z() { return camera_position.z; }	
+		PW_FLOAT Get_Camera_Position_X() { return camera_position.x; }
+		PW_FLOAT Get_Camera_Position_Y() { return camera_position.y; }
+		PW_FLOAT Get_Camera_Position_Z() { return camera_position.z; }
 /* Public Variables         */
 	public:
 /* Private Functions/Macros */
@@ -59,8 +59,8 @@ namespace pw {
 
 		glm::vec3 up_direction;
 
-		float yaw_change;
-		float pitch_change;
+		PW_FLOAT yaw_change;
+		PW_FLOAT pitch_change;
 	};
 /* Functions                */
 /* Macros                   */

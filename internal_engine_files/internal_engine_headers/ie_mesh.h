@@ -23,6 +23,10 @@ namespace pw {
 	struct ID_Vertex_Data {
 /* Default Class Structures */
 	public:
+		ID_Vertex_Data() :
+			vertex_position(glm::vec3(0.0f, 0.0f, 0.0f)), texture_coord(glm::vec2(0.0f, 0.0f)),
+			color_data(glm::vec3(0.0f, 0.0f, 0.0f)) {
+		}
 		ID_Vertex_Data(const glm::vec3& vertex_position, const glm::vec2& texture_coord) :
 				vertex_position( vertex_position ), texture_coord( texture_coord ),
 				color_data( glm::vec3( 0.0f,0.0f,0.0f )) {
@@ -59,7 +63,6 @@ namespace pw {
 		IE_Mesh(ID_Vertex_Data* vertices, const PW_SUINT vertex_count, PW_UINT* indices,const PW_SUINT indice_count);
 		~IE_Mesh() {};
 
-		IE_Mesh(const IE_Mesh& other_ie_mesh);
 		IE_Mesh operator=(const IE_Mesh& rhs);
 		PW_BOOL operator==(const IE_Mesh& rhs);
 	private:

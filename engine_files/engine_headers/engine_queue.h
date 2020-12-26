@@ -27,22 +27,24 @@ namespace pw {
 	private:
 /* Public Functions/Macros  */
 	public:
-		static void Run_Queue();
+		static PW_VOID Run_Queue();
 
-		static void Load_From_Dir(const char* dir);
+		static PW_VOID Load_From_Dir(PW_CSTRING dir);
 		
-		static void Add_Game_Scene(IE_Game_Scene scene);
+		static PW_VOID Add_Game_Scene(IE_Game_Scene scene);
 
-		static void Change_Scene(size_t new_index) { index = new_index; }
-		static size_t Scene_Index() { return index; }
+		static PW_VOID Change_Scene(PW_UINT new_index) { index = new_index; }
+		static PW_UINT Scene_Index() { return index; }
+
+		static PW_VOID Clear_Queue();
 /* Public Variables         */
 	public:
 /* Private Functions/Macros */
 	private:
-		static void Insertion_Sort();
+		static PW_VOID Insertion_Sort();
 /* Private Variables        */
 	private:
-		static size_t index;
+		static PW_UINT index;
 		static std::vector<IE_Game_Scene> scene_vector;
 	};
 /* Functions                */

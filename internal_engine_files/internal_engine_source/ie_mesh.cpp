@@ -8,8 +8,9 @@ namespace pw {
 		vertex_buffer_object(0), vertex_texture_object(0), vertex_color_object(0), vertex_element_object(0) {
 	}
 	IE_Mesh::IE_Mesh(ID_Vertex_Data* vertices, const PW_SUINT vertex_count, PW_UINT* indices, const PW_SUINT indice_count) :
-			vertices(vertices), draw_count(indice_count), vertex_count(vertex_count), vertex_array_object(0),
-			vertex_buffer_object(0), vertex_texture_object(0), vertex_color_object(0), vertex_element_object(0) {
+		vertices(vertices), draw_count(indice_count), vertex_count(vertex_count), vertex_array_object(0),
+		vertex_buffer_object(0), vertex_texture_object(0), vertex_color_object(0), vertex_element_object(0) {
+
 		glGenVertexArrays(1, &vertex_array_object);
 		glBindVertexArray(vertex_array_object);
 
@@ -65,9 +66,9 @@ namespace pw {
 		color_data = nullptr;
 
 	}
-	IE_Mesh::IE_Mesh(const IE_Mesh& other_ie_mesh) {
+	//IE_Mesh::IE_Mesh(const IE_Mesh& other_ie_mesh) {
 
-	}
+	//}
 	IE_Mesh IE_Mesh::operator=(const IE_Mesh& rhs) {
 		this->draw_count = 0;
 		this->vertex_array_object = 0;
@@ -111,8 +112,10 @@ namespace pw {
 		glBindBuffer(GL_ARRAY_BUFFER, vertex_color_object);
 		glBufferData(GL_ARRAY_BUFFER, vertex_count * sizeof(color_data[0]), &color_data[0], GL_STATIC_DRAW);
 
-		delete[] color_data;
+		delete []color_data;
 		color_data = nullptr;
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 	PW_VOID IE_Mesh::Change_Texture_Data(ID_Vertex_Data* new_texture_data) {
 		glm::vec2* texture_data_arr = new glm::vec2[vertex_count];
@@ -124,7 +127,9 @@ namespace pw {
 		glBindBuffer(GL_ARRAY_BUFFER, vertex_texture_object);
 		glBufferData(GL_ARRAY_BUFFER, vertex_count * sizeof(texture_data_arr[0]), &texture_data_arr[0], GL_STATIC_DRAW);
 
-		delete[] texture_data_arr;
+		delete []texture_data_arr;
 		texture_data_arr = nullptr;
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 }
