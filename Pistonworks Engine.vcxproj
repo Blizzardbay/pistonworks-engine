@@ -27,7 +27,7 @@
     <ClInclude Include="engine_files\engine_resource\template.h" />
     <ClInclude Include="internal_engine_files\internal_engine_headers\ie_animation.h" />
     <ClInclude Include="internal_engine_files\internal_engine_headers\ie_camera.h" />
-    <ClInclude Include="internal_engine_files\internal_engine_headers\ie_default_event.h" />
+    <ClInclude Include="internal_engine_files\internal_engine_headers\ie_complex_event.h" />
     <ClInclude Include="internal_engine_files\internal_engine_headers\ie_event.h" />
     <ClInclude Include="internal_engine_files\internal_engine_headers\ie_game_scene.h" />
     <ClInclude Include="internal_engine_files\internal_engine_headers\ie_mesh.h" />
@@ -42,11 +42,9 @@
     <ClCompile Include="engine_files\engine_source\engine_input.cpp" />
     <ClCompile Include="engine_files\engine_source\engine_queue.cpp" />
     <ClCompile Include="internal_engine_files\internal_engine_source\ie_animation.cpp" />
-    <ClCompile Include="internal_engine_files\internal_engine_source\ie_default_event.cpp" />
     <ClCompile Include="internal_engine_files\internal_engine_source\ie_game_scene.cpp" />
     <ClCompile Include="internal_engine_files\internal_engine_source\ie_mesh.cpp" />
     <ClCompile Include="internal_engine_files\internal_engine_source\ie_model.cpp" />
-    <ClCompile Include="internal_engine_files\internal_engine_source\ie_player.cpp" />
     <ClCompile Include="internal_engine_files\internal_engine_source\ie_shader.cpp" />
     <ClCompile Include="internal_engine_files\internal_engine_source\ie_texture.cpp" />
   </ItemGroup>

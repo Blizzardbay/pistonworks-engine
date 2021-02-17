@@ -2,93 +2,107 @@
 namespace pw {
 /* Engine_Input             */
 /* Static Declarations      */
-	PW_INT Engine_Input::current_key_code;
-
-	PW_FLOAT Engine_Input::cursor_last_xpos;
-	PW_FLOAT Engine_Input::cursor_last_ypos;
-
-	PW_FLOAT Engine_Input::cursor_pos_xchange;
-	PW_FLOAT Engine_Input::cursor_pos_ychange;
-
-	PW_BOOL Engine_Input::startup_state;
-	PW_BOOL Engine_Input::has_default_binds = true;
-
-	Input_Event_Key Engine_Input::keys[1024] = { Input_Event_Key() };
-
-	std::map<PW_UINT, Input_Event_Key> Engine_Input::current_active_keys = std::map<PW_UINT, Input_Event_Key>();
-
+	std::map<PW_INT, ie::Keyboard_Event> Engine_Input::current_key_events;
+	std::map<PW_INPUT_TYPE, std::map<PW_KEY_CODE, ie::Keyboard_Event>> Engine_Input::key_events;
+	std::map<PW_INT, ie::Mouse_Event> Engine_Input::current_mouse_events;
+	std::map<PW_INPUT_TYPE, std::map<PW_BUTTON_CODE, ie::Mouse_Event>> Engine_Input::mouse_events;
+	std::map<PW_SCROLL_ACTION, ie::Mouse_Event> Engine_Input::scroll_events;
 /* Class Members            */
 	PW_VOID Engine_Input::Init_Default_Binds() {
-		for (size_t i = 0; i < 1024; i++) {
-			keys[i].Set_Key(NULL);
-		}
-		if (has_default_binds == true) {
-			IE_Default_Event::Init_Default_Input_Callbacks();
+		
+		Engine_Input::Create_Event_Keyboard(GLFW_PRESS, GLFW_KEY_W, Move_Up, false);
+		Engine_Input::Create_Event_Keyboard(GLFW_PRESS, GLFW_KEY_S, Move_Down, false);
+		Engine_Input::Create_Event_Keyboard(GLFW_PRESS, GLFW_KEY_D, Move_Right, false);
+		Engine_Input::Create_Event_Keyboard(GLFW_PRESS, GLFW_KEY_A, Move_Left, false);
 
-			Engine_Input::Create_New_Bind((PW_INT)'D', IE_Default_Event::function_arr[(PW_INT)IE_Default_Event::Default_Functions::MOVE_RIGHT]);
-			Engine_Input::Create_New_Bind((PW_INT)'A', IE_Default_Event::function_arr[(PW_INT)IE_Default_Event::Default_Functions::MOVE_LEFT]);
-			Engine_Input::Create_New_Bind((PW_INT)'W', IE_Default_Event::function_arr[(PW_INT)IE_Default_Event::Default_Functions::MOVE_UP]);
-			Engine_Input::Create_New_Bind((PW_INT)'S', IE_Default_Event::function_arr[(PW_INT)IE_Default_Event::Default_Functions::MOVE_DOWN]);
+		Engine_Input::Create_Event_Keyboard(GLFW_PRESS, GLFW_KEY_E, Change_Scene, true);
 
-			Engine_Input::Create_New_Bind((PW_INT)'E', IE_Default_Event::function_arr[(PW_INT)IE_Default_Event::Default_Functions::CHANGE_SCENE], true);
-		}	
+		Engine_Input::Create_Event_Keyboard(GLFW_PRESS, GLFW_KEY_UP, ie::Camera::Camera_Up, false);
+		Engine_Input::Create_Event_Keyboard(GLFW_PRESS, GLFW_KEY_DOWN, ie::Camera::Camera_Down, false);
+		Engine_Input::Create_Event_Keyboard(GLFW_PRESS, GLFW_KEY_RIGHT, ie::Camera::Camera_Right, false);
+		Engine_Input::Create_Event_Keyboard(GLFW_PRESS, GLFW_KEY_LEFT, ie::Camera::Camera_Left, false);
+
+		Engine_Input::Create_Event_Scroll(PW_SCROLL_WHEEL_FROWARD, ie::Camera::Scroll_Forward, true);
+		Engine_Input::Create_Event_Scroll(PW_SCROLL_WHEEL_BACKWARD, ie::Camera::Scroll_Backward, true);
 	}
-	PW_VOID Engine_Input::Handle_Keys(GLFWwindow* window, GLint key, GLint code, GLint action, GLint mode) {
+	PW_VOID Engine_Input::Handle_Keyboard(GLFWwindow* window, int key, int code, int action, int mode) {
 		/* For gaining access to the current window using callbacks */
 		Engine_Input* this_window = static_cast<Engine_Input*>(glfwGetWindowUserPointer(window));
 		// For when a key is pressed by the user
 		
-		if (action == GLFW_PRESS) {
-			if (key == GLFW_KEY_ESCAPE) {
-				glfwSetWindowShouldClose(window, GL_TRUE);
-			}
-			// For when a key is hit set the key that was hit to true
-			if (key >= 0 && key <= 1024) {
-				if (Is_Key(key) == true) {
-					Handle_Events(key, action);
+		if (key_events.count(action) == 1) {
+			auto it = key_events.at(action).find(key);
+			if (it != key_events.at(action).end()) {
+				it->second.Trigger_Event();
+				if (!(it->second.Play_State())) {
+					current_key_events.insert(std::make_pair(key,it->second));
 				}
 			}
 		}
 		else {
-			// For when a key is released by the user
-			if (action == GLFW_RELEASE) {
-				if (keys[key].Get_Press_Setting() != true) {
-					if (Is_Key(key)) {
-						current_active_keys.at(key).~Input_Event_Key();
-						current_active_keys.erase(key);
+			if (!(current_key_events.empty())) {
+				if (current_key_events.count(key) != 0) {
+					if (current_key_events.at(key).Resolution() == action) {
+						current_key_events.erase(key);
 					}
 				}
 			}
 		}
-	}
-	PW_VOID Engine_Input::Handle_Mouse(GLFWwindow* window, GLdouble mouse_xpos, GLdouble mouse_ypos) {
-		//printf("X pos: %.f\n", mouse_xpos);
-		//printf("Y pos: %.f\n", Engine_Constant::Window_Height() - mouse_ypos);
-		/* For gaining access to the current window using callbacks */
-		Engine_Input* this_window = static_cast<Engine_Input*>(glfwGetWindowUserPointer(window));
-		// For the first time running of the function
-		if (this_window->startup_state) {
-			this_window->cursor_last_xpos = (GLfloat)mouse_xpos;
-			this_window->cursor_last_ypos = (GLfloat)mouse_ypos;
-			this_window->startup_state = false;
+
+		if (action == GLFW_PRESS) {
+			if (key == GLFW_KEY_ESCAPE) {
+				glfwSetWindowShouldClose(window, GL_TRUE);
+			}
 		}
-		// For computing the change in the x position
-		this_window->cursor_pos_xchange = (GLfloat)mouse_xpos - this_window->cursor_last_xpos;
-		// For computing  the change in the y position
-		this_window->cursor_pos_ychange = this_window->cursor_last_ypos - (GLfloat)mouse_ypos;
-		// For resetting the values for next function call
-		this_window->cursor_last_xpos = (GLfloat)mouse_xpos;
-		this_window->cursor_last_ypos = (GLfloat)mouse_ypos;
+
+
+	}
+	PW_VOID Engine_Input::Handle_Mouse_Movement(GLFWwindow* window, double mouse_xpos, double mouse_ypos) {
+		//printf("X pos: %.10f\n", mouse_xpos);
+		//printf("Y pos: %.10f\n", Engine_Constant::Window_Height() - mouse_ypos);
+
+		Engine_Constant::Set_Mouse_Coords((PW_INT)mouse_xpos, (PW_INT)(Engine_Constant::Window_Height() - mouse_ypos));
+	}
+	PW_VOID Engine_Input::Handle_Mouse_Button(GLFWwindow* window, int button, int action, int mods) {
+		if (mouse_events.count(action) >= 1) {
+			auto it = mouse_events.at(action).find(button);
+			if (it != mouse_events.at(action).end()) {
+				it->second.Trigger_Event();
+				if (!(it->second.Play_State())) {
+					current_mouse_events.insert(std::make_pair(button,it->second));
+				}
+			}
+		}
+		if (!(current_mouse_events.empty())) {
+			if (current_mouse_events.count(button) != 0) {
+				if (current_mouse_events.at(button).Resolution() == action) {
+					current_mouse_events.erase(button);
+				}
+			}
+		}
+	}
+	PW_VOID Engine_Input::Handle_Mouse_Scroll(GLFWwindow* window, double xoffset, double yoffset) {
+		PW_SCROLL_ACTION action = NULL;
+		if (yoffset >= 1) {
+			action = PW_SCROLL_WHEEL_FROWARD;
+		}
+		else {
+			action = PW_SCROLL_WHEEL_BACKWARD;
+		}
+		if (scroll_events.count(action) >= 1) {
+			scroll_events.at(action).Trigger_Event();
+		}
 	}
 	PW_VOID Engine_Input::Handle_Resize(GLFWwindow* main_window, int window_width, int window_height) {
-		glViewport(0, 0, window_width, window_height);
+		PW_GL_VOID_CALL(glViewport(0, 0, window_width, window_height), false);
 
-		glClearColor(0.0f, 0.16f, 0.16f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		PW_GL_VOID_CALL(glClearColor(0.0f, 0.16f, 0.16f, 1.0f), false);
+		PW_GL_VOID_CALL(glClear(GL_COLOR_BUFFER_BIT), false);
+		
+		PW_INT buffer_width = window_width;
+		PW_INT buffer_height = window_height;
 
-		GLint buffer_width = window_width;
-		GLint buffer_height = window_height;
-
+		// For retrieving the buffer sizes for our given window
 		PW_GLFW_VOID_CALL(glfwGetFramebufferSize(main_window, &buffer_width, &buffer_height));
 
 		Engine_Constant::Set_Window_Width(buffer_width);
@@ -96,39 +110,51 @@ namespace pw {
 		Engine_Constant::Set_Hafe_Window_Width(buffer_width / 2);
 		Engine_Constant::Set_Hafe_Window_Height(buffer_height / 2);
 
-		glfwSwapBuffers(main_window);
-	}
-	glm::vec2 Engine_Input::Get_Cursor_Position() {
-		glm::vec2 positions(1.0f);
-		positions.x = cursor_last_xpos;
-		positions.y = Engine_Constant::Window_Height() - cursor_last_ypos;
-		return positions;
-	}
-	PW_VOID Engine_Input::Handle_Events(PW_INT key, PW_INT action) {
-		if (keys[key].Get_Press_Setting() == true && action == GLFW_PRESS) {
-			keys[key].event_();
-		}
-		else {
-			keys[key].event_();
-			current_active_keys.insert(std::make_pair(key, keys[key]));
-		}
-	}
-	PW_BOOL Engine_Input::Is_Key(PW_INT key) {
-		if (keys[key].Get_Key() != NULL) {
-			return true;
-		}
-		else {
-			return false;
-		}
+		Engine_Queue::Refresh_Queue();
+
+		PW_GLFW_VOID_CALL(glfwSwapBuffers(main_window));
 	}
 	PW_VOID Engine_Input::Poll_Active_Events() {
-		for (auto i = current_active_keys.begin(); i != current_active_keys.end(); i++) {
-			current_active_keys.at(i->first).event_();
+		if (current_key_events.size() != 0) {
+			for (auto i = current_key_events.begin(); i != current_key_events.end(); i++) {
+				current_key_events.at(i->first).Trigger_Event();
+			}
+		}
+		if (current_mouse_events.size() != 0) {
+			for (auto i = current_mouse_events.begin(); i != current_mouse_events.end(); i++) {
+				current_mouse_events.at(i->first).Trigger_Event();
+			}
 		}
 	}
-	PW_VOID Engine_Input::Create_New_Bind(PW_INT key_code, PW_VOID(*function_ptr)(), PW_BOOL only_play_once) {
-		keys[(key_code)].Set_Key(key_code);
-		keys[(key_code)].event_ = function_ptr;
-		keys[(key_code)].Set_Press_Setting(only_play_once);
+	PW_VOID Engine_Input::Create_Event_Scroll(PW_SCROLL_ACTION action, void(*function_ptr)(), PW_BOOL only_play_once = false) {
+		if (scroll_events.count(action) < 1) {
+			scroll_events.insert(std::make_pair(action, ie::Mouse_Event(action, function_ptr, only_play_once)));
+		}
+	}
+	PW_VOID Engine_Input::Create_Event_Mouse(PW_INPUT_TYPE action, PW_BUTTON_CODE code, void(*function_ptr)(), PW_BOOL only_play_once = false) {
+		if (mouse_events.count(action) < 1) {
+			std::map<PW_BUTTON_CODE, ie::Mouse_Event> map = std::map< PW_BUTTON_CODE, ie::Mouse_Event>();
+			map.insert(std::make_pair(code, ie::Mouse_Event(action, function_ptr, only_play_once)));
+			mouse_events.insert(std::make_pair(action, map));
+		}
+		else {
+			auto it = mouse_events.at(action).find(code);
+			if (it == mouse_events.at(action).end()) {
+				mouse_events.at(action).insert(std::make_pair(code, ie::Mouse_Event(action, function_ptr, only_play_once)));
+			}
+		}
+	}
+	PW_VOID Engine_Input::Create_Event_Keyboard(PW_INPUT_TYPE action, PW_KEY_CODE key_code, void(*function_ptr)(), PW_BOOL only_play_once = false) {
+		if (key_events.count(action) < 1) {
+			std::map<PW_KEY_CODE, ie::Keyboard_Event> map = std::map< PW_KEY_CODE, ie::Keyboard_Event>();
+			map.insert(std::make_pair(key_code, ie::Keyboard_Event(action, function_ptr, only_play_once)));
+			key_events.insert(std::make_pair(action, map));
+		}
+		else {
+			auto it = key_events.at(action).find(key_code);
+			if (it == key_events.at(action).end()) {
+				key_events.at(action).insert(std::make_pair(key_code, ie::Keyboard_Event(action, function_ptr, only_play_once)));
+			}
+		}
 	}
 }

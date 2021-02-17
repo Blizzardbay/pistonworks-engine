@@ -13,11 +13,15 @@
 #include "engine_headers\engine_error.h"
 /* Engine Macros            */
 /****************************/
+//
+/* ############################# */
+/* Pistonworks Engine            */
+/* Created By : Darrian Corkadel */
+/* ############################# */
 namespace pw {
 /* Classes                  */
 //
-	/*                                             */
-	/*[ (Engine_Queue)                              ]
+	/* -Engine_Queue
 	 For handling all engine events and switching
 	 from editor mode to game state.
 	*/
@@ -29,9 +33,11 @@ namespace pw {
 	public:
 		static PW_VOID Run_Queue();
 
+		static PW_VOID Refresh_Queue();
+
 		static PW_VOID Load_From_Dir(PW_CSTRING dir);
 		
-		static PW_VOID Add_Game_Scene(IE_Game_Scene scene);
+		static PW_VOID Add_Game_Scene(ie::Game_Scene scene);
 
 		static PW_VOID Change_Scene(PW_UINT new_index) { index = new_index; }
 		static PW_UINT Scene_Index() { return index; }
@@ -45,7 +51,7 @@ namespace pw {
 /* Private Variables        */
 	private:
 		static PW_UINT index;
-		static std::vector<IE_Game_Scene> scene_vector;
+		static std::vector<ie::Game_Scene> scene_vector;
 	};
 /* Functions                */
 /* Macros                   */

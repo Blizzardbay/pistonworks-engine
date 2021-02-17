@@ -21,6 +21,11 @@
 #define PW_DEBUG_MODE
 #endif // _DEBUG
 /*************************/
+//
+/* ############################# */
+/* Pistonworks Engine            */
+/* Created By : Darrian Corkadel */
+/* ############################# */
 namespace pw {
 /* Classes                  */
 //
@@ -50,15 +55,17 @@ namespace pw {
 			}
 		#endif // PW_DEBUG_MODE
 		}
-		static PW_VOID PW_GL_VOID_Handle(const GLenum result, const PW_INT line, PW_CSTRING file) {
-			if (result != 0) {
+		static PW_VOID PW_GL_VOID_Handle(const GLenum result, const PW_INT line, PW_CSTRING file, bool handle_type) {
+			if (result != 0 && result != 1282) {
 				printf("|%s|GL Function Error: %s\n|The Error Is On Line: %d\n|In File: %s\n", __TIME__, glewGetErrorString(result), line, file);
 				return;
 			}
 		#ifdef PW_DEBUG_MODE
 			else {
-				printf("|%s|GL Function Succeed: %s\n", __TIME__, glewGetErrorString(result));
-				return;
+				if (handle_type == true) {
+					printf("|%s|GL Function Succeed: %s\n", __TIME__, "No Error");
+					return;
+				}
 			}
 		#endif // PW_DEBUG_MODE
 		}
@@ -69,7 +76,7 @@ namespace pw {
 			}
 		#ifdef PW_DEBUG_MODE
 			else {
-				printf("|%s|GL Function Succeed: No Error\n", __TIME__);
+				printf("|%s|GL Function Succeed: %s\n", __TIME__, "No Error");
 				return;
 
 			}
@@ -81,11 +88,11 @@ namespace pw {
 				return;
 			}
 		}
-		#define PW_GLFW_VOID_CALL(x) { x; pw::Engine_Error::PW_LINE_ = __LINE__; pw::Engine_Error::PW_FILE_ = __FILE__; }
-		#define PW_GLFW_CALL(x) { pw::Engine_Error::PW_GLFW_Handle(x, __LINE__, __FILE__); }
-		#define PW_GL_VOID_CALL(x) { pw::Engine_Error::PW_GL_VOID_Handle(glGetError(), __LINE__, __FILE__); }
-		#define PW_GL_CALL(x) { pw::Engine_Error::PW_GL_Handle(x, __LINE__, __FILE__); }
-		#define PW_STBI_CALL(x) { pw::Engine_Error::PW_STBI_Handle(x, __LINE__, __FILE__); }
+		#define PW_GLFW_VOID_CALL(funct) { funct; pw::Engine_Error::PW_LINE_ = __LINE__; pw::Engine_Error::PW_FILE_ = __FILE__; }
+		#define PW_GLFW_CALL(funct) { pw::Engine_Error::PW_GLFW_Handle(funct, __LINE__, __FILE__); }
+		#define PW_GL_VOID_CALL(funct, handle_type) { funct; pw::Engine_Error::PW_GL_VOID_Handle(glGetError(), __LINE__, __FILE__,handle_type); }
+		#define PW_GL_CALL(funct) { pw::Engine_Error::PW_GL_Handle(funct, __LINE__, __FILE__); }
+		#define PW_STBI_CALL(funct) { pw::Engine_Error::PW_STBI_Handle(funct, __LINE__, __FILE__); }
 		/* Public Variables         */
 	public:
 		static PW_INT PW_LINE_;

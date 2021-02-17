@@ -15,12 +15,22 @@ namespace pw {
 
 	PW_CSTRING Engine_Constant::window_name = (PW_CSTRING) "";
 
+	PW_INT Engine_Constant::mouse_x_position;
+	PW_INT Engine_Constant::mouse_y_position;
+
+	const PW_FLOAT Engine_Constant::inverse_z_tan = -(1.0f / tan(glm::radians(45.0f / 2.0f)));
+
 	std::chrono::system_clock::time_point Engine_Constant::previous_time;
 	std::chrono::system_clock::time_point Engine_Constant::current_time;
 	std::chrono::duration<PW_FLOAT, std::milli> Engine_Constant::delta_time(0);
 
 	const std::chrono::duration<PW_FLOAT, std::milli> Engine_Constant::fps_constant(16.7000008f);
 
+	PW_INT ie::Camera::camera_zoom = -1;
+	PW_FLOAT ie::Camera::camera_x_position = 0.0f;
+	PW_FLOAT ie::Camera::camera_y_position = 0.0f;
+
+	ie::Dynamic_Model ie::Player::player_model;
 /* Class Members            */
 	PW_VOID Engine_Control::Init_Engine(PW_CSTRING display_name, PW_SINT display_width, PW_SINT display_height) {
 #ifdef PW_DEBUG_MODE
@@ -98,7 +108,7 @@ namespace pw {
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glEnable(GL_BLEND);
 
-		IE_Icon icon_data = IE_Icon(IE_Icon::Find_Icon("Test_Icon.png").c_str());
+		ie::Icon icon_data = ie::Icon(ie::Icon::Find_Icon("Test_Icon.png").c_str());
 		GLFWimage* icon = new GLFWimage();
 		icon->width = icon_data.Width();
 		icon->height = icon_data.Height();
@@ -111,11 +121,11 @@ namespace pw {
 		icon = nullptr;
 
 		// For setting up view port size
-		PW_GL_VOID_CALL(glViewport(0, 0, Engine_Constant::Window_Width(), Engine_Constant::Window_Height()));
+		PW_GL_VOID_CALL(glViewport(0, 0, Engine_Constant::Window_Width(), Engine_Constant::Window_Height()), true);
 		// For specifying which instance of the window will be used for callback
 		PW_GLFW_VOID_CALL(glfwSetWindowUserPointer(main_window, this));
 
-		PW_GL_VOID_CALL(glEnable(GL_DEBUG_OUTPUT));
+		PW_GL_VOID_CALL(glEnable(GL_DEBUG_OUTPUT), true);
 	}
 	PW_VOID Engine_Control::Run_Engine() {
 #ifdef PW_DEBUG_MODE
@@ -123,18 +133,14 @@ namespace pw {
 		printf("|%s|Shader Creation\n", __TIME__);
 		printf("|----------------------------------------\n");
 #endif // !PW_DEBUG_CODE
-		IE_Shader shader {};
+		ie::Shader shader {};
 		
 		shader.Create_Shader("engine_files/engine_resource/vertex_shader.shader", "engine_files/engine_resource/fragment_shader.shader");
 
-		IE_Camera camera( glm::vec3(0.0f,0.0f, 0.0f),glm::vec3(0.0f,1.0f,0.0f),-90.0f,0.0f,5.0f,1.0f );
-
 		glm::vec3 player_color(0.0f);
-		IE_Texture texture_2 = IE_Texture(IE_Texture::Find_Color_Texture("D16", IE_Texture::Default_Texture::BLUE, player_color).c_str());
-		IE_Dynamic_Model model = IE_Dynamic_Model(IE_Dynamic_Model::Model_Types::SQUARE, texture_2, glm::vec2(400.0f, 400.0f), 0.0f, glm::vec2(32.0f, 32.0f),player_color);
-		IE_Player::Init_Player(model);
-
-		Engine_Input::Set_Default_Binds(true);
+		ie::Texture texture_2 = ie::Texture(ie::Texture::Find_Color_Texture("D16", ie::Texture::Default_Texture::BLUE, player_color).c_str());
+		ie::Dynamic_Model model = ie::Dynamic_Model(ie::Dynamic_Model::Model_Types::SQUARE, texture_2, glm::vec2(400.0f, 400.0f), 0.0f, glm::vec2(32.0f, 32.0f),player_color);
+		ie::Player::Init_Player(model);
 
 		Engine_Input::Init_Default_Binds();
 
@@ -147,7 +153,7 @@ namespace pw {
 		PW_INT frames = 0;
 		PW_INT last_frames = 0;
 
-		while (pw::Engine_Control::Should_Close()) {
+		while (Engine_Control::Should_Close()) {
 			elapsed_time = end_time - start_time;
 			if (last_frames != frames) {
 				if (elapsed_time >= (std::chrono::duration<float, std::milli>)1000) {
@@ -167,14 +173,14 @@ namespace pw {
 
 			Engine_Input::Poll_Active_Events();
 
-			glClearColor(0.0f, 0.16f, 0.16f, 1.0f);
+			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			shader.Update_Projection(camera);
+			shader.Update_Projection();
 
 			Engine_Queue::Run_Queue();
 
-			IE_Player::Draw_Player();
+			ie::Player::Draw_Player();
 
 			Update_Engine_State();
 
@@ -190,17 +196,20 @@ namespace pw {
 	}
 	PW_VOID Engine_Control::Terminate_Engine() {
 		Engine_Queue::Clear_Queue();
-		IE_Player::Delete_Player();
+		ie::Player::Delete_Player();
 		PW_GLFW_VOID_CALL(glfwDestroyWindow(main_window));
 		main_window = nullptr;
 		PW_GLFW_VOID_CALL(glfwTerminate());
 	}
 	PW_VOID Engine_Control::Create_Callbacks() const {
 		/* Set up callback functions for handling key/mouse input */
-		PW_GLFW_VOID_CALL(glfwSetKeyCallback(main_window, Engine_Input::Handle_Keys));
-		PW_GLFW_VOID_CALL(glfwSetCursorPosCallback(main_window, Engine_Input::Handle_Mouse));
+		PW_GLFW_VOID_CALL(glfwSetKeyCallback(main_window, Engine_Input::Handle_Keyboard));
+		PW_GLFW_VOID_CALL(glfwSetCursorPosCallback(main_window, Engine_Input::Handle_Mouse_Movement));
+		PW_GLFW_VOID_CALL(glfwSetMouseButtonCallback(main_window, Engine_Input::Handle_Mouse_Button))
 		/* Handle resizing events with ease                       */
 		PW_GLFW_VOID_CALL(glfwSetFramebufferSizeCallback(main_window, Engine_Input::Handle_Resize));
+		/* Handle Scroll Wheel Input */
+		PW_GLFW_VOID_CALL(glfwSetScrollCallback(main_window, Engine_Input::Handle_Mouse_Scroll));
 	}
 	PW_VOID Engine_Control::Update_Engine_State() {
 		PW_GLFW_VOID_CALL(glfwSwapBuffers(main_window));
@@ -211,5 +220,7 @@ int main(int argc, char* argv[]) {
 	engine.Init_Engine((PW_CSTRING)"Pistonworks Window");
 	engine.Run_Engine();
 	engine.Terminate_Engine();
+	engine.~Engine_Control();
 	return 0;
 }
+// Pending change to IE turned into as namespace....

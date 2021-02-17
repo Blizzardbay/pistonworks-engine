@@ -4,7 +4,7 @@ namespace pw {
 /* Engine_Queue             */
 /* Static Declarations      */
 	PW_UINT Engine_Queue::index = 0;
-	std::vector<IE_Game_Scene> Engine_Queue::scene_vector;
+	std::vector<ie::Game_Scene> Engine_Queue::scene_vector;
 /* Class Members            */
 	PW_VOID Engine_Queue::Run_Queue() {
 		if (index >= scene_vector.size()) {
@@ -16,6 +16,14 @@ namespace pw {
 			}
 		}
 		scene_vector.at(index).Render();
+	}
+	PW_VOID Engine_Queue::Refresh_Queue() {
+		if (scene_vector.size() > 0) {
+			for (PW_SIZE i = 0; i < scene_vector.size(); i++) {
+				scene_vector.at(i).Refresh_Scene();
+			}
+		}
+		ie::Player::Refresh_Player();
 	}
 	PW_VOID Engine_Queue::Load_From_Dir(PW_CSTRING dir) {
 		std::string file_list = "";
@@ -34,7 +42,7 @@ namespace pw {
 		for (PW_UINT i = 0; i < file_count; i++) {
 			std::string temp_str = file_list.substr(0, file_list.find(".") + 5);
 
-			IE_Game_Scene scene = IE_Game_Scene(temp_str.c_str());
+			ie::Game_Scene scene = ie::Game_Scene(temp_str.c_str());
 			scene_vector.push_back(scene);
 
 			file_list.erase(0, temp_str.size());
@@ -42,12 +50,12 @@ namespace pw {
 		// Insertion Sort the orders of the vector
 		Insertion_Sort();
 	}
-	PW_VOID Engine_Queue::Add_Game_Scene(IE_Game_Scene scene) {
+	PW_VOID Engine_Queue::Add_Game_Scene(ie::Game_Scene scene) {
 		scene_vector.push_back(scene);
 		Insertion_Sort();
 	}
 	PW_VOID Engine_Queue::Insertion_Sort() {
-		IE_Game_Scene key = IE_Game_Scene(NULL);
+		ie::Game_Scene key = ie::Game_Scene(NULL);
 		PW_INT less_index = 0;
 		for (PW_UINT i = 1; i < scene_vector.size(); i++) {
 			key = scene_vector.at(i);
