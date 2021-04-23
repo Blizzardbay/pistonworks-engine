@@ -1,10 +1,11 @@
 # pistonworks-engine
 *Engine Specifications*
 
- Description 
-  This engine is a 2D multi-purpose tile based game that
-  is used for game development. This engine has the
-  following features.
+ Description:
+ 
+   This engine is a 2D multi-purpose tile based game that
+   is used for game development. This engine has the
+   following features.
   1. Scene Queueing and Manipulation
   
     You custom set up different scenes with any amount of objects
