@@ -1,0 +1,11 @@
+// Hint files help the Visual Studio IDE interpret Visual C++ identifiers
+// such as names of functions and macros.
+// For more information see https://go.microsoft.com/fwlink/?linkid=865984
+#define PW_NAMESPACE_SRT							namespace pw {
+#define IE_NAMESPACE_SRT							namespace ie {
+#define PW_SRD_PTR(type)							std::shared_ptr<type>
+#define PW_UNI_PTR(type)							std::unique_ptr<type>
+#define PW_DUNI_PTR(type, deleter)					std::unique_ptr<type, deleter>
+#define TO_LLINT(x)									static_cast<PW_LLINT>(x)
+#define TO_LLUINT(x)								static_cast<PW_LLUINT>(x)
+#define PW_SMART_ARRAY								*

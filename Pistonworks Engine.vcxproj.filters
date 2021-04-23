@@ -25,6 +25,9 @@
     <Filter Include="internal_engine_files\internal_engine_headers">
       <UniqueIdentifier>{bfd3c362-3625-4fcd-adb4-4f414232fba0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="config">
+      <UniqueIdentifier>{2886c2dc-f923-48fc-8c9b-063ff2b0a37a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine_files\engine_headers\engine_constant.h">
@@ -38,9 +41,6 @@
     </ClInclude>
     <ClInclude Include="engine_files\engine_headers\engine_input.h">
       <Filter>engine_files\engine_headers</Filter>
-    </ClInclude>
-    <ClInclude Include="engine_files\engine_resource\template.h">
-      <Filter>engine_files\engine_resource</Filter>
     </ClInclude>
     <ClInclude Include="internal_engine_files\internal_engine_headers\ie_camera.h">
       <Filter>internal_engine_files\internal_engine_headers</Filter>
@@ -66,14 +66,14 @@
     <ClInclude Include="internal_engine_files\internal_engine_headers\ie_event.h">
       <Filter>internal_engine_files\internal_engine_headers</Filter>
     </ClInclude>
-    <ClInclude Include="internal_engine_files\internal_engine_headers\ie_player.h">
-      <Filter>internal_engine_files\internal_engine_headers</Filter>
-    </ClInclude>
     <ClInclude Include="internal_engine_files\internal_engine_headers\ie_animation.h">
       <Filter>internal_engine_files\internal_engine_headers</Filter>
     </ClInclude>
-    <ClInclude Include="internal_engine_files\internal_engine_headers\ie_complex_event.h">
+    <ClInclude Include="internal_engine_files\internal_engine_headers\ie_physics.h">
       <Filter>internal_engine_files\internal_engine_headers</Filter>
+    </ClInclude>
+    <ClInclude Include="config\b2_user_settings.h">
+      <Filter>config</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -101,10 +101,16 @@
     <ClCompile Include="internal_engine_files\internal_engine_source\ie_texture.cpp">
       <Filter>internal_engine_files\internal_engine_source</Filter>
     </ClCompile>
-    <ClCompile Include="engine_files\engine_resource\template.cpp">
-      <Filter>engine_files\engine_resource</Filter>
-    </ClCompile>
     <ClCompile Include="internal_engine_files\internal_engine_source\ie_animation.cpp">
+      <Filter>internal_engine_files\internal_engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="internal_engine_files\internal_engine_source\ie_camera.cpp">
+      <Filter>internal_engine_files\internal_engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="internal_engine_files\internal_engine_source\ie_event.cpp">
+      <Filter>internal_engine_files\internal_engine_source</Filter>
+    </ClCompile>
+    <ClCompile Include="internal_engine_files\internal_engine_source\ie_physics.cpp">
       <Filter>internal_engine_files\internal_engine_source</Filter>
     </ClCompile>
   </ItemGroup>
@@ -118,11 +124,14 @@
     <None Include="engine_files\engine_resource\vertex_shader.shader">
       <Filter>engine_files\engine_resource</Filter>
     </None>
-    <None Include="engine_editor_preset.pwedf">
-      <Filter>engine_files\engine_resource</Filter>
-    </None>
     <None Include="engine_files\engine_resource\test_objects.pwsf">
       <Filter>engine_files\engine_resource</Filter>
+    </None>
+    <None Include="engine_files\engine_resource\Other_Scene.pwsf">
+      <Filter>engine_files\engine_resource</Filter>
+    </None>
+    <None Include="cpp.hint">
+      <Filter>config</Filter>
     </None>
   </ItemGroup>
 </Project>
