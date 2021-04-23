@@ -4,8 +4,8 @@
   This engine is a 2D multi-purpose tile based game that
   is used for game development. This engine has the
   following features.
- * /*1. Scene Queueing and Manipulation (ie.)*/
-   You custom set up different scenes with any amount
+ * 1. Scene Queueing and Manipulation (ie.)
+    You custom set up different scenes with any amount
    of objects oriented in any fashion. You can set it
    up so it auto queues and changes scenes, depending
    on game state and or conditions.
