@@ -50,7 +50,7 @@
     <ClCompile Include="internal_engine_files\internal_engine_source\ie_texture.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="cpp.hint" />
+    <None Include="config\cpp.hint" />
     <None Include="engine_files\engine_resource\fragment_shader.shader" />
     <None Include="engine_files\engine_resource\Other_Scene.pwsf" />
     <None Include="engine_files\engine_resource\test_objects.pwsf" />

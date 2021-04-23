@@ -130,7 +130,7 @@
     <None Include="engine_files\engine_resource\Other_Scene.pwsf">
       <Filter>engine_files\engine_resource</Filter>
     </None>
-    <None Include="cpp.hint">
+    <None Include="config\cpp.hint">
       <Filter>config</Filter>
     </None>
   </ItemGroup>
