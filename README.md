@@ -38,13 +38,15 @@
     can be created with a model and handle input
     events specifically, related to what the menu
     type may be.
- * /*7. Events (ie.)*/
-   This engine comes with built in event system that
-   is closely tied with the input for robust events to
-   models, objects and other engine types. The events
-   are also tied to the menu greatly.
- * /*8. Models (ie.)*/
-   In the engine there is a finite amount of different
-   models you can use as this is a 2D tile based engine.
-   There are models ranging from squares to triangles
-   fully supported with collisions and events.
+  7. Events
+  
+    This engine comes with built in event system that
+    is closely tied with the input for robust events to
+    models, objects and other engine types. The events
+    are also tied to the menu greatly.
+  8. Models
+ 
+    In the engine there is a finite amount of different
+    models you can use as this is a 2D tile based engine.
+    There are models ranging from squares to triangles
+    fully supported with collisions and events.
