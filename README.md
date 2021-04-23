@@ -1,8 +1,5 @@
 # pistonworks-engine
-*Engine Specifications*
-
- Description:
- 
+*Engine Specifications* 
    This engine is a 2D multi-purpose tile based game that
    is used for game development. This engine has the
    following features.
