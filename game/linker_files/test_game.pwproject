@@ -1,0 +1,15 @@
+{HEADER}
+/PROJECT_NAME("Test_Game");
+{STRUCTURE}
+/ONLOAD_SCENE("Test_Scene");
+{FILES}
+/DATALOC("game\data");
+{TEXTURES}
+/TEXTURELOC("game\textures");
+{ANIMATIONS}
+/ANIMATIONLOC("game\animations");
+{FONT}
+/FONTLOC("game\font");
+{ICON}
+/ICONLOC("game\icon");
+{END_OF_FILE}

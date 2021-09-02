@@ -20,42 +20,87 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config\b2_user_settings.h" />
-    <ClInclude Include="engine_files\engine_headers\engine_constant.h" />
-    <ClInclude Include="engine_files\engine_headers\engine_control.h" />
-    <ClInclude Include="engine_files\engine_headers\engine_error.h" />
-    <ClInclude Include="engine_files\engine_headers\engine_input.h" />
-    <ClInclude Include="engine_files\engine_headers\engine_queue.h" />
-    <ClInclude Include="internal_engine_files\internal_engine_headers\ie_animation.h" />
-    <ClInclude Include="internal_engine_files\internal_engine_headers\ie_camera.h" />
-    <ClInclude Include="internal_engine_files\internal_engine_headers\ie_event.h" />
-    <ClInclude Include="internal_engine_files\internal_engine_headers\ie_game_scene.h" />
-    <ClInclude Include="internal_engine_files\internal_engine_headers\ie_mesh.h" />
-    <ClInclude Include="internal_engine_files\internal_engine_headers\ie_model.h" />
-    <ClInclude Include="internal_engine_files\internal_engine_headers\ie_physics.h" />
-    <ClInclude Include="internal_engine_files\internal_engine_headers\ie_shader.h" />
-    <ClInclude Include="internal_engine_files\internal_engine_headers\ie_texture.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="engine_files\engine_source\engine_control.cpp" />
-    <ClCompile Include="engine_files\engine_source\engine_input.cpp" />
-    <ClCompile Include="engine_files\engine_source\engine_queue.cpp" />
-    <ClCompile Include="internal_engine_files\internal_engine_source\ie_animation.cpp" />
-    <ClCompile Include="internal_engine_files\internal_engine_source\ie_camera.cpp" />
-    <ClCompile Include="internal_engine_files\internal_engine_source\ie_event.cpp" />
-    <ClCompile Include="internal_engine_files\internal_engine_source\ie_game_scene.cpp" />
-    <ClCompile Include="internal_engine_files\internal_engine_source\ie_mesh.cpp" />
-    <ClCompile Include="internal_engine_files\internal_engine_source\ie_model.cpp" />
-    <ClCompile Include="internal_engine_files\internal_engine_source\ie_physics.cpp" />
-    <ClCompile Include="internal_engine_files\internal_engine_source\ie_shader.cpp" />
-    <ClCompile Include="internal_engine_files\internal_engine_source\ie_texture.cpp" />
+    <ClInclude Include="engine_files\engine_headers\engine_common\engine_constant.h" />
+    <ClInclude Include="engine_files\engine_headers\engine_common\engine_error.h" />
+    <ClInclude Include="engine_files\engine_headers\engine_control\engine_control.h" />
+    <ClInclude Include="engine_files\engine_headers\engine_control\engine_file_loader.h" />
+    <ClInclude Include="engine_files\engine_headers\engine_control\engine_input.h" />
+    <ClInclude Include="engine_files\engine_headers\engine_control\engine_physics.h" />
+    <ClInclude Include="engine_files\engine_headers\engine_control\engine_queue.h" />
+    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_animation.h" />
+    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_camera.h" />
+    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_event.h" />
+    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_game_scene.h" />
+    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_mesh.h" />
+    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_model.h" />
+    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_shader.h" />
+    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_text.h" />
+    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_texture.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="config\cpp.hint" />
-    <None Include="engine_files\engine_resource\fragment_shader.shader" />
-    <None Include="engine_files\engine_resource\Other_Scene.pwsf" />
-    <None Include="engine_files\engine_resource\test_objects.pwsf" />
-    <None Include="engine_files\engine_resource\test_scene.pwsf" />
-    <None Include="engine_files\engine_resource\vertex_shader.shader" />
+    <None Include="engine_files\engine_resource\engine_essential\engine_shader\fragment_shader.shader" />
+    <None Include="engine_files\engine_resource\engine_essential\engine_shader\vertex_shader.shader" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="engine_files\engine_resource\engine_essential\engine_icon\Icon.png" />
+    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\animation.png" />
+    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\animation1.png" />
+    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\animation2.png" />
+    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\animation3.png" />
+    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\EBvzKJaXsAADLjp.png" />
+    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\Editor_Crosshair.png" />
+    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\sample_640×426.bmp" />
+    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\sample_640×426.jpeg" />
+    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\Seki_Fire_guy_thing_1.gif" />
+    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\test.png" />
+    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\Test_Animation.gif" />
+    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\Test_Animation2.gif" />
+    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\Test_Animation3.gif" />
+    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\Test_Image_4.png" />
+    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\Test_Image_5.png" />
+    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\Test_Image_6.png" />
+    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\unknown.png" />
+    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\White.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="engine_files\engine_resource\engine_fonts\arial_font\arial 1.ttf" />
+    <Font Include="engine_files\engine_resource\engine_fonts\arial_font\Arial 2.ttf" />
+    <Font Include="engine_files\engine_resource\engine_fonts\cambria_font\Cambria.ttf" />
+    <Font Include="engine_files\engine_resource\engine_fonts\cambria_font\cambriab.ttf" />
+    <Font Include="engine_files\engine_resource\engine_fonts\cambria_font\CAMBRIAI.TTF" />
+    <Font Include="engine_files\engine_resource\engine_fonts\cambria_font\CAMBRIAZ.TTF" />
+    <Font Include="engine_files\engine_resource\engine_fonts\roboto_font\Roboto-Black.ttf" />
+    <Font Include="engine_files\engine_resource\engine_fonts\roboto_font\Roboto-BlackItalic.ttf" />
+    <Font Include="engine_files\engine_resource\engine_fonts\roboto_font\Roboto-Bold.ttf" />
+    <Font Include="engine_files\engine_resource\engine_fonts\roboto_font\Roboto-BoldItalic.ttf" />
+    <Font Include="engine_files\engine_resource\engine_fonts\roboto_font\Roboto-Italic.ttf" />
+    <Font Include="engine_files\engine_resource\engine_fonts\roboto_font\Roboto-Light.ttf" />
+    <Font Include="engine_files\engine_resource\engine_fonts\roboto_font\Roboto-LightItalic.ttf" />
+    <Font Include="engine_files\engine_resource\engine_fonts\roboto_font\Roboto-Medium.ttf" />
+    <Font Include="engine_files\engine_resource\engine_fonts\roboto_font\Roboto-MediumItalic.ttf" />
+    <Font Include="engine_files\engine_resource\engine_fonts\roboto_font\Roboto-Regular.ttf" />
+    <Font Include="engine_files\engine_resource\engine_fonts\roboto_font\Roboto-Thin.ttf" />
+    <Font Include="engine_files\engine_resource\engine_fonts\roboto_font\Roboto-ThinItalic.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="engine_files\engine_resource\engine_fonts\roboto_font\LICENSE.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="engine_files\engine_source\engine_control\engine_control.cpp" />
+    <ClCompile Include="engine_files\engine_source\engine_control\engine_file_loader.cpp" />
+    <ClCompile Include="engine_files\engine_source\engine_control\engine_game_scene.cpp" />
+    <ClCompile Include="engine_files\engine_source\engine_control\engine_input.cpp" />
+    <ClCompile Include="engine_files\engine_source\engine_control\engine_physics.cpp" />
+    <ClCompile Include="engine_files\engine_source\engine_control\engine_queue.cpp" />
+    <ClCompile Include="engine_files\engine_source\engine_structures\engine_animation.cpp" />
+    <ClCompile Include="engine_files\engine_source\engine_structures\engine_camera.cpp" />
+    <ClCompile Include="engine_files\engine_source\engine_structures\engine_event.cpp" />
+    <ClCompile Include="engine_files\engine_source\engine_structures\engine_mesh.cpp" />
+    <ClCompile Include="engine_files\engine_source\engine_structures\engine_model.cpp" />
+    <ClCompile Include="engine_files\engine_source\engine_structures\engine_shader.cpp" />
+    <ClCompile Include="engine_files\engine_source\engine_structures\engine_text.cpp" />
+    <ClCompile Include="engine_files\engine_source\engine_structures\engine_texture.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -122,6 +167,15 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <VcpkgInstalledDir>
+    </VcpkgInstalledDir>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <VcpkgInstalledDir>
+    </VcpkgInstalledDir>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -144,17 +198,17 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);FT2_BUILD_LIBRARY;FT2_BUILD_LIBRARY</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(Solution)Visual Studio Includes\Graphics-Win64\glew-2.1.0\include;$(Solution)Visual Studio Includes\Graphics-Win64\glm;$(Solution)Visual Studio Includes\Graphics-Win64\glfw-3.3.3.bin.WIN64\include;$(Solution)Visual Studio Includes\Graphics-Win64\STB_Image\;$(Solution)engine_files\;$(Solution)internal_engine_files\;$(Solution)Visual Studio Includes\Collision-Physics\box2d-master\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(Solution)dependencies\graphics_win64\glew-2.1.0\include;$(Solution)dependencies\graphics_win64\glm;$(Solution)dependencies\graphics_win64\glfw-3.3.3.bin.WIN64\include;$(Solution)dependencies\graphics_win64\freetype-2.10.4\include;$(Solution)dependencies\graphics_win64\FreeImage\Dist\x64;$(Solution)dependencies\physics_win64\box2d-master\include;$(Solution)engine_files\engine_headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(Solution)Visual Studio Includes\Graphics-Win64\glew-2.1.0\lib\Release\x64;$(Solution)Visual Studio Includes\Graphics-Win64\glfw-3.3.3.bin.WIN64\lib-vc2019;$(Solution)Visual Studio Includes\Collision-Physics\box2d-master\build\bin\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>box2d.lib;opengl32.lib;glew32.lib;glew32s.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(Solution)dependencies\graphics_win64\glew-2.1.0\lib\Release\x64;$(Solution)dependencies\graphics_win64\glfw-3.3.3.bin.WIN64\lib-vc2019;$(Solution)dependencies\physics_win64\box2d-master\build\bin\Debug;$(Solution)dependencies\graphics_win64\freetype-2.10.4\objs\x64\Debug;$(Solution)dependencies\graphics_win64\FreeImage\Dist\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>FreeImage.lib;freetype.lib;box2d.lib;opengl32.lib;glew32.lib;glew32s.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/NODEFAULTLIB:MSVCRT %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
@@ -187,9 +241,9 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);FT2_BUILD_LIBRARY;FT2_BUILD_LIBRARY</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(Solution)Visual Studio Includes\Graphics-Win64\glew-2.1.0\include;$(Solution)Visual Studio Includes\Graphics-Win64\glm;$(Solution)Visual Studio Includes\Graphics-Win64\glfw-3.3.3.bin.WIN64\include;$(Solution)Visual Studio Includes\Graphics-Win64\STB_Image\;$(Solution)engine_files\;$(Solution)internal_engine_files\;$(Solution)Visual Studio Includes\Collision-Physics\box2d-master\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(Solution)Visual Studio Includes\Graphics-Win64\glew-2.1.0\include;$(Solution)Visual Studio Includes\Graphics-Win64\glm;$(Solution)Visual Studio Includes\Graphics-Win64\glfw-3.3.3.bin.WIN64\include;$(Solution)Visual Studio Includes\Graphics-Win64\STB_Image\;$(Solution)engine_files\;$(Solution)internal_engine_files\;$(Solution)Visual Studio Includes\Collision-Physics\box2d-master\include\;$(Solution)Visual Studio Includes\Graphics-Win64\freetype-2.10.4\include;$(Solution)Visual Studio Includes\Graphics-Win64\sail\include;$(Solution)Visual Studio Includes\Graphics-Win64\sail\build\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
@@ -198,8 +252,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(Solution)Visual Studio Includes\Graphics-Win64\glew-2.1.0\lib\Release\x64;$(Solution)Visual Studio Includes\Graphics-Win64\glfw-3.3.3.bin.WIN64\lib-vc2019;$(Solution)Visual Studio Includes\Collision-Physics\box2d-master\build\bin\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>box2d.lib;opengl32.lib;glew32.lib;glew32s.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(Solution)Visual Studio Includes\Graphics-Win64\glew-2.1.0\lib\Release\x64;$(Solution)Visual Studio Includes\Graphics-Win64\glfw-3.3.3.bin.WIN64\lib-vc2019;$(Solution)Visual Studio Includes\Collision-Physics\box2d-master\build\bin\Debug;$(Solution)Visual Studio Includes\Graphics-Win64\freetype-2.10.4\objs\x64\Debug;$(Solution)Visual Studio Includes\Graphics-Win64\sail\build\src\libsail\Debug;$(Solution)Visual Studio Includes\Graphics-Win64\sail\build\src\libsail-common\Debug;$(Solution)Visual Studio Includes\Graphics-Win64\sail\build\src\bindings\c++\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sail.lib;sail-c++.lib;sail-common.lib;freetype.lib;box2d.lib;opengl32.lib;glew32.lib;glew32s.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/NODEFAULTLIB:MSVCRT %(AdditionalOptions)</AdditionalOptions>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>

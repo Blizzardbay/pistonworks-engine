@@ -1,137 +1,287 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="engine_files">
-      <UniqueIdentifier>{3c831831-a6c2-4ccb-894a-508b94ed92ac}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="engine_files\engine_headers">
-      <UniqueIdentifier>{819a8584-ca24-4898-ac0e-deedfc9f9292}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="engine_files\engine_source">
-      <UniqueIdentifier>{862876fa-9f10-4011-b89d-54d7c3f1211b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="engine_files\engine_resource">
-      <UniqueIdentifier>{217cee98-592e-4da5-ae74-8c9672ba83c4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="internal_engine_files">
-      <UniqueIdentifier>{970ab09d-f84e-49ad-bfce-d1e27641706d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="internal_engine_files\internal_engine_resource">
-      <UniqueIdentifier>{b036c942-0005-4e3e-8487-e1a70ca65c1b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="internal_engine_files\internal_engine_source">
-      <UniqueIdentifier>{1fd76c67-06e6-4ff5-8a06-9965e27f42bd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="internal_engine_files\internal_engine_headers">
-      <UniqueIdentifier>{bfd3c362-3625-4fcd-adb4-4f414232fba0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="config">
       <UniqueIdentifier>{2886c2dc-f923-48fc-8c9b-063ff2b0a37a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="engine_files">
+      <UniqueIdentifier>{f8162d08-e5bc-4a1b-a62f-0c4ed62fd3eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine_files\engine_headers">
+      <UniqueIdentifier>{112197a0-d946-4ff5-81fb-ffb4d0912b38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine_files\engine_resource">
+      <UniqueIdentifier>{e86e7acb-006e-4544-95ae-a8cddc591cfb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine_files\engine_source">
+      <UniqueIdentifier>{a00f2965-fac5-43a0-8a6f-32feef70836d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine_files\engine_headers\engine_common">
+      <UniqueIdentifier>{0d018820-fb9d-42d4-b4e8-461d82f1c151}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine_files\engine_headers\engine_control">
+      <UniqueIdentifier>{073dabcb-1b08-490e-a3c7-97e870c9643a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine_files\engine_headers\engine_structures">
+      <UniqueIdentifier>{08225ecc-6260-45c0-94d8-0b4f7aa816bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine_files\engine_resource\engine_essential">
+      <UniqueIdentifier>{f655f59b-6f71-4a49-b458-38d4500267b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine_files\engine_resource\engine_fonts">
+      <UniqueIdentifier>{4d1428cf-c810-4cbb-9f16-205794a89fba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine_files\engine_resource\engine_essential\engine_icon">
+      <UniqueIdentifier>{2d1f1597-e310-4b24-a195-cb0379de8aaa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine_files\engine_resource\engine_essential\engine_shader">
+      <UniqueIdentifier>{9354baf1-43c7-498b-9969-c7138292aa5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine_files\engine_resource\engine_essential\engine_textures">
+      <UniqueIdentifier>{9f04fd96-44bc-49ef-beb1-85bce68573e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine_files\engine_resource\engine_fonts\arial_font">
+      <UniqueIdentifier>{851716f9-e104-4466-a40c-a7e25b60a95e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine_files\engine_resource\engine_fonts\cambria_font">
+      <UniqueIdentifier>{2fac9968-7a29-4a27-86a7-fb94cc644146}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine_files\engine_resource\engine_fonts\roboto_font">
+      <UniqueIdentifier>{5e5acdf4-3ed0-4068-895f-c6afe38362e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine_files\engine_source\engine_control">
+      <UniqueIdentifier>{a04d1b3c-679a-467f-81cb-e82eab8f94a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine_files\engine_source\engine_structures">
+      <UniqueIdentifier>{103b75a8-3509-4ff8-842a-084094f6abdc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="engine_files\engine_headers\engine_constant.h">
-      <Filter>engine_files\engine_headers</Filter>
-    </ClInclude>
-    <ClInclude Include="engine_files\engine_headers\engine_error.h">
-      <Filter>engine_files\engine_headers</Filter>
-    </ClInclude>
-    <ClInclude Include="engine_files\engine_headers\engine_queue.h">
-      <Filter>engine_files\engine_headers</Filter>
-    </ClInclude>
-    <ClInclude Include="engine_files\engine_headers\engine_input.h">
-      <Filter>engine_files\engine_headers</Filter>
-    </ClInclude>
-    <ClInclude Include="internal_engine_files\internal_engine_headers\ie_camera.h">
-      <Filter>internal_engine_files\internal_engine_headers</Filter>
-    </ClInclude>
-    <ClInclude Include="internal_engine_files\internal_engine_headers\ie_game_scene.h">
-      <Filter>internal_engine_files\internal_engine_headers</Filter>
-    </ClInclude>
-    <ClInclude Include="internal_engine_files\internal_engine_headers\ie_mesh.h">
-      <Filter>internal_engine_files\internal_engine_headers</Filter>
-    </ClInclude>
-    <ClInclude Include="internal_engine_files\internal_engine_headers\ie_model.h">
-      <Filter>internal_engine_files\internal_engine_headers</Filter>
-    </ClInclude>
-    <ClInclude Include="internal_engine_files\internal_engine_headers\ie_shader.h">
-      <Filter>internal_engine_files\internal_engine_headers</Filter>
-    </ClInclude>
-    <ClInclude Include="internal_engine_files\internal_engine_headers\ie_texture.h">
-      <Filter>internal_engine_files\internal_engine_headers</Filter>
-    </ClInclude>
-    <ClInclude Include="engine_files\engine_headers\engine_control.h">
-      <Filter>engine_files\engine_headers</Filter>
-    </ClInclude>
-    <ClInclude Include="internal_engine_files\internal_engine_headers\ie_event.h">
-      <Filter>internal_engine_files\internal_engine_headers</Filter>
-    </ClInclude>
-    <ClInclude Include="internal_engine_files\internal_engine_headers\ie_animation.h">
-      <Filter>internal_engine_files\internal_engine_headers</Filter>
-    </ClInclude>
-    <ClInclude Include="internal_engine_files\internal_engine_headers\ie_physics.h">
-      <Filter>internal_engine_files\internal_engine_headers</Filter>
-    </ClInclude>
     <ClInclude Include="config\b2_user_settings.h">
       <Filter>config</Filter>
     </ClInclude>
+    <ClInclude Include="engine_files\engine_headers\engine_common\engine_constant.h">
+      <Filter>engine_files\engine_headers\engine_common</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_files\engine_headers\engine_common\engine_error.h">
+      <Filter>engine_files\engine_headers\engine_common</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_files\engine_headers\engine_control\engine_control.h">
+      <Filter>engine_files\engine_headers\engine_control</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_files\engine_headers\engine_control\engine_file_loader.h">
+      <Filter>engine_files\engine_headers\engine_control</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_files\engine_headers\engine_control\engine_input.h">
+      <Filter>engine_files\engine_headers\engine_control</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_files\engine_headers\engine_control\engine_physics.h">
+      <Filter>engine_files\engine_headers\engine_control</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_files\engine_headers\engine_control\engine_queue.h">
+      <Filter>engine_files\engine_headers\engine_control</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_animation.h">
+      <Filter>engine_files\engine_headers\engine_structures</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_camera.h">
+      <Filter>engine_files\engine_headers\engine_structures</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_event.h">
+      <Filter>engine_files\engine_headers\engine_structures</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_game_scene.h">
+      <Filter>engine_files\engine_headers\engine_structures</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_mesh.h">
+      <Filter>engine_files\engine_headers\engine_structures</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_model.h">
+      <Filter>engine_files\engine_headers\engine_structures</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_shader.h">
+      <Filter>engine_files\engine_headers\engine_structures</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_text.h">
+      <Filter>engine_files\engine_headers\engine_structures</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_texture.h">
+      <Filter>engine_files\engine_headers\engine_structures</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="engine_files\engine_source\engine_control.cpp">
-      <Filter>engine_files\engine_source</Filter>
-    </ClCompile>
-    <ClCompile Include="engine_files\engine_source\engine_input.cpp">
-      <Filter>engine_files\engine_source</Filter>
-    </ClCompile>
-    <ClCompile Include="engine_files\engine_source\engine_queue.cpp">
-      <Filter>engine_files\engine_source</Filter>
-    </ClCompile>
-    <ClCompile Include="internal_engine_files\internal_engine_source\ie_game_scene.cpp">
-      <Filter>internal_engine_files\internal_engine_source</Filter>
-    </ClCompile>
-    <ClCompile Include="internal_engine_files\internal_engine_source\ie_mesh.cpp">
-      <Filter>internal_engine_files\internal_engine_source</Filter>
-    </ClCompile>
-    <ClCompile Include="internal_engine_files\internal_engine_source\ie_model.cpp">
-      <Filter>internal_engine_files\internal_engine_source</Filter>
-    </ClCompile>
-    <ClCompile Include="internal_engine_files\internal_engine_source\ie_shader.cpp">
-      <Filter>internal_engine_files\internal_engine_source</Filter>
-    </ClCompile>
-    <ClCompile Include="internal_engine_files\internal_engine_source\ie_texture.cpp">
-      <Filter>internal_engine_files\internal_engine_source</Filter>
-    </ClCompile>
-    <ClCompile Include="internal_engine_files\internal_engine_source\ie_animation.cpp">
-      <Filter>internal_engine_files\internal_engine_source</Filter>
-    </ClCompile>
-    <ClCompile Include="internal_engine_files\internal_engine_source\ie_camera.cpp">
-      <Filter>internal_engine_files\internal_engine_source</Filter>
-    </ClCompile>
-    <ClCompile Include="internal_engine_files\internal_engine_source\ie_event.cpp">
-      <Filter>internal_engine_files\internal_engine_source</Filter>
-    </ClCompile>
-    <ClCompile Include="internal_engine_files\internal_engine_source\ie_physics.cpp">
-      <Filter>internal_engine_files\internal_engine_source</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="engine_files\engine_resource\fragment_shader.shader">
-      <Filter>engine_files\engine_resource</Filter>
-    </None>
-    <None Include="engine_files\engine_resource\test_scene.pwsf">
-      <Filter>engine_files\engine_resource</Filter>
-    </None>
-    <None Include="engine_files\engine_resource\vertex_shader.shader">
-      <Filter>engine_files\engine_resource</Filter>
-    </None>
-    <None Include="engine_files\engine_resource\test_objects.pwsf">
-      <Filter>engine_files\engine_resource</Filter>
-    </None>
-    <None Include="engine_files\engine_resource\Other_Scene.pwsf">
-      <Filter>engine_files\engine_resource</Filter>
-    </None>
     <None Include="config\cpp.hint">
       <Filter>config</Filter>
     </None>
+    <None Include="engine_files\engine_resource\engine_essential\engine_shader\fragment_shader.shader">
+      <Filter>engine_files\engine_resource\engine_essential\engine_shader</Filter>
+    </None>
+    <None Include="engine_files\engine_resource\engine_essential\engine_shader\vertex_shader.shader">
+      <Filter>engine_files\engine_resource\engine_essential\engine_shader</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="engine_files\engine_resource\engine_essential\engine_icon\Icon.png">
+      <Filter>engine_files\engine_resource\engine_essential\engine_icon</Filter>
+    </Image>
+    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\animation.png">
+      <Filter>engine_files\engine_resource\engine_essential\engine_textures</Filter>
+    </Image>
+    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\animation1.png">
+      <Filter>engine_files\engine_resource\engine_essential\engine_textures</Filter>
+    </Image>
+    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\animation2.png">
+      <Filter>engine_files\engine_resource\engine_essential\engine_textures</Filter>
+    </Image>
+    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\animation3.png">
+      <Filter>engine_files\engine_resource\engine_essential\engine_textures</Filter>
+    </Image>
+    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\EBvzKJaXsAADLjp.png">
+      <Filter>engine_files\engine_resource\engine_essential\engine_textures</Filter>
+    </Image>
+    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\Editor_Crosshair.png">
+      <Filter>engine_files\engine_resource\engine_essential\engine_textures</Filter>
+    </Image>
+    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\sample_640×426.bmp">
+      <Filter>engine_files\engine_resource\engine_essential\engine_textures</Filter>
+    </Image>
+    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\sample_640×426.jpeg">
+      <Filter>engine_files\engine_resource\engine_essential\engine_textures</Filter>
+    </Image>
+    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\Seki_Fire_guy_thing_1.gif">
+      <Filter>engine_files\engine_resource\engine_essential\engine_textures</Filter>
+    </Image>
+    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\test.png">
+      <Filter>engine_files\engine_resource\engine_essential\engine_textures</Filter>
+    </Image>
+    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\Test_Animation.gif">
+      <Filter>engine_files\engine_resource\engine_essential\engine_textures</Filter>
+    </Image>
+    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\Test_Animation2.gif">
+      <Filter>engine_files\engine_resource\engine_essential\engine_textures</Filter>
+    </Image>
+    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\Test_Animation3.gif">
+      <Filter>engine_files\engine_resource\engine_essential\engine_textures</Filter>
+    </Image>
+    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\Test_Image_4.png">
+      <Filter>engine_files\engine_resource\engine_essential\engine_textures</Filter>
+    </Image>
+    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\Test_Image_5.png">
+      <Filter>engine_files\engine_resource\engine_essential\engine_textures</Filter>
+    </Image>
+    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\Test_Image_6.png">
+      <Filter>engine_files\engine_resource\engine_essential\engine_textures</Filter>
+    </Image>
+    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\unknown.png">
+      <Filter>engine_files\engine_resource\engine_essential\engine_textures</Filter>
+    </Image>
+    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\White.png">
+      <Filter>engine_files\engine_resource\engine_essential\engine_textures</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="engine_files\engine_resource\engine_fonts\arial_font\arial 1.ttf">
+      <Filter>engine_files\engine_resource\engine_fonts\arial_font</Filter>
+    </Font>
+    <Font Include="engine_files\engine_resource\engine_fonts\arial_font\Arial 2.ttf">
+      <Filter>engine_files\engine_resource\engine_fonts\arial_font</Filter>
+    </Font>
+    <Font Include="engine_files\engine_resource\engine_fonts\cambria_font\Cambria.ttf">
+      <Filter>engine_files\engine_resource\engine_fonts\cambria_font</Filter>
+    </Font>
+    <Font Include="engine_files\engine_resource\engine_fonts\cambria_font\cambriab.ttf">
+      <Filter>engine_files\engine_resource\engine_fonts\cambria_font</Filter>
+    </Font>
+    <Font Include="engine_files\engine_resource\engine_fonts\cambria_font\CAMBRIAI.TTF">
+      <Filter>engine_files\engine_resource\engine_fonts\cambria_font</Filter>
+    </Font>
+    <Font Include="engine_files\engine_resource\engine_fonts\cambria_font\CAMBRIAZ.TTF">
+      <Filter>engine_files\engine_resource\engine_fonts\cambria_font</Filter>
+    </Font>
+    <Font Include="engine_files\engine_resource\engine_fonts\roboto_font\Roboto-Black.ttf">
+      <Filter>engine_files\engine_resource\engine_fonts\roboto_font</Filter>
+    </Font>
+    <Font Include="engine_files\engine_resource\engine_fonts\roboto_font\Roboto-BlackItalic.ttf">
+      <Filter>engine_files\engine_resource\engine_fonts\roboto_font</Filter>
+    </Font>
+    <Font Include="engine_files\engine_resource\engine_fonts\roboto_font\Roboto-Bold.ttf">
+      <Filter>engine_files\engine_resource\engine_fonts\roboto_font</Filter>
+    </Font>
+    <Font Include="engine_files\engine_resource\engine_fonts\roboto_font\Roboto-BoldItalic.ttf">
+      <Filter>engine_files\engine_resource\engine_fonts\roboto_font</Filter>
+    </Font>
+    <Font Include="engine_files\engine_resource\engine_fonts\roboto_font\Roboto-Italic.ttf">
+      <Filter>engine_files\engine_resource\engine_fonts\roboto_font</Filter>
+    </Font>
+    <Font Include="engine_files\engine_resource\engine_fonts\roboto_font\Roboto-Light.ttf">
+      <Filter>engine_files\engine_resource\engine_fonts\roboto_font</Filter>
+    </Font>
+    <Font Include="engine_files\engine_resource\engine_fonts\roboto_font\Roboto-LightItalic.ttf">
+      <Filter>engine_files\engine_resource\engine_fonts\roboto_font</Filter>
+    </Font>
+    <Font Include="engine_files\engine_resource\engine_fonts\roboto_font\Roboto-Medium.ttf">
+      <Filter>engine_files\engine_resource\engine_fonts\roboto_font</Filter>
+    </Font>
+    <Font Include="engine_files\engine_resource\engine_fonts\roboto_font\Roboto-MediumItalic.ttf">
+      <Filter>engine_files\engine_resource\engine_fonts\roboto_font</Filter>
+    </Font>
+    <Font Include="engine_files\engine_resource\engine_fonts\roboto_font\Roboto-Regular.ttf">
+      <Filter>engine_files\engine_resource\engine_fonts\roboto_font</Filter>
+    </Font>
+    <Font Include="engine_files\engine_resource\engine_fonts\roboto_font\Roboto-Thin.ttf">
+      <Filter>engine_files\engine_resource\engine_fonts\roboto_font</Filter>
+    </Font>
+    <Font Include="engine_files\engine_resource\engine_fonts\roboto_font\Roboto-ThinItalic.ttf">
+      <Filter>engine_files\engine_resource\engine_fonts\roboto_font</Filter>
+    </Font>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="engine_files\engine_resource\engine_fonts\roboto_font\LICENSE.txt">
+      <Filter>engine_files\engine_resource\engine_fonts\roboto_font</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="engine_files\engine_source\engine_control\engine_control.cpp">
+      <Filter>engine_files\engine_source\engine_control</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_files\engine_source\engine_control\engine_file_loader.cpp">
+      <Filter>engine_files\engine_source\engine_control</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_files\engine_source\engine_control\engine_game_scene.cpp">
+      <Filter>engine_files\engine_source\engine_control</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_files\engine_source\engine_control\engine_input.cpp">
+      <Filter>engine_files\engine_source\engine_control</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_files\engine_source\engine_control\engine_physics.cpp">
+      <Filter>engine_files\engine_source\engine_control</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_files\engine_source\engine_control\engine_queue.cpp">
+      <Filter>engine_files\engine_source\engine_control</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_files\engine_source\engine_structures\engine_animation.cpp">
+      <Filter>engine_files\engine_source\engine_structures</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_files\engine_source\engine_structures\engine_camera.cpp">
+      <Filter>engine_files\engine_source\engine_structures</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_files\engine_source\engine_structures\engine_event.cpp">
+      <Filter>engine_files\engine_source\engine_structures</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_files\engine_source\engine_structures\engine_mesh.cpp">
+      <Filter>engine_files\engine_source\engine_structures</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_files\engine_source\engine_structures\engine_model.cpp">
+      <Filter>engine_files\engine_source\engine_structures</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_files\engine_source\engine_structures\engine_shader.cpp">
+      <Filter>engine_files\engine_source\engine_structures</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_files\engine_source\engine_structures\engine_text.cpp">
+      <Filter>engine_files\engine_source\engine_structures</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_files\engine_source\engine_structures\engine_texture.cpp">
+      <Filter>engine_files\engine_source\engine_structures</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
