@@ -1,6 +1,37 @@
+// BSD 3 - Clause License
+//
+// Copyright(c) 2021, Darrian Corkadel
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met :
+//
+// 1. Redistributions of source code must retain the above copyright notice, this
+// list of conditions and the following disclaimer.
+//
+// 2. Redistributions in binary form must reproduce the above copyright notice,
+// this list of conditions and the following disclaimer in the documentation
+// and /or other materials provided with the distribution.
+//
+// 3. Neither the name of the copyright holder nor the names of its
+// contributors may be used to endorse or promote products derived from
+// this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+// DISCLAIMED.IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+// DAMAGES(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+// OR TORT(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef H_ENGINE_CONSTANT
 #define H_ENGINE_CONSTANT
 //////////////////////////////////
+// // TEMP https://github.com/jbeder/yaml-cpp
+// https://github.com/ben-strasser/fast-cpp-csv-parser
 // #FILE_INFO#
 // +(HEADER_ONLY)
 // +(Disabled Warnings)
@@ -25,6 +56,7 @@
 #include <memory>
 #include <utility>
 #include <functional>
+#include <stdint.h>
 //////////////////////////////////
 // Project Headers
 #ifndef PW_GLEW_H
@@ -51,7 +83,7 @@
 // Apart of the Error.h header file
 #define PW_ERROR_API
 // Apart of the Internal Data structs
-#define PW_INTERNAL_DATA_API
+#define INTERNAL_DATA_API
 // Standard PW Namespace
 #define PW_NAMESPACE_SRT namespace pw {
 #define PW_NAMESPACE_END }
@@ -97,6 +129,8 @@
 #define UTILITY
 // A CLASS_FUCNTION is a operator , deconstructor or a constructor that the class has.
 #define CLASS_FUNCTION
+// The user is required to overload this function
+#define OVERLOAD
 // A function labeled with USER_INTERACTION can be used
 #define USER_INTERACTION 
 // A function labeled with NO_USER_INTERACTION should not be used.
@@ -111,8 +145,6 @@
 #define ROOT_FILE
 // A root structure is a structure that does not include any other Pistonworks Engine structures
 #define ROOT_STRUCTURE
-// Re def for different window name, or change in file system
-#define PW_APP_NANE (pw::PW_CSTRING)"Pistonworks Window"
 //////////////////////////////////
 // Pistonworks Engine           //
 // Created By : Darrian Corkadel//
@@ -120,67 +152,23 @@
 PW_NAMESPACE_SRT
 //////////////////////////////////
 	// Type Def	
-	#ifdef _WIN64
-		typedef signed	 __int16			PW_SINT;
-		typedef signed	 __int32			PW_INT;
-		typedef signed	 __int32			PW_LINT;
-		typedef signed	 __int64			PW_LLINT;
-		typedef unsigned __int16 			PW_SUINT;
-		typedef unsigned __int32			PW_UINT;
-		typedef unsigned __int32			PW_LUINT;
-		typedef unsigned __int64 			PW_LLUINT;
 
-		typedef unsigned __int64			PW_SIZE;
-	#else 
-		#ifdef _WIN32
-			typedef signed short int		PW_SINT;
-			typedef signed int				PW_INT;
-			typedef signed long int			PW_LINT;
-			typedef signed long long int	PW_LLINT;
-			typedef unsigned short int		PW_SUINT;
-			typedef unsigned int			PW_UINT;
-			typedef unsigned long int		PW_LUINT;
-			typedef unsigned long long int	PW_LLUINT;
+	typedef uint64_t					PW_ID;
+	typedef int32_t						PW_INPUT_TYPE;
+	typedef int32_t						PW_KEY_CODE;
+	typedef int32_t						PW_BUTTON_CODE;
+	typedef int32_t						PW_SCROLL_ACTION;
+	typedef int32_t						PW_COMPLEX_EVENT;
+	typedef int32_t						PW_COMPLEX_EVENT;
+	typedef int32_t						PW_EVENT_ID;
+	typedef int32_t						PW_FONT_ID;
+	typedef int32_t						PW_TRIGGER;
+	typedef int32_t						PW_STATE;
+	typedef const wchar_t*				PW_NAME_ID;
+	typedef std::tuple<bool,
+		std::wstring, std::wstring>		PW_PROJECT_FILE;
 
-			typedef size_t					PW_SIZE;
-		#endif
-	#endif
-		typedef std::string					PW_STRING;
-	#if _UNICODE  
-		typedef char						PW_CHAR;
-		typedef const char* PW_CSTRING;
-		typedef char* PW_CHAR_PTR;
-	#else
-		#if _MBCS
-			typedef wchar_t					PW_CHAR;
-			typedef const wchar_t*			PW_CSTRING;
-		#endif
-	#endif
-	typedef float						PW_FLOAT;
-	typedef double						PW_DOUBLE;
-	typedef long double					PW_LDOUBLE;
-
-	typedef void						PW_VOID;
-	typedef void*						PW_TYPE;
-
-	typedef bool						PW_BOOL;
-	typedef bool						PW_FLAG;
-	typedef unsigned char				PW_BYTE;
-
-	typedef PW_INT						PW_ID;
-	typedef PW_INT						PW_INPUT_TYPE;
-	typedef PW_INT						PW_KEY_CODE;
-	typedef PW_INT						PW_BUTTON_CODE;
-	typedef PW_INT						PW_SCROLL_ACTION;
-	typedef PW_INT						PW_COMPLEX_EVENT;
-	typedef PW_INT						PW_COMPLEX_EVENT;
-	typedef PW_INT						PW_EVENT_ID;
-	typedef PW_INT						PW_FONT_ID;
-	typedef PW_INT						PW_TRIGGER;
-	typedef PW_INT						PW_STATE;
-	typedef PW_CSTRING					PW_NAME_ID;
-
-	typedef std::function<PW_VOID()>	PW_FUNCTION;
+	typedef std::function<void()>		PW_FUNCTION;
 	//////////////////////////////////
 	// Pistonworks Engine           //
 	// Created By : Darrian Corkadel//
@@ -202,15 +190,15 @@ PW_NAMESPACE_SRT
 		// Default Class Structures
 		public:
 			// //////////////////////////////////////////////////
-			// PW_INTERNAL_DATA_API Struct: pw::co::Destroy_GLFW
+			// INTERNAL_DATA_API Struct: pw::co::Destroy_GLFW
 			// //////////////////////////////////////////////////
 			// Purpose:
 			//  Destroys GLFW though a function operator call.
 			// //////////////////////////////////////////////////
-			struct PW_INTERNAL_DATA_API Destroy_GLFW {
+			struct INTERNAL_DATA_API Destroy_GLFW {
 				public:
-					PW_VOID operator()(GLFWwindow* window) {
-						glfwDestroyWindow(window);
+					void operator()(GLFWwindow* p_window) {
+						glfwDestroyWindow(p_window);
 					}
 			};
 		private:
@@ -219,122 +207,155 @@ PW_NAMESPACE_SRT
 			#define PW_SRD_PTR(type)									std::shared_ptr<type>
 			#define PW_UNI_PTR(type)									std::unique_ptr<type>
 			#define PW_DUNI_PTR(type, deleter)							std::unique_ptr<type, deleter>
-			#define TO_INT(x)											static_cast<PW_INT>(x)
-			#define TO_UINT(x)											static_cast<PW_UINT>(x)
-			#define TO_LLINT(x)											static_cast<PW_LLINT>(x)
-			#define TO_LLUINT(x)										static_cast<PW_LLUINT>(x)
-			#define VARIABLE_NAME(x)									static_cast<PW_CSTRING>(#x)
+			#define TO_32INT(x)											static_cast<int32_t>(x)
+			#define TO_32UINT(x)										static_cast<uint32_t>(x)
+			#define TO_64INT(x)											static_cast<int64_t>(x)
+			#define TO_64UINT(x)										static_cast<uint64_t>(x)
+			#define VARIABLE_NAME(x)									static_cast<const wchar_t*>(#x)
 			#define OFF(x)												(x + 1)
-			#define COMPLEX_FUNCTION_1(x_args)							std::function<PW_VOID(x_args)>
-			#define COMPLEX_FUNCTION_2(x_args, y_args)					std::function<PW_VOID(x_args, y_args)>
-			#define COMPLEX_FUNCTION_3(x_args, y_args, z_args)			std::function<PW_VOID(x_args, y_args, z_args)>
-			#define COMPLEX_FUNCTION_4(x_args, y_args, z_args, a_args)	std::function<PW_VOID(x_args, y_args, z_args, a_args)>
+			#define COMPLEX_FUNCTION_1(x_args)							std::function<void(x_args)>
+			#define COMPLEX_FUNCTION_2(x_args, y_args)					std::function<void(x_args, y_args)>
+			#define COMPLEX_FUNCTION_3(x_args, y_args, z_args)			std::function<void(x_args, y_args, z_args)>
+			#define COMPLEX_FUNCTION_4(x_args, y_args, z_args, a_args)	std::function<void(x_args, y_args, z_args, a_args)>
+
+			static wchar_t* To_WChar(const char* msg) {
+				size_t msg_size = std::strlen(msg) + 1;
+				wchar_t* v_msg = new wchar_t[msg_size];
+				size_t chars_converted = 0;
+				mbstowcs_s(&chars_converted, v_msg, msg_size, msg, SIZE_MAX);
+				if (chars_converted == msg_size) {
+					return v_msg;
+				}
+				else {
+					return nullptr;
+				}
+			}
+			static char* To_Char(const wchar_t* msg) {
+				size_t msg_size = std::wcslen(msg) + 1;
+				char* v_msg = new char[msg_size];
+				size_t chars_converted = 0;
+				wcstombs_s(&chars_converted, v_msg, msg_size, msg, SIZE_MAX);
+				if (chars_converted == msg_size) {
+					return v_msg;
+				}
+				else {
+					return nullptr;
+				}
+			}
 		// Accessors
 			USER_INTERACTION
-			static ACCESSOR const PW_INT Window_Width() {
-				return window_width;
+			static ACCESSOR const int32_t Window_Width() {
+				return m_window_width;
 			}
 			USER_INTERACTION
-			static ACCESSOR const PW_INT Window_Height() {
-				return window_height;
+			static ACCESSOR const int32_t Window_Height() {
+				return m_window_height;
 			}
 			USER_INTERACTION
-			static ACCESSOR const PW_INT Hafe_Window_Width() {
-				return hafe_window_width;
+			static ACCESSOR const int32_t Hafe_Window_Width() {
+				return m_hafe_window_width;
 			}
 			USER_INTERACTION
-			static ACCESSOR const PW_INT Hafe_Window_Height() {
-				return hafe_window_height;
+			static ACCESSOR const int32_t Hafe_Window_Height() {
+				return m_hafe_window_height;
 			}
 			USER_INTERACTION
-			static ACCESSOR const PW_CSTRING Window_Name() {
-				return window_name;
+			static ACCESSOR const wchar_t* Window_Name() {
+				return m_window_name;
 			}
 			USER_INTERACTION
-			static ACCESSOR const PW_INT Mouse_X_Coord() {
-				return mouse_x_position;
+			static ACCESSOR const int32_t Mouse_X_Coord() {
+				return m_mouse_x_position;
 			}
 			USER_INTERACTION
-			static ACCESSOR const PW_INT Mouse_Y_Coord() {
-				return mouse_y_position;
+			static ACCESSOR const int32_t Mouse_Y_Coord() {
+				return m_mouse_y_position;
 			}
 			USER_INTERACTION
-			static ACCESSOR const PW_FLOAT Inverse_Z_Tan() {
-				return inverse_z_tan;
+			static ACCESSOR const float Inverse_Z_Tan() {
+				return m_inverse_z_tan;
 			}
 			USER_INTERACTION
 			static ACCESSOR const glm::vec2 Gravity() {
-				return physics_gravity;
+				return m_physics_gravity;
 			}
 			USER_INTERACTION
 			static ACCESSOR const PW_DUNI_PTR(GLFWwindow, Destroy_GLFW)* Window() {
-				return current_window;
+				return &m_current_window;
 			}
 			USER_INTERACTION
-			static ACCESSOR const PW_FLOAT Delta_Time() {
-				return delta_time;
+			static ACCESSOR const float Delta_Time() {
+				return m_delta_time;
 			}
 			USER_INTERACTION
 			static ACCESSOR const std::clock_t Current_Time() {
-				return start_time;
+				return m_start_time;
 			}
 			USER_INTERACTION
-			static ACCESSOR const PW_FLOAT FPS_Constant() {
-				return fps_constant;
+			static ACCESSOR const float FPS_Constant() {
+				return m_fps_constant;
 			}
 			USER_INTERACTION
-			static ACCESSOR const PW_FLOAT FPS_Max() {
-				return fps_max;
+			static ACCESSOR const float FPS_Max() {
+				return m_fps_max;
 			}
 		// Mutators
 			USER_INTERACTION
-			static MUTATOR PW_VOID Set_Window_Width(const PW_INT* n_window_width) {
-				window_width = *n_window_width;
+			static MUTATOR void Set_Window_Width(const uint32_t* p_window_width) {
+				m_window_width = *p_window_width;
 			}
 			USER_INTERACTION
-			static MUTATOR PW_VOID Set_Window_Height(const PW_INT* n_window_height) {
-				window_height = *n_window_height;
+			static MUTATOR void Set_Window_Height(const uint32_t* p_window_height) {
+				m_window_height = *p_window_height;
 			}
 			USER_INTERACTION
-			static MUTATOR PW_VOID Set_Hafe_Window_Width(const PW_INT* n_hafe_window_width) {
-				hafe_window_width = *n_hafe_window_width;
+			static MUTATOR void Set_Hafe_Window_Width(const uint32_t* p_hafe_window_width) {
+				m_hafe_window_width = *p_hafe_window_width;
 			}
 			USER_INTERACTION
-			static MUTATOR PW_VOID Set_Hafe_Window_Height(const PW_INT* n_hafe_window_height) {
-				hafe_window_height = *n_hafe_window_height;
+			static MUTATOR void Set_Hafe_Window_Height(const uint32_t* p_hafe_window_height) {
+				m_hafe_window_height = *p_hafe_window_height;
 			}
 			USER_INTERACTION
-			static MUTATOR PW_VOID Set_Window_Name(const PW_CSTRING* n_window_name) {
-				glfwSetWindowTitle((*current_window).get(), *n_window_name);
-				window_name = *n_window_name;
+			static MUTATOR void Set_Window_Name(const wchar_t* p_window_name) {
+				char* v_window_name = To_Char(p_window_name);
+
+				glfwSetWindowTitle(m_current_window.get(), v_window_name);
+				m_window_name = p_window_name;
+
+				delete[] v_window_name;
 			}
 			USER_INTERACTION
-			static MUTATOR PW_VOID Set_Window(const GLFWwindow* window) {
-				current_window = &PW_DUNI_PTR(GLFWwindow, Engine_Constant::Destroy_GLFW)((GLFWwindow*)window);
+			static MUTATOR void Set_Window(GLFWwindow* p_window) {
+				m_current_window = std::unique_ptr<GLFWwindow, Destroy_GLFW>(p_window);
 			}
 			USER_INTERACTION
-			static MUTATOR PW_VOID Set_Mouse_Coords(const PW_INT x, const PW_INT y) {
-				mouse_x_position = x;
-				mouse_y_position = y;
+			static MUTATOR void Set_Mouse_Coords(const int32_t p_x, const int32_t p_y) {
+				m_mouse_x_position = p_x;
+				m_mouse_y_position = p_y;
 			}
 		// Public Variables
 		public:
-			static constexpr PW_INT PW_SCALE_FACTOR = 32;
-			static constexpr PW_INT PW_FONT_RESOLUTION = 256;
+			static constexpr uint32_t PW_SCALE_FACTOR = 32;
+			static constexpr uint32_t PW_FONT_RESOLUTION = 256;
 
-			static constexpr PW_INT PW_PLAYER_ID = 0xff;
+			static constexpr uint32_t PW_PLAYER_ID = 0xff;
 
-			static constexpr PW_INT PW_SCROLL_WHEEL_FROWARD = 0xa1;
-			static constexpr PW_INT PW_SCROLL_WHEEL_BACKWARD = 0xa2;
+			static constexpr uint32_t PW_SCROLL_WHEEL_FORWARD = 0xa1;
+			static constexpr uint32_t PW_SCROLL_WHEEL_BACKWARD = 0xa2;
 
-			static constexpr PW_INT PW_CONDIONAL_EVENT = 0xb1;
-			static constexpr PW_INT PW_ACONDIONAL_EVENT = 0xb2;
+			static constexpr uint32_t PW_CONDIONAL_EVENT = 0xb1;
+			static constexpr uint32_t PW_ACONDIONAL_EVENT = 0xb2;
 			// When the model collides with a specified actor, or any actor
-			static constexpr PW_INT PW_COLLISION_EVENT = 0xb3;
+			static constexpr uint32_t PW_COLLISION_EVENT = 0xb3;
 			// When the mouse is clicked over the area that contains the actor's model
-			static constexpr PW_INT PW_CLICK_EVENT = 0xb4;
+			static constexpr uint32_t PW_CLICK_EVENT = 0xb4;
 			// When the mouse is over the area that contains the actor's model
-			static constexpr PW_INT PW_HOVER_EVENT = 0xb5;
+			static constexpr uint32_t PW_HOVER_EVENT = 0xb5;
+			// For the reading of the different types of events
+			static constexpr uint32_t PW_MOUSE_EVENT = 0xf0;
+			static constexpr uint32_t PW_KEYBOARD_EVENT = 0xf1;
+			static constexpr uint32_t PW_SCROLL_EVENT = 0xf2;
 		// Protected Functions/Macros
 		protected:
 			// //////////////////////////////////////////////////
@@ -348,9 +369,9 @@ PW_NAMESPACE_SRT
 			// Parameters: NONE
 			// //////////////////////////////////////////////////
 			NO_USER_INTERACTION
-			static CORE PW_VOID Calc_Delta_Time() {
-				delta_time = static_cast<PW_FLOAT>(end_time - start_time) / 1000.0f;
-				start_time = end_time;
+			static CORE void Calc_Delta_Time() {
+				m_delta_time = static_cast<float>(m_end_time - m_start_time) / 1000.0f;
+				m_start_time = m_end_time;
 			}
 			// //////////////////////////////////////////////////
 			// CORE Function: Engine_Constant::Calc_Elapsed_Time
@@ -365,19 +386,21 @@ PW_NAMESPACE_SRT
 			//  fps.
 			// //////////////////////////////////////////////////
 			NO_USER_INTERACTION
-			static CORE PW_VOID Calc_Elapsed_Time(GLFWwindow* main_window) {
-				elapsed_time += delta_time;
-				if (last_frames != frames) {
-					if (elapsed_time >= 1.0f) {
+			static CORE void Calc_Elapsed_Time(GLFWwindow* p_main_window) {
+				m_elapsed_time += m_delta_time;
+				if (m_last_frames != m_frames) {
+					if (m_elapsed_time >= 1.0f) {
 						#ifdef PW_DEBUG_MODE
-							std::string str = (const char*)Engine_Constant::Window_Name();
-							str.insert(str.size(), " Fps:");
-							str.insert(str.size(), std::to_string(frames));
-							frames = 0;
-							glfwSetWindowTitle(main_window, str.c_str());
+							std::wstring v_str = Engine_Constant::Window_Name();
+							v_str.insert(v_str.size(), L" Fps:");
+							v_str.insert(v_str.size(), std::to_wstring(m_frames));
+							m_frames = 0;
+							char* v_char_name = To_Char(v_str.c_str());
+							glfwSetWindowTitle(p_main_window, v_char_name);
+							delete[] v_char_name;
 						#endif // PW_DEBUG
-						last_frames = frames;
-						elapsed_time = 0;
+						m_last_frames = m_frames;
+						m_elapsed_time = 0;
 					}
 				}
 			}
@@ -391,47 +414,47 @@ PW_NAMESPACE_SRT
 			// Parameters: NONE
 			// //////////////////////////////////////////////////
 			NO_USER_INTERACTION
-			static CORE PW_VOID Wait() {
-				frames = frames + 1; // Increment frame since frame is over
+			static CORE void Wait() {
+				m_frames = m_frames + 1; // Increment frame since frame is over
 				/* Wait until next frame */
-				std::this_thread::sleep_for(std::chrono::duration<PW_FLOAT, std::milli>(delta_time * 1000.0f));
+				//std::this_thread::sleep_for(std::chrono::duration<float, std::milli>(m_delta_time * 1000.0f));
 
-				end_time = std::clock();
+				m_end_time = std::clock();
 			}
-		// Private Variables
-		private:
+		// Protected Variables
+		public:
 			// Window's current width
-			static PW_INT window_width;
+			static int32_t m_window_width;
 			// Window's current height
-			static PW_INT window_height;
+			static int32_t m_window_height;
 			// Haft of the Window's current width
-			static PW_INT hafe_window_width;
+			static int32_t m_hafe_window_width;
 			// Haft of the Window's current height
-			static PW_INT hafe_window_height;
+			static int32_t m_hafe_window_height;
 			// Window's current name
-			static PW_CSTRING window_name;
+			static const wchar_t* m_window_name;
 			// The current window
-			static PW_DUNI_PTR(GLFWwindow, Destroy_GLFW)* current_window;
+			static PW_DUNI_PTR(GLFWwindow, Destroy_GLFW) m_current_window;
 
-			static PW_INT frames;
-			static PW_INT last_frames;
-			static PW_BOOL engine_start;
+			static int32_t m_frames;
+			static int32_t m_last_frames;
+			static bool m_engine_start;
 
-			static std::clock_t start_time;
-			static std::clock_t end_time;
+			static std::clock_t m_start_time;
+			static std::clock_t m_end_time;
 			// The current delta time in the engine represented by milliseconds
-			static PW_FLOAT delta_time;
-			static PW_FLOAT elapsed_time;
+			static float m_delta_time;
+			static float m_elapsed_time;
 
-			static const PW_FLOAT fps_max;
+			static const float m_fps_max;
 			// A constant bar for which the fps must abide to
-			static const PW_FLOAT fps_constant;
+			static const float m_fps_constant;
 
-			static PW_INT mouse_x_position;
-			static PW_INT mouse_y_position;
+			static int32_t m_mouse_x_position;
+			static int32_t m_mouse_y_position;
 
-			static const PW_FLOAT inverse_z_tan;
-			static const glm::vec2 physics_gravity;
+			static const float m_inverse_z_tan;
+			static const glm::vec2 m_physics_gravity;
 		};
 		// Functions
 		// Macros / Definitions

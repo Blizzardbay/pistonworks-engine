@@ -1,10 +1,10 @@
-#include "internal_engine_headers\ie_mesh.h"
+#include "engine_structures\engine_mesh.h"
 
 //////////////////////////////////
 PW_NAMESPACE_SRT
 //////////////////////////////////
 	//////////////////////////////////
-	IE_NAMESPACE_SRT
+	ST_NAMESPACE_SRT
 	//////////////////////////////////
 		// ID_Vertex_Data
 		// Static Declarations   
@@ -19,13 +19,13 @@ PW_NAMESPACE_SRT
 			}
 			ID_Vertex_Data::~ID_Vertex_Data() {
 			}
-			PW_VOID ID_Vertex_Data::Set_Vertex_Position(glm::vec3 vertex_position) {
+			void ID_Vertex_Data::Set_Vertex_Position(glm::vec3 vertex_position) {
 				this->vertex_position = vertex_position;
 			}
-			PW_VOID ID_Vertex_Data::Set_Texture_Coord(glm::vec2 texture_coord) {
+			void ID_Vertex_Data::Set_Texture_Coord(glm::vec2 texture_coord) {
 				this->texture_coord = texture_coord;
 			}
-			PW_VOID ID_Vertex_Data::Set_Color_Data(glm::vec4 color_data) {
+			void ID_Vertex_Data::Set_Color_Data(glm::vec4 color_data) {
 				this->color_data = color_data;
 			}
 			glm::vec3 ID_Vertex_Data::Vertex_Position() {
@@ -45,7 +45,7 @@ PW_NAMESPACE_SRT
 					vertices(nullptr), draw_count(0), vertex_count(0), vertex_array_object(0),
 					vertex_buffer_object(0), vertex_texture_object(0), vertex_color_object(0), vertex_element_object(0) {
 			}
-			Mesh::Mesh(ID_Vertex_Data* vertices, const PW_SUINT vertex_count, PW_UINT* indices, const PW_SUINT indice_count) :
+			Mesh::Mesh(ID_Vertex_Data* vertices, const uint16_t vertex_count, uint32_t* indices, const uint16_t indice_count) :
 					vertices(nullptr), draw_count(indice_count), vertex_count(vertex_count), vertex_array_object(0),
 					vertex_buffer_object(0), vertex_texture_object(0), vertex_color_object(0), vertex_element_object(0) {
 
@@ -133,7 +133,7 @@ PW_NAMESPACE_SRT
 
 				return *this;
 			}
-			PW_BOOL Mesh::operator==(const Mesh& rhs) {
+			bool Mesh::operator==(const Mesh& rhs) {
 				if (this->draw_count == rhs.draw_count && this->vertices == rhs.vertices) {
 					return true;
 				}
@@ -141,14 +141,14 @@ PW_NAMESPACE_SRT
 					return false;
 				}
 			}
-			PW_VOID Mesh::Draw() {
+			void Mesh::Draw() {
 				glBindVertexArray(vertex_array_object);
 
 				glDrawElements(GL_TRIANGLES, draw_count, GL_UNSIGNED_INT, 0);
 
 				glBindVertexArray(0);
 			}
-			PW_VOID Mesh::Delete() {
+			void Mesh::Delete() {
 				glDeleteVertexArrays(1, &vertex_array_object);
 
 				vertices.~shared_ptr();
@@ -156,15 +156,15 @@ PW_NAMESPACE_SRT
 			ID_Vertex_Data* Mesh::Vertices() {
 				return *vertices;
 			}
-			PW_UINT Mesh::Vertex_Count() {
+			uint32_t Mesh::Vertex_Count() {
 				return vertex_count;
 			}
-			PW_VOID Mesh::Update_Vertices(ID_Vertex_Data* new_vertices) {
-				for (PW_SIZE i = 0; i < vertex_count; i++) {
+			void Mesh::Update_Vertices(ID_Vertex_Data* new_vertices) {
+				for (size_t i = 0; i < vertex_count; i++) {
 					(*vertices)[i] = new_vertices[i];
 				}
 			}
-			PW_VOID Mesh::Change_Color_Data(
+			void Mesh::Change_Color_Data(
 				glm::vec4 new_color_data) {
 
 				std::shared_ptr<glm::vec4*> color_data =
@@ -180,7 +180,7 @@ PW_NAMESPACE_SRT
 
 				glBindBuffer(GL_ARRAY_BUFFER, 0);
 			}
-			PW_VOID Mesh::Change_Texture_Data(
+			void Mesh::Change_Texture_Data(
 				ID_Vertex_Data* new_texture_data) {
 
 				std::shared_ptr<glm::vec2*> texture_data_arr =
@@ -200,7 +200,7 @@ PW_NAMESPACE_SRT
 			}
 		// End of Class Members
 	//////////////////////////////////
-	IE_NAMESPACE_END
+	ST_NAMESPACE_END
 	//////////////////////////////////
 //////////////////////////////////
 PW_NAMESPACE_END

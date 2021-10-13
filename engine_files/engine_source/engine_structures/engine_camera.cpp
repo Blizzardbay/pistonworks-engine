@@ -1,21 +1,21 @@
-#include "internal_engine_headers\ie_camera.h"
+#include "engine_structures\engine_camera.h"
 
 //////////////////////////////////
 PW_NAMESPACE_SRT
 //////////////////////////////////
 	//////////////////////////////////
-	IE_NAMESPACE_SRT
+	ST_NAMESPACE_SRT
 	//////////////////////////////////
 		// Camera  
 		// Static Declarations 
-			PW_INT ie::Camera::camera_zoom = 0;
-			PW_INT ie::Camera::last_camera_zoom = -2;
-			PW_FLOAT ie::Camera::camera_x_position = 0.0f;
-			PW_FLOAT ie::Camera::camera_y_position = 0.0f;
-			PW_FLOAT ie::Camera::last_camera_x_position = -1.0f;
-			PW_FLOAT ie::Camera::last_camera_y_position = -1.0f;
-			glm::mat4 ie::Camera::perspective = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
-			glm::mat4 ie::Camera::camera = glm::lookAt(
+			int32_t Camera::camera_zoom = 0;
+			int32_t Camera::last_camera_zoom = -2;
+			float Camera::camera_x_position = 0.0f;
+			float Camera::camera_y_position = 0.0f;
+			float Camera::last_camera_x_position = -1.0f;
+			float Camera::last_camera_y_position = -1.0f;
+			glm::mat4 Camera::perspective = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
+			glm::mat4 Camera::camera = glm::lookAt(
 				glm::vec3(camera_x_position, camera_y_position, camera_zoom + 1),
 				glm::vec3(camera_x_position, camera_y_position, camera_zoom),
 				glm::vec3(0.0f, 1.0f, 0.0f));
@@ -43,37 +43,37 @@ PW_NAMESPACE_SRT
 			glm::mat4 Camera::Update_Projection() {
 				return perspective;
 			}
-			PW_VOID Camera::Scroll_Forward() {
+			void Camera::Scroll_Forward() {
 				if (camera_zoom >= -1) {
 					camera_zoom -= 1;
 				}
 			}
-			PW_VOID Camera::Scroll_Backward() {
+			void Camera::Scroll_Backward() {
 				if (camera_zoom <= 10) {
 					camera_zoom += 1;
 				}
 			}
-			PW_VOID Camera::Camera_Up() {
+			void Camera::Camera_Up() {
 				camera_y_position = camera_y_position + 0.01f;
 			}
-			PW_VOID Camera::Camera_Down() {
+			void Camera::Camera_Down() {
 				camera_y_position = camera_y_position - 0.01f;
 			}
-			PW_VOID Camera::Camera_Left() {
+			void Camera::Camera_Left() {
 				camera_x_position = camera_x_position - 0.01f;
 			}
-			PW_VOID Camera::Camera_Right() {
+			void Camera::Camera_Right() {
 				camera_x_position = camera_x_position + 0.01f;
 			}
 			glm::vec2 Camera::Camera_Position() {
 				return glm::vec2(camera_x_position, camera_y_position);
 			}
-			PW_INT Camera::Camera_Zoom() {
+			int32_t Camera::Camera_Zoom() {
 				return camera_zoom;
 			}
 		// End of Class Members
 	//////////////////////////////////
-	IE_NAMESPACE_END
+	ST_NAMESPACE_END
 	//////////////////////////////////
 //////////////////////////////////
 PW_NAMESPACE_END

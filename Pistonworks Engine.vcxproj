@@ -25,7 +25,6 @@
     <ClInclude Include="engine_files\engine_headers\engine_control\engine_control.h" />
     <ClInclude Include="engine_files\engine_headers\engine_control\engine_file_loader.h" />
     <ClInclude Include="engine_files\engine_headers\engine_control\engine_input.h" />
-    <ClInclude Include="engine_files\engine_headers\engine_control\engine_physics.h" />
     <ClInclude Include="engine_files\engine_headers\engine_control\engine_queue.h" />
     <ClInclude Include="engine_files\engine_headers\engine_structures\engine_animation.h" />
     <ClInclude Include="engine_files\engine_headers\engine_structures\engine_camera.h" />
@@ -33,12 +32,13 @@
     <ClInclude Include="engine_files\engine_headers\engine_structures\engine_game_scene.h" />
     <ClInclude Include="engine_files\engine_headers\engine_structures\engine_mesh.h" />
     <ClInclude Include="engine_files\engine_headers\engine_structures\engine_model.h" />
+    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_physics.h" />
     <ClInclude Include="engine_files\engine_headers\engine_structures\engine_shader.h" />
     <ClInclude Include="engine_files\engine_headers\engine_structures\engine_text.h" />
     <ClInclude Include="engine_files\engine_headers\engine_structures\engine_texture.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="config\cpp.hint" />
+    <None Include="cpp.hint" />
     <None Include="engine_files\engine_resource\engine_essential\engine_shader\fragment_shader.shader" />
     <None Include="engine_files\engine_resource\engine_essential\engine_shader\vertex_shader.shader" />
   </ItemGroup>
@@ -91,16 +91,17 @@
     <ClCompile Include="engine_files\engine_source\engine_control\engine_file_loader.cpp" />
     <ClCompile Include="engine_files\engine_source\engine_control\engine_game_scene.cpp" />
     <ClCompile Include="engine_files\engine_source\engine_control\engine_input.cpp" />
-    <ClCompile Include="engine_files\engine_source\engine_control\engine_physics.cpp" />
     <ClCompile Include="engine_files\engine_source\engine_control\engine_queue.cpp" />
     <ClCompile Include="engine_files\engine_source\engine_structures\engine_animation.cpp" />
     <ClCompile Include="engine_files\engine_source\engine_structures\engine_camera.cpp" />
     <ClCompile Include="engine_files\engine_source\engine_structures\engine_event.cpp" />
     <ClCompile Include="engine_files\engine_source\engine_structures\engine_mesh.cpp" />
     <ClCompile Include="engine_files\engine_source\engine_structures\engine_model.cpp" />
+    <ClCompile Include="engine_files\engine_source\engine_structures\engine_physics.cpp" />
     <ClCompile Include="engine_files\engine_source\engine_structures\engine_shader.cpp" />
     <ClCompile Include="engine_files\engine_source\engine_structures\engine_text.cpp" />
     <ClCompile Include="engine_files\engine_source\engine_structures\engine_texture.cpp" />
+    <ClCompile Include="game.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -198,9 +199,9 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);FT2_BUILD_LIBRARY;FT2_BUILD_LIBRARY</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;FT2_BUILD_LIBRARY</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(Solution)dependencies\graphics_win64\glew-2.1.0\include;$(Solution)dependencies\graphics_win64\glm;$(Solution)dependencies\graphics_win64\glfw-3.3.3.bin.WIN64\include;$(Solution)dependencies\graphics_win64\freetype-2.10.4\include;$(Solution)dependencies\graphics_win64\FreeImage\Dist\x64;$(Solution)dependencies\physics_win64\box2d-master\include;$(Solution)engine_files\engine_headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(Solution)dependencies\graphics_win64\glew-2.1.0\include;$(Solution)dependencies\graphics_win64\glm;$(Solution)dependencies\graphics_win64\glfw-3.3.3.bin.WIN64\include;$(Solution)dependencies\graphics_win64\freetype-2.10.4\include;$(Solution)dependencies\graphics_win64\FreeImage\Dist\x64;$(Solution)dependencies\physics_win64\box2d-master\include;$(Solution)dependencies\parser_win64\fast-cpp-csv-parser-master;$(Solution)engine_files\engine_headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>

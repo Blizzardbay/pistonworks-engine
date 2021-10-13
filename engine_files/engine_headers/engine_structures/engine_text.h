@@ -1,5 +1,34 @@
-#ifndef H_IE_TEXT
-#define H_IE_TEXT
+// BSD 3 - Clause License
+//
+// Copyright(c) 2021, Darrian Corkadel
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met :
+//
+// 1. Redistributions of source code must retain the above copyright notice, this
+// list of conditions and the following disclaimer.
+//
+// 2. Redistributions in binary form must reproduce the above copyright notice,
+// this list of conditions and the following disclaimer in the documentation
+// and /or other materials provided with the distribution.
+//
+// 3. Neither the name of the copyright holder nor the names of its
+// contributors may be used to endorse or promote products derived from
+// this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+// DISCLAIMED.IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+// DAMAGES(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+// OR TORT(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#ifndef H_ENGINE_TEXT
+#define H_ENGINE_TEXT
 //////////////////////////////////
 // #FILE_INFO#
 // +(DUAL_FILE)
@@ -14,10 +43,10 @@
 #include <glm\glm.hpp>
 //////////////////////////////////
 // Engine Headers
-#include "ie_model.h"
+#include "engine_structures\engine_model.h"
 //////////////////////////////////
 // Engine Macro Includes  
-#include "engine_headers\engine_error.h"
+#include "engine_common\engine_error.h"
 //////////////////////////////////
 // Engine Macros    
 //////////////////////////////////
@@ -27,139 +56,234 @@
 PW_NAMESPACE_SRT
 //////////////////////////////////
 	//////////////////////////////////
-	// Internal Engine              //
+	// Pistonworks Engine           //
 	// Created By : Darrian Corkadel//
 	//////////////////////////////////
-	IE_NAMESPACE_SRT
+	ST_NAMESPACE_SRT
 	//////////////////////////////////
 		//////////////////////////////////
 		// Classes
 
-		class PW_INTERNAL_API Text_Renderer;
-		//////////////////////////////////
-		// Class Name: pw::ie::Font
-		//
-		// Purpose: Handles loading of text within the engine.
-		//
+		class INTERNAL_DATA_API Text_Renderer;
+		// //////////////////////////////////////////////////
+		// INTERNAL_DATA_API Class Name: pw::st::Font
+		// //////////////////////////////////////////////////
+		// Purpose:
+		//  Handles loading of text within the engine.
+		// //////////////////////////////////////////////////
 		enum class Font {
 			PW_CAMBRIA,
 			PW_ARIAL,
 			PW_ROBOTO,
 			PW_FONT_COUNT
 		};
-		//////////////////////////////////
-		// Class Name: pw::ie::Character
-		//
-		// Purpose: Holds character texture information.
-		//
-		class PW_INTERNAL_API Character {
+		// //////////////////////////////////////////////////
+		// INTERNAL_DATA_API Class Name: pw::st::Character
+		// //////////////////////////////////////////////////
+		// Purpose:
+		//  Holds character texture information.
+		// //////////////////////////////////////////////////
+		class INTERNAL_DATA_API Character {
 		// Default Class Structures
 		public:
-			// Function: Character::Character
-			//
-			// Purpose: Creates a character object that holds the character texture data
-			//  and the character it represents.
-			//
-			Character(PW_CHAR type, PW_SRD_PTR(PW_BYTE*) character_data, glm::ivec2 character_size, PW_UINT texture_depth, glm::ivec2 baseline_offset, PW_UINT spacing);
-			// Function: Character::Character
-			//
-			// Purpose: Creates a character object that holds the character texture data
-			//  and the character it represents.
-			//
-			Character(PW_CHAR type, PW_BYTE* character_data, glm::ivec2 character_size, PW_UINT texture_depth, glm::ivec2 baseline_offset, PW_UINT spacing);
-			// Function: Character::~Character
-			//
-			// Purpose: Cleans up character data, does not delete allocated memory of character data.
-			//
-			~Character();
+			// //////////////////////////////////////////////////
+			// CLASS_FUNCTION Function: Character::Character
+			// //////////////////////////////////////////////////
+			// Purpose: 
+			//  Creates a character object that holds the
+			//  character texture data and the character it
+			//  represents.
+			// //////////////////////////////////////////////////
+			// Parameters: 5
+			// (1) wchar_t type;
+			// Purpose: 
+			//  The type of character.
+			// (2) PW_SRD_PTR(BYTE*) character_data;
+			// Purpose: 
+			//  The font data / texture data of the character.
+			// (3) glm::ivec2 character_size;
+			// Purpose: 
+			//  The size of the character.
+			// (4) glm::ivec2 baseline_offset;
+			// Purpose: 
+			//  The position that the character would be in.
+			// (5) uint32_t spacing;
+			// Purpose: 
+			//  The space between two characters.
+			// //////////////////////////////////////////////////
+			USER_INTERACTION
+			CLASS_FUNCTION Character(wchar_t type, PW_SRD_PTR(BYTE*) character_data, glm::ivec2 character_size, glm::ivec2 baseline_offset, uint32_t spacing);
+			// //////////////////////////////////////////////////
+			// CLASS_FUNCTION Function: Character::Character
+			// //////////////////////////////////////////////////
+			// Purpose: 
+			//  Creates a character object that holds the
+			//  character texture data and the character it
+			//  represents.
+			// //////////////////////////////////////////////////
+			// Parameters: 5
+			// (1) wchar_t type;
+			// Purpose: 
+			//  The type of character.
+			// (2) BYTE* character_data;
+			// Purpose: 
+			//  The font data / texture data of the character.
+			// (3) glm::ivec2 character_size;
+			// Purpose: 
+			//  The size of the character.
+			// (4) glm::ivec2 baseline_offset;
+			// Purpose: 
+			//  The position that the character would be in.
+			// (5) uint32_t spacing;
+			// Purpose: 
+			//  The space between two characters.
+			// //////////////////////////////////////////////////
+			USER_INTERACTION
+			CLASS_FUNCTION Character(wchar_t type, BYTE* character_data, glm::ivec2 character_size, glm::ivec2 baseline_offset, uint32_t spacing);
+			// //////////////////////////////////////////////////
+			// CLASS_FUNCTION Function: Character::~Character
+			// //////////////////////////////////////////////////
+			// Purpose: 
+			//  Cleans up character data, does not delete
+			//  allocated memory of character data.
+			// //////////////////////////////////////////////////
+			// Parameters: NONE
+			// //////////////////////////////////////////////////
+			NO_USER_INTERACTION
+			CLASS_FUNCTION ~Character();
 		private:
 		// Public Functions/Macros
 		public:
 		// Public Variables   
 		public:
-			// Function: Character::Type
-			//
-			// Purpose: Returns the character it represents.
-			//
-			PW_CHAR Type();
-			// Function: Character::Character_Data
-			//
-			// Purpose: Returns the texture data of the character.
-			//
-			Texture* Character_Data();
-			// Function: Character::Character_Size
-			//
-			// Purpose: Returns the size of a character.
-			//
-			glm::ivec2 Character_Size();
-			// Function: Character::Baseline_Offset
-			//
-			// Purpose: Returns the offset from the baseline of a character.
-			//
-			glm::ivec2 Baseline_Offset();
-			// Function: Character::Spacing
-			//
-			// Purpose: Returns the texture data of the character.
-			//
-			PW_UINT Spacing();
-			// Function: Character::Set_Type
-			//
-			// Purpose: Sets the character representation to another character.
-			//
-			PW_VOID Set_Type(PW_CHAR type);
-			// Function: Character::Set_Texture
-			//
-			// Purpose: Sets the current texture to a new one.
-			//
-			PW_VOID Set_Texture(Texture& new_texture);
+			// Accessors
+			USER_INTERACTION
+			ACCESSOR wchar_t Type();
+			USER_INTERACTION
+			ACCESSOR st::Texture* Character_Data();
+			USER_INTERACTION
+			ACCESSOR glm::ivec2 Character_Size();
+			USER_INTERACTION
+			ACCESSOR glm::ivec2 Baseline_Offset();
+			USER_INTERACTION
+			ACCESSOR uint32_t Spacing();
+			// Mutators
+			USER_INTERACTION
+			MUTATOR void Set_Type(wchar_t type);
+			USER_INTERACTION
+			MUTATOR void Set_Texture(st::Texture& new_texture);
 		// Private Functions/Macros 
 		private:
 		// Private Variables  
 		private:
-			PW_CHAR type;
-			Texture character_data;
+			wchar_t type;
+			st::Texture character_data;
 			glm::ivec2 character_size;
 			glm::ivec2 baseline_offset;
-			PW_UINT spacing;
+			uint32_t spacing;
 		};
-		//////////////////////////////////
-		// Class Name: pw::ie::Character
-		//
-		// Purpose: Holds character texture information.
-		//
-		class PW_INTERNAL_API Text {
+		// //////////////////////////////////////////////////
+		// INTERNAL_DATA_API Class Name: pw::st::Text
+		// //////////////////////////////////////////////////
+		// Purpose: 
+		//  Holds a vector of characters.
+		// //////////////////////////////////////////////////
+		class INTERNAL_DATA_API Text {
 			// Default Class Structures
 		public:
-			// Function: Text::Text
-			//
-			// Purpose: Creates a vector of character objects to be drawn as a line of text.
-			//
-			Text(PW_CSTRING text, glm::ivec2 position, glm::ivec2 size, glm::vec4 color, PW_MODEL_TYPE model_type, Font font_type);
-			// Function: Text::Text
-			//
-			// Purpose: Creates a vector of character objects to be drawn as a line of text.
-			//
-			Text(PW_STRING text, glm::ivec2 position, glm::ivec2 size, glm::vec4 color, PW_MODEL_TYPE model_type, Font font_type);
-			// Function: Text::~Text
-			//
-			// Purpose: Cleans up text data.
-			//
-			~Text();
+			// //////////////////////////////////////////////////
+			// CLASS_FUNCTION Function: Text::Text
+			// //////////////////////////////////////////////////
+			// Purpose: 
+			//  Creates a vector of character objects to be drawn
+			//  as a line of text.
+			// //////////////////////////////////////////////////
+			// Parameters: 6
+			// (1) const wchar_t* text;
+			// Purpose: 
+			//  The text to be drawn to the screen.
+			// (2) glm::ivec2 position;
+			// Purpose: 
+			//  The position of the left most character.
+			// (3) glm::ivec2 size;
+			// Purpose: 
+			//  The size of the character string.
+			// (4) glm::vec4 color;
+			// Purpose: 
+			//  The color of the text.
+			// (5) PW_MODEL_TYPE model_type;
+			// Purpose: 
+			//  The type of model you want to use for the text.
+			// (6) Font font_type;
+			// Purpose: 
+			//  The type of loaded engine font to use.
+			// //////////////////////////////////////////////////
+			USER_INTERACTION
+			CLASS_FUNCTION Text(const wchar_t* text, glm::ivec2 position, glm::ivec2 size, glm::vec4 color, PW_MODEL_TYPE model_type, Font font_type);
+			// //////////////////////////////////////////////////
+			// CLASS_FUNCTION Function: Text::Text
+			// //////////////////////////////////////////////////
+			// Purpose: 
+			//  Creates a vector of character objects to be drawn
+			//  as a line of text.
+			// //////////////////////////////////////////////////
+			// Parameters: 6
+			// (1) std::wstring text;
+			// Purpose: 
+			//  The text to be drawn to the screen.
+			// (2) glm::ivec2 position;
+			// Purpose: 
+			//  The position of the left most character.
+			// (3) glm::ivec2 size;
+			// Purpose: 
+			//  The size of the character string.
+			// (4) glm::vec4 color;
+			// Purpose: 
+			//  The color of the text.
+			// (5) PW_MODEL_TYPE model_type;
+			// Purpose: 
+			//  The type of model you want to use for the text.
+			// (6) Font font_type;
+			// Purpose: 
+			//  The type of loaded engine font to use.
+			// //////////////////////////////////////////////////
+			USER_INTERACTION
+			CLASS_FUNCTION Text(std::wstring text, glm::ivec2 position, glm::ivec2 size, glm::vec4 color, PW_MODEL_TYPE model_type, Font font_type);
+			// //////////////////////////////////////////////////
+			// CLASS_FUNCTION Function: Text::~Text
+			// //////////////////////////////////////////////////
+			// Purpose: 
+			//  Cleans up text data.
+			// //////////////////////////////////////////////////
+			// Parameters: NONE
+			// //////////////////////////////////////////////////
+			NO_USER_INTERACTION
+			CLASS_FUNCTION ~Text();
 		private:
 			// Public Functions/Macros
 		public:
 			// Public Variables   
 		public:
-			// Function: Text::Render
-			//
-			// Purpose: Renders the line of text.
-			//
-			PW_VOID Render();
-			// Function: Text::Delete
-			//
-			// Purpose: Deletes the line of text.
-			//
-			PW_VOID Delete();
+			// //////////////////////////////////////////////////
+			// CORE Function: Text::Render
+			// //////////////////////////////////////////////////
+			// Purpose: 
+			//  Renders the line of text.
+			// //////////////////////////////////////////////////
+			// Parameters: NONE
+			// //////////////////////////////////////////////////
+			NO_USER_INTERACTION
+			CORE void Render();
+			// //////////////////////////////////////////////////
+			// CORE Function: Text::Delete
+			// //////////////////////////////////////////////////
+			// Purpose: 
+			//  Deletes the line of text.
+			// //////////////////////////////////////////////////
+			// Parameters: NONE
+			// //////////////////////////////////////////////////
+			NO_USER_INTERACTION
+			CORE void Delete();
 			// Private Functions/Macros 
 		private:
 			// Private Variables  
@@ -167,41 +291,59 @@ PW_NAMESPACE_SRT
 			std::vector<Model*> text_string;
 			PW_MODEL_TYPE type;
 		};
-		//////////////////////////////////
-		// Class Name: pw::ie::Text_Renderer
-		//
-		// Purpose: Handles loading of text within the engine.
-		//
-		class PW_INTERNAL_API Text_Renderer {
+		// //////////////////////////////////////////////////
+		// INTERNAL_DATA_API Class Name: pw::ie::Text_Renderer
+		// //////////////////////////////////////////////////
+		// Purpose:
+		//  Handles loading of text within the engine.
+		// //////////////////////////////////////////////////
+		class INTERNAL_DATA_API Text_Renderer {
 		// Default Class Structures
 		public:
 		private:
 		// Public Functions/Macros
 		public:
-			// Function: Text_Renderer::Load_Engine_Font
-			//
-			// Purpose: Loads the engine font that are built in.
-			//
-			static PW_VOID Load_Engine_Font();
-			// Function: Text_Renderer::Render_Text
-			//
-			// Purpose: Creates a character form a font stash and returns it to the user.
-			//
-			static Character* Create_Character(PW_CHAR letter_type, Font font_type);
+			// //////////////////////////////////////////////////
+			// CORE Function: Text_Renderer::Load_Engine_Font
+			// //////////////////////////////////////////////////
+			// Purpose: 
+			//  Loads the engine font that are built in.
+			// //////////////////////////////////////////////////
+			// Parameters: NONE
+			// //////////////////////////////////////////////////
+			NO_USER_INTERACTION
+			static CORE void Load_Engine_Font();
+			// //////////////////////////////////////////////////
+			// CORE Function: Text_Renderer::Create_Character
+			// //////////////////////////////////////////////////
+			// Purpose: 
+			//  Creates a character from a font and returns
+			//  it to the user.
+			// //////////////////////////////////////////////////
+			// Parameters: 2
+			// (1) wchar_t letter_type;
+			// Purpose: 
+			//  The character to be created.
+			// (2) Font font_type;
+			// Purpose: 
+			//  The type of loaded engine font to use.
+			// //////////////////////////////////////////////////
+			USER_INTERACTION
+			static CORE Character* Create_Character(wchar_t letter_type, Font font_type);
 		// Public Variables   
 		public:
 		// Private Functions/Macros 
 		private:
 		// Private Variables  
 		private:
-			static std::map<PW_FONT_ID, std::map<PW_CHAR, Character*>> font_library;
+			static std::map<PW_FONT_ID, std::map<wchar_t, Character*>> font_library;
 		};
 		// Functions  
 		// Macros / Definitions
 	//////////////////////////////////
-	IE_NAMESPACE_END
+	ST_NAMESPACE_END
 	//////////////////////////////////
 //////////////////////////////////
 PW_NAMESPACE_END
 //////////////////////////////////
-#endif // !H_IE_TEXT
+#endif // !H_ENGINE_TEXT

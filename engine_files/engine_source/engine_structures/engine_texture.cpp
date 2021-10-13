@@ -12,7 +12,7 @@ PW_NAMESPACE_SRT
 			Texture::Texture() :
 					texture_id(0), texture_width(0), texture_height(0) {
 			}
-			Texture::Texture(PW_BYTE* tex_data, PW_UINT target, PW_UINT tex_width, PW_UINT tex_height, PW_INT internal_format, PW_INT format) :
+			Texture::Texture(BYTE* tex_data, uint32_t target, uint32_t tex_width, uint32_t tex_height, int32_t internal_format, int32_t format) :
 					texture_id(0), texture_width(tex_width), texture_height(tex_height) {
 				if (tex_data != nullptr) {
 					PW_GL_VOID_CALL(glGenTextures(1, &texture_id), false);
@@ -29,8 +29,8 @@ PW_NAMESPACE_SRT
 					PW_GL_VOID_CALL(glPixelStorei(GL_UNPACK_ALIGNMENT, 1), false);
 				}
 			}
-			Texture::Texture(PW_BYTE* tex_data, PW_UINT tex_width, PW_UINT tex_height, PW_INT internal_format, PW_INT format) :
-				texture_id(0), texture_width(tex_width), texture_height(tex_height) {
+			Texture::Texture(BYTE* tex_data, uint32_t tex_width, uint32_t tex_height, int32_t internal_format, int32_t format) :
+					texture_id(0), texture_width(tex_width), texture_height(tex_height) {
 				if (tex_data != nullptr) {
 					PW_GL_VOID_CALL(glGenTextures(1, &texture_id), false);
 					PW_GL_VOID_CALL(glBindTexture(GL_TEXTURE_2D, texture_id), false);
@@ -46,7 +46,7 @@ PW_NAMESPACE_SRT
 					PW_GL_VOID_CALL(glPixelStorei(GL_UNPACK_ALIGNMENT, 1), false);
 				}
 			}
-			Texture::Texture(PW_SRD_PTR(PW_BYTE*) tex_data, PW_UINT tex_width, PW_UINT tex_height, PW_INT internal_format, PW_INT format) :
+			Texture::Texture(PW_SRD_PTR(BYTE*) tex_data, uint32_t tex_width, uint32_t tex_height, int32_t internal_format, int32_t format) :
 					texture_id(0), texture_width(tex_width), texture_height(tex_height) {
 				if (tex_data != nullptr) {
 					PW_GL_VOID_CALL(glGenTextures(1, &texture_id), false);
@@ -66,13 +66,13 @@ PW_NAMESPACE_SRT
 			Texture::~Texture() {
 				LET_CPP_IMPLEMENT;
 			}
-			PW_VOID Texture::Bind(PW_UINT unit) {
+			void Texture::Bind(uint32_t unit) {
 				assert(unit >= 0 && unit <= 31);
 
 				PW_GL_VOID_CALL(glActiveTexture(GL_TEXTURE0 + unit), false);
 				PW_GL_VOID_CALL(glBindTexture(GL_TEXTURE_2D, texture_id), false);
 			}
-			PW_VOID Texture::Delete() {
+			void Texture::Delete() {
 				PW_GL_VOID_CALL(glDeleteTextures(1, &texture_id), false);
 			}
 		// End of Class Members

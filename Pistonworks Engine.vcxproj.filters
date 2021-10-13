@@ -75,9 +75,6 @@
     <ClInclude Include="engine_files\engine_headers\engine_control\engine_input.h">
       <Filter>engine_files\engine_headers\engine_control</Filter>
     </ClInclude>
-    <ClInclude Include="engine_files\engine_headers\engine_control\engine_physics.h">
-      <Filter>engine_files\engine_headers\engine_control</Filter>
-    </ClInclude>
     <ClInclude Include="engine_files\engine_headers\engine_control\engine_queue.h">
       <Filter>engine_files\engine_headers\engine_control</Filter>
     </ClInclude>
@@ -108,16 +105,19 @@
     <ClInclude Include="engine_files\engine_headers\engine_structures\engine_texture.h">
       <Filter>engine_files\engine_headers\engine_structures</Filter>
     </ClInclude>
+    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_physics.h">
+      <Filter>engine_files\engine_headers\engine_structures</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="config\cpp.hint">
-      <Filter>config</Filter>
-    </None>
     <None Include="engine_files\engine_resource\engine_essential\engine_shader\fragment_shader.shader">
       <Filter>engine_files\engine_resource\engine_essential\engine_shader</Filter>
     </None>
     <None Include="engine_files\engine_resource\engine_essential\engine_shader\vertex_shader.shader">
       <Filter>engine_files\engine_resource\engine_essential\engine_shader</Filter>
+    </None>
+    <None Include="cpp.hint">
+      <Filter>config</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -253,9 +253,6 @@
     <ClCompile Include="engine_files\engine_source\engine_control\engine_input.cpp">
       <Filter>engine_files\engine_source\engine_control</Filter>
     </ClCompile>
-    <ClCompile Include="engine_files\engine_source\engine_control\engine_physics.cpp">
-      <Filter>engine_files\engine_source\engine_control</Filter>
-    </ClCompile>
     <ClCompile Include="engine_files\engine_source\engine_control\engine_queue.cpp">
       <Filter>engine_files\engine_source\engine_control</Filter>
     </ClCompile>
@@ -283,5 +280,9 @@
     <ClCompile Include="engine_files\engine_source\engine_structures\engine_texture.cpp">
       <Filter>engine_files\engine_source\engine_structures</Filter>
     </ClCompile>
+    <ClCompile Include="engine_files\engine_source\engine_structures\engine_physics.cpp">
+      <Filter>engine_files\engine_source\engine_structures</Filter>
+    </ClCompile>
+    <ClCompile Include="game.cpp" />
   </ItemGroup>
 </Project>

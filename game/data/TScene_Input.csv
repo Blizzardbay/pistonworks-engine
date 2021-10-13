@@ -1,0 +1,4 @@
+Input_Type,	Input_Event,	Button_Code,	Function_Name,	Play_Once
+KEYBOARD,	PRESS,		65,		Print,		1
+SCROLL,		FORWARD,	0,		Print,		1
+MOUSE,		PRESS,		0,		Print,		1
