@@ -101,7 +101,7 @@
     <ClCompile Include="engine_files\engine_source\engine_structures\engine_shader.cpp" />
     <ClCompile Include="engine_files\engine_source\engine_structures\engine_text.cpp" />
     <ClCompile Include="engine_files\engine_source\engine_structures\engine_texture.cpp" />
-    <ClCompile Include="game.cpp" />
+    <ClCompile Include="game\code\game.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

@@ -55,6 +55,9 @@
     <Filter Include="engine_files\engine_source\engine_structures">
       <UniqueIdentifier>{103b75a8-3509-4ff8-842a-084094f6abdc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="test_files">
+      <UniqueIdentifier>{9d85e6e7-2fa0-4f6a-ba59-b5fb70387454}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config\b2_user_settings.h">
@@ -283,6 +286,8 @@
     <ClCompile Include="engine_files\engine_source\engine_structures\engine_physics.cpp">
       <Filter>engine_files\engine_source\engine_structures</Filter>
     </ClCompile>
-    <ClCompile Include="game.cpp" />
+    <ClCompile Include="game\code\game.cpp">
+      <Filter>test_files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
