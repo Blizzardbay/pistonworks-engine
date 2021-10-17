@@ -44,17 +44,22 @@
 #ifndef PW_GLEW_H
 #define PW_GLEW_H
 #include <GL\glew.h>
-#endif // PW_GLEW_H
+#endif // PW_GLEW_H 
 #include <GLFW\glfw3.h>
-#include <freeimage\FreeImage.h>
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include <freetype\fterrors.h>
 //////////////////////////////////
 // Engine Common Headers
-#include "engine_common\engine_constant.h"
 //////////////////////////////////
 // Engine Control Headers
+#include "engine_common\engine_constant.h"
+#include "engine_control\engine_console_manip.h"
+// Exception to format to fix <Windows.h> bug
+#ifndef PW_FI_H
+#define PW_FI_H
+#include "freeimage\FreeImage.h"
+#endif // PW_FI_H 
 //////////////////////////////////
 // Engine Structures Headers
 //////////////////////////////////
@@ -106,26 +111,38 @@ PW_NAMESPACE_SRT
 			// //////////////////////////////////////////////////
 			NO_USER_INTERACTION
 			static ERROR_HANDLE void PW_Print_Error(const wchar_t* sender, const wchar_t* msg, const int32_t line, const char* file) {
-			#ifdef PW_DEBUG_MODE
-				std::wcerr << "|" << __TIME__ << "|" << sender << " Function Error: " << msg << "\n" << "|The error is on line: " << line << "\n"
-					<< "|In file: " << file << "\n";
-			#endif // PW_DEBUG_MODE
+				#ifdef PW_DEBUG_MODE
+					PW_Print_Error(sender, msg, line, cm::Engine_Constant::To_WString(file).c_str());
+				#endif // PW_DEBUG_MODE
 			}
 			static ERROR_HANDLE void PW_Print_Error(const wchar_t* sender, const wchar_t* msg, const int32_t line, const wchar_t* file) {
-			#ifdef PW_DEBUG_MODE
-				std::wcerr << "|" << __TIME__ << "|" << sender << " Function Error: " << msg << "\n" << "|The error is on line: " << line << "\n"
-					<< "|In file: " << file << "\n";
-			#endif // PW_DEBUG_MODE
+				#ifdef PW_DEBUG_MODE
+					std::wstring v_line{ std::to_wstring(line) };
+				
+					PRINT_MSG(sender, msg, ERROR_MSG);
+					PRINT_MSG(sender, v_line.c_str(), ERROR_MSG);
+					PRINT_MSG(sender, file, ERROR_MSG);
+
+				#endif // PW_DEBUG_MODE
 			}
 			static ERROR_HANDLE void PW_Print_Error(const wchar_t* sender, const wchar_t* msg, const int32_t line, const char* file, bool print_success) {
-			#ifdef PW_DEBUG_MODE
-				std::wcerr << "|" << __TIME__ << "|" << sender << " Function Success: " << msg << "\n";
-			#endif // PW_DEBUG_MODE
+				#ifdef PW_DEBUG_MODE
+					PW_Print_Error(sender, msg, line, cm::Engine_Constant::To_WString(file).c_str(), print_success);
+				#endif // PW_DEBUG_MODE
 			}
 			static ERROR_HANDLE void PW_Print_Error(const wchar_t* sender, const wchar_t* msg, const int32_t line, const wchar_t* file, bool print_success) {
-			#ifdef PW_DEBUG_MODE
-				std::wcerr << "|" << __TIME__ << "|" << sender << " Function Success: " << msg << "\n";
-			#endif // PW_DEBUG_MODE
+				#ifdef PW_DEBUG_MODE
+					if (print_success == true) {
+						PRINT_MSG(sender, msg, SUCCESS_MSG);
+					}
+					else {
+						std::wstring v_line{ std::to_wstring(line) };
+
+						PRINT_MSG(sender, msg, ERROR_MSG);
+						PRINT_MSG(sender, v_line.c_str(), ERROR_MSG);
+						PRINT_MSG(sender, file, ERROR_MSG);
+					}
+				#endif // PW_DEBUG_MODE
 			}
 			// //////////////////////////////////////////////////
 			// ERROR_HANDLE Function: Engine_Error::PW_GLFW_Callback_Handle
@@ -145,11 +162,7 @@ PW_NAMESPACE_SRT
 			NO_USER_INTERACTION
 			static ERROR_HANDLE void PW_GLFW_Callback_Handle(int32_t result, const char* description) {
 				if (result != 65537) {
-					wchar_t* v_description = pw::cm::Engine_Constant::To_WChar(description);
-
-					PW_Print_Error(L"GLFW", v_description, PW_LINE_, PW_FILE_);
-
-					delete[] v_description;
+					PW_Print_Error(L"GLFW", pw::cm::Engine_Constant::To_WString(description).c_str(), PW_LINE_, PW_FILE_);
 				}
 				return;
 			}
@@ -179,7 +192,7 @@ PW_NAMESPACE_SRT
 				}
 			#ifdef PW_DEBUG_MODE
 				else {
-					PW_Print_Error(L"GLFW", L"No Error", line, file, true);
+					PW_Print_Error(L"GLFW", L"Function Success ( Completed )", line, file, true);
 					return;
 				}
 			#endif // PW_DEBUG_MODE
@@ -208,13 +221,13 @@ PW_NAMESPACE_SRT
 			NO_USER_INTERACTION
 			static ERROR_HANDLE void PW_GL_VOID_Handle(const GLenum result, const int32_t line, const char* file, bool handle_type) {
 				if (result != 0 && result != 1282) {
-					printf("|%s|GL Function Error: %d\n|The Error Is On Line: %d\n|In File: %s\n", __TIME__, result, line, file);
+					PW_Print_Error(L"GL", std::wstring(std::wstring(L"Function Error: ") + std::to_wstring(result)).c_str(), line, file);
 					return;
 				}
 			#ifdef PW_DEBUG_MODE
 				else {
 					if (handle_type == true) {
-						printf("|%s|GL Function Succeed: %s\n", __TIME__, "  No Error");
+						PW_Print_Error(L"GL", L"Function Success ( Completed )", line, file, true);
 						return;
 					}
 				}
@@ -240,22 +253,14 @@ PW_NAMESPACE_SRT
 					std::string str = std::string(description);
 					str.insert(0, "Unknown Image Format ");
 
-					wchar_t* v_wchar = new wchar_t[str.size()];
-					size_t converted_chars = 0;
-					mbstowcs_s(&converted_chars, v_wchar, str.size(), str.c_str(), str.max_size());
-
-					PW_Print_Error(L"FI", v_wchar, PW_LINE_, PW_FILE_);
+					PW_Print_Error(L"FI", cm::Engine_Constant::To_WString(str.c_str()).c_str(), PW_LINE_, PW_FILE_);
 					return;
 				}
 				else {
 					std::string str = std::string(description);
 					str.insert(0, "Known Image Format ");
 
-					wchar_t* v_wchar = new wchar_t[str.size()];
-					size_t converted_chars = 0;
-					mbstowcs_s(&converted_chars, v_wchar, str.size(), str.c_str(), str.max_size());
-
-					PW_Print_Error(L"FI", v_wchar, PW_LINE_, PW_FILE_);
+					PW_Print_Error(L"FI", cm::Engine_Constant::To_WString(str.c_str()).c_str(), PW_LINE_, PW_FILE_);
 					return;
 				}
 			}
@@ -280,12 +285,12 @@ PW_NAMESPACE_SRT
 			NO_USER_INTERACTION
 			static ERROR_HANDLE void PW_GL_Handle(const GLenum result, const int32_t line, const char* file) {
 				if (result <= 0) {
-					printf("|%s|GL Function Error: %d\n|The Error Is On Line: %d\n|In File: %s\n", __TIME__, result, line, file);
+					PW_Print_Error(L"GL", std::wstring(std::wstring(L"Function Error: ") + std::to_wstring(result)).c_str(), line, file);
 					return;
 				}
 			#ifdef PW_DEBUG_MODE
 				else {
-					printf("|%s|GL Function Succeed: %s\n", __TIME__, "  No Error");
+					PW_Print_Error(L"GL", L"Function Success ( Completed )", line, file, true);
 					return;
 
 				}
@@ -311,15 +316,7 @@ PW_NAMESPACE_SRT
 			NO_USER_INTERACTION
 			static ERROR_HANDLE void PW_FT_Handle(const FT_Error result, const int32_t line, const char* file) {
 				if (result != FT_Err_Ok) {
-					const char* v_char_str = FT_Error_String(result);
-					int32_t v_char_size = OFF(std::strlen(v_char_str));
-					
-					size_t converted_chars = 0;
-					wchar_t* error_string = new wchar_t[v_char_size];
-						
-					mbstowcs_s(&converted_chars, error_string, v_char_size, v_char_str, _TRUNCATE);
-
-					PW_Print_Error(L"FT", error_string, line, file);
+					PW_Print_Error(L"FT", cm::Engine_Constant::To_WString(FT_Error_String(result)).c_str(), line, file);
 					return;
 				}
 			}

@@ -40,7 +40,6 @@
 #include <functional>
 //////////////////////////////////
 // Project Headers
-#include <freeimage\FreeImage.h>
 #pragma warning(push)
 #pragma warning(disable:4244)
 #pragma warning(disable:4267)
@@ -49,6 +48,11 @@
 //////////////////////////////////
 // Engine Common Headers
 #include "engine_common\engine_error.h"
+// Exception to format to fix <Windows.h> bug
+#ifndef PW_FI_H
+#define PW_FI_H
+#include "freeimage\FreeImage.h"
+#endif // PW_FI_H 
 //////////////////////////////////
 // Engine Control Headers
 //////////////////////////////////

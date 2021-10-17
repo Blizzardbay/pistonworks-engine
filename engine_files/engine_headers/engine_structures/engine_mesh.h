@@ -62,12 +62,12 @@ PW_NAMESPACE_SRT
 		// Classes
 
 		// //////////////////////////////////////////////////
-		// INTERNAL_DATA_API Class: pw::st::ID_Vertex_Data
+		// PW_STRUCTURES_API Class: pw::st::ID_Vertex_Data
 		// //////////////////////////////////////////////////
 		// Purpose:
 		//  Holds the data for each vertex in the model. 
 		// //////////////////////////////////////////////////
-		struct INTERNAL_DATA_API ID_Vertex_Data {
+		struct PW_STRUCTURES_API ID_Vertex_Data {
 		// Default Class Structures 
 		public:
 			// //////////////////////////////////////////////////

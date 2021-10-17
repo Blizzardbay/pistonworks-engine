@@ -37,7 +37,6 @@
 #include <cassert>
 //////////////////////////////////
 // Project Headers
-#include <freeimage\FreeImage.h>
 #include <glm\glm.hpp>
 //////////////////////////////////
 // Engine Headers           

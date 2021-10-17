@@ -65,7 +65,7 @@ PW_NAMESPACE_SRT
 		// Classes
 
 		// //////////////////////////////////////////////////
-		// INTERNAL_DATA_API Struct Name: pw::st::ID_Down_RS_Triangle
+		// PW_STRUCTURES_API Struct Name: pw::st::ID_Down_RS_Triangle
 		// //////////////////////////////////////////////////
 		// Purpose:
 		//  Holds the data for a ID_Down_RS_Triangle.
@@ -74,7 +74,7 @@ PW_NAMESPACE_SRT
 		//  ooo BOTTOM
 		//  Picture of triangle(o = triangle) 
 		// //////////////////////////////////////////////////
-		struct INTERNAL_DATA_API ID_Down_RS_Triangle {
+		struct PW_STRUCTURES_API ID_Down_RS_Triangle {
 		// Default Class Structures 
 		public:
 		private:
@@ -131,7 +131,7 @@ PW_NAMESPACE_SRT
 			static uint32_t indices[3];
 		};
 		// //////////////////////////////////////////////////
-		// INTERNAL_DATA_API Struct Name: pw::st::ID_Down_LS_Triangle
+		// PW_STRUCTURES_API Struct Name: pw::st::ID_Down_LS_Triangle
 		// //////////////////////////////////////////////////																				 
 		// Purpose:
 		//  Holds the data for a ID_Down_LS_Triangle.
@@ -140,7 +140,7 @@ PW_NAMESPACE_SRT
 		//  ooo BOTTOM
 		//  Picture of triangle(o = triangle)
 		// //////////////////////////////////////////////////
-		struct INTERNAL_DATA_API ID_Down_LS_Triangle {
+		struct PW_STRUCTURES_API ID_Down_LS_Triangle {
 		// Default Class Structures 
 		public:
 		private:
@@ -197,7 +197,7 @@ PW_NAMESPACE_SRT
 			static uint32_t indices[3];
 		};
 		// //////////////////////////////////////////////////
-		// INTERNAL_DATA_API Struct Name: pw::st::ID_Up_RS_Triangle
+		// PW_STRUCTURES_API Struct Name: pw::st::ID_Up_RS_Triangle
 		// //////////////////////////////////////////////////																				 
 		// Purpose:
 		//  Holds the data for a ID_Up_RS_Triangle.
@@ -206,7 +206,7 @@ PW_NAMESPACE_SRT
 		//    o BOTTOM
 		//  Picture of triangle(o = triangle)
 		// //////////////////////////////////////////////////
-		struct INTERNAL_DATA_API ID_Up_RS_Triangle {
+		struct PW_STRUCTURES_API ID_Up_RS_Triangle {
 		// Default Class Structures
 		public:
 		private:
@@ -263,7 +263,7 @@ PW_NAMESPACE_SRT
 			static uint32_t indices[3];
 		};
 		// //////////////////////////////////////////////////
-		// INTERNAL_DATA_API Struct Name: pw::st::ID_Up_LS_Triangle
+		// PW_STRUCTURES_API Struct Name: pw::st::ID_Up_LS_Triangle
 		// //////////////////////////////////////////////////																				 
 		// Purpose:
 		//  Holds the data for a ID_Up_LS_Triangle.
@@ -272,7 +272,7 @@ PW_NAMESPACE_SRT
 		//	o   BOTTOM
 		//	Picture of triangle(o = triangle)
 		// //////////////////////////////////////////////////
-		struct INTERNAL_DATA_API ID_Up_LS_Triangle {
+		struct PW_STRUCTURES_API ID_Up_LS_Triangle {
 		// Default Class Structures 
 		public:
 		private:
@@ -329,7 +329,7 @@ PW_NAMESPACE_SRT
 			static uint32_t indices[3];
 		};
 		// //////////////////////////////////////////////////
-		// INTERNAL_DATA_API Struct Name: pw::st::ID_Square
+		// PW_STRUCTURES_API Struct Name: pw::st::ID_Square
 		// //////////////////////////////////////////////////																				 
 		// Purpose:
 		//  Holds the data for a ID_Square.
@@ -338,7 +338,7 @@ PW_NAMESPACE_SRT
 		//  ooo BOTTOM
 		//  Picture of square(o = square)
 		// //////////////////////////////////////////////////
-		struct INTERNAL_DATA_API ID_Square {
+		struct PW_STRUCTURES_API ID_Square {
 		// Default Class Structures 
 		public:
 		private:
@@ -395,7 +395,7 @@ PW_NAMESPACE_SRT
 			static uint32_t indices[6];
 		};
 		// //////////////////////////////////////////////////
-		// INTERNAL_DATA_API Struct Name: pw::st::ID_Hafe_RS_Square
+		// PW_STRUCTURES_API Struct Name: pw::st::ID_Hafe_RS_Square
 		// //////////////////////////////////////////////////																				 
 		// Purpose:
 		//  Holds the data for a ID_Hafe_RS_Square.
@@ -404,7 +404,7 @@ PW_NAMESPACE_SRT
 		//   oo BOTTOM
 		//  Picture of square(o = square)
 		// //////////////////////////////////////////////////
-		struct INTERNAL_DATA_API ID_Hafe_RS_Square {
+		struct PW_STRUCTURES_API ID_Hafe_RS_Square {
 		// Default Class Structures 
 		public:
 		private:
@@ -461,7 +461,7 @@ PW_NAMESPACE_SRT
 			static uint32_t indices[6];
 		};
 		// //////////////////////////////////////////////////
-		// INTERNAL_DATA_API Struct Name: pw::st::ID_Hafe_LS_Square
+		// PW_STRUCTURES_API Struct Name: pw::st::ID_Hafe_LS_Square
 		// //////////////////////////////////////////////////																				 
 		// Purpose:
 		//  Holds the data for a ID_Hafe_LS_Square.
@@ -470,7 +470,7 @@ PW_NAMESPACE_SRT
 		//  oo  BOTTOM
 		//  Picture of square(o = square)
 		// //////////////////////////////////////////////////
-		struct INTERNAL_DATA_API ID_Hafe_LS_Square {
+		struct PW_STRUCTURES_API ID_Hafe_LS_Square {
 		// Default Class Structures 
 		public:
 		private:
@@ -527,7 +527,7 @@ PW_NAMESPACE_SRT
 			static uint32_t indices[6];
 		};
 		// //////////////////////////////////////////////////
-		// INTERNAL_DATA_API Struct Name: pw::st::ID_Hafe_UP_Square
+		// PW_STRUCTURES_API Struct Name: pw::st::ID_Hafe_UP_Square
 		// //////////////////////////////////////////////////																				 
 		// Purpose:
 		//  Holds the data for a ID_Hafe_UP_Square.
@@ -535,7 +535,7 @@ PW_NAMESPACE_SRT
 		//  ooo MIDDLE
 		//  Picture of square(o = square)
 		// //////////////////////////////////////////////////
-		struct INTERNAL_DATA_API ID_Hafe_UP_Square {
+		struct PW_STRUCTURES_API ID_Hafe_UP_Square {
 		// Default Class Structures
 		public:
 		private:
@@ -592,7 +592,7 @@ PW_NAMESPACE_SRT
 			static uint32_t indices[6];
 		};
 		// //////////////////////////////////////////////////
-		// INTERNAL_DATA_API Struct Name: pw::st::ID_Hafe_Down_Square
+		// PW_STRUCTURES_API Struct Name: pw::st::ID_Hafe_Down_Square
 		// //////////////////////////////////////////////////																				 
 		// Purpose:
 		//  Holds the data for a ID_Hafe_Down_Square.
@@ -600,7 +600,7 @@ PW_NAMESPACE_SRT
 		//  ooo BOTTOM
 		//  Picture of square(o = square)
 		// //////////////////////////////////////////////////
-		struct INTERNAL_DATA_API ID_Hafe_Down_Square {
+		struct PW_STRUCTURES_API ID_Hafe_Down_Square {
 		// Default Class Structures 
 		public:
 		private:

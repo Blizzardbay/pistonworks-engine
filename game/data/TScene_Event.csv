@@ -1,2 +1,2 @@
 Event_Type,	Model_S_ID,	Input_Event,	Button_Code,	Function_Name,	Play_Once
-CLICK,		Test,		PRESS,		0,		Print,		1	
+HOVER,		Test,		PRESS,		0,		Print,		1	

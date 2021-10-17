@@ -22,6 +22,7 @@
     <ClInclude Include="config\b2_user_settings.h" />
     <ClInclude Include="engine_files\engine_headers\engine_common\engine_constant.h" />
     <ClInclude Include="engine_files\engine_headers\engine_common\engine_error.h" />
+    <ClInclude Include="engine_files\engine_headers\engine_control\engine_console_manip.h" />
     <ClInclude Include="engine_files\engine_headers\engine_control\engine_control.h" />
     <ClInclude Include="engine_files\engine_headers\engine_control\engine_file_loader.h" />
     <ClInclude Include="engine_files\engine_headers\engine_control\engine_input.h" />
@@ -87,6 +88,7 @@
     <Text Include="engine_files\engine_resource\engine_fonts\roboto_font\LICENSE.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="engine_files\engine_source\engine_control\engine_console_manip.cpp" />
     <ClCompile Include="engine_files\engine_source\engine_control\engine_control.cpp" />
     <ClCompile Include="engine_files\engine_source\engine_control\engine_file_loader.cpp" />
     <ClCompile Include="engine_files\engine_source\engine_control\engine_game_scene.cpp" />

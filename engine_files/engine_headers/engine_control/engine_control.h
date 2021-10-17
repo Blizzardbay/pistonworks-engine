@@ -41,7 +41,6 @@
 #include <stdlib.h>
 //////////////////////////////////
 // Project Headers
-#include <freeimage\FreeImage.h>
 #include <box2d\b2_fixture.h>
 //////////////////////////////////
 // Engine Common Headers
@@ -51,6 +50,7 @@
 #include "engine_control\engine_queue.h"
 #include "engine_control\engine_file_loader.h"
 #include "engine_control\engine_input.h"
+#include "engine_control\engine_console_manip.h"
 //////////////////////////////////
 // Engine Structures Headers
 #include "engine_structures\engine_event.h"
@@ -209,8 +209,7 @@ PW_NAMESPACE_SRT
 			// Parameters: NONE
 			// //////////////////////////////////////////////////
 			NO_USER_INTERACTION
-				virtual OVERLOAD CORE void After_Queue();
-
+			virtual OVERLOAD CORE void After_Queue();
 		// Public Variables
 		public:
 		// Private Functions/Macros

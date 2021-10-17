@@ -65,7 +65,7 @@ PW_NAMESPACE_SRT
 		// Purpose:
 		//  A class to handle all different types of events.
 		// //////////////////////////////////////////////////
-		class INTERNAL_DATA_API Event {
+		class PW_STRUCTURES_API Event {
 		// Default Class Structures
 		public:
 			// //////////////////////////////////////////////////
@@ -161,7 +161,7 @@ PW_NAMESPACE_SRT
 		// Purpose:
 		//  To handle mouse centered button events.
 		// //////////////////////////////////////////////////
-		class INTERNAL_DATA_API Mouse_Event : public Event {
+		class PW_STRUCTURES_API Mouse_Event : public Event {
 		// Default Class Structures
 		public:
 			// //////////////////////////////////////////////////
@@ -202,7 +202,7 @@ PW_NAMESPACE_SRT
 		// Purpose:
 		//  To handle keyboard centered events.
 		// //////////////////////////////////////////////////
-		class INTERNAL_DATA_API Keyboard_Event : public Event
+		class PW_STRUCTURES_API Keyboard_Event : public Event
 		{
 		// Default Class Structures
 		public:

@@ -1,7 +1,9 @@
 #include "engine_control\engine_control.h"
 
+#include "engine_control\engine_console_manip.h"
+
 void Print() {
-	std::cout << "Action" << std::endl;
+	PRINT_MSG(L"User", L"Action", GAME_MSG);
 }
 
 void pw::co::Engine_Control::Init_Game() {

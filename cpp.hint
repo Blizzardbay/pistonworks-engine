@@ -74,3 +74,6 @@
 
 
 
+#define CN_NAMESPACE_SRT namespace cn {
+#define CN_NAMESPACE_END }
+#define CONSOLE

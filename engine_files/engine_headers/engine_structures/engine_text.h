@@ -64,9 +64,9 @@ PW_NAMESPACE_SRT
 		//////////////////////////////////
 		// Classes
 
-		class INTERNAL_DATA_API Text_Renderer;
+		class PW_STRUCTURES_API Text_Renderer;
 		// //////////////////////////////////////////////////
-		// INTERNAL_DATA_API Class Name: pw::st::Font
+		// PW_STRUCTURES_API Enum: pw::st::Font
 		// //////////////////////////////////////////////////
 		// Purpose:
 		//  Handles loading of text within the engine.
@@ -83,7 +83,7 @@ PW_NAMESPACE_SRT
 		// Purpose:
 		//  Holds character texture information.
 		// //////////////////////////////////////////////////
-		class INTERNAL_DATA_API Character {
+		class PW_STRUCTURES_API Character {
 		// Default Class Structures
 		public:
 			// //////////////////////////////////////////////////
@@ -183,12 +183,12 @@ PW_NAMESPACE_SRT
 			uint32_t spacing;
 		};
 		// //////////////////////////////////////////////////
-		// INTERNAL_DATA_API Class Name: pw::st::Text
+		// PW_STRUCTURES_API Class Name: pw::st::Text
 		// //////////////////////////////////////////////////
 		// Purpose: 
 		//  Holds a vector of characters.
 		// //////////////////////////////////////////////////
-		class INTERNAL_DATA_API Text {
+		class PW_STRUCTURES_API Text {
 			// Default Class Structures
 		public:
 			// //////////////////////////////////////////////////
@@ -292,12 +292,12 @@ PW_NAMESPACE_SRT
 			PW_MODEL_TYPE type;
 		};
 		// //////////////////////////////////////////////////
-		// INTERNAL_DATA_API Class Name: pw::ie::Text_Renderer
+		// PW_STRUCTURES_API Class Name: pw::ie::Text_Renderer
 		// //////////////////////////////////////////////////
 		// Purpose:
 		//  Handles loading of text within the engine.
 		// //////////////////////////////////////////////////
-		class INTERNAL_DATA_API Text_Renderer {
+		class PW_STRUCTURES_API Text_Renderer {
 		// Default Class Structures
 		public:
 		private:

@@ -82,8 +82,8 @@
 #define PW_STRUCTURES_API
 // Apart of the Error.h header file
 #define PW_ERROR_API
-// Apart of the Internal Data structs
-#define INTERNAL_DATA_API
+// Apart of the Console API
+#define PW_CONSOLE_API
 // Standard PW Namespace
 #define PW_NAMESPACE_SRT namespace pw {
 #define PW_NAMESPACE_END }
@@ -99,6 +99,9 @@
 // Error namespace
 #define ER_NAMESPACE_SRT namespace er {
 #define ER_NAMESPACE_END }
+// Console namespace
+#define CN_NAMESPACE_SRT namespace cn {
+#define CN_NAMESPACE_END }
 // Enable Debug Features
 #ifdef _DEBUG
 #define PW_DEBUG_MODE
@@ -131,6 +134,10 @@
 #define CLASS_FUNCTION
 // The user is required to overload this function
 #define OVERLOAD
+// This function or member is apart of the console API
+#define CONSOLE
+// This function is a algorithm for some mathematical purpose
+#define ALGORITHM
 // A function labeled with USER_INTERACTION can be used
 #define USER_INTERACTION 
 // A function labeled with NO_USER_INTERACTION should not be used.
@@ -195,7 +202,7 @@ PW_NAMESPACE_SRT
 			// Purpose:
 			//  Destroys GLFW though a function operator call.
 			// //////////////////////////////////////////////////
-			struct INTERNAL_DATA_API Destroy_GLFW {
+			struct PW_COMMON_API Destroy_GLFW {
 				public:
 					void operator()(GLFWwindow* p_window) {
 						glfwDestroyWindow(p_window);
@@ -240,6 +247,38 @@ PW_NAMESPACE_SRT
 				}
 				else {
 					return nullptr;
+				}
+			}
+			static std::wstring To_WString(const char* msg) {
+				size_t msg_size = std::strlen(msg) + 1;
+				wchar_t* v_msg = new wchar_t[msg_size];
+				size_t chars_converted = 0;
+				mbstowcs_s(&chars_converted, v_msg, msg_size, msg, SIZE_MAX); 
+				std::wstring v_smsg{};
+				if (chars_converted == msg_size) {
+					v_smsg.append(v_msg);
+					delete[] v_msg;
+
+					return v_smsg;
+				}
+				else {
+					return v_smsg;
+				}
+			}
+			static std::string To_String(const wchar_t* msg) {
+				size_t msg_size = std::wcslen(msg) + 1;
+				char* v_msg = new char[msg_size];
+				size_t chars_converted = 0;
+				wcstombs_s(&chars_converted, v_msg, msg_size, msg, SIZE_MAX);
+				std::string v_smsg{};
+				if (chars_converted == msg_size) {
+					v_smsg.append(v_msg);
+					delete[] v_msg;
+
+					return v_smsg;
+				}
+				else {
+					return v_smsg;
 				}
 			}
 		// Accessors

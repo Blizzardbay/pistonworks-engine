@@ -111,6 +111,9 @@
     <ClInclude Include="engine_files\engine_headers\engine_structures\engine_physics.h">
       <Filter>engine_files\engine_headers\engine_structures</Filter>
     </ClInclude>
+    <ClInclude Include="engine_files\engine_headers\engine_control\engine_console_manip.h">
+      <Filter>engine_files\engine_headers\engine_control</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="engine_files\engine_resource\engine_essential\engine_shader\fragment_shader.shader">
@@ -288,6 +291,9 @@
     </ClCompile>
     <ClCompile Include="game\code\game.cpp">
       <Filter>test_files</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_files\engine_source\engine_control\engine_console_manip.cpp">
+      <Filter>engine_files\engine_source\engine_control</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
