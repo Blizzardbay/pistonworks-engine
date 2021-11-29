@@ -35,10 +35,13 @@
 //////////////////////////////////
 // C++ Headers  
 #include <queue>
+#include <functional>
+#include <type_traits>
 //////////////////////////////////
 // Project Headers
 //////////////////////////////////
-// Engine Headers    
+// Engine Headers
+#include "engine_structures\engine_game_header.h"
 //////////////////////////////////
 // Engine Macro Includes 
 #include "engine_common\engine_error.h"
@@ -58,14 +61,69 @@ PW_NAMESPACE_SRT
 	//////////////////////////////////
 		//////////////////////////////////
 		// Classes
-
+		
+		// //////////////////////////////////////////////////
+		// PW_STRUCTURES_API Class Name: pw::st::Event_Base
+		// //////////////////////////////////////////////////
+		// Purpose:
+		//  A base class that handles basic event information
+		//  .
+		// //////////////////////////////////////////////////
+		class PW_STRUCTURES_API Event_Base {
+		// Default Class Structures
+		public:
+			Event_Base(bool p_play_once, PW_INPUT_TYPE p_trigger, PW_INPUT_TYPE p_resolution);
+		private:
+		// Public Functions/Macros 
+		public:
+			// //////////////////////////////////////////////////
+			// CORE Function: Event_Base::Trigger_Event
+			// //////////////////////////////////////////////////
+			// Purpose: 
+			//  Triggers the function that the event has on
+			//  callback.
+			// //////////////////////////////////////////////////
+			// Parameters: NONE
+			// //////////////////////////////////////////////////
+			virtual CORE void Trigger_Event();
+			// //////////////////////////////////////////////////
+			// CORE Function: Event_Base::Find_Resolution
+			// //////////////////////////////////////////////////
+			// Purpose: 
+			//  Triggers the function that the event has on
+			//  callback.
+			// //////////////////////////////////////////////////
+			// Parameters: 1
+			// (1) PW_INPUT_TYPE trigger;
+			// Purpose:
+			//  Find the resolution to a trigger, this finds
+			//  what the state the event would be in when it is
+			//  not to be triggered. Not every event has a
+			//  resolution. 
+			// //////////////////////////////////////////////////
+			PW_INPUT_TYPE Find_Resolution(PW_INPUT_TYPE trigger);
+			// Accessors
+			PW_INPUT_TYPE Trigger();
+			PW_INPUT_TYPE Resolution();
+			bool Play_State();
+		// Public Variables         
+		public:
+		// Private Functions/Macros 
+		private:
+		// Private Variables    
+		private:
+			bool m_play_once;
+			PW_INPUT_TYPE m_trigger;
+			PW_INPUT_TYPE m_resolution;
+		};
 		// //////////////////////////////////////////////////
 		// PW_STRUCTURES_API Class Name: pw::st::Event
 		// //////////////////////////////////////////////////
 		// Purpose:
 		//  A class to handle all different types of events.
 		// //////////////////////////////////////////////////
-		class PW_STRUCTURES_API Event {
+		template<class function_type, class mem_class, class type, class ...args>
+		class PW_STRUCTURES_API Event : public Event_Base {
 		// Default Class Structures
 		public:
 			// //////////////////////////////////////////////////
@@ -77,8 +135,9 @@ PW_NAMESPACE_SRT
 			// //////////////////////////////////////////////////
 			// Parameters: NONE
 			// //////////////////////////////////////////////////
-			USER_INTERACTION
-			CLASS_FUNCTION Event();
+			Event() :
+				Event_Base(NULL, NULL, NULL), m_function(nullptr), m_object(nullptr) {
+			}
 			// //////////////////////////////////////////////////
 			// CLASS_FUNCTION Function: Event::Event
 			// //////////////////////////////////////////////////
@@ -99,8 +158,38 @@ PW_NAMESPACE_SRT
 			//  Should we only play the event once or until the
 			//  trigger stops.
 			// //////////////////////////////////////////////////
-			USER_INTERACTION
-			CLASS_FUNCTION Event(PW_INPUT_TYPE trigger, PW_SRD_PTR(PW_FUNCTION) trigger_function, bool play_once);
+			Event(PW_INPUT_TYPE trigger, PW_SRD_PTR(std::function<type(args...)>) trigger_function, bool play_once, args... arguments) :
+				Event_Base(play_once, trigger, Find_Resolution(trigger)), m_function(std::bind(*trigger_function.get(), std::move(arguments)...)), m_object( nullptr ) {
+			}
+			// //////////////////////////////////////////////////
+			// CLASS_FUNCTION Function: Event::Event
+			// //////////////////////////////////////////////////
+			// Purpose: 
+			//  Initializes and finds a trigger for the event.
+			// //////////////////////////////////////////////////
+			// Parameters: 5
+			// (1) PW_INPUT_TYPE trigger;
+			// Purpose: 
+			//  The type of interaction that triggers the
+			//  callback function.
+			// (2) bool play_once;
+			// Purpose: 
+			//  Should we only play the event once or until the
+			//  trigger stops.
+			// (3) std::_Mem_fn<function> function;
+			// Purpose: 
+			//  The function to be triggered once a event is
+			//  called.
+			// (4) mem_class& object;
+			// Purpose: 
+			//  The object the function belongs to.
+			// (5) args... arguments;
+			// Purpose: 
+			//  Arguments for the function.
+			// //////////////////////////////////////////////////
+			Event(PW_INPUT_TYPE trigger, bool play_once, std::_Mem_fn<function_type> function, mem_class& object, args... arguments) :
+				Event_Base(play_once, trigger, Find_Resolution(trigger)), m_function(std::bind(function, &object, std::move(arguments)...)), m_object( &object ) {
+			}
 		private:
 		// Public Functions/Macros 
 		public:
@@ -113,47 +202,39 @@ PW_NAMESPACE_SRT
 			// //////////////////////////////////////////////////
 			// Parameters: NONE
 			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CORE void Trigger_Event();
-			// //////////////////////////////////////////////////
-			// CORE Function: Event::Find_Resolution
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Triggers the function that the event has on
-			//  callback.
-			// //////////////////////////////////////////////////
-			// Parameters: 1
-			// (1) PW_INPUT_TYPE trigger;
-			// Purpose:
-			//  Find the resolution to a trigger, this finds
-			//  what the state the event would be in when it is
-			//  not to be triggered. Not every event has a
-			//  resolution. 
-			// //////////////////////////////////////////////////
-			USER_INTERACTION
-			CORE PW_INPUT_TYPE Find_Resolution(PW_INPUT_TYPE trigger);
-			// Mutator
-			USER_INTERACTION
-			MUTATOR void Set_Function(PW_SRD_PTR(PW_FUNCTION) new_function);
-			// Accessors
-			USER_INTERACTION
-			ACCESSOR PW_INPUT_TYPE Trigger();
-			USER_INTERACTION
-			ACCESSOR PW_INPUT_TYPE Resolution();
-			USER_INTERACTION
-			ACCESSOR PW_SRD_PTR(PW_FUNCTION) Function();
-			USER_INTERACTION
-			ACCESSOR bool Play_State();
+			void Trigger_Event() override {
+				if (m_function.type() == typeid(std::_Binder<struct std::_Unforced, class std::function<void __cdecl(void)>&>)) {
+					std::any_cast<std::_Binder<struct std::_Unforced, class std::function<void __cdecl(void)>&>>(m_function)();
+				}
+				else {
+					if (m_function.type() == typeid(std::_Binder<struct std::_Unforced, class std::_Mem_fn<void (pw::st::AActor_Model::*)(class std::basic_string<wchar_t, struct std::char_traits<wchar_t>, class std::allocator<wchar_t> >, bool)> &, class pw::st::AActor_Model*, class std::basic_string<wchar_t, struct std::char_traits<wchar_t>, class std::allocator<wchar_t> > const, bool>)) {
+						std::any_cast<std::_Binder<struct std::_Unforced, class std::_Mem_fn<void (pw::st::AActor_Model::*)(class std::basic_string<wchar_t, struct std::char_traits<wchar_t>, class std::allocator<wchar_t> >, bool)>&, class pw::st::AActor_Model*, class std::basic_string<wchar_t, struct std::char_traits<wchar_t>, class std::allocator<wchar_t> > const, bool>>(m_function)();
+					}
+					else {
+						if (m_function.type() == typeid(std::_Binder<struct std::_Unforced, class std::_Mem_fn<void (pw::st::AActor_Model::*)(void)> &, class pw::st::AActor_Model*>)) {
+							std::any_cast<std::_Binder<struct std::_Unforced, class std::_Mem_fn<void (pw::st::AActor_Model::*)(void)>&, class pw::st::AActor_Model*>>(m_function)();
+						}
+						else {
+							if (m_function.type() == typeid(std::_Binder<std::_Unforced, std::function<void(std::wstring, bool)>&, std::basic_string<wchar_t, std::char_traits<wchar_t>, std::allocator<wchar_t>>const, bool>)) {
+								std::any_cast<std::_Binder<std::_Unforced, std::function<void(std::wstring, bool)>&, std::basic_string<wchar_t, std::char_traits<wchar_t>, std::allocator<wchar_t>>const, bool>>(m_function)();
+							}
+							else {
+								if (m_function.type() == typeid(std::_Binder<std::_Unforced, std::function<void(std::wstring)> &, std::basic_string<wchar_t, std::char_traits<wchar_t>, std::allocator<wchar_t>>const>)) {
+									std::any_cast<std::_Binder<std::_Unforced, std::function<void(std::wstring)>&, std::basic_string<wchar_t, std::char_traits<wchar_t>, std::allocator<wchar_t>>const>>(m_function)();
+								}
+							}
+						}
+					}
+				}
+			}
 		// Public Variables         
 		public:
 		// Private Functions/Macros 
 		private:
 		// Private Variables    
 		private:
-			PW_SRD_PTR(PW_FUNCTION) function;
-			bool play_once;
-			PW_INPUT_TYPE trigger;
-			PW_INPUT_TYPE resolution;
+			std::any m_function;
+			mem_class* m_object;
 		};
 		// //////////////////////////////////////////////////
 		// PW_STRUCTURES_API Class Name: pw::st::Mouse_Event
@@ -161,7 +242,8 @@ PW_NAMESPACE_SRT
 		// Purpose:
 		//  To handle mouse centered button events.
 		// //////////////////////////////////////////////////
-		class PW_STRUCTURES_API Mouse_Event : public Event {
+		template<class type, class ...args>
+		class PW_STRUCTURES_API Mouse_Event : public Event<int, int, type, args...> {
 		// Default Class Structures
 		public:
 			// //////////////////////////////////////////////////
@@ -185,7 +267,9 @@ PW_NAMESPACE_SRT
 			//  Should we only play the event once or until the
 			//  trigger stops.
 			// //////////////////////////////////////////////////
-			CLASS_FUNCTION Mouse_Event(PW_INPUT_TYPE trigger, PW_SRD_PTR(PW_FUNCTION) trigger_function, bool play_once);
+			CLASS_FUNCTION Mouse_Event(PW_INPUT_TYPE trigger, PW_SRD_PTR(std::function<type(args...)>) trigger_function, bool play_once) :
+					Event<int, int, type, args...>(trigger, trigger_function, play_once) {
+			}
 		private:
 		// Public Functions/Macros  
 		public:
@@ -202,7 +286,8 @@ PW_NAMESPACE_SRT
 		// Purpose:
 		//  To handle keyboard centered events.
 		// //////////////////////////////////////////////////
-		class PW_STRUCTURES_API Keyboard_Event : public Event
+		template<class type, class ...args>
+		class PW_STRUCTURES_API Keyboard_Event : public Event<int, int, type, args...>
 		{
 		// Default Class Structures
 		public:
@@ -227,16 +312,24 @@ PW_NAMESPACE_SRT
 			//  Should we only play the event once or until the
 			//  trigger stops.
 			// //////////////////////////////////////////////////
-			CLASS_FUNCTION Keyboard_Event(PW_INPUT_TYPE trigger, PW_SRD_PTR(PW_FUNCTION) trigger_function, bool play_once);
+			CLASS_FUNCTION Keyboard_Event(PW_BUTTON_CODE button, PW_INPUT_TYPE trigger, PW_SRD_PTR(std::function<type(args...)>) trigger_function, bool play_once) :
+					Event<int, int,type, args...>(trigger, trigger_function, play_once), m_button(button) {
+			}
 		private:
 		// Public Functions/Macros 
 		public:
+			// Accessors
+			USER_INTERACTION
+			ACCESSOR PW_BUTTON_CODE Button() {
+				return m_button;
+			}
 		// Public Variables       
 		public:
 		// Private Functions/Macros 
 		private:
 		// Private Variables 
 		private:
+			PW_BUTTON_CODE m_button;
 		};
 		// Functions              
 		// Macros / Definitions                 

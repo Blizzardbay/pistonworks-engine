@@ -43,6 +43,7 @@
 //////////////////////////////////
 // Engine Headers
 #include "engine_control\engine_file_loader.h"
+#include "engine_structures\engine_shader.h"
 //////////////////////////////////
 // Engine Macro Includes
 #include "engine_common\engine_error.h"
@@ -67,12 +68,23 @@ PW_NAMESPACE_SRT
 		//  For handling all engine events and switching
 		//  from editor mode to game state.
 		// //////////////////////////////////////////////////
-		class PW_CONTROL_API Engine_Queue {
+		class PW_CONTROL_API Engine_Queue : protected cm::Engine_Constant {
 		// Default Class Structures
 		public:
 		private:
 		// Public Functions/Macros
 		public:
+			// //////////////////////////////////////////////////
+			// CORE FUNCTION: Engine_Queue::Pre_Queue
+			// //////////////////////////////////////////////////
+			// Purpose: 
+			//  Gets rendering information ready for scene render
+			// .
+			// //////////////////////////////////////////////////
+			// Parameters: NONE
+			// //////////////////////////////////////////////////
+			NO_USER_INTERACTION
+			static CORE void Pre_Queue();
 			// //////////////////////////////////////////////////
 			// CORE FUNCTION: Engine_Queue::Run_Queue
 			// //////////////////////////////////////////////////
@@ -105,7 +117,17 @@ PW_NAMESPACE_SRT
 			//  The directory in which the project file resides.
 			// //////////////////////////////////////////////////
 			NO_USER_INTERACTION
-			static CORE void Load_From_Dir(const wchar_t* directory);
+			static CORE void Load_From_Dir(const wchar_t* directory, st::Shader& shader, PW_DUNI_PTR(GLFWwindow, cm::Engine_Constant::Destroy_GLFW)& main_window,
+				PW_SRD_PTR(PW_FUNCTION) state_function);
+			// //////////////////////////////////////////////////
+			// CORE FUNCTION: Engine_Queue::Print_Debug_Stats
+			// //////////////////////////////////////////////////
+			// Purpose: 
+			//  Prints out debug stats about the engine.
+			// //////////////////////////////////////////////////
+			// Parameters: NONE
+			// //////////////////////////////////////////////////
+			static CORE void Print_Debug_Stats();
 			// //////////////////////////////////////////////////
 			// CORE FUNCTION: Engine_Queue::Clear_Queue
 			// //////////////////////////////////////////////////
@@ -116,12 +138,28 @@ PW_NAMESPACE_SRT
 			// //////////////////////////////////////////////////
 			NO_USER_INTERACTION
 			static CORE void Clear_Queue();
+			// //////////////////////////////////////////////////
+			// CORE FUNCTION: Engine_Queue::Add_Scene
+			// //////////////////////////////////////////////////
+			// Purpose: 
+			//  Adds a scene to the total queue.
+			// //////////////////////////////////////////////////
+			// Parameters: 2
+			// (1) std::wstring scene_name;
+			// Purpose:
+			//  The name of the scene to be added and loaded.
+			// (2) bool set_current = false;
+			// Purpose:
+			//  Do we set this to the current scene.
+			// //////////////////////////////////////////////////
+			NO_USER_INTERACTION
+			static CORE void Add_Scene(std::wstring scene_name, bool set_current = false);
+			// Mutator
+			USER_INTERACTION
+			static MUTATOR void Set_Current_Scene(std::wstring name_id);
 			// Accessors
 			NO_USER_INTERACTION
 			static ACCESSOR st::Game_Scene* Current_Scene();
-			// Mutator
-			USER_INTERACTION
-			static MUTATOR void Set_Current_Scene(const wchar_t* name_id);
 		// Public Variables      
 		public:
 		// Private Functions/Macros

@@ -38,7 +38,13 @@
 //////////////////////////////////
 // Project Headers 
 #include <glm\glm.hpp>
+#pragma warning(push)
+#pragma warning(disable:26495)
+#pragma warning(push)
+#pragma warning(disable:26812)
 #include <box2d\b2_body.h>
+#pragma warning(pop)
+#pragma warning(pop)
 //////////////////////////////////
 // Engine Headers
 #include "engine_structures\engine_mesh.h"
@@ -82,13 +88,13 @@ PW_NAMESPACE_SRT
 		public:
 			// Accessors
 			USER_INTERACTION
-			static ACCESSOR ID_Vertex_Data* Vertices();
+			static ACCESSOR const ID_Vertex_Data* Vertices();
 			USER_INTERACTION
-			static ACCESSOR uint32_t* Indices();
+			static ACCESSOR const uint32_t* Indices();
 			USER_INTERACTION
-			static ACCESSOR const uint16_t Vertices_Size();
+			static ACCESSOR const uint16_t& Vertices_Size();
 			USER_INTERACTION
-			static ACCESSOR const uint16_t Indices_Size();
+			static ACCESSOR const uint16_t& Indices_Size();
 			// //////////////////////////////////////////////////
 			// CORE Function: ID_Down_RS_Triangle::Handle_Model_Data_NOC
 			// //////////////////////////////////////////////////
@@ -148,13 +154,13 @@ PW_NAMESPACE_SRT
 		public:
 			// Accessors
 			USER_INTERACTION
-			static ACCESSOR ID_Vertex_Data* Vertices();
+			static ACCESSOR const ID_Vertex_Data* Vertices();
 			USER_INTERACTION
-			static ACCESSOR uint32_t* Indices();
+			static ACCESSOR const uint32_t* Indices();
 			USER_INTERACTION
-			static ACCESSOR const uint16_t Vertices_Size();
+			static ACCESSOR const uint16_t& Vertices_Size();
 			USER_INTERACTION
-			static ACCESSOR const uint16_t Indices_Size();
+			static ACCESSOR const uint16_t& Indices_Size();
 			// //////////////////////////////////////////////////
 			// CORE Function: ID_Down_LS_Triangle::Handle_Model_Data_NOC
 			// //////////////////////////////////////////////////
@@ -214,13 +220,13 @@ PW_NAMESPACE_SRT
 		public:
 			// Accessors
 			USER_INTERACTION
-			static ACCESSOR ID_Vertex_Data* Vertices();
+			static ACCESSOR const ID_Vertex_Data* Vertices();
 			USER_INTERACTION
-			static ACCESSOR uint32_t* Indices();
+			static ACCESSOR const uint32_t* Indices();
 			USER_INTERACTION
-			static ACCESSOR const uint16_t Vertices_Size();
+			static ACCESSOR const uint16_t& Vertices_Size();
 			USER_INTERACTION
-			static ACCESSOR const uint16_t Indices_Size();
+			static ACCESSOR const uint16_t& Indices_Size();
 			// //////////////////////////////////////////////////
 			// CORE Function: ID_Up_RS_Triangle::Handle_Model_Data_NOC
 			// //////////////////////////////////////////////////
@@ -280,13 +286,13 @@ PW_NAMESPACE_SRT
 		public:
 			// Accessors
 			USER_INTERACTION
-			static ACCESSOR ID_Vertex_Data* Vertices();
+			static ACCESSOR const ID_Vertex_Data* Vertices();
 			USER_INTERACTION
-			static ACCESSOR uint32_t* Indices();
+			static ACCESSOR const uint32_t* Indices();
 			USER_INTERACTION
-			static ACCESSOR const uint16_t Vertices_Size();
+			static ACCESSOR const uint16_t& Vertices_Size();
 			USER_INTERACTION
-			static ACCESSOR const uint16_t Indices_Size();
+			static ACCESSOR const uint16_t& Indices_Size();
 			// //////////////////////////////////////////////////
 			// CORE Function: ID_Up_LS_Triangle::Handle_Model_Data_NOC
 			// //////////////////////////////////////////////////
@@ -346,13 +352,13 @@ PW_NAMESPACE_SRT
 		public:
 			// Accessors
 			USER_INTERACTION
-			static ACCESSOR ID_Vertex_Data* Vertices();
+			static ACCESSOR const ID_Vertex_Data* Vertices();
 			USER_INTERACTION
-			static ACCESSOR uint32_t* Indices();
+			static ACCESSOR const uint32_t* Indices();
 			USER_INTERACTION
-			static ACCESSOR const uint16_t Vertices_Size();
+			static ACCESSOR const uint16_t& Vertices_Size();
 			USER_INTERACTION
-			static ACCESSOR const uint16_t Indices_Size();
+			static ACCESSOR const uint16_t& Indices_Size();
 			// //////////////////////////////////////////////////
 			// CORE Function: ID_Square::Handle_Model_Data_NOC
 			// //////////////////////////////////////////////////
@@ -412,13 +418,13 @@ PW_NAMESPACE_SRT
 		public:
 			// Accessors
 			USER_INTERACTION
-			static ACCESSOR ID_Vertex_Data* Vertices();
+			static ACCESSOR const ID_Vertex_Data* Vertices();
 			USER_INTERACTION
-			static ACCESSOR uint32_t* Indices();
+			static ACCESSOR const uint32_t* Indices();
 			USER_INTERACTION
-			static ACCESSOR const uint16_t Vertices_Size();
+			static ACCESSOR const uint16_t& Vertices_Size();
 			USER_INTERACTION
-			static ACCESSOR const uint16_t Indices_Size();
+			static ACCESSOR const uint16_t& Indices_Size();
 			// //////////////////////////////////////////////////
 			// CORE Function: ID_Hafe_RS_Square::Handle_Model_Data_NOC
 			// //////////////////////////////////////////////////
@@ -478,13 +484,13 @@ PW_NAMESPACE_SRT
 		public:
 			// Accessors
 			USER_INTERACTION
-			static ACCESSOR ID_Vertex_Data* Vertices();
+			static ACCESSOR const ID_Vertex_Data* Vertices();
 			USER_INTERACTION
-			static ACCESSOR uint32_t* Indices();
+			static ACCESSOR const uint32_t* Indices();
 			USER_INTERACTION
-			static ACCESSOR const uint16_t Vertices_Size();
+			static ACCESSOR const uint16_t& Vertices_Size();
 			USER_INTERACTION
-			static ACCESSOR const uint16_t Indices_Size();
+			static ACCESSOR const uint16_t& Indices_Size();
 			// //////////////////////////////////////////////////
 			// CORE Function: ID_Hafe_LS_Square::Handle_Model_Data_NOC
 			// //////////////////////////////////////////////////
@@ -543,13 +549,13 @@ PW_NAMESPACE_SRT
 		public:
 			// Accessors
 			USER_INTERACTION
-			static ACCESSOR ID_Vertex_Data* Vertices();
+			static ACCESSOR const ID_Vertex_Data* Vertices();
 			USER_INTERACTION
-			static ACCESSOR uint32_t* Indices();
+			static ACCESSOR const uint32_t* Indices();
 			USER_INTERACTION
-			static ACCESSOR const uint16_t Vertices_Size();
+			static ACCESSOR const uint16_t& Vertices_Size();
 			USER_INTERACTION
-			static ACCESSOR const uint16_t Indices_Size();
+			static ACCESSOR const uint16_t& Indices_Size();
 			// //////////////////////////////////////////////////
 			// CORE Function: ID_Hafe_UP_Square::Handle_Model_Data_NOC
 			// //////////////////////////////////////////////////
@@ -608,13 +614,13 @@ PW_NAMESPACE_SRT
 		public:
 			// Accessors
 			USER_INTERACTION
-			static ACCESSOR ID_Vertex_Data* Vertices();
+			static ACCESSOR const ID_Vertex_Data* Vertices();
 			USER_INTERACTION
-			static ACCESSOR uint32_t* Indices();
+			static ACCESSOR const uint32_t* Indices();
 			USER_INTERACTION
-			static ACCESSOR const uint16_t Vertices_Size();
+			static ACCESSOR const uint16_t& Vertices_Size();
 			USER_INTERACTION
-			static ACCESSOR const uint16_t Indices_Size();
+			static ACCESSOR const uint16_t& Indices_Size();
 			// //////////////////////////////////////////////////
 			// CORE Function: ID_Hafe_Down_Square::Handle_Model_Data_NOC
 			// //////////////////////////////////////////////////
@@ -883,29 +889,32 @@ PW_NAMESPACE_SRT
 			// //////////////////////////////////////////////////
 			NO_USER_INTERACTION
 			CORE void Delete();
+			// Mutators
+			USER_INTERACTION
+			MUTATOR void Set_Texture(st::Texture* p_new_texture);
 			// Accessors
 			USER_INTERACTION
-			ACCESSOR glm::vec3 Position();
+			ACCESSOR const glm::vec3& Position();
 			USER_INTERACTION
 			ACCESSOR glm::vec3& Position_Reference();
 			USER_INTERACTION
-			ACCESSOR Mesh_Types Model_Type();
+			ACCESSOR const Mesh_Types& Model_Type();
 			USER_INTERACTION
-			ACCESSOR float Rotation();
+			ACCESSOR const float& Rotation();
 			USER_INTERACTION
-			ACCESSOR glm::vec2 Model_Size();
+			ACCESSOR const glm::vec2& Model_Size();
 			USER_INTERACTION
-			ACCESSOR PW_SRD_PTR(Mesh) Model_Mesh();
+			ACCESSOR const PW_SRD_PTR(Mesh)& Model_Mesh();
 			USER_INTERACTION
 			ACCESSOR PW_SRD_PTR(Mesh)& Model_Mesh_Reference();
 			USER_INTERACTION
-			ACCESSOR uint64_t Id();
+			ACCESSOR const uint64_t& Id();
 		// Public Variables         
 		public:
 			static void(*model_functions_noc[(int32_t)Mesh_Types::TYPE_COUNT - 1])(PW_SRD_PTR(Mesh)& model_mesh);
 			static void(*model_functions_c[(int32_t)Mesh_Types::TYPE_COUNT - 1])(PW_SRD_PTR(Mesh)& model_mesh, glm::vec4 model_color);
 
-			static ID_Vertex_Data* model_vertices[(int32_t)Mesh_Types::TYPE_COUNT - 1];
+			static const ID_Vertex_Data* model_vertices[(int32_t)Mesh_Types::TYPE_COUNT - 1];
 			static const uint16_t model_vertices_count[(int32_t)Mesh_Types::TYPE_COUNT - 1];
 			// //////////////////////////////////////////////////
 			// CORE Function: Static_Model::Refresh_Model
@@ -928,7 +937,7 @@ PW_NAMESPACE_SRT
 			// Parameters: NONE
 			// //////////////////////////////////////////////////
 			NO_USER_INTERACTION
-			CORE glm::mat4 Handle_Calculations();
+			CORE glm::mat4&& Handle_Calculations();
 		// Private Variables        
 		private:
 			Mesh_Types model_type;
@@ -1136,27 +1145,30 @@ PW_NAMESPACE_SRT
 			// Parameters: NONE
 			// //////////////////////////////////////////////////
 			CORE void Delete();
+			// Mutators
+			USER_INTERACTION
+			MUTATOR void Set_Texture(st::Texture* p_new_texture);
 			// Accessors
 			USER_INTERACTION
-			ACCESSOR glm::vec3 Position();
+			ACCESSOR const glm::vec3& Position();
 			USER_INTERACTION
 			ACCESSOR glm::vec3& Position_Reference();
 			USER_INTERACTION
-			ACCESSOR glm::vec3 Last_Postition();
+			ACCESSOR const glm::vec3& Last_Postition();
 			USER_INTERACTION
 			ACCESSOR glm::vec3& Last_Postition_Reference();
 			USER_INTERACTION
-			ACCESSOR Mesh_Types Model_Type();
+			ACCESSOR const Mesh_Types& Model_Type();
 			USER_INTERACTION
-			ACCESSOR float Rotation();
+			ACCESSOR const float& Rotation();
 			USER_INTERACTION
-			ACCESSOR glm::vec2 Model_Size();
+			ACCESSOR const glm::vec2& Model_Size();
 			USER_INTERACTION
-			ACCESSOR PW_SRD_PTR(Mesh) Model_Mesh();
+			ACCESSOR const PW_SRD_PTR(Mesh)& Model_Mesh();
 			USER_INTERACTION
 			ACCESSOR PW_SRD_PTR(Mesh)& Model_Mesh_Reference();
 			USER_INTERACTION
-			ACCESSOR uint64_t Id();
+			ACCESSOR const uint64_t& Id();
 			// Mutators
 			USER_INTERACTION
 			MUTATOR void Set_Model_Color(glm::vec4 new_model_color);
@@ -1184,7 +1196,7 @@ PW_NAMESPACE_SRT
 			static void(*model_functions_noc[(int32_t)Mesh_Types::TYPE_COUNT - 1])(PW_SRD_PTR(Mesh)& model_mesh);
 			static void(*model_functions_c[(int32_t)Mesh_Types::TYPE_COUNT - 1])(PW_SRD_PTR(Mesh)& model_mesh, glm::vec4 model_color);
 
-			static ID_Vertex_Data* model_vertices[(int32_t)Mesh_Types::TYPE_COUNT - 1];
+			static const ID_Vertex_Data* model_vertices[(int32_t)Mesh_Types::TYPE_COUNT - 1];
 			static const uint16_t model_vertices_count[(int32_t)Mesh_Types::TYPE_COUNT - 1];
 		// Private Functions/Macros 
 		private:
@@ -1201,7 +1213,7 @@ PW_NAMESPACE_SRT
 			//  The variable forces the re-calculation of the 
 			//  models coords.
 			// //////////////////////////////////////////////////
-			CORE glm::mat4 Handle_Calculations(bool dynamic_override);
+			CORE glm::mat4&& Handle_Calculations(bool dynamic_override);
 			// //////////////////////////////////////////////////
 			// CORE Function: Dynamic_Model::Handle_Calculations
 			// //////////////////////////////////////////////////

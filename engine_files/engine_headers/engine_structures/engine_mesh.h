@@ -105,11 +105,11 @@ PW_NAMESPACE_SRT
 		public:
 			// Accessors
 			USER_INTERACTION
-			ACCESSOR glm::vec3 Vertex_Position();
+			ACCESSOR const glm::vec3& Vertex_Position();
 			USER_INTERACTION
-			ACCESSOR glm::vec2 Texture_Coord();
+			ACCESSOR const glm::vec2& Texture_Coord();
 			USER_INTERACTION
-			ACCESSOR glm::vec4 Color_Data();
+			ACCESSOR const glm::vec4& Color_Data();
 			// Mutators
 			USER_INTERACTION
 			MUTATOR void Set_Vertex_Position(glm::vec3 vertex_position);
@@ -170,6 +170,30 @@ PW_NAMESPACE_SRT
 			// //////////////////////////////////////////////////
 			NO_USER_INTERACTION
 			CLASS_FUNCTION Mesh(ID_Vertex_Data* vertices, const uint16_t vertex_count, uint32_t* indices, const uint16_t indice_count);
+			// //////////////////////////////////////////////////
+			// PW_STRUCTURES_API CLASS_FUNCTION: Mesh::Mesh
+			// //////////////////////////////////////////////////
+			// Purpose: 
+			//  Creates a mesh. A mesh's data may be changed at
+			//  runtime.
+			// //////////////////////////////////////////////////
+			// Parameters: 4
+			// (1) const ID_Vertex_Data* vertices;
+			// Purpose: 
+			//  A pointer to all of the vertices in the mesh. 
+			// (2) const uint16_t vertex_count;
+			// Purpose: 
+			//  The total count of the vertices.
+			// (3) const uint32_t* indices;
+			// Purpose: 
+			//  The indices of the mesh. Used for texture
+			//  coordinates. 
+			// (4) const uint16_t indice_count;
+			// Purpose:
+			//  The total count of the indices. 
+			// //////////////////////////////////////////////////
+			NO_USER_INTERACTION
+				CLASS_FUNCTION Mesh(const ID_Vertex_Data* vertices, const uint16_t vertex_count, const uint32_t* indices, const uint16_t indice_count);
 			// //////////////////////////////////////////////////
 			// PW_STRUCTURES_API CLASS_FUNCTION: Mesh::~Mesh
 			// //////////////////////////////////////////////////
@@ -234,7 +258,7 @@ PW_NAMESPACE_SRT
 			USER_INTERACTION
 			ACCESSOR ID_Vertex_Data* Vertices();
 			USER_INTERACTION
-			ACCESSOR uint32_t Vertex_Count();
+			ACCESSOR const uint32_t& Vertex_Count();
 			// Mutators
 			USER_INTERACTION
 			MUTATOR void Update_Vertices(ID_Vertex_Data* new_vertices);

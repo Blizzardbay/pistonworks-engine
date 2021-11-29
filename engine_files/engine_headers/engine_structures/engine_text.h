@@ -189,8 +189,20 @@ PW_NAMESPACE_SRT
 		//  Holds a vector of characters.
 		// //////////////////////////////////////////////////
 		class PW_STRUCTURES_API Text {
-			// Default Class Structures
+		// Default Class Structures
 		public:
+			// //////////////////////////////////////////////////
+			// CLASS_FUNCTION Function: Text::Text
+			// //////////////////////////////////////////////////
+			// Purpose: 
+			//  Creates a vector of character objects to be drawn
+			//  as a line of text.
+			// //////////////////////////////////////////////////
+			// Parameters: NONE
+			//  The type of loaded engine font to use.
+			// //////////////////////////////////////////////////
+			USER_INTERACTION
+			CLASS_FUNCTION Text();
 			// //////////////////////////////////////////////////
 			// CLASS_FUNCTION Function: Text::Text
 			// //////////////////////////////////////////////////
@@ -260,9 +272,9 @@ PW_NAMESPACE_SRT
 			NO_USER_INTERACTION
 			CLASS_FUNCTION ~Text();
 		private:
-			// Public Functions/Macros
+		// Public Functions/Macros
 		public:
-			// Public Variables   
+		// Public Variables   
 		public:
 			// //////////////////////////////////////////////////
 			// CORE Function: Text::Render
@@ -284,11 +296,38 @@ PW_NAMESPACE_SRT
 			// //////////////////////////////////////////////////
 			NO_USER_INTERACTION
 			CORE void Delete();
-			// Private Functions/Macros 
+			// //////////////////////////////////////////////////
+			// CORE Function: Text::Refresh
+			// //////////////////////////////////////////////////
+			// Purpose: 
+			//  Refreshes the line of text.
+			// //////////////////////////////////////////////////
+			// Parameters: NONE
+			// //////////////////////////////////////////////////
+			NO_USER_INTERACTION
+			CORE void Refresh();
+			// Mutators
+			USER_INTERACTION
+			MUTATOR void Set_Position(const glm::vec2&& p_new_position);
+			USER_INTERACTION
+			MUTATOR void Set_Position(const glm::vec2& p_new_position);
+			// Accessors
+			USER_INTERACTION
+			ACCESSOR glm::vec2& Position_Reference();
+			USER_INTERACTION
+			const ACCESSOR glm::vec2& Position();
+			USER_INTERACTION
+			const ACCESSOR glm::vec2& Size();
+			USER_INTERACTION
+			const ACCESSOR uint64_t Count();
+		// Private Functions/Macros 
 		private:
-			// Private Variables  
+		// Private Variables  
 		private:
 			std::vector<Model*> text_string;
+			glm::vec2 text_position;
+			glm::vec2 text_size;
+
 			PW_MODEL_TYPE type;
 		};
 		// //////////////////////////////////////////////////
@@ -313,6 +352,16 @@ PW_NAMESPACE_SRT
 			// //////////////////////////////////////////////////
 			NO_USER_INTERACTION
 			static CORE void Load_Engine_Font();
+			// //////////////////////////////////////////////////
+			// CORE Function: Text_Renderer::Delete_Engine_Font
+			// //////////////////////////////////////////////////
+			// Purpose: 
+			//  Deletes the characters in each font.
+			// //////////////////////////////////////////////////
+			// Parameters: NONE
+			// //////////////////////////////////////////////////
+			NO_USER_INTERACTION
+			static CORE void Delete_Engine_Font();
 			// //////////////////////////////////////////////////
 			// CORE Function: Text_Renderer::Create_Character
 			// //////////////////////////////////////////////////

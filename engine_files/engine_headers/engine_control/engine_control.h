@@ -39,9 +39,16 @@
 #include <chrono>
 #include <iostream>
 #include <stdlib.h>
+#include <memory>
 //////////////////////////////////
 // Project Headers
+#pragma warning(push)
+#pragma warning(disable:26495)
+#pragma warning(push)
+#pragma warning(disable:26812)
 #include <box2d\b2_fixture.h>
+#pragma warning(pop)
+#pragma warning(pop)
 //////////////////////////////////
 // Engine Common Headers
 #include "engine_common\engine_constant.h"
@@ -210,6 +217,8 @@ PW_NAMESPACE_SRT
 			// //////////////////////////////////////////////////
 			NO_USER_INTERACTION
 			virtual OVERLOAD CORE void After_Queue();
+			// Accessors
+			ACCESSOR bool No_Error();
 		// Public Variables
 		public:
 		// Private Functions/Macros
@@ -217,6 +226,16 @@ PW_NAMESPACE_SRT
 		// Private Variables
 		private:
 			PW_DUNI_PTR(GLFWwindow, Engine_Constant::Destroy_GLFW) main_window;
+			// For termination of the engine
+			bool m_no_error;
+			bool m_has_terminated;
+			// Initialization failures
+			bool m_console_complete;
+			bool m_glfw_complete;
+			// Loaded font
+			bool m_font_complete;
+			// Loaded queue
+			bool m_queue_complete;
 		};
 		// Functions
 		// Macros / Definitions

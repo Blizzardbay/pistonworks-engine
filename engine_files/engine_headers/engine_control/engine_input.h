@@ -46,8 +46,8 @@
 #include <glm\glm.hpp>
 //////////////////////////////////
 // Engine Headers
-#include "engine_structures\engine_camera.h"
 #include "engine_structures\engine_event.h"
+#include "engine_structures\engine_camera.h"
 //////////////////////////////////
 // Engine Macro Includes
 #include "engine_common\engine_error.h"
@@ -116,14 +116,24 @@ PW_NAMESPACE_SRT
 			// //////////////////////////////////////////////////
 			USER_INTERACTION
 			CLASS_FUNCTION Engine_Input(
-				std::map<PW_INPUT_TYPE, st::Keyboard_Event> current_key_events,
-				std::map<PW_INPUT_TYPE, std::map<PW_KEY_CODE, st::Keyboard_Event>> key_events,
-				std::map<PW_INPUT_TYPE, st::Mouse_Event> current_mouse_events,
-				std::map<PW_INPUT_TYPE, std::map<PW_BUTTON_CODE, st::Mouse_Event>> mouse_events,
-				std::map<PW_SCROLL_ACTION, st::Mouse_Event> scroll_events);
+				std::vector<st::Event_Base*> p_current_key_events,
+				std::map<PW_INPUT_TYPE, std::map<PW_KEY_CODE, std::map<PW_ID, st::Event_Base*>>> p_key_events,
+				std::vector<st::Event_Base*> p_current_mouse_events,
+				std::map<PW_INPUT_TYPE, std::map<PW_BUTTON_CODE, std::map<PW_ID, st::Event_Base*>>> p_mouse_events,
+				std::map<PW_SCROLL_ACTION, std::map<PW_ID, st::Event_Base*>> p_scroll_events);
 		private:
 		// Public Functions/Macros
 		public:
+			// //////////////////////////////////////////////////
+			// CORE Function: Engine_Input::Delete
+			// //////////////////////////////////////////////////
+			// Purpose: 
+			//  Used to delete all of the related members.
+			// //////////////////////////////////////////////////
+			// Parameters: NONE
+			// //////////////////////////////////////////////////
+			NO_USER_INTERACTION
+			CORE void Delete();
 			// //////////////////////////////////////////////////
 			// CORE Function: Engine_Input::Handle_Keyboard
 			// //////////////////////////////////////////////////
@@ -305,11 +315,12 @@ PW_NAMESPACE_SRT
 			static MUTATOR void Set_Scene_Event_Function(COMPLEX_FUNCTION_3(PW_EVENT_ID, PW_BUTTON_CODE, PW_STATE) new_scene_event_function);
 		// Public Variables       
 		public:
-			std::map<int32_t, st::Keyboard_Event> current_key_events;
-			std::map<PW_INPUT_TYPE, std::map<PW_KEY_CODE, st::Keyboard_Event>> key_events;
-			std::map<int32_t, st::Mouse_Event> current_mouse_events;
-			std::map<PW_INPUT_TYPE, std::map<PW_BUTTON_CODE, st::Mouse_Event>> mouse_events;
-			std::map<PW_SCROLL_ACTION, st::Mouse_Event> scroll_events;
+			std::vector<st::Event_Base*> current_key_events;
+			std::map<PW_INPUT_TYPE, std::map<PW_KEY_CODE, std::map<PW_ID, st::Event_Base*>>> key_events;
+			std::vector<st::Event_Base*> current_mouse_events;
+			std::map<PW_INPUT_TYPE, std::map<PW_BUTTON_CODE, std::map<PW_ID, st::Event_Base*>>> mouse_events;
+			std::map<PW_SCROLL_ACTION, std::map<PW_ID, st::Event_Base*>> scroll_events;
+			uint64_t event_id_assigner;
 		// Private Functions/Macros 
 		private:
 		// Private Variables

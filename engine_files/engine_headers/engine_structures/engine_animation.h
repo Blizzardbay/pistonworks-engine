@@ -80,6 +80,17 @@ PW_NAMESPACE_SRT
 			//  Used to initialize animation information
 			//  and data structures.
 			// //////////////////////////////////////////////////
+			// Parameters: NONE
+			// //////////////////////////////////////////////////
+			USER_INTERACTION
+			CLASS_FUNCTION Animation();
+			// //////////////////////////////////////////////////
+			// PW_STRUCTURES_API CLASS_FUNCTION: Animation::Animation
+			// //////////////////////////////////////////////////
+			// Purpose: 
+			//  Used to initialize animation information
+			//  and data structures.
+			// //////////////////////////////////////////////////
 			// Parameters: 5
 			// (1) float animation_length;
 			// Purpose: 
@@ -200,13 +211,37 @@ PW_NAMESPACE_SRT
 			// //////////////////////////////////////////////////
 			NO_USER_INTERACTION
 			CORE void Finish_Init(ID_Vertex_Data* vertices, size_t vertices_count);
-			// Accessors
+			// //////////////////////////////////////////////////
+			// CORE Function: Animation::Advance_Frame
+			// //////////////////////////////////////////////////
+			// Purpose: 
+			//  Forces the animation to the next frame.
+			// //////////////////////////////////////////////////
+			// Parameters: NONE
+			// //////////////////////////////////////////////////
 			USER_INTERACTION
-			ACCESSOR ID_Vertex_Data* Vertices();
-		// Public Variables
-		public:
-		// Private Functions/Macros 
-		private:
+			CORE void Advance_Frame();
+			// //////////////////////////////////////////////////
+			// CORE Function: Animation::Start_Animation
+			// //////////////////////////////////////////////////
+			// Purpose: 
+			//  Makes the animation start to animate.
+			// //////////////////////////////////////////////////
+			// Parameters: NONE
+			// //////////////////////////////////////////////////
+			USER_INTERACTION
+			CORE void Start_Animation();
+			// //////////////////////////////////////////////////
+			// CORE Function: Animation::Stop_Animation
+			// //////////////////////////////////////////////////
+			// Purpose: 
+			//  Stops the animation from animating. Can still be
+			//  advanced manually.
+			// //////////////////////////////////////////////////
+			// Parameters: NONE
+			// //////////////////////////////////////////////////
+			USER_INTERACTION
+			CORE void Stop_Animation();
 			// //////////////////////////////////////////////////
 			// CORE Function: Animation::Reset_Animation
 			// //////////////////////////////////////////////////
@@ -218,6 +253,13 @@ PW_NAMESPACE_SRT
 			// //////////////////////////////////////////////////
 			NO_USER_INTERACTION
 			CORE void Reset_Animation();
+			// Accessors
+			USER_INTERACTION
+			ACCESSOR ID_Vertex_Data* Vertices();
+		// Public Variables
+		public:
+		// Private Functions/Macros 
+		private:
 		// Private Variables 
 		private:
 			// Animation time between frames
@@ -235,6 +277,73 @@ PW_NAMESPACE_SRT
 			PW_SRD_PTR(ID_Vertex_Data*) animation_vertices;
 
 			size_t vertices_count;
+
+			bool keep_animating;
+		};
+		// //////////////////////////////////////////////////
+		// PW_STRUCTURES_API Class Name: pw::st::Animation_Structure
+		// //////////////////////////////////////////////////
+		// Purpose:
+		//  A strcture that hold animation information.
+		// //////////////////////////////////////////////////
+		struct PW_STRUCTURES_API Animation_Structure {
+		// Default Class Structures 
+		public:
+			// //////////////////////////////////////////////////
+			// CLASS_FUNCTION Function: Animation_Structure::Animation_Structure
+			// //////////////////////////////////////////////////
+			// Purpose: 
+			//  Used to initialize the class structures.
+			// //////////////////////////////////////////////////
+			// Parameters: 1
+			// (1) PW_SRD_PTR(st::Animation) p_animation;
+			// Purpose:
+			//  Sets the structure so it only has a single
+			//  animation.
+			// //////////////////////////////////////////////////
+			CLASS_FUNCTION Animation_Structure(PW_SRD_PTR(st::Animation) p_animation);
+			// //////////////////////////////////////////////////
+			// CLASS_FUNCTION Function: Actor_Model::Actor_Model
+			// //////////////////////////////////////////////////
+			// Purpose: 
+			//  Used to initialize the animation structure.
+			// //////////////////////////////////////////////////
+			// Parameters: 2
+			// (1) std::vector<PW_SRD_PTR(st::Animation)> p_animations;
+			// Purpose:
+			//  The animations to go into the structure.
+			// (2) std::vector<std::wstring> p_animation_ids;
+			// Purpose:
+			//  The id's of the animation in the order of the
+			//  animations.
+			// //////////////////////////////////////////////////
+			CLASS_FUNCTION Animation_Structure(std::vector<std::tuple<PW_SRD_PTR(st::Animation), st::Texture*>> p_animations, std::vector<std::wstring> p_animation_ids);
+		private:
+		// Public Functions/Macros 
+		public:
+			// //////////////////////////////////////////////////
+			// CORE Function: Animation_Structure::Delete
+			// //////////////////////////////////////////////////
+			// Purpose: 
+			//  Used to delete the class structure's and models.
+			// //////////////////////////////////////////////////
+			// Parameters: NONE
+			// //////////////////////////////////////////////////
+			NO_USER_INTERACTION
+				CORE void Delete();
+			// Accessors
+			// If the structure only has one animation it will return a shared ptr to the animation else a nullptr
+			const ACCESSOR std::tuple<PW_SRD_PTR(st::Animation), st::Texture*>& Animation() const;
+			const ACCESSOR std::tuple<PW_SRD_PTR(st::Animation), st::Texture*>& Animation(const std::wstring&& p_animation_id);
+		// Public Variables         
+		public:
+		// Private Functions/Macros 
+		private:
+		// Private Variables        
+		private:
+			bool m_single_animation;
+			std::map<std::wstring, std::tuple<PW_SRD_PTR(st::Animation), st::Texture*>> m_animations;
+			st::Texture* m_current_access;
 		};
 		// Functions
 		// Macros / Definitions

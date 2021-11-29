@@ -6,68 +6,43 @@ PW_NAMESPACE_SRT
 	//////////////////////////////////
 	ST_NAMESPACE_SRT
 	//////////////////////////////////
-		// Event               
-		// Static Declarations   
-		// Class Members        
-			Event::Event() :
-					function(NULL), play_once(NULL), trigger(NULL), resolution(NULL) {
-			}
-			Event::Event(PW_INPUT_TYPE trigger, PW_SRD_PTR(PW_FUNCTION) trigger_function, bool play_once) :
-					function(NULL), play_once(play_once), trigger(trigger), resolution(NULL) {
-
-				function = trigger_function;
-				resolution = Find_Resolution(trigger);
-			}
-			void Event::Trigger_Event() {
-				(*function)();
-			}
-			PW_INPUT_TYPE Event::Find_Resolution(PW_INPUT_TYPE trigger) {
-				if (trigger == cm::Engine_Constant::PW_CONDIONAL_EVENT) {
-					return cm::Engine_Constant::PW_ACONDIONAL_EVENT;
-				}
-				switch (trigger) {
-					case GLFW_PRESS: {
-						return GLFW_RELEASE;
-					}
-					case GLFW_RELEASE: {
-						return GLFW_PRESS;
-					}
-					case GLFW_REPEAT: {
-						return GLFW_PRESS | GLFW_RELEASE;
-					}
-					default: {
-						return NULL;
-					}
-				}
-			}
-			void Event::Set_Function(PW_SRD_PTR(PW_FUNCTION) new_function) {
-				function = new_function;
-			}
-			PW_INPUT_TYPE Event::Trigger() { 
-				return trigger;
-			}
-			PW_INPUT_TYPE Event::Resolution() {
-				return resolution;
-			}
-			PW_SRD_PTR(PW_FUNCTION) Event::Function() {
-				return function;
-			}
-			bool Event::Play_State() {
-				return play_once;
-			}
-		// End of Class Members
-		// Mouse_Event       
-		// Static Declarations  
+		// Event Base
+		// Static Declarations
 		// Class Members
-			Mouse_Event::Mouse_Event(PW_INPUT_TYPE trigger, PW_SRD_PTR(PW_FUNCTION) trigger_function, bool play_once) :
-					Event(trigger, trigger_function, play_once) {
+		Event_Base::Event_Base(bool p_play_once, PW_INPUT_TYPE p_trigger, PW_INPUT_TYPE p_resolution) :
+				m_play_once{ p_play_once }, m_trigger{ p_trigger }, m_resolution{ p_resolution } {
+		}
+		void Event_Base::Trigger_Event() {
+		}
+		PW_INPUT_TYPE Event_Base::Find_Resolution(PW_INPUT_TYPE trigger) {
+			if (trigger == cm::Engine_Constant::PW_CONDIONAL_EVENT) {
+				return cm::Engine_Constant::PW_ACONDIONAL_EVENT;
 			}
-		// End of Class Members
-		// Keyboard_Event       
-		// Static Declarations  
-			Keyboard_Event::Keyboard_Event(PW_INPUT_TYPE trigger, PW_SRD_PTR(PW_FUNCTION) trigger_function, bool play_once) :
-					Event(trigger, trigger_function, play_once) {
+			switch (trigger) {
+				case GLFW_PRESS: {
+					return GLFW_RELEASE;
+				}
+				case GLFW_RELEASE: {
+					return GLFW_PRESS;
+				}
+				case GLFW_REPEAT: {
+					return GLFW_PRESS | GLFW_RELEASE;
+				}
+				default: {
+					return NULL;
+				}
 			}
+		}
+		// Accessors
+		PW_INPUT_TYPE Event_Base::Trigger() {
+			return m_trigger;
+		}
+		PW_INPUT_TYPE Event_Base::Resolution() {
+			return m_resolution;
+		}
+		bool Event_Base::Play_State() {
+			return m_play_once;
+		}
 		// End of Class Members
 	//////////////////////////////////
 	ST_NAMESPACE_END

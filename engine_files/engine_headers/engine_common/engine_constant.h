@@ -45,6 +45,10 @@
 #pragma warning(disable:6386)
 #pragma warning(push)
 #pragma warning(disable:26812)
+#pragma warning(push)
+#pragma warning(disable:26451)
+#pragma warning(push)
+#pragma warning(disable:4003)
 //////////////////////////////////
 // C++ Headers
 #include <chrono>
@@ -57,6 +61,9 @@
 #include <utility>
 #include <functional>
 #include <stdint.h>
+#include <any>
+#include <tuple>
+#include <functional>
 //////////////////////////////////
 // Project Headers
 #ifndef PW_GLEW_H
@@ -67,91 +74,14 @@
 #include <glm\vec2.hpp>
 //////////////////////////////////
 // Engine Common Headers
+#include "engine_common\engine_exception.h"
+#include "engine_common\engine_memory.h"
 //////////////////////////////////
 // Engine Control Headers
 //////////////////////////////////
 // Engine Structures Headers
 //////////////////////////////////
 // Engine Macros
-
-// Apart of the Engine Common Files
-#define PW_COMMON_API
-// Apart of the Engine Control Files
-#define PW_CONTROL_API
-// Apart of the Engine Structure Files
-#define PW_STRUCTURES_API
-// Apart of the Error.h header file
-#define PW_ERROR_API
-// Apart of the Console API
-#define PW_CONSOLE_API
-// Standard PW Namespace
-#define PW_NAMESPACE_SRT namespace pw {
-#define PW_NAMESPACE_END }
-// Standard Common Namespace
-#define CM_NAMESPACE_SRT namespace cm {
-#define CM_NAMESPACE_END }
-// Standard Control Namespace
-#define CO_NAMESPACE_SRT namespace co {
-#define CO_NAMESPACE_END }
-// Standard Structure Namespace
-#define ST_NAMESPACE_SRT namespace st {
-#define ST_NAMESPACE_END }
-// Error namespace
-#define ER_NAMESPACE_SRT namespace er {
-#define ER_NAMESPACE_END }
-// Console namespace
-#define CN_NAMESPACE_SRT namespace cn {
-#define CN_NAMESPACE_END }
-// Enable Debug Features
-#ifdef _DEBUG
-#define PW_DEBUG_MODE
-#endif // _DEBUG
-// For different function types
-// An ACCESSOR function returns the function's name as a variable to the user.
-// EX. int c = 0;
-// int C(); <- is a ACCESSOR
-// int C(); returns the c variable 
-#define ACCESSOR
-// An MUTATOR function changes the function's name to a variable.
-// EX. int c = 0;
-// void C(int new_val); <- is a MUTATOR
-// void C(int new_val); changes the c variable to new_val
-#define MUTATOR
-// A LOADER function loads something that is the function's name.
-// EX. byte_data;
-// byte_data Load_Byte_Data(string location); <- is a LOADER
-// byte_data Load_Byte_Data(string location); loads byte_data from a certain file location
-#define LOADER
-// A CORE function is a function that is within the core functionality of the engine.
-// This function usually has a description of what it does and what arguments passed to it do.
-#define CORE
-// A ERROR_HANDLE function is purely for error reporting to the user. They handle and send important
-// error related information.
-#define ERROR_HANDLE
-// A UTILITY function is one that preforms a certain operation that is not necessarily a necessity inside the engine.
-#define UTILITY
-// A CLASS_FUCNTION is a operator , deconstructor or a constructor that the class has.
-#define CLASS_FUNCTION
-// The user is required to overload this function
-#define OVERLOAD
-// This function or member is apart of the console API
-#define CONSOLE
-// This function is a algorithm for some mathematical purpose
-#define ALGORITHM
-// A function labeled with USER_INTERACTION can be used
-#define USER_INTERACTION 
-// A function labeled with NO_USER_INTERACTION should not be used.
-#define NO_USER_INTERACTION
-// A section of code that consists of only accessors
-#define ACCESSORS
-// A section of code that consists of only mutators
-#define MUTATORS
-// Lets C++ implement the function
-#define LET_CPP_IMPLEMENT
-// A root file is a file that does not include any other Pistonworks Engine headers
-#define ROOT_FILE
-// A root structure is a structure that does not include any other Pistonworks Engine structures
-#define ROOT_STRUCTURE
 //////////////////////////////////
 // Pistonworks Engine           //
 // Created By : Darrian Corkadel//
@@ -173,9 +103,11 @@ PW_NAMESPACE_SRT
 	typedef int32_t						PW_STATE;
 	typedef const wchar_t*				PW_NAME_ID;
 	typedef std::tuple<bool,
-		std::wstring, std::wstring>		PW_PROJECT_FILE;
+		std::wstring, std::vector<std::tuple<std::wstring, bool>>>	
+										PW_PROJECT_FILE;
 
 	typedef std::function<void()>		PW_FUNCTION;
+												
 	//////////////////////////////////
 	// Pistonworks Engine           //
 	// Created By : Darrian Corkadel//
@@ -197,7 +129,7 @@ PW_NAMESPACE_SRT
 		// Default Class Structures
 		public:
 			// //////////////////////////////////////////////////
-			// INTERNAL_DATA_API Struct: pw::co::Destroy_GLFW
+			// PW_COMMON_API Struct: pw::co::Destroy_GLFW
 			// //////////////////////////////////////////////////
 			// Purpose:
 			//  Destroys GLFW though a function operator call.
@@ -211,172 +143,509 @@ PW_NAMESPACE_SRT
 		private:
 		// Public Functions/Macros 
 		public:
-			#define PW_SRD_PTR(type)									std::shared_ptr<type>
-			#define PW_UNI_PTR(type)									std::unique_ptr<type>
-			#define PW_DUNI_PTR(type, deleter)							std::unique_ptr<type, deleter>
-			#define TO_32INT(x)											static_cast<int32_t>(x)
-			#define TO_32UINT(x)										static_cast<uint32_t>(x)
-			#define TO_64INT(x)											static_cast<int64_t>(x)
-			#define TO_64UINT(x)										static_cast<uint64_t>(x)
-			#define VARIABLE_NAME(x)									static_cast<const wchar_t*>(#x)
-			#define OFF(x)												(x + 1)
-			#define COMPLEX_FUNCTION_1(x_args)							std::function<void(x_args)>
-			#define COMPLEX_FUNCTION_2(x_args, y_args)					std::function<void(x_args, y_args)>
-			#define COMPLEX_FUNCTION_3(x_args, y_args, z_args)			std::function<void(x_args, y_args, z_args)>
-			#define COMPLEX_FUNCTION_4(x_args, y_args, z_args, a_args)	std::function<void(x_args, y_args, z_args, a_args)>
+			#define TO_WCHAR(str)			pw::cm::Engine_Constant::To_WChar(str)
+			#define TO_CHAR(str)			pw::cm::Engine_Constant::To_Char(str)
+			#define TO_WSTRING(str)			pw::cm::Engine_Constant::Evaluate_TWStr(str)
+			#define TO_STRING(str)			pw::cm::Engine_Constant::Evaluate_TStr(str)
 
-			static wchar_t* To_WChar(const char* msg) {
-				size_t msg_size = std::strlen(msg) + 1;
-				wchar_t* v_msg = new wchar_t[msg_size];
-				size_t chars_converted = 0;
-				mbstowcs_s(&chars_converted, v_msg, msg_size, msg, SIZE_MAX);
-				if (chars_converted == msg_size) {
-					return v_msg;
+			// //////////////////////////////////////////////////
+			// CORE Function: Engine_Constant::To_WChar
+			// //////////////////////////////////////////////////
+			// Purpose:
+			//  Converts a const char* to a wchar_t*, must be
+			//  deallocated.
+			// //////////////////////////////////////////////////
+			// Parameters: 1
+			// (1) const char* msg;
+			// Purpose:
+			//  The message to be converted. 
+			// //////////////////////////////////////////////////
+			static CORE wchar_t* To_WChar(const char* msg) {
+				// Check if the characters exist
+				if (TRY_LINE msg == nullptr) {
+					throw pw::er::Warning_Error(L"Engine Constant", L"Invalid Argument", std::move(EXCEPTION_LINE), __FILEW__, L"To_WChar");
 				}
 				else {
-					return nullptr;
+					try {
+						// Get the msg size
+						TRY_LINE size_t msg_size = std::strlen(msg) + 1;
+						if (msg_size == 0) {
+							throw pw::er::Warning_Error(L"Engine Constant", L"Invalid Argument", std::move(EXCEPTION_LINE), __FILEW__, L"To_WChar");
+						}
+						// Allocate the memory for the new msg
+						wchar_t* v_msg = pw::Engine_Memory::Allocate<wchar_t>(wchar_t(), msg_size);
+						size_t chars_converted = 0;
+						// Convert the memory
+						if (TRY_LINE mbstowcs_s(&chars_converted, v_msg, msg_size, msg, msg_size - 1) != 0) {
+							throw pw::er::Warning_Error(L"Engine Constant", L"Destination buffer is too small", std::move(EXCEPTION_LINE), __FILEW__, L"To_WChar");
+						}
+						// If we converted all of the memory correctly then return the result
+						if (chars_converted == msg_size) {
+							return v_msg;
+						}
+						else {
+							throw pw::er::Warning_Error(L"Engine Constant", L"Function Failed: mbstowcs_s", std::move(EXCEPTION_LINE), __FILEW__, L"To_WChar");
+						}
+					}
+					catch (const pw::er::Warning_Error& v_error) {
+						throw v_error;
+					}
+					catch (const pw::er::Severe_Error& v_error) {
+						throw v_error;
+					}
 				}
 			}
-			static char* To_Char(const wchar_t* msg) {
-				size_t msg_size = std::wcslen(msg) + 1;
-				char* v_msg = new char[msg_size];
-				size_t chars_converted = 0;
-				wcstombs_s(&chars_converted, v_msg, msg_size, msg, SIZE_MAX);
-				if (chars_converted == msg_size) {
-					return v_msg;
+			// //////////////////////////////////////////////////
+			// CORE Function: Engine_Constant::To_Char
+			// //////////////////////////////////////////////////
+			// Purpose:
+			//  Converts a const wchar_t* to a char*, must be
+			//  deallocated.
+			// //////////////////////////////////////////////////
+			// Parameters: 1
+			// (1) const wchar_t* msg;
+			// Purpose:
+			//  The message to be converted. 
+			// //////////////////////////////////////////////////
+			static CORE char* To_Char(const wchar_t* msg) {
+				// Check if the characters exist
+				if (TRY_LINE msg == nullptr) {
+					throw pw::er::Warning_Error(L"Engine Constant", L"Invalid Argument", std::move(EXCEPTION_LINE), __FILEW__, L"To_Char");
 				}
 				else {
-					return nullptr;
+					try {
+						// Get the msg size 
+						TRY_LINE size_t msg_size = std::wcslen(msg) + 1;
+						if (msg_size == 0) {
+							throw pw::er::Warning_Error(L"Engine Constant", L"Invalid Argument", std::move(EXCEPTION_LINE), __FILEW__, L"To_Char");
+						}
+						// Allocate the memory for the new msg
+						char* v_msg = pw::Engine_Memory::Allocate<char>(char(), msg_size);
+						size_t chars_converted = 0;
+						// Convert the memory
+						if (TRY_LINE wcstombs_s(&chars_converted, v_msg, msg_size, msg, msg_size - 1) != 0) {
+							throw pw::er::Warning_Error(L"Engine Constant", L"Destination buffer is too small", std::move(EXCEPTION_LINE), __FILEW__, L"To_Char");
+						}
+						// If we converted all of the memory correctly then return the result
+						if (chars_converted == msg_size) {
+							return v_msg;
+						}
+						else {
+							throw pw::er::Warning_Error(L"Engine Constant", L"Function Failed: wcstombs_s", std::move(EXCEPTION_LINE),
+								__FILEW__, L"To_Char");
+						}
+					}
+					catch (const pw::er::Warning_Error& v_error) {
+						throw v_error;
+					}
+					catch (const pw::er::Severe_Error& v_error) {
+						throw v_error;
+					}
 				}
 			}
-			static std::wstring To_WString(const char* msg) {
-				size_t msg_size = std::strlen(msg) + 1;
-				wchar_t* v_msg = new wchar_t[msg_size];
-				size_t chars_converted = 0;
-				mbstowcs_s(&chars_converted, v_msg, msg_size, msg, SIZE_MAX); 
-				std::wstring v_smsg{};
-				if (chars_converted == msg_size) {
-					v_smsg.append(v_msg);
-					delete[] v_msg;
-
-					return v_smsg;
+			// //////////////////////////////////////////////////
+			// CORE Function: Engine_Constant::Evaluate_TWStr
+			// //////////////////////////////////////////////////
+			// Purpose:
+			//  Converts a char string to a wchar_t string.
+			// //////////////////////////////////////////////////
+			// Parameters: 1
+			// (1) std::any str;
+			// Purpose:
+			//  The message to be converted. Must be a string
+			//  type. 
+			// //////////////////////////////////////////////////
+			static CORE std::wstring Evaluate_TWStr(std::any str) {
+				if (str.type() == typeid(const char*)) {
+					return To_WString(std::any_cast<const char*>(str));
+				}
+				if (str.type() == typeid(std::string)) {
+					return To_WString(std::any_cast<std::string>(str));
+				}
+				if (str.type() == typeid(const wchar_t*)) {
+					return std::wstring(std::any_cast<const wchar_t*>(str));
+				}
+				if (str.type() == typeid(std::wstring)) {
+					return std::any_cast<std::wstring>(str);
+				}
+				return std::wstring();
+			}
+			// //////////////////////////////////////////////////
+			// CORE Function: Engine_Constant::To_WString
+			// //////////////////////////////////////////////////
+			// Purpose:
+			//  Converts a const char* to a std::wstring.
+			// //////////////////////////////////////////////////
+			// Parameters: 1
+			// (1) const char* msg;
+			// Purpose:
+			//  The message to be converted. 
+			// //////////////////////////////////////////////////
+			static CORE std::wstring To_WString(const char* msg) {
+				// Check if the characters exist
+				if (TRY_LINE msg == nullptr) {
+					throw pw::er::Warning_Error(L"Engine Constant", L"Invalid Argument", std::move(EXCEPTION_LINE), __FILEW__, L"To_WString");
 				}
 				else {
-					return v_smsg;
+					try {
+						// Get the msg size
+						TRY_LINE size_t msg_size = std::strlen(msg) + 1;
+						if (msg_size == 0) {
+							throw pw::er::Warning_Error(L"Engine Constant", L"Invalid Argument", std::move(EXCEPTION_LINE), __FILEW__, L"To_WString");
+						}
+						// Allocate the memory for the new msg
+						wchar_t* v_msg = pw::Engine_Memory::Allocate<wchar_t>(wchar_t(), msg_size);
+						size_t chars_converted = 0;
+						// Convert the memory
+						if (TRY_LINE mbstowcs_s(&chars_converted, v_msg, msg_size, msg, msg_size - 1) != 0) {
+							throw pw::er::Warning_Error(L"Engine Constant", L"Destination buffer is too small", std::move(EXCEPTION_LINE), __FILEW__, L"To_WString");
+						}
+						std::wstring v_smsg{};
+						// If we converted all of the memory correctly then return the result
+						if (chars_converted == msg_size) {
+							v_smsg.append(v_msg);
+							pw::Engine_Memory::Deallocate<wchar_t>(v_msg);
+
+							return v_smsg;
+						}
+						else {
+							throw pw::er::Warning_Error(L"Engine Constant", L"Function Failed: mbstowcs_s", std::move(EXCEPTION_LINE), __FILEW__, L"To_WString");
+						}
+					}
+					catch (const pw::er::Warning_Error& v_error) {
+						throw v_error;
+					}
+					catch (const pw::er::Severe_Error& v_error) {
+						throw v_error;
+					}
 				}
 			}
-			static std::string To_String(const wchar_t* msg) {
-				size_t msg_size = std::wcslen(msg) + 1;
-				char* v_msg = new char[msg_size];
-				size_t chars_converted = 0;
-				wcstombs_s(&chars_converted, v_msg, msg_size, msg, SIZE_MAX);
-				std::string v_smsg{};
-				if (chars_converted == msg_size) {
-					v_smsg.append(v_msg);
-					delete[] v_msg;
-
-					return v_smsg;
+			// //////////////////////////////////////////////////
+			// CORE Function: Engine_Constant::To_WString
+			// //////////////////////////////////////////////////
+			// Purpose:
+			//  Converts a std::string to a std::wstring.
+			// //////////////////////////////////////////////////
+			// Parameters: 1
+			// (1) std::string msg;
+			// Purpose:
+			//  The message to be converted. 
+			// //////////////////////////////////////////////////
+			static CORE std::wstring To_WString(std::string msg) {
+				// Check if the characters exist
+				if (TRY_LINE msg.empty()) {
+					throw pw::er::Warning_Error(L"Engine Constant", L"Invalid Argument", std::move(EXCEPTION_LINE), __FILEW__, L"To_WString");
 				}
 				else {
-					return v_smsg;
+					try {
+						// Get the msg size
+						TRY_LINE size_t msg_size = msg.size() + 1;
+						if (msg_size == 0) {
+							throw pw::er::Warning_Error(L"Engine Constant", L"Invalid Argument", std::move(EXCEPTION_LINE), __FILEW__, L"To_WString");
+						}
+						// Allocate the memory for the new msg
+						wchar_t* v_msg = pw::Engine_Memory::Allocate<wchar_t>(wchar_t(), msg_size);
+						size_t chars_converted = 0;
+						// Convert the memory
+						if (TRY_LINE mbstowcs_s(&chars_converted, v_msg, msg_size, msg.c_str(), msg_size - 1) != 0) {
+							throw pw::er::Warning_Error(L"Engine Constant", L"Destination buffer is too small", std::move(EXCEPTION_LINE), __FILEW__, L"To_WString");
+						}
+						std::wstring v_smsg{};
+						// If we converted all of the memory correctly then return the result
+						if (chars_converted == msg_size) {
+							v_smsg.append(v_msg);
+							pw::Engine_Memory::Deallocate<wchar_t>(v_msg);
+
+							return v_smsg;
+						}
+						else {
+							throw pw::er::Warning_Error(L"Engine Constant", L"Function Failed: mbstowcs_s", std::move(EXCEPTION_LINE), __FILEW__, L"To_WString");
+						}
+					}
+					catch (const pw::er::Warning_Error& v_error) {
+						throw v_error;
+					}
+					catch (const pw::er::Severe_Error& v_error) {
+						throw v_error;
+					}
+				}
+			}
+			// //////////////////////////////////////////////////
+			// CORE Function: Engine_Constant::Evaluate_TStr
+			// //////////////////////////////////////////////////
+			// Purpose:
+			//  Converts a wchar_t string to a char string.
+			// //////////////////////////////////////////////////
+			// Parameters: 1
+			// (1) std::any str;
+			// Purpose:
+			//  The message to be converted. 
+			// //////////////////////////////////////////////////
+			static CORE std::string Evaluate_TStr(std::any str) {
+				if (str.type() == typeid(const char*)) {
+					return std::string(std::any_cast<const char*>(str));
+				}
+				if (str.type() == typeid(std::string)) {
+					return std::any_cast<std::string>(str);
+				}
+				if (str.type() == typeid(const wchar_t*)) {
+					return To_String(std::any_cast<const wchar_t*>(str));
+				}
+				if (str.type() == typeid(std::wstring)) {
+					return To_String(std::any_cast<std::wstring>(str));
+				}
+				return std::string();
+			}
+			// //////////////////////////////////////////////////
+			// CORE Function: Engine_Constant::To_String
+			// //////////////////////////////////////////////////
+			// Purpose:
+			//  Converts a const wchar_t* to a std::string.
+			// //////////////////////////////////////////////////
+			// Parameters: 1
+			// (1) const char* msg;
+			// Purpose:
+			//  The message to be converted. 
+			// //////////////////////////////////////////////////
+			static CORE std::string To_String(const wchar_t* msg) {
+				// Check if the characters exist
+				if (TRY_LINE msg == nullptr) {
+					throw pw::er::Warning_Error(L"Engine Constant", L"Invalid Argument", std::move(EXCEPTION_LINE), __FILEW__, L"To_String");
+				}
+				else {
+					try {
+						// Get the msg size 
+						TRY_LINE size_t msg_size = std::wcslen(msg) + 1;
+						if (msg_size == 0) {
+							throw pw::er::Warning_Error(L"Engine Constant", L"Invalid Argument", std::move(EXCEPTION_LINE), __FILEW__, L"To_String");
+						}
+						// Allocate the memory for the new msg
+						char* v_msg = pw::Engine_Memory::Allocate<char>(char(), msg_size);
+						size_t chars_converted = 0;
+						// Convert the memory
+						if (TRY_LINE wcstombs_s(&chars_converted, v_msg, msg_size, msg, msg_size - 1) != 0) {
+							throw pw::er::Warning_Error(L"Engine Constant", L"Destination buffer is too small", std::move(EXCEPTION_LINE), __FILEW__, L"To_String");
+						}
+						std::string v_smsg{};
+						// If we converted all of the memory correctly then return the result
+						if (chars_converted == msg_size) {
+							v_smsg.append(v_msg);
+							pw::Engine_Memory::Deallocate<char>(v_msg);
+
+							return v_smsg;
+						}
+						else {
+							throw pw::er::Warning_Error(L"Engine Constant", L"Function Failed: wcstombs_s", std::move(EXCEPTION_LINE), __FILEW__, L"To_String");
+						}
+					}
+					catch (const pw::er::Warning_Error& v_error) {
+						throw v_error;
+					}
+					catch (const pw::er::Severe_Error& v_error) {
+						throw v_error;
+					}
+				}
+			}
+			// //////////////////////////////////////////////////
+			// CORE Function: Engine_Constant::To_String
+			// //////////////////////////////////////////////////
+			// Purpose:
+			//  Converts a std::wstring to a std::string.
+			// //////////////////////////////////////////////////
+			// Parameters: 1
+			// (1) std::wstring msg;
+			// Purpose:
+			//  The message to be converted. 
+			// //////////////////////////////////////////////////
+			static CORE std::string To_String(std::wstring msg) {
+				// Check if the characters exist
+				if (TRY_LINE msg.empty()) {
+					throw pw::er::Warning_Error(L"Engine Constant", L"Invalid Argument", std::move(EXCEPTION_LINE), __FILEW__, L"To_String");
+				}
+				else {
+					try {
+						// Get the msg size
+						TRY_LINE size_t msg_size = msg.size() + 1;
+						if (msg_size == 0) {
+							throw pw::er::Warning_Error(L"Engine Constant", L"Invalid Argument", std::move(EXCEPTION_LINE), __FILEW__, L"To_String");
+						}
+						// Allocate the memory for the new msg
+						char* v_msg = pw::Engine_Memory::Allocate<char>(char(), msg_size);
+						size_t chars_converted = 0;
+						// Convert the memory
+						if (TRY_LINE wcstombs_s(&chars_converted, v_msg, msg_size, msg.c_str(), msg_size - 1) != 0) {
+							throw pw::er::Warning_Error(L"Engine Constant", L"Destination buffer is too small", std::move(EXCEPTION_LINE), __FILEW__, L"To_String");
+						}
+						std::string v_smsg{};
+						// If we converted all of the memory correctly then return the result
+						if (chars_converted == msg_size) {
+							v_smsg.append(v_msg);
+							pw::Engine_Memory::Deallocate<char>(v_msg);
+
+							return v_smsg;
+						}
+						else {
+							throw pw::er::Warning_Error(L"Engine Constant", L"Function Failed: mbstowcs_s", std::move(EXCEPTION_LINE), __FILEW__, L"To_String");
+						}
+					}
+					catch (const pw::er::Warning_Error& v_error) {
+						throw v_error;
+					}
+					catch (const pw::er::Severe_Error& v_error) {
+						throw v_error;
+					}
 				}
 			}
 		// Accessors
 			USER_INTERACTION
-			static ACCESSOR const int32_t Window_Width() {
+			static ACCESSOR const int32_t& Window_Width() {
 				return m_window_width;
 			}
 			USER_INTERACTION
-			static ACCESSOR const int32_t Window_Height() {
+			static ACCESSOR const int32_t& Window_Height() {
 				return m_window_height;
 			}
 			USER_INTERACTION
-			static ACCESSOR const int32_t Hafe_Window_Width() {
+			static ACCESSOR const int32_t& Hafe_Window_Width() {
 				return m_hafe_window_width;
 			}
 			USER_INTERACTION
-			static ACCESSOR const int32_t Hafe_Window_Height() {
+			static ACCESSOR const int32_t& Hafe_Window_Height() {
 				return m_hafe_window_height;
 			}
 			USER_INTERACTION
-			static ACCESSOR const wchar_t* Window_Name() {
+			static ACCESSOR const wchar_t*& Window_Name() {
 				return m_window_name;
 			}
 			USER_INTERACTION
-			static ACCESSOR const int32_t Mouse_X_Coord() {
+			static ACCESSOR const int32_t& Mouse_X_Coord() {
 				return m_mouse_x_position;
 			}
 			USER_INTERACTION
-			static ACCESSOR const int32_t Mouse_Y_Coord() {
+			static ACCESSOR const int32_t& Mouse_Y_Coord() {
 				return m_mouse_y_position;
 			}
 			USER_INTERACTION
-			static ACCESSOR const float Inverse_Z_Tan() {
+			static ACCESSOR const float& Inverse_Z_Tan() {
 				return m_inverse_z_tan;
 			}
 			USER_INTERACTION
-			static ACCESSOR const glm::vec2 Gravity() {
+			static ACCESSOR const glm::vec2& Gravity() {
 				return m_physics_gravity;
 			}
 			USER_INTERACTION
-			static ACCESSOR const PW_DUNI_PTR(GLFWwindow, Destroy_GLFW)* Window() {
+			static ACCESSOR PW_DUNI_PTR(GLFWwindow, Destroy_GLFW)* Window() {
 				return &m_current_window;
 			}
 			USER_INTERACTION
-			static ACCESSOR const float Delta_Time() {
+			static ACCESSOR const float& Delta_Time() {
 				return m_delta_time;
 			}
 			USER_INTERACTION
-			static ACCESSOR const std::clock_t Current_Time() {
+			static ACCESSOR const std::clock_t& Current_Time() {
 				return m_start_time;
 			}
 			USER_INTERACTION
-			static ACCESSOR const float FPS_Constant() {
-				return m_fps_constant;
+			static ACCESSOR const int32_t& FPS_Max() {
+				return m_fps_max;
 			}
 			USER_INTERACTION
-			static ACCESSOR const float FPS_Max() {
-				return m_fps_max;
+			static ACCESSOR const float& FPS_Average() {
+				return m_fps_average;
+			}
+			USER_INTERACTION
+			static ACCESSOR const int32_t& FPS() {
+				return m_frames;
+			}
+			USER_INTERACTION
+			static ACCESSOR const int32_t& Last_FPS() {
+				return m_last_frames;
 			}
 		// Mutators
 			USER_INTERACTION
-			static MUTATOR void Set_Window_Width(const uint32_t* p_window_width) {
-				m_window_width = *p_window_width;
+			static MUTATOR void Set_Window_Width(const uint32_t&& p_window_width) {
+				if (p_window_width == 0) {
+					throw std::invalid_argument("p_window_width");
+				}
+				else {
+					m_window_width = p_window_width;
+				}
 			}
 			USER_INTERACTION
-			static MUTATOR void Set_Window_Height(const uint32_t* p_window_height) {
-				m_window_height = *p_window_height;
+			static MUTATOR void Set_Window_Height(const uint32_t&& p_window_height) {
+				if (p_window_height == 0) {
+					throw std::invalid_argument("p_window_height");
+				}
+				else {
+					m_window_height = p_window_height;
+				}	
 			}
 			USER_INTERACTION
-			static MUTATOR void Set_Hafe_Window_Width(const uint32_t* p_hafe_window_width) {
-				m_hafe_window_width = *p_hafe_window_width;
+			static MUTATOR void Set_Hafe_Window_Width(const uint32_t&& p_hafe_window_width) {
+				if (p_hafe_window_width == 0) {
+					throw std::invalid_argument("p_hafe_window_width");
+				}
+				else {
+					m_hafe_window_width = p_hafe_window_width;
+				}
 			}
 			USER_INTERACTION
-			static MUTATOR void Set_Hafe_Window_Height(const uint32_t* p_hafe_window_height) {
-				m_hafe_window_height = *p_hafe_window_height;
+			static MUTATOR void Set_Hafe_Window_Height(const uint32_t&& p_hafe_window_height) {
+				if (p_hafe_window_height == 0) {
+					throw std::invalid_argument("p_hafe_window_height");
+				}
+				else {
+					m_hafe_window_height = p_hafe_window_height;
+				}
 			}
 			USER_INTERACTION
 			static MUTATOR void Set_Window_Name(const wchar_t* p_window_name) {
-				char* v_window_name = To_Char(p_window_name);
+				if (p_window_name == nullptr || std::wcslen(p_window_name) == 0) {
+					throw std::invalid_argument("p_hafe_window_height");
+				}
+				else {
+					try {
+						std::string v_window_name = To_String(p_window_name);
 
-				glfwSetWindowTitle(m_current_window.get(), v_window_name);
-				m_window_name = p_window_name;
-
-				delete[] v_window_name;
+						glfwSetWindowTitle(m_current_window.get(), v_window_name.c_str());
+						m_window_name = p_window_name;
+					}
+					catch (const std::bad_alloc& error) {
+						throw error;
+					}
+					catch (const std::length_error& error) {
+						throw error;
+					}
+					catch (const std::invalid_argument& error) {
+						throw error;
+					}
+					catch (const std::exception& error) {
+						throw error;
+					}
+				}
 			}
 			USER_INTERACTION
 			static MUTATOR void Set_Window(GLFWwindow* p_window) {
-				m_current_window = std::unique_ptr<GLFWwindow, Destroy_GLFW>(p_window);
+				if (p_window == nullptr) {
+					throw std::invalid_argument("p_window");
+				}
+				else {
+					m_current_window = std::unique_ptr<GLFWwindow, Destroy_GLFW>(p_window);
+				}
 			}
 			USER_INTERACTION
-			static MUTATOR void Set_Mouse_Coords(const int32_t p_x, const int32_t p_y) {
+			static MUTATOR void Set_Mouse_Coords(const int32_t&& p_x, const int32_t&& p_y) {
 				m_mouse_x_position = p_x;
 				m_mouse_y_position = p_y;
+			}
+			USER_INTERACTION
+			static MUTATOR void Set_Debug_Function(const PW_FUNCTION&& p_new_function) {
+				m_debug_info = p_new_function;
 			}
 		// Public Variables
 		public:
 			static constexpr uint32_t PW_SCALE_FACTOR = 32;
-			static constexpr uint32_t PW_FONT_RESOLUTION = 256;
+			static constexpr uint32_t PW_FONT_RESOLUTION = 48;
 
 			static constexpr uint32_t PW_PLAYER_ID = 0xff;
 
@@ -409,7 +678,7 @@ PW_NAMESPACE_SRT
 			// //////////////////////////////////////////////////
 			NO_USER_INTERACTION
 			static CORE void Calc_Delta_Time() {
-				m_delta_time = static_cast<float>(m_end_time - m_start_time) / 1000.0f;
+				m_delta_time = static_cast<float>(std::abs(m_end_time - m_start_time)) / 1000.0f;
 				m_start_time = m_end_time;
 			}
 			// //////////////////////////////////////////////////
@@ -426,20 +695,45 @@ PW_NAMESPACE_SRT
 			// //////////////////////////////////////////////////
 			NO_USER_INTERACTION
 			static CORE void Calc_Elapsed_Time(GLFWwindow* p_main_window) {
-				m_elapsed_time += m_delta_time;
-				if (m_last_frames != m_frames) {
-					if (m_elapsed_time >= 1.0f) {
-						#ifdef PW_DEBUG_MODE
-							std::wstring v_str = Engine_Constant::Window_Name();
-							v_str.insert(v_str.size(), L" Fps:");
-							v_str.insert(v_str.size(), std::to_wstring(m_frames));
+				if (p_main_window == nullptr) {
+					throw std::invalid_argument("p_main_window");
+				}
+				else {
+					try {
+						m_elapsed_time += m_delta_time;
+						if (m_elapsed_time >= 1.0f) {
+							if (m_fps_max < m_frames) {
+								m_fps_max = m_frames;
+							}
+							if (m_fps_averager.size() != 60) {
+								m_fps_averager.push_back(m_frames);
+							}
+							else {
+								size_t v_fps_average = 0;
+								for (size_t i = 0; i < m_fps_averager.size(); i++) {
+									v_fps_average = v_fps_average + m_fps_averager.at(i);
+								}
+								m_fps_average = (float)v_fps_average / (float)m_fps_averager.size();
+								m_fps_averager.clear();
+							}
+							m_elapsed_time = 0;
+
+							m_debug_info();
+							m_last_frames = m_frames;
 							m_frames = 0;
-							char* v_char_name = To_Char(v_str.c_str());
-							glfwSetWindowTitle(p_main_window, v_char_name);
-							delete[] v_char_name;
-						#endif // PW_DEBUG
-						m_last_frames = m_frames;
-						m_elapsed_time = 0;
+						}
+					}
+					catch (const std::bad_alloc& error) {
+						throw error;
+					}
+					catch (const std::length_error& error) {
+						throw error;
+					}
+					catch (const std::invalid_argument& error) {
+						throw error;
+					}
+					catch (const std::exception& error) {
+						throw error;
 					}
 				}
 			}
@@ -455,10 +749,11 @@ PW_NAMESPACE_SRT
 			NO_USER_INTERACTION
 			static CORE void Wait() {
 				m_frames = m_frames + 1; // Increment frame since frame is over
-				/* Wait until next frame */
-				//std::this_thread::sleep_for(std::chrono::duration<float, std::milli>(m_delta_time * 1000.0f));
 
 				m_end_time = std::clock();
+				if (m_end_time == -1) {
+					throw std::exception("Function Failed: std::clock");
+				}
 			}
 		// Protected Variables
 		public:
@@ -485,15 +780,19 @@ PW_NAMESPACE_SRT
 			static float m_delta_time;
 			static float m_elapsed_time;
 
-			static const float m_fps_max;
-			// A constant bar for which the fps must abide to
-			static const float m_fps_constant;
+			static int32_t m_fps_max;
+			static std::vector<int16_t> m_fps_averager;
+			static float m_fps_average;
 
 			static int32_t m_mouse_x_position;
 			static int32_t m_mouse_y_position;
 
 			static const float m_inverse_z_tan;
 			static const glm::vec2 m_physics_gravity;
+
+			#ifdef PW_DEBUG_MODE
+				static PW_FUNCTION m_debug_info;
+			#endif
 		};
 		// Functions
 		// Macros / Definitions

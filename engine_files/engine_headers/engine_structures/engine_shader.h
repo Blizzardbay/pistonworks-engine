@@ -208,7 +208,7 @@ PW_NAMESPACE_SRT
 			//  The type of shader, i.e. vertex or fragment. 
 			// //////////////////////////////////////////////////
 			NO_USER_INTERACTION
-			static CORE void Check_Error(uint32_t object_id, GLenum error, bool is_program, const wchar_t* custom_error_msg);
+			static CORE void Check_Error(uint32_t object_id, GLenum error, bool is_program, std::wstring custom_error_msg);
 		// Private Variables        
 		private:
 			static Shader this_shader;

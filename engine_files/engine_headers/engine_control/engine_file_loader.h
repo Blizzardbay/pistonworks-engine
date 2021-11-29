@@ -42,8 +42,16 @@
 // Project Headers
 #pragma warning(push)
 #pragma warning(disable:4244)
+#pragma warning(push)
 #pragma warning(disable:4267)
+#pragma warning(push)
+#pragma warning(disable:26495)
+#pragma warning(push)
+#pragma warning(disable:26451)
 #include <CSV\csv.h>
+#pragma warning(pop)
+#pragma warning(pop)
+#pragma warning(pop)
 #pragma warning(pop)
 //////////////////////////////////
 // Engine Common Headers
@@ -82,7 +90,7 @@ PW_NAMESPACE_SRT
 		//  Loads different types of files
 		//  and translates them to engine objects.
 		// //////////////////////////////////////////////////
-		class PW_CONTROL_API File_Loader {
+		class PW_CONTROL_API File_Loader : protected cm::Engine_Constant {
 		// Default Class Structures 
 		public:
 			// //////////////////////////////////////////////////
@@ -149,6 +157,28 @@ PW_NAMESPACE_SRT
 		// Public Functions/Macros 
 		public:
 			// //////////////////////////////////////////////////
+			// CORE File_Loader::Initialize_Loader
+			// //////////////////////////////////////////////////
+			// Purpose: 
+			//  Loads a 32 bit RGBA File.
+			//  Available types: PNG, BMP, JPEG
+			// //////////////////////////////////////////////////
+			// Parameters: 2
+			// (1) const wchar_t* file_name;
+			// Purpose: 
+			//  The name of the file to be loaded.
+			// (2) bool engine_dir;
+			// Purpose: 
+			//  Should the engine use the game dir or the engine
+			//  dir?
+			// (3) const wchar_t* override_dir;
+			// Purpose: 
+			//  For single image animations it needs to be loaded
+			//  as a texture from the animation directory.
+			// //////////////////////////////////////////////////
+			USER_INTERACTION
+			static CORE void Initialize_Loader(std::function<void(std::wstring, bool)> p_add_scene_function, std::function<void(std::wstring)> p_change_scene_function);
+			// //////////////////////////////////////////////////
 			// LOADER File_Loader::Load_Texture_File
 			// //////////////////////////////////////////////////
 			// Purpose: 
@@ -169,7 +199,7 @@ PW_NAMESPACE_SRT
 			//  as a texture from the animation directory.
 			// //////////////////////////////////////////////////
 			USER_INTERACTION
-			static LOADER st::Texture& Load_Texture_File(const wchar_t* file_name, bool engine_dir, const wchar_t* override_dir);
+			static LOADER st::Texture& Load_Texture_File(const wchar_t* file_name, bool engine_dir = false, const wchar_t* override_dir = nullptr);
 			// //////////////////////////////////////////////////
 			// LOADER File_Loader::Load_Animation_File
 			// //////////////////////////////////////////////////
@@ -186,7 +216,7 @@ PW_NAMESPACE_SRT
 			//  The name of the file to be loaded.
 			// //////////////////////////////////////////////////
 			USER_INTERACTION
-			static LOADER std::tuple<st::Texture*, st::Animation*> Load_Animation_File(const wchar_t* file_name);
+			static LOADER std::tuple<st::Texture*, st::Animation*> Load_Animation_File(const wchar_t* file_name, bool engine_dir = false, const wchar_t* override_dir = nullptr);
 			// //////////////////////////////////////////////////
 			// LOADER File_Loader::Load_Icon
 			// //////////////////////////////////////////////////
@@ -221,10 +251,28 @@ PW_NAMESPACE_SRT
 			// Purpose: 
 			//  Loads the project file information for the queue.
 			// //////////////////////////////////////////////////
-			// Parameters: 1
+			// Parameters: 7
 			// (1) const wchar_t* file_location;
 			// Purpose: 
 			//  The location of the file to be loaded.
+			// (2) std::wstring path_to_animations;
+			// Purpose:
+			//  The path to the animations within the game.
+			// (3) std::wstring path_to_data;
+			// Purpose:
+			//  The path to the data within the game.
+			// (4) std::wstring path_to_fonts;
+			// Purpose:
+			//  The path to the fonts within the game.
+			// (5) std::wstring path_to_icon;
+			// Purpose:
+			//  The path to the icons within the game.
+			// (6) std::wstring path_to_linker_files;
+			// Purpose:
+			//  The path to the linker_files within the game.
+			// (7) std::wstring path_to_textures;
+			// Purpose:
+			//  The path to the textures within the game.
 			// //////////////////////////////////////////////////
 			USER_INTERACTION
 			static LOADER PW_PROJECT_FILE Load_Project_File(const wchar_t* file_location, std::wstring path_to_animations,
@@ -236,10 +284,10 @@ PW_NAMESPACE_SRT
 			//  Loads a scene.csv file with the scene's content
 			//  information.
 			// //////////////////////////////////////////////////
-			// Parameters: 1
-			// (1) const wchar_t* file_location;
+			// Parameters: 5
+			// (1) const wchar_t* file_name;
 			// Purpose: 
-			//  The location of the file to be loaded.
+			//  The name of the scene file.
 			// //////////////////////////////////////////////////
 			USER_INTERACTION
 			static LOADER st::Game_Scene* Load_Scene_File(const wchar_t* file_name);
@@ -301,7 +349,14 @@ PW_NAMESPACE_SRT
 
 			static std::wstring engine_icon_dir; // The directory of the icon depository
 			static std::wstring engine_texture_dir; // The directory of the texture depository
-			
+			static std::wstring engine_animation_dir; // The directory of the animation depository
+
+			static std::function<void(std::wstring, bool)> add_scene_function;
+			static std::function<void(std::wstring)> change_scene_function;
+
+			static std::map<FREE_IMAGE_FORMAT, std::map<std::wstring, std::tuple<std::vector<BYTE>, uint32_t, uint32_t>>> texture_repository;
+			static std::map<FREE_IMAGE_FORMAT, std::map<std::wstring, std::tuple<std::tuple<BYTE*, uint32_t, uint32_t>,std::tuple<float, uint32_t, uint32_t>>>> animation_repository;
+
 			static glm::vec4 Engine_Colors[(uint32_t)Default_Colors::Color_Count];
 		};
 		// Functions      

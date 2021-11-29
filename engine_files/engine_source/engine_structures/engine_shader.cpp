@@ -22,31 +22,36 @@ PW_NAMESPACE_SRT
 				glDeleteProgram(program_id);
 			}
 			void Shader::Create_Shader(const std::wstring& vertex_location, const std::wstring& fragment_location) {
-				PW_GL_CALL(program_id = glCreateProgram());
+				try {
+					PW_GL_CALL(std::move(program_id = glCreateProgram()));
 
-				vertex_shader = Compile_Shader(Load_Shader(vertex_location), GL_VERTEX_SHADER);
-				fragment_shader = Compile_Shader(Load_Shader(fragment_location), GL_FRAGMENT_SHADER);
+					vertex_shader = Compile_Shader(Load_Shader(vertex_location), GL_VERTEX_SHADER);
+					fragment_shader = Compile_Shader(Load_Shader(fragment_location), GL_FRAGMENT_SHADER);
 
-				glAttachShader(program_id, vertex_shader);
-				glAttachShader(program_id, fragment_shader);
+					glAttachShader(program_id, vertex_shader);
+					glAttachShader(program_id, fragment_shader);
 
-				glBindAttribLocation(program_id, 0, "object_position");
-				glBindAttribLocation(program_id, 1, "object_texture_coords");
+					glBindAttribLocation(program_id, 0, "object_position");
+					glBindAttribLocation(program_id, 1, "object_texture_coords");
 
-				glLinkProgram(program_id);
+					glLinkProgram(program_id);
 
-				Check_Error(program_id, GL_LINK_STATUS, true, L"Failed to link program error: ");
+					Check_Error(program_id, GL_LINK_STATUS, true, L"Failed to link program error: ");
 
-				glValidateProgram(program_id);
+					glValidateProgram(program_id);
 
-				Check_Error(program_id, GL_VALIDATE_STATUS, true, L"Program Is Invalid Error: ");
+					Check_Error(program_id, GL_VALIDATE_STATUS, true, L"Program Is Invalid Error: ");
 
-				PW_GL_VOID_CALL(model_uniform  = glGetUniformLocation(program_id, "object_model"), false);
-				PW_GL_VOID_CALL(texture_uniform = glGetUniformLocation(program_id, "object_is_colored"), false);
-				PW_GL_VOID_CALL(view_uniform = glGetUniformLocation(program_id, "object_view"), false);
-				PW_GL_VOID_CALL(projection_uniform = glGetUniformLocation(program_id, "object_projection"), false);
+					PW_GL_VOID_CALL(model_uniform = glGetUniformLocation(program_id, "object_model"), false);
+					PW_GL_VOID_CALL(texture_uniform = glGetUniformLocation(program_id, "object_is_colored"), false);
+					PW_GL_VOID_CALL(view_uniform = glGetUniformLocation(program_id, "object_view"), false);
+					PW_GL_VOID_CALL(projection_uniform = glGetUniformLocation(program_id, "object_projection"), false);
 
-				this_shader = *this;
+					this_shader = *this;
+				}
+				catch (const pw::er::Warning_Error& v_error) {
+					throw v_error;
+				}
 			}
 			void Shader::Use() {
 				glUseProgram(program_id);
@@ -85,41 +90,42 @@ PW_NAMESPACE_SRT
 			GLuint Shader::Compile_Shader(const std::wstring shader_code, GLenum shader_type) {
 				GLuint shader = 0;
 
-				PW_GL_CALL(shader = glCreateShader(shader_type));
+				PW_GL_CALL(std::move(shader = glCreateShader(shader_type)));
 
 				const GLchar* shader_str_source[1];
 				GLint shader_str_source_length[1];
 				
-				shader_str_source[0] = pw::cm::Engine_Constant::To_Char(shader_code.c_str());
+				shader_str_source[0] = TO_CHAR(shader_code.c_str());
 				shader_str_source_length[0] = shader_code.size();
 
 				glShaderSource(shader, 1, shader_str_source, shader_str_source_length);
 				glCompileShader(shader);
 
-				Check_Error(shader, GL_COMPILE_STATUS, false, L"Shader Compile Error: ");
+				try {
+					Check_Error(shader, GL_COMPILE_STATUS, false, L"Shader Compile Error: ");
+				}
+				catch (const pw::er::Warning_Error& v_error) {
+					throw v_error;
+				}
 
 				return shader;
 			}
-			void Shader::Check_Error(uint32_t object_id, GLenum error, bool is_program, const wchar_t* custom_error_msg) {
+			void Shader::Check_Error(uint32_t object_id, GLenum error, bool is_program, std::wstring custom_error_msg) {
 				GLint success = 0;
 				GLchar error_message[1024] = { 0 };
 
 				if (is_program) {
-					glGetProgramiv(object_id, error, &success);
+					TRY_LINE glGetProgramiv(object_id, error, &success);
 					if (success == GL_FALSE) {
 						glGetProgramInfoLog(object_id, sizeof(error_message), NULL, error_message);
-						wchar_t* v_error_msg = pw::cm::Engine_Constant::To_WChar(error_message);
-						wprintf(L"|%s:%s\n", custom_error_msg, v_error_msg);
-						delete[] v_error_msg;
+						throw pw::er::Warning_Error(L"Shader", std::move(std::wstring(custom_error_msg + TO_WSTRING(error_message))), std::move(EXCEPTION_LINE), __FILEW__, L"glGetProgramInfoLog");
 					}
 				}
 				else {
-					glGetShaderiv(object_id, error, &success);
+					TRY_LINE glGetShaderiv(object_id, error, &success);
 					if (success == GL_FALSE) {
 						glGetShaderInfoLog(object_id, sizeof(error_message), NULL, error_message);
-						wchar_t* v_error_msg = pw::cm::Engine_Constant::To_WChar(error_message);
-						wprintf(L"|%s:%s\n", custom_error_msg, v_error_msg);
-						delete[] v_error_msg;
+						throw pw::er::Warning_Error(L"Shader", std::move(std::wstring(custom_error_msg + TO_WSTRING(error_message))), std::move(EXCEPTION_LINE), __FILEW__, L"glGetProgramInfoLog");
 					}
 				}
 			}

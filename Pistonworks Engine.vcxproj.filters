@@ -58,6 +58,9 @@
     <Filter Include="test_files">
       <UniqueIdentifier>{9d85e6e7-2fa0-4f6a-ba59-b5fb70387454}</UniqueIdentifier>
     </Filter>
+    <Filter Include="engine_files\engine_resource\engine_info">
+      <UniqueIdentifier>{a59ef633-0035-47d1-96af-59812ba71c71}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config\b2_user_settings.h">
@@ -114,6 +117,21 @@
     <ClInclude Include="engine_files\engine_headers\engine_control\engine_console_manip.h">
       <Filter>engine_files\engine_headers\engine_control</Filter>
     </ClInclude>
+    <ClInclude Include="engine_files\engine_headers\engine_common\engine_error_log.h">
+      <Filter>engine_files\engine_headers\engine_common</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_files\engine_headers\engine_common\engine_memory.h">
+      <Filter>engine_files\engine_headers\engine_common</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_files\engine_headers\engine_common\engine_exception.h">
+      <Filter>engine_files\engine_headers\engine_common</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_files\engine_headers\engine_common\engine_macro.h">
+      <Filter>engine_files\engine_headers\engine_common</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_game_header.h">
+      <Filter>engine_files\engine_headers\engine_structures</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="engine_files\engine_resource\engine_essential\engine_shader\fragment_shader.shader">
@@ -124,6 +142,9 @@
     </None>
     <None Include="cpp.hint">
       <Filter>config</Filter>
+    </None>
+    <None Include="engine_files\engine_resource\engine_info\engine_game_file_structure.info">
+      <Filter>engine_files\engine_resource\engine_info</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

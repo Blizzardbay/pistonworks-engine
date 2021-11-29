@@ -41,7 +41,7 @@ inline bool b2IsValid(float x)
 struct B2_API b2Vec2
 {
 	/// Default constructor does nothing (for performance).
-	b2Vec2() {}
+	b2Vec2() : x{ 0.0f }, y{ 0.0f } {}
 
 	/// Construct using coordinates.
 	b2Vec2(float xIn, float yIn) : x(xIn), y(yIn) {}
@@ -132,7 +132,7 @@ struct B2_API b2Vec2
 struct B2_API b2Vec3
 {
 	/// Default constructor does nothing (for performance).
-	b2Vec3() {}
+	b2Vec3() : x{ 0.0f }, y{ 0.0f }, z{ 0.0f } {}
 
 	/// Construct using coordinates.
 	b2Vec3(float xIn, float yIn, float zIn) : x(xIn), y(yIn), z(zIn) {}
@@ -286,7 +286,7 @@ struct B2_API b2Mat33
 /// Rotation
 struct B2_API b2Rot
 {
-	b2Rot() {}
+	b2Rot() : s{ 0.0f }, c{0.0f}  {}
 
 	/// Initialize from an angle in radians
 	explicit b2Rot(float angle)

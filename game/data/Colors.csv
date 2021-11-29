@@ -1,0 +1,3 @@
+Animation_ID,	Animation,	Has_Animation_Extention,	Animation_Length,	Animation_Frame_Count,	Animation_Frame_Size_X
+first,		RD.gif,		1,			2,		8,			32
+second,		GP.gif,		1,			10,		8,			32

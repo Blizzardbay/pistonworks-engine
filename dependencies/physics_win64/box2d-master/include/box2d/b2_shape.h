@@ -23,6 +23,9 @@
 #ifndef B2_SHAPE_H
 #define B2_SHAPE_H
 
+#pragma warning(push)
+#pragma warning(disable:26495)
+
 #include "b2_api.h"
 #include "b2_math.h"
 #include "b2_collision.h"
@@ -49,7 +52,7 @@ class B2_API b2Shape
 {
 public:
 
-	enum Type
+	enum class Type
 	{
 		e_circle = 0,
 		e_edge = 1,
@@ -106,5 +109,5 @@ inline b2Shape::Type b2Shape::GetType() const
 {
 	return m_type;
 }
-
+#pragma warning(pop)
 #endif

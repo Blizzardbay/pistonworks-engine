@@ -22,6 +22,10 @@
     <ClInclude Include="config\b2_user_settings.h" />
     <ClInclude Include="engine_files\engine_headers\engine_common\engine_constant.h" />
     <ClInclude Include="engine_files\engine_headers\engine_common\engine_error.h" />
+    <ClInclude Include="engine_files\engine_headers\engine_common\engine_error_log.h" />
+    <ClInclude Include="engine_files\engine_headers\engine_common\engine_exception.h" />
+    <ClInclude Include="engine_files\engine_headers\engine_common\engine_macro.h" />
+    <ClInclude Include="engine_files\engine_headers\engine_common\engine_memory.h" />
     <ClInclude Include="engine_files\engine_headers\engine_control\engine_console_manip.h" />
     <ClInclude Include="engine_files\engine_headers\engine_control\engine_control.h" />
     <ClInclude Include="engine_files\engine_headers\engine_control\engine_file_loader.h" />
@@ -30,6 +34,7 @@
     <ClInclude Include="engine_files\engine_headers\engine_structures\engine_animation.h" />
     <ClInclude Include="engine_files\engine_headers\engine_structures\engine_camera.h" />
     <ClInclude Include="engine_files\engine_headers\engine_structures\engine_event.h" />
+    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_game_header.h" />
     <ClInclude Include="engine_files\engine_headers\engine_structures\engine_game_scene.h" />
     <ClInclude Include="engine_files\engine_headers\engine_structures\engine_mesh.h" />
     <ClInclude Include="engine_files\engine_headers\engine_structures\engine_model.h" />
@@ -42,6 +47,7 @@
     <None Include="cpp.hint" />
     <None Include="engine_files\engine_resource\engine_essential\engine_shader\fragment_shader.shader" />
     <None Include="engine_files\engine_resource\engine_essential\engine_shader\vertex_shader.shader" />
+    <None Include="engine_files\engine_resource\engine_info\engine_game_file_structure.info" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="engine_files\engine_resource\engine_essential\engine_icon\Icon.png" />
@@ -203,7 +209,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;FT2_BUILD_LIBRARY</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(Solution)dependencies\graphics_win64\glew-2.1.0\include;$(Solution)dependencies\graphics_win64\glm;$(Solution)dependencies\graphics_win64\glfw-3.3.3.bin.WIN64\include;$(Solution)dependencies\graphics_win64\freetype-2.10.4\include;$(Solution)dependencies\graphics_win64\FreeImage\Dist\x64;$(Solution)dependencies\physics_win64\box2d-master\include;$(Solution)dependencies\parser_win64\fast-cpp-csv-parser-master;$(Solution)engine_files\engine_headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(Solution)dependencies\graphics_win64\glew-2.1.0\include;$(Solution)dependencies\graphics_win64\glm;$(Solution)dependencies\graphics_win64\glfw-3.3.3.bin.WIN64\include;$(Solution)dependencies\graphics_win64\freetype-2.10.4\include;$(Solution)dependencies\graphics_win64\FreeImage\Dist\x64;$(Solution)dependencies\physics_win64\box2d-master\include;$(Solution)dependencies\parser_win64\fast-cpp-csv-parser-master;$(Solution)engine_files\engine_headers;$(Solution)dependencies\data_structures_win64\Quadtree-master\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>

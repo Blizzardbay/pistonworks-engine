@@ -17,36 +17,46 @@ PW_NAMESPACE_SRT
 				0,2,1
 			};
 		// Class Members
-			ID_Vertex_Data* ID_Down_RS_Triangle::Vertices() {
+			const ID_Vertex_Data* ID_Down_RS_Triangle::Vertices() {
 				return vertices;
 			}
-			uint32_t* ID_Down_RS_Triangle::Indices() {
+			const uint32_t* ID_Down_RS_Triangle::Indices() {
 				return indices;
 			}
-			const uint16_t ID_Down_RS_Triangle::Vertices_Size() {
+			const uint16_t& ID_Down_RS_Triangle::Vertices_Size() {
 				return vertices_size;
 			}
-			const uint16_t ID_Down_RS_Triangle::Indices_Size() {
+			const uint16_t& ID_Down_RS_Triangle::Indices_Size() {
 				return indices_size;
 			}
 			void ID_Down_RS_Triangle::Handle_Model_Data_NOC(std::shared_ptr<Mesh>& model_mesh) {
-				if (model_mesh == nullptr) {
-					model_mesh = PW_SRD_PTR(Mesh)( new Mesh(
-						ID_Down_RS_Triangle::Vertices(),
-						ID_Down_RS_Triangle::Vertices_Size(),
-						ID_Down_RS_Triangle::Indices(),
-						ID_Down_RS_Triangle::Indices_Size()));
+				try {
+					if (model_mesh == nullptr) {
+						model_mesh = PW_SRD_PTR(Mesh)(pw::Engine_Memory::Allocate<Mesh, bool>(
+							ID_Down_RS_Triangle::Vertices(),
+							ID_Down_RS_Triangle::Vertices_Size(),
+							ID_Down_RS_Triangle::Indices(),
+							ID_Down_RS_Triangle::Indices_Size()));
+					}
+				}
+				catch (const pw::er::Severe_Error& v_error) {
+					throw v_error;
 				}
 			}
 			void ID_Down_RS_Triangle::Handle_Model_Data_C(std::shared_ptr<Mesh>& model_mesh, glm::vec4 model_color) {
-				if (model_mesh == nullptr) {
-					model_mesh = PW_SRD_PTR(Mesh)( new Mesh(
-						ID_Down_RS_Triangle::Vertices(),
-						ID_Down_RS_Triangle::Vertices_Size(),
-						ID_Down_RS_Triangle::Indices(),
-						ID_Down_RS_Triangle::Indices_Size()));
+				try {
+					if (model_mesh == nullptr) {
+						model_mesh = PW_SRD_PTR(Mesh)(pw::Engine_Memory::Allocate<Mesh, bool>(
+							ID_Down_RS_Triangle::Vertices(),
+							ID_Down_RS_Triangle::Vertices_Size(),
+							ID_Down_RS_Triangle::Indices(),
+							ID_Down_RS_Triangle::Indices_Size()));
+					}
+					model_mesh->Change_Color_Data(model_color);
 				}
-				model_mesh->Change_Color_Data(model_color);
+				catch (const pw::er::Severe_Error& v_error) {
+					throw v_error;
+				}
 			}
 		// End of Class Members
 		// ID_Down_LS_Triangle 
@@ -60,36 +70,46 @@ PW_NAMESPACE_SRT
 				0,2,1
 			};
 		// Class Members
-			ID_Vertex_Data* ID_Down_LS_Triangle::Vertices() {
+			const ID_Vertex_Data* ID_Down_LS_Triangle::Vertices() {
 				return vertices;
 			}
-			uint32_t* ID_Down_LS_Triangle::Indices() {
+			const uint32_t* ID_Down_LS_Triangle::Indices() {
 				return indices;
 			}
-			const uint16_t ID_Down_LS_Triangle::Vertices_Size() {
+			const uint16_t& ID_Down_LS_Triangle::Vertices_Size() {
 				return vertices_size;
 			}
-			const uint16_t ID_Down_LS_Triangle::Indices_Size() {
+			const uint16_t& ID_Down_LS_Triangle::Indices_Size() {
 				return indices_size;
 			}
 			void ID_Down_LS_Triangle::Handle_Model_Data_NOC(std::shared_ptr<Mesh>& model_mesh) {
-				if (model_mesh == nullptr) {
-					model_mesh = PW_SRD_PTR(Mesh)( new Mesh(
-						ID_Down_LS_Triangle::Vertices(),
-						ID_Down_LS_Triangle::Vertices_Size(),
-						ID_Down_LS_Triangle::Indices(),
-						ID_Down_LS_Triangle::Indices_Size()));
+				try {
+					if (model_mesh == nullptr) {
+						model_mesh = PW_SRD_PTR(Mesh)( pw::Engine_Memory::Allocate<Mesh, bool>(
+							ID_Down_LS_Triangle::Vertices(),
+							ID_Down_LS_Triangle::Vertices_Size(),
+							ID_Down_LS_Triangle::Indices(),
+							ID_Down_LS_Triangle::Indices_Size()));
+					}
+				}
+				catch (const pw::er::Severe_Error& v_error) {
+					throw v_error;
 				}
 			}
 			void ID_Down_LS_Triangle::Handle_Model_Data_C(std::shared_ptr<Mesh>& model_mesh, glm::vec4 model_color) {
-				if (model_mesh == nullptr) {
-					model_mesh = PW_SRD_PTR(Mesh)( new Mesh(
-						ID_Down_LS_Triangle::Vertices(),
-						ID_Down_LS_Triangle::Vertices_Size(),
-						ID_Down_LS_Triangle::Indices(),
-						ID_Down_LS_Triangle::Indices_Size()));
+				try {
+					if (model_mesh == nullptr) {
+						model_mesh = PW_SRD_PTR(Mesh)(pw::Engine_Memory::Allocate<Mesh, bool>(
+							ID_Down_LS_Triangle::Vertices(),
+							ID_Down_LS_Triangle::Vertices_Size(),
+							ID_Down_LS_Triangle::Indices(),
+							ID_Down_LS_Triangle::Indices_Size()));
+					}
+					model_mesh->Change_Color_Data(model_color);
 				}
-				model_mesh->Change_Color_Data(model_color);
+				catch (const pw::er::Severe_Error& v_error) {
+					throw v_error;
+				}
 			}
 		// End of Class Members
 		// ID_Up_RS_Triangle       
@@ -103,36 +123,46 @@ PW_NAMESPACE_SRT
 				0,2,1
 			};
 		// Class Members
-			ID_Vertex_Data* ID_Up_RS_Triangle::Vertices() {
+			const ID_Vertex_Data* ID_Up_RS_Triangle::Vertices() {
 				return vertices;
 			}
-			uint32_t* ID_Up_RS_Triangle::Indices() {
+			const uint32_t* ID_Up_RS_Triangle::Indices() {
 				return indices;
 			}
-			const uint16_t ID_Up_RS_Triangle::Vertices_Size() {
+			const uint16_t& ID_Up_RS_Triangle::Vertices_Size() {
 				return vertices_size;
 			}
-			const uint16_t ID_Up_RS_Triangle::Indices_Size() {
+			const uint16_t& ID_Up_RS_Triangle::Indices_Size() {
 				return indices_size;
 			}
 			void ID_Up_RS_Triangle::Handle_Model_Data_NOC(std::shared_ptr<Mesh>& model_mesh) {
-				if (model_mesh == nullptr) {
-					model_mesh = PW_SRD_PTR(Mesh)( new Mesh(
-						ID_Up_RS_Triangle::Vertices(),
-						ID_Up_RS_Triangle::Vertices_Size(),
-						ID_Up_RS_Triangle::Indices(),
-						ID_Up_RS_Triangle::Indices_Size()));
+				try {
+					if (model_mesh == nullptr) {
+						model_mesh = PW_SRD_PTR(Mesh)( pw::Engine_Memory::Allocate<Mesh, bool>(
+							ID_Up_RS_Triangle::Vertices(),
+							ID_Up_RS_Triangle::Vertices_Size(),
+							ID_Up_RS_Triangle::Indices(),
+							ID_Up_RS_Triangle::Indices_Size()));
+					}
+				}
+				catch (const pw::er::Severe_Error& v_error) {
+					throw v_error;
 				}
 			}
 			void ID_Up_RS_Triangle::Handle_Model_Data_C(std::shared_ptr<Mesh>& model_mesh, glm::vec4 model_color) {
-				if (model_mesh == nullptr) {
-					model_mesh = PW_SRD_PTR(Mesh)( new Mesh(
-						ID_Up_RS_Triangle::Vertices(),
-						ID_Up_RS_Triangle::Vertices_Size(),
-						ID_Up_RS_Triangle::Indices(),
-						ID_Up_RS_Triangle::Indices_Size()));
+				try {
+					if (model_mesh == nullptr) {
+						model_mesh = PW_SRD_PTR(Mesh)(pw::Engine_Memory::Allocate<Mesh, bool>(
+							ID_Up_RS_Triangle::Vertices(),
+							ID_Up_RS_Triangle::Vertices_Size(),
+							ID_Up_RS_Triangle::Indices(),
+							ID_Up_RS_Triangle::Indices_Size()));
+					}
+					model_mesh->Change_Color_Data(model_color);
 				}
-				model_mesh->Change_Color_Data(model_color);
+				catch (const pw::er::Severe_Error& v_error) {
+					throw v_error;
+				}
 			}
 		// End of Class Members
 		// ID_Up_LS_Triangle        
@@ -146,36 +176,46 @@ PW_NAMESPACE_SRT
 				0,2,1
 			};
 		// Class Members
-			ID_Vertex_Data* ID_Up_LS_Triangle::Vertices() {
+			const ID_Vertex_Data* ID_Up_LS_Triangle::Vertices() {
 				return vertices;
 			}
-			uint32_t* ID_Up_LS_Triangle::Indices() {
+			const uint32_t* ID_Up_LS_Triangle::Indices() {
 				return indices;
 			}
-			const uint16_t ID_Up_LS_Triangle::Vertices_Size() {
+			const uint16_t& ID_Up_LS_Triangle::Vertices_Size() {
 				return vertices_size;
 			}
-			const uint16_t ID_Up_LS_Triangle::Indices_Size() {
+			const uint16_t& ID_Up_LS_Triangle::Indices_Size() {
 				return indices_size;
 			}
 			void ID_Up_LS_Triangle::Handle_Model_Data_NOC(std::shared_ptr<Mesh>& model_mesh) {
-				if (model_mesh == nullptr) {
-					model_mesh = PW_SRD_PTR(Mesh)( new Mesh(
-						ID_Up_LS_Triangle::Vertices(),
-						ID_Up_LS_Triangle::Vertices_Size(),
-						ID_Up_LS_Triangle::Indices(),
-						ID_Up_LS_Triangle::Indices_Size()));
+				try {
+					if (model_mesh == nullptr) {
+						model_mesh = PW_SRD_PTR(Mesh)( pw::Engine_Memory::Allocate<Mesh, bool>(
+							ID_Up_LS_Triangle::Vertices(),
+							ID_Up_LS_Triangle::Vertices_Size(),
+							ID_Up_LS_Triangle::Indices(),
+							ID_Up_LS_Triangle::Indices_Size()));
+					}
+				}
+				catch (const pw::er::Severe_Error& v_error) {
+					throw v_error;
 				}
 			}
 			void ID_Up_LS_Triangle::Handle_Model_Data_C(std::shared_ptr<Mesh>& model_mesh, glm::vec4 model_color) {
-				if (model_mesh == nullptr) {
-					model_mesh = PW_SRD_PTR(Mesh)( new Mesh(
-						ID_Up_LS_Triangle::Vertices(),
-						ID_Up_LS_Triangle::Vertices_Size(),
-						ID_Up_LS_Triangle::Indices(),
-						ID_Up_LS_Triangle::Indices_Size()));
+				try {
+					if (model_mesh == nullptr) {
+						model_mesh = PW_SRD_PTR(Mesh)(pw::Engine_Memory::Allocate<Mesh, bool>(
+							ID_Up_LS_Triangle::Vertices(),
+							ID_Up_LS_Triangle::Vertices_Size(),
+							ID_Up_LS_Triangle::Indices(),
+							ID_Up_LS_Triangle::Indices_Size()));
+					}
+					model_mesh->Change_Color_Data(model_color);
 				}
-				model_mesh->Change_Color_Data(model_color);
+				catch (const pw::er::Severe_Error& v_error) {
+					throw v_error;
+				}
 			}
 		// End of Class Members
 		// ID_Square                
@@ -191,36 +231,46 @@ PW_NAMESPACE_SRT
 			0,2,3
 		};
 		// Class Members
-			ID_Vertex_Data* ID_Square::Vertices() {
+			const ID_Vertex_Data* ID_Square::Vertices() {
 				return vertices;
 			}
-			uint32_t* ID_Square::Indices() {
+			const uint32_t* ID_Square::Indices() {
 				return indices;
 			}
-			const uint16_t ID_Square::Vertices_Size() {
+			const uint16_t& ID_Square::Vertices_Size() {
 				return vertices_size;
 			}
-			const uint16_t ID_Square::Indices_Size() {
+			const uint16_t& ID_Square::Indices_Size() {
 				return indices_size;
 			}
 			void ID_Square::Handle_Model_Data_NOC(std::shared_ptr<Mesh>& model_mesh) {
-				if (model_mesh == nullptr) {
-					model_mesh = PW_SRD_PTR(Mesh)( new Mesh(
-						ID_Square::Vertices(),
-						ID_Square::Vertices_Size(),
-						ID_Square::Indices(),
-						ID_Square::Indices_Size()));
+				try {
+					if (model_mesh == nullptr) {
+						model_mesh = PW_SRD_PTR(Mesh)( pw::Engine_Memory::Allocate<Mesh, bool>(
+							ID_Square::Vertices(),
+							ID_Square::Vertices_Size(),
+							ID_Square::Indices(),
+							ID_Square::Indices_Size()));
+					}
+				}
+				catch (const pw::er::Severe_Error& v_error) {
+					throw v_error;
 				}
 			}
 			void ID_Square::Handle_Model_Data_C(std::shared_ptr<Mesh>& model_mesh, glm::vec4 model_color) {
-				if (model_mesh == nullptr) {
-					model_mesh = PW_SRD_PTR(Mesh)( new Mesh(
-						ID_Square::Vertices(),
-						ID_Square::Vertices_Size(),
-						ID_Square::Indices(),
-						ID_Square::Indices_Size()));
+				try {
+					if (model_mesh == nullptr) {
+						model_mesh = PW_SRD_PTR(Mesh)(pw::Engine_Memory::Allocate<Mesh, bool>(
+							ID_Square::Vertices(),
+							ID_Square::Vertices_Size(),
+							ID_Square::Indices(),
+							ID_Square::Indices_Size()));
+					}
+					model_mesh->Change_Color_Data(model_color);
 				}
-				model_mesh->Change_Color_Data(model_color);
+				catch (const pw::er::Severe_Error& v_error) {
+					throw v_error;
+				}
 			}
 		// End of Class Members
 		// ID_Hafe_RS_Square        
@@ -236,36 +286,46 @@ PW_NAMESPACE_SRT
 				0,2,3
 			};
 		// Class Members
-			ID_Vertex_Data* ID_Hafe_RS_Square::Vertices() {
+			const ID_Vertex_Data* ID_Hafe_RS_Square::Vertices() {
 				return vertices;
 			}
-			uint32_t* ID_Hafe_RS_Square::Indices() {
+			const uint32_t* ID_Hafe_RS_Square::Indices() {
 				return indices;
 			}
-			const uint16_t ID_Hafe_RS_Square::Vertices_Size() {
+			const uint16_t& ID_Hafe_RS_Square::Vertices_Size() {
 				return vertices_size;
 			}
-			const uint16_t ID_Hafe_RS_Square::Indices_Size() {
+			const uint16_t& ID_Hafe_RS_Square::Indices_Size() {
 				return indices_size;
 			}
 			void ID_Hafe_RS_Square::Handle_Model_Data_NOC(std::shared_ptr<Mesh>& model_mesh) {
-				if (model_mesh == nullptr) {
-					model_mesh = PW_SRD_PTR(Mesh)( new Mesh(
-						ID_Hafe_RS_Square::Vertices(),
-						ID_Hafe_RS_Square::Vertices_Size(),
-						ID_Hafe_RS_Square::Indices(),
-						ID_Hafe_RS_Square::Indices_Size()));
+				try {
+					if (model_mesh == nullptr) {
+						model_mesh = PW_SRD_PTR(Mesh)( pw::Engine_Memory::Allocate<Mesh, bool>(
+							ID_Hafe_RS_Square::Vertices(),
+							ID_Hafe_RS_Square::Vertices_Size(),
+							ID_Hafe_RS_Square::Indices(),
+							ID_Hafe_RS_Square::Indices_Size()));
+					}
+				}
+				catch (const pw::er::Severe_Error& v_error) {
+					throw v_error;
 				}
 			}
 			void ID_Hafe_RS_Square::Handle_Model_Data_C(std::shared_ptr<Mesh>& model_mesh, glm::vec4 model_color) {
-				if (model_mesh == nullptr) {
-					model_mesh = PW_SRD_PTR(Mesh)( new Mesh(
-						ID_Hafe_RS_Square::Vertices(),
-						ID_Hafe_RS_Square::Vertices_Size(),
-						ID_Hafe_RS_Square::Indices(),
-						ID_Hafe_RS_Square::Indices_Size()));
+				try {
+					if (model_mesh == nullptr) {
+						model_mesh = PW_SRD_PTR(Mesh)(pw::Engine_Memory::Allocate<Mesh, bool>(
+							ID_Hafe_RS_Square::Vertices(),
+							ID_Hafe_RS_Square::Vertices_Size(),
+							ID_Hafe_RS_Square::Indices(),
+							ID_Hafe_RS_Square::Indices_Size()));
+					}
+					model_mesh->Change_Color_Data(model_color);
 				}
-				model_mesh->Change_Color_Data(model_color);
+				catch (const pw::er::Severe_Error& v_error) {
+					throw v_error;
+				}
 			}
 		// End of Class Members
 		// ID_Hafe_LS_Square        
@@ -281,36 +341,46 @@ PW_NAMESPACE_SRT
 				0,2,3
 			};
 		// Class Members
-			ID_Vertex_Data* ID_Hafe_LS_Square::Vertices() {
+			const ID_Vertex_Data* ID_Hafe_LS_Square::Vertices() {
 				return vertices;
 			}
-			uint32_t* ID_Hafe_LS_Square::Indices() {
+			const uint32_t* ID_Hafe_LS_Square::Indices() {
 				return indices;
 			}
-			const uint16_t ID_Hafe_LS_Square::Vertices_Size() {
+			const uint16_t& ID_Hafe_LS_Square::Vertices_Size() {
 				return vertices_size;
 			}
-			const uint16_t ID_Hafe_LS_Square::Indices_Size() {
+			const uint16_t& ID_Hafe_LS_Square::Indices_Size() {
 				return indices_size;
 			}
 			void ID_Hafe_LS_Square::Handle_Model_Data_NOC(std::shared_ptr<Mesh>& model_mesh) {
-				if (model_mesh == nullptr) {
-					model_mesh = PW_SRD_PTR(Mesh)( new Mesh(
-						ID_Hafe_LS_Square::Vertices(),
-						ID_Hafe_LS_Square::Vertices_Size(),
-						ID_Hafe_LS_Square::Indices(),
-						ID_Hafe_LS_Square::Indices_Size()));
+				try {
+					if (model_mesh == nullptr) {
+						model_mesh = PW_SRD_PTR(Mesh)( pw::Engine_Memory::Allocate<Mesh, bool>(
+							ID_Hafe_LS_Square::Vertices(),
+							ID_Hafe_LS_Square::Vertices_Size(),
+							ID_Hafe_LS_Square::Indices(),
+							ID_Hafe_LS_Square::Indices_Size()));
+					}
+				}
+				catch (const pw::er::Severe_Error& v_error) {
+					throw v_error;
 				}
 			}
 			void ID_Hafe_LS_Square::Handle_Model_Data_C(std::shared_ptr<Mesh>& model_mesh, glm::vec4 model_color) {
-				if (model_mesh == nullptr) {
-					model_mesh = PW_SRD_PTR(Mesh)( new Mesh(
-						ID_Hafe_LS_Square::Vertices(),
-						ID_Hafe_LS_Square::Vertices_Size(),
-						ID_Hafe_LS_Square::Indices(),
-						ID_Hafe_LS_Square::Indices_Size()));
+				try {
+					if (model_mesh == nullptr) {
+						model_mesh = PW_SRD_PTR(Mesh)(pw::Engine_Memory::Allocate<Mesh, bool>(
+							ID_Hafe_LS_Square::Vertices(),
+							ID_Hafe_LS_Square::Vertices_Size(),
+							ID_Hafe_LS_Square::Indices(),
+							ID_Hafe_LS_Square::Indices_Size()));
+					}
+					model_mesh->Change_Color_Data(model_color);
 				}
-				model_mesh->Change_Color_Data(model_color);
+				catch (const pw::er::Severe_Error& v_error) {
+					throw v_error;
+				}
 			}
 		// End of Class Members
 		// ID_Hafe_UP_Square        
@@ -326,36 +396,46 @@ PW_NAMESPACE_SRT
 				0,2,3
 			};
 		// Class Members
-			ID_Vertex_Data* ID_Hafe_UP_Square::Vertices() {
+			const ID_Vertex_Data* ID_Hafe_UP_Square::Vertices() {
 				return vertices;
 			}
-			uint32_t* ID_Hafe_UP_Square::Indices() {
+			const uint32_t* ID_Hafe_UP_Square::Indices() {
 				return indices;
 			}
-			const uint16_t ID_Hafe_UP_Square::Vertices_Size() {
+			const uint16_t& ID_Hafe_UP_Square::Vertices_Size() {
 				return vertices_size;
 			}
-			const uint16_t ID_Hafe_UP_Square::Indices_Size() {
+			const uint16_t& ID_Hafe_UP_Square::Indices_Size() {
 				return indices_size;
 			}
 			void ID_Hafe_UP_Square::Handle_Model_Data_NOC(std::shared_ptr<Mesh>& model_mesh) {
-				if (model_mesh == nullptr) {
-					model_mesh = PW_SRD_PTR(Mesh)( new Mesh(
-						ID_Hafe_UP_Square::Vertices(),
-						ID_Hafe_UP_Square::Vertices_Size(),
-						ID_Hafe_UP_Square::Indices(),
-						ID_Hafe_UP_Square::Indices_Size()));
+				try {
+					if (model_mesh == nullptr) {
+						model_mesh = PW_SRD_PTR(Mesh)( pw::Engine_Memory::Allocate<Mesh, bool>(
+							ID_Hafe_UP_Square::Vertices(),
+							ID_Hafe_UP_Square::Vertices_Size(),
+							ID_Hafe_UP_Square::Indices(),
+							ID_Hafe_UP_Square::Indices_Size()));
+					}
+				}
+				catch (const pw::er::Severe_Error& v_error) {
+					throw v_error;
 				}
 			}
 			void ID_Hafe_UP_Square::Handle_Model_Data_C(std::shared_ptr<Mesh>& model_mesh, glm::vec4 model_color) {
-				if (model_mesh == nullptr) {
-					model_mesh = PW_SRD_PTR(Mesh)( new Mesh(
-						ID_Hafe_UP_Square::Vertices(),
-						ID_Hafe_UP_Square::Vertices_Size(),
-						ID_Hafe_UP_Square::Indices(),
-						ID_Hafe_UP_Square::Indices_Size()));
+				try {
+					if (model_mesh == nullptr) {
+						model_mesh = PW_SRD_PTR(Mesh)(pw::Engine_Memory::Allocate<Mesh, bool>(
+							ID_Hafe_UP_Square::Vertices(),
+							ID_Hafe_UP_Square::Vertices_Size(),
+							ID_Hafe_UP_Square::Indices(),
+							ID_Hafe_UP_Square::Indices_Size()));
+					}
+					model_mesh->Change_Color_Data(model_color);
 				}
-				model_mesh->Change_Color_Data(model_color);
+				catch (const pw::er::Severe_Error& v_error) {
+					throw v_error;
+				}
 			}
 		// End of Class Members
 		// ID_Hafe_Down_Square      
@@ -371,36 +451,46 @@ PW_NAMESPACE_SRT
 				0,2,3
 			};
 		// Class Members
-			ID_Vertex_Data* ID_Hafe_Down_Square::Vertices() {
+			const ID_Vertex_Data* ID_Hafe_Down_Square::Vertices() {
 				return vertices;
 			}
-			uint32_t* ID_Hafe_Down_Square::Indices() {
+			const uint32_t* ID_Hafe_Down_Square::Indices() {
 				return indices;
 			}
-			const uint16_t ID_Hafe_Down_Square::Vertices_Size() {
+			const uint16_t& ID_Hafe_Down_Square::Vertices_Size() {
 				return vertices_size;
 			}
-			const uint16_t ID_Hafe_Down_Square::Indices_Size() {
+			const uint16_t& ID_Hafe_Down_Square::Indices_Size() {
 				return indices_size;
 			}
 			void ID_Hafe_Down_Square::Handle_Model_Data_NOC(std::shared_ptr<Mesh>& model_mesh) {
-				if (model_mesh == nullptr) {
-					model_mesh = PW_SRD_PTR(Mesh)( new Mesh(
-						ID_Hafe_Down_Square::Vertices(),
-						ID_Hafe_Down_Square::Vertices_Size(),
-						ID_Hafe_Down_Square::Indices(),
-						ID_Hafe_Down_Square::Indices_Size()));
+				try {
+					if (model_mesh == nullptr) {
+						model_mesh = PW_SRD_PTR(Mesh)( pw::Engine_Memory::Allocate<Mesh, bool>(
+							ID_Hafe_Down_Square::Vertices(),
+							ID_Hafe_Down_Square::Vertices_Size(),
+							ID_Hafe_Down_Square::Indices(),
+							ID_Hafe_Down_Square::Indices_Size()));
+					}
+				}
+				catch (const pw::er::Severe_Error& v_error) {
+					throw v_error;
 				}
 			}
 			void ID_Hafe_Down_Square::Handle_Model_Data_C(std::shared_ptr<Mesh>& model_mesh, glm::vec4 model_color) {
-				if (model_mesh == nullptr) {
-					model_mesh = PW_SRD_PTR(Mesh)( new Mesh(
-						ID_Hafe_Down_Square::Vertices(),
-						ID_Hafe_Down_Square::Vertices_Size(),
-						ID_Hafe_Down_Square::Indices(),
-						ID_Hafe_Down_Square::Indices_Size()));
+				try {
+					if (model_mesh == nullptr) {
+						model_mesh = PW_SRD_PTR(Mesh)(pw::Engine_Memory::Allocate<Mesh, bool>(
+							ID_Hafe_Down_Square::Vertices(),
+							ID_Hafe_Down_Square::Vertices_Size(),
+							ID_Hafe_Down_Square::Indices(),
+							ID_Hafe_Down_Square::Indices_Size()));
+					}
+					model_mesh->Change_Color_Data(model_color);
 				}
-				model_mesh->Change_Color_Data(model_color);
+				catch (const pw::er::Severe_Error& v_error) {
+					throw v_error;
+				}
 			}
 		// End of Class Members
 		// IE_Static_Model          
@@ -427,7 +517,7 @@ PW_NAMESPACE_SRT
 					ID_Hafe_UP_Square::Handle_Model_Data_C,
 					ID_Hafe_Down_Square::Handle_Model_Data_C
 			};
-			ID_Vertex_Data* Static_Model::model_vertices[(int32_t)Mesh_Types::TYPE_COUNT - 1]{
+			const ID_Vertex_Data* Static_Model::model_vertices[(int32_t)Mesh_Types::TYPE_COUNT - 1]{
 					ID_Down_RS_Triangle::Vertices(),
 					ID_Down_LS_Triangle::Vertices(),
 					ID_Up_RS_Triangle::Vertices(),
@@ -459,90 +549,131 @@ PW_NAMESPACE_SRT
 					model_texture(texture), model_position(model_position, 0.0f), model_rotation(model_rotation), model_size(model_size),
 					model_mesh(nullptr), model_type(type), model_is_colored(false), model_color(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)),
 					model_matrix(0.0f), deleted(false), id(++Model::model_id_assigner) {
-				model_functions_noc[(int)model_type - 1](this->model_mesh);
-				model_matrix = Handle_Calculations();
+				try {
+					model_functions_noc[(int)model_type - 1](this->model_mesh);
+					model_matrix = Handle_Calculations();
 
-				Model::model_counter = Model::model_counter + 1;
+					Model::model_counter = Model::model_counter + 1;
+				}
+				catch (const pw::er::Severe_Error& v_error) {
+					throw v_error;
+				}
 			}
 			Static_Model::Static_Model(Mesh_Types type, Texture* texture, glm::vec2 model_position, float model_rotation, glm::vec2 model_size, glm::vec4 model_color) :
 					model_texture(texture), model_position(model_position, 0.0f), model_rotation(model_rotation), model_size(model_size),
 					model_mesh(nullptr), model_type(type), model_is_colored(true), model_color(model_color),
 					model_matrix(0.0f), deleted(false), id(++Model::model_id_assigner) {
-				model_functions_c[(int)model_type - 1](this->model_mesh, this->model_color);
-				model_matrix = Handle_Calculations();
+				try {
+					model_functions_c[(int)model_type - 1](this->model_mesh, this->model_color);
+					model_matrix = Handle_Calculations();
 
-				Model::model_counter = Model::model_counter + 1;
+					Model::model_counter = Model::model_counter + 1;
+				}
+				catch (const pw::er::Severe_Error& v_error) {
+					throw v_error;
+				}
 			}
 			Static_Model::Static_Model(Mesh_Types type, ID_Vertex_Data* mesh_info, Texture* texture, glm::vec2 model_position, float model_rotation, glm::vec2 model_size) :
 					model_texture(texture), model_position(model_position, 0.0f), model_rotation(model_rotation), model_size(model_size),
 					model_mesh(nullptr), model_type(type), model_is_colored(false), model_color(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f)),
 					model_matrix(0.0f), deleted(false), id(++Model::model_id_assigner) {
-				model_functions_noc[(int)model_type - 1](this->model_mesh);
-				model_mesh->Update_Vertices(mesh_info);
-				model_matrix = Handle_Calculations();
-				
-				Model::model_counter = Model::model_counter + 1;
+				try {
+					model_functions_noc[(int)model_type - 1](this->model_mesh);
+					model_mesh->Update_Vertices(mesh_info);
+					model_matrix = Handle_Calculations();
+
+					Model::model_counter = Model::model_counter + 1;
+				}
+				catch (const pw::er::Severe_Error& v_error) {
+					throw v_error;
+				}
 			}
 			Static_Model::Static_Model(Mesh_Types type, ID_Vertex_Data* mesh_info, Texture* texture, glm::vec2 model_position, float model_rotation, glm::vec2 model_size, glm::vec4 model_color) :
 					model_texture(texture), model_position(model_position, 0.0f), model_rotation(model_rotation), model_size(model_size),
 					model_mesh(nullptr), model_type(type), model_is_colored(true), model_color(model_color),
 					model_matrix(0.0f), deleted(false), id(++Model::model_id_assigner) {
-				model_functions_c[(int)model_type - 1](this->model_mesh, this->model_color);
-				model_mesh->Update_Vertices(mesh_info);
-				model_matrix = Handle_Calculations();
+				try {
+					model_functions_c[(int)model_type - 1](this->model_mesh, this->model_color);
+					model_mesh->Update_Vertices(mesh_info);
+					model_matrix = Handle_Calculations();
 				
-				Model::model_counter = Model::model_counter + 1;
+					Model::model_counter = Model::model_counter + 1;
+				}
+				catch (const pw::er::Severe_Error& v_error) {
+					throw v_error;
+				}
 			}
 			Static_Model::~Static_Model() {
 				LET_CPP_IMPLEMENT
 			};
 			void Static_Model::Render() {
-				Shader::Get_Shader().Use();
+				try {
+					if (TRY_LINE model_texture == nullptr) {
+						throw pw::er::Warning_Error(L"Static_Model", L"model_texture was nullptr", std::move(EXCEPTION_LINE), __FILEW__, L"Render");
+					}
+					if (TRY_LINE model_mesh == nullptr) {
+						throw pw::er::Warning_Error(L"Static_Model", L"model_mesh was nullptr", std::move(EXCEPTION_LINE), __FILEW__, L"Render");
+					}
+					Shader::Get_Shader().Use();
 
-				Shader::Get_Shader().Update_Matrices(&this->model_matrix, this->model_is_colored);
+					Shader::Get_Shader().Update_Matrices(&this->model_matrix, this->model_is_colored);
 
-				this->model_texture->Bind(0);
-				this->model_mesh->Draw();
+					this->model_texture->Bind(0);
+					this->model_mesh->Draw();
+				}
+				catch (const pw::er::Severe_Error& v_error) {
+					throw v_error;
+				}
+				catch (const pw::er::Warning_Error& v_error) {
+					throw v_error;
+				}
 			}
 			void Static_Model::Delete() {
 				if (deleted == false) {
 					if (model_mesh != NULL) {
+						model_mesh->Delete();
+
+						pw::Engine_Memory::Deallocate<Mesh>(model_mesh.get(), true);
+
 						model_mesh.~shared_ptr();
 					}
 					model_texture->Delete();
-					delete model_texture;
+					pw::Engine_Memory::Deallocate<Texture>(model_texture);
 					deleted = true;
 					Model::model_counter = Model::model_counter - 1;
 				}
 			}
-			glm::vec3 Static_Model::Position() {
+			void Static_Model::Set_Texture(st::Texture* p_new_texture) {
+				model_texture = p_new_texture;
+			}
+			const glm::vec3& Static_Model::Position() {
 				return model_position;
 			}
 			glm::vec3& Static_Model::Position_Reference() {
 				return model_position;
 			}
-			Mesh_Types Static_Model::Model_Type() {
+			const Mesh_Types& Static_Model::Model_Type() {
 				return model_type;
 			}
-			float Static_Model::Rotation() {
+			const float& Static_Model::Rotation() {
 				return model_rotation;
 			}
-			glm::vec2 Static_Model::Model_Size() {
+			const glm::vec2& Static_Model::Model_Size() {
 				return model_size;
 			}
-			PW_SRD_PTR(Mesh) Static_Model::Model_Mesh() {
+			const PW_SRD_PTR(Mesh)& Static_Model::Model_Mesh() {
 				return model_mesh;
 			}
 			PW_SRD_PTR(Mesh)& Static_Model::Model_Mesh_Reference() {
 				return model_mesh;
 			}
-			uint64_t Static_Model::Id() {
+			const uint64_t& Static_Model::Id() {
 				return id;
 			}
 			void Static_Model::Refresh_Model() {
 				this->model_matrix = Handle_Calculations();
 			}
-			glm::mat4 Static_Model::Handle_Calculations() {
+			glm::mat4&& Static_Model::Handle_Calculations() {
 				glm::mat4 model(1.0f);
 				float pos_x = model_position.x;
 				float pos_y = model_position.y;
@@ -559,7 +690,7 @@ PW_NAMESPACE_SRT
 				model = glm::rotate(model, glm::radians(model_rotation), glm::vec3(0.0f, 0.0f, 1.0f));
 				model = glm::scale(model, glm::vec3(size_x, size_y, 1.0f));
 
-				return model;
+				return std::move(model);
 			}
 		// End of Class Members
 		// IE_Dynamic_Model         
@@ -586,7 +717,7 @@ PW_NAMESPACE_SRT
 					ID_Hafe_UP_Square::Handle_Model_Data_C,
 					ID_Hafe_Down_Square::Handle_Model_Data_C
 			};
-			ID_Vertex_Data* Dynamic_Model::model_vertices[(int32_t)Mesh_Types::TYPE_COUNT - 1]{
+			const ID_Vertex_Data* Dynamic_Model::model_vertices[(int32_t)Mesh_Types::TYPE_COUNT - 1]{
 					ID_Down_RS_Triangle::Vertices(),
 					ID_Down_LS_Triangle::Vertices(),
 					ID_Up_RS_Triangle::Vertices(),
@@ -652,62 +783,96 @@ PW_NAMESPACE_SRT
 			}
 			Dynamic_Model::~Dynamic_Model() { LET_CPP_IMPLEMENT };
 			void Dynamic_Model::Render() {
-				Shader::Get_Shader().Use();
+				try {
+					if (TRY_LINE model_texture == nullptr) {
+						throw pw::er::Warning_Error(L"Dynamic_Model", L"model_texture was nullptr", std::move(EXCEPTION_LINE), __FILEW__, L"Render");
+					}
+					if (TRY_LINE model_mesh == nullptr) {
+						throw pw::er::Warning_Error(L"Dynamic_Model", L"model_mesh was nullptr", std::move(EXCEPTION_LINE), __FILEW__, L"Render");
+					}
+					Shader::Get_Shader().Use();
 
-				Shader::Get_Shader().Update_Matrices(&this->Handle_Calculations(), this->model_is_colored);
+					Shader::Get_Shader().Update_Matrices(&this->Handle_Calculations(), this->model_is_colored);
 
-				this->model_texture->Bind(0);
-				this->model_mesh->Draw();
+					this->model_texture->Bind(0);
+					this->model_mesh->Draw();
+				}
+				catch (const pw::er::Severe_Error& v_error) {
+					throw v_error;
+				}
+				catch (const pw::er::Warning_Error& v_error) {
+					throw v_error;
+				}
 			}
 			void Dynamic_Model::Render(
 				b2Body* model_body) {
+				try {
+					if (TRY_LINE model_texture == nullptr) {
+						throw pw::er::Warning_Error(L"Dynamic_Model", L"model_texture was nullptr", std::move(EXCEPTION_LINE), __FILEW__, L"Render");
+					}
+					if (TRY_LINE model_mesh == nullptr) {
+						throw pw::er::Warning_Error(L"Dynamic_Model", L"model_mesh was nullptr", std::move(EXCEPTION_LINE), __FILEW__, L"Render");
+					}
+					Shader::Get_Shader().Use();
 
-				Shader::Get_Shader().Use();
+					Shader::Get_Shader().Update_Matrices(&this->Handle_Calculations(model_body), this->model_is_colored);
 
-				Shader::Get_Shader().Update_Matrices(&this->Handle_Calculations(model_body), this->model_is_colored);
-
-				this->model_texture->Bind(0);
-				this->model_mesh->Draw();
+					this->model_texture->Bind(0);
+					this->model_mesh->Draw();
+				}
+				catch (const pw::er::Severe_Error& v_error) {
+					throw v_error;
+				}
+				catch (const pw::er::Warning_Error& v_error) {
+					throw v_error;
+				}
 			}
 			void Dynamic_Model::Delete() {
 				if (deleted == false) {
 					if (model_mesh != NULL) {
+						model_mesh->Delete();
+
+						pw::Engine_Memory::Deallocate<Mesh>(model_mesh.get(), true);
+
 						model_mesh.~shared_ptr();
 					}
 					model_texture->Delete();
-					delete model_texture;
+					pw::Engine_Memory::Deallocate<Texture>(model_texture);
 					deleted = true;
 					Model::model_counter = Model::model_counter - 1;
 				}
 			}
-			glm::vec3 Dynamic_Model::Position() {
+			void Dynamic_Model::Set_Texture(st::Texture* p_new_texture) {
+				model_texture = p_new_texture;
+			}
+			const glm::vec3& Dynamic_Model::Position() {
 				return model_position;
 			}
 			glm::vec3& Dynamic_Model::Position_Reference() {
 				return model_position;
 			}
-			glm::vec3 Dynamic_Model::Last_Postition() {
+			const glm::vec3& Dynamic_Model::Last_Postition() {
 				return model_last_position;
 			}
 			glm::vec3& Dynamic_Model::Last_Postition_Reference() {
 				return model_last_position;
 			}
-			Mesh_Types Dynamic_Model::Model_Type() {
+			const Mesh_Types& Dynamic_Model::Model_Type() {
 				return model_type;
 			}
-			float Dynamic_Model::Rotation() {
+			const float& Dynamic_Model::Rotation() {
 				return model_rotation;
 			}
-			glm::vec2 Dynamic_Model::Model_Size() {
+			const glm::vec2& Dynamic_Model::Model_Size() {
 				return model_size;
 			}
-			PW_SRD_PTR(Mesh) Dynamic_Model::Model_Mesh() {
+			const PW_SRD_PTR(Mesh)& Dynamic_Model::Model_Mesh() {
 				return model_mesh;
 			}
 			PW_SRD_PTR(Mesh)& Dynamic_Model::Model_Mesh_Reference() {
 				return model_mesh;
 			}
-			uint64_t Dynamic_Model::Id() {
+			const uint64_t& Dynamic_Model::Id() {
 				return id;
 			}
 			void Dynamic_Model::Set_Model_Color(
@@ -740,7 +905,7 @@ PW_NAMESPACE_SRT
 			void Dynamic_Model::Refresh_Model() {
 				model_matrix = Handle_Calculations(true);
 			}
-			glm::mat4 Dynamic_Model::Handle_Calculations(bool dynamic_override) {
+			glm::mat4&& Dynamic_Model::Handle_Calculations(bool dynamic_override) {
 				glm::mat4 model(1.0f);
 				float pos_x = model_position.x;
 				float pos_y = model_position.y;
@@ -760,7 +925,7 @@ PW_NAMESPACE_SRT
 				model = glm::rotate(model, glm::radians(model_rotation), glm::vec3(0.0f, 0.0f, 1.0f));
 				model = glm::scale(model, glm::vec3(size_x, size_y, 1.0f));
 
-				return model;
+				return std::move(model);
 			}
 			glm::mat4& Dynamic_Model::Handle_Calculations(b2Body* model_body) {
 				if (model_body != nullptr) {

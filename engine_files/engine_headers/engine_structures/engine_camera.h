@@ -83,7 +83,7 @@ PW_NAMESPACE_SRT
 			// Parameters: NONE 
 			// //////////////////////////////////////////////////
 			NO_USER_INTERACTION
-			static CORE glm::mat4 Update_Camera();
+			static CORE glm::mat4& Update_Camera();
 			// //////////////////////////////////////////////////
 			// CORE Function: Camera::Update_Projection
 			// //////////////////////////////////////////////////
@@ -94,7 +94,7 @@ PW_NAMESPACE_SRT
 			// Parameters: NONE 
 			// //////////////////////////////////////////////////
 			NO_USER_INTERACTION
-			static CORE glm::mat4 Update_Projection();
+			static CORE glm::mat4& Update_Projection();
 			// //////////////////////////////////////////////////
 			// UTILITY Function: Camera::Scroll_Forward
 			// //////////////////////////////////////////////////
@@ -163,9 +163,15 @@ PW_NAMESPACE_SRT
 			static UTILITY void Camera_Right();
 			// Accessors
 			USER_INTERACTION
+			static ACCESSOR glm::vec2 Camera_Position_Raw();
+			USER_INTERACTION
 			static ACCESSOR glm::vec2 Camera_Position();
 			USER_INTERACTION
-			static ACCESSOR int32_t Camera_Zoom();
+			static ACCESSOR glm::vec2 Camera_Position_Last();
+			USER_INTERACTION
+			static ACCESSOR glm::vec2 Camera_Size();
+			USER_INTERACTION
+			static ACCESSOR float Camera_Zoom();
 
 		// Public Variables   
 		public:
@@ -173,11 +179,14 @@ PW_NAMESPACE_SRT
 		private:
 		// Private Variables  
 		private:
-			static int32_t camera_zoom;
-			static int32_t last_camera_zoom;
+			static float camera_zoom;
+			static float last_camera_zoom;
 
 			static float camera_x_position;
 			static float camera_y_position;
+
+			static float camera_width;
+			static float camera_height;
 
 			static float last_camera_x_position;
 			static float last_camera_y_position;

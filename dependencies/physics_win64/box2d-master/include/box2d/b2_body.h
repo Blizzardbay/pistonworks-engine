@@ -40,7 +40,7 @@ struct b2ContactEdge;
 /// static: zero mass, zero velocity, may be manually moved
 /// kinematic: zero mass, non-zero velocity set by user, moved by solver
 /// dynamic: positive mass, non-zero velocity determined by forces, moved by solver
-enum b2BodyType
+enum class b2BodyType
 {
 	b2_staticBody = 0,
 	b2_kinematicBody,
@@ -64,7 +64,7 @@ struct B2_API b2BodyDef
 		awake = true;
 		fixedRotation = false;
 		bullet = false;
-		type = b2_staticBody;
+		type = b2BodyType::b2_staticBody;
 		enabled = true;
 		gravityScale = 1.0f;
 	}
@@ -500,7 +500,7 @@ inline const b2Vec2& b2Body::GetLocalCenter() const
 
 inline void b2Body::SetLinearVelocity(const b2Vec2& v)
 {
-	if (m_type == b2_staticBody)
+	if (m_type == b2BodyType::b2_staticBody)
 	{
 		return;
 	}
@@ -520,7 +520,7 @@ inline const b2Vec2& b2Body::GetLinearVelocity() const
 
 inline void b2Body::SetAngularVelocity(float w)
 {
-	if (m_type == b2_staticBody)
+	if (m_type == b2BodyType::b2_staticBody)
 	{
 		return;
 	}
@@ -634,7 +634,7 @@ inline bool b2Body::IsBullet() const
 
 inline void b2Body::SetAwake(bool flag)
 {
-	if (m_type == b2_staticBody)
+	if (m_type == b2BodyType::b2_staticBody)
 	{
 		return;
 	}
@@ -735,7 +735,7 @@ inline b2BodyUserData& b2Body::GetUserData()
 
 inline void b2Body::ApplyForce(const b2Vec2& force, const b2Vec2& point, bool wake)
 {
-	if (m_type != b2_dynamicBody)
+	if (m_type != b2BodyType::b2_dynamicBody)
 	{
 		return;
 	}
@@ -755,7 +755,7 @@ inline void b2Body::ApplyForce(const b2Vec2& force, const b2Vec2& point, bool wa
 
 inline void b2Body::ApplyForceToCenter(const b2Vec2& force, bool wake)
 {
-	if (m_type != b2_dynamicBody)
+	if (m_type != b2BodyType::b2_dynamicBody)
 	{
 		return;
 	}
@@ -774,7 +774,7 @@ inline void b2Body::ApplyForceToCenter(const b2Vec2& force, bool wake)
 
 inline void b2Body::ApplyTorque(float torque, bool wake)
 {
-	if (m_type != b2_dynamicBody)
+	if (m_type != b2BodyType::b2_dynamicBody)
 	{
 		return;
 	}
@@ -793,7 +793,7 @@ inline void b2Body::ApplyTorque(float torque, bool wake)
 
 inline void b2Body::ApplyLinearImpulse(const b2Vec2& impulse, const b2Vec2& point, bool wake)
 {
-	if (m_type != b2_dynamicBody)
+	if (m_type != b2BodyType::b2_dynamicBody)
 	{
 		return;
 	}
@@ -813,7 +813,7 @@ inline void b2Body::ApplyLinearImpulse(const b2Vec2& impulse, const b2Vec2& poin
 
 inline void b2Body::ApplyLinearImpulseToCenter(const b2Vec2& impulse, bool wake)
 {
-	if (m_type != b2_dynamicBody)
+	if (m_type != b2BodyType::b2_dynamicBody)
 	{
 		return;
 	}
@@ -832,7 +832,7 @@ inline void b2Body::ApplyLinearImpulseToCenter(const b2Vec2& impulse, bool wake)
 
 inline void b2Body::ApplyAngularImpulse(float impulse, bool wake)
 {
-	if (m_type != b2_dynamicBody)
+	if (m_type != b2BodyType::b2_dynamicBody)
 	{
 		return;
 	}

@@ -14,19 +14,22 @@ PW_NAMESPACE_SRT
 			}
 			Texture::Texture(BYTE* tex_data, uint32_t target, uint32_t tex_width, uint32_t tex_height, int32_t internal_format, int32_t format) :
 					texture_id(0), texture_width(tex_width), texture_height(tex_height) {
-				if (tex_data != nullptr) {
+				if (TRY_LINE tex_data != nullptr) {
 					PW_GL_VOID_CALL(glGenTextures(1, &texture_id), false);
 					PW_GL_VOID_CALL(glBindTexture(GL_TEXTURE_2D, texture_id), false);
 
-					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT), false);
-					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT), false);
-
-					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST), false);
-					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST), false);
+					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE), false);
+					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE), false);
+											
+					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR), false);
+					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR), false);
 
 					PW_GL_VOID_CALL(glTexImage2D(target, 0, internal_format, tex_width, tex_height, 0, format, GL_UNSIGNED_BYTE, tex_data), false);
 
 					PW_GL_VOID_CALL(glPixelStorei(GL_UNPACK_ALIGNMENT, 1), false);
+				}
+				else {
+					throw er::Warning_Error(L"Texture", L"Texture data was nullptr.", std::move(EXCEPTION_LINE), __FILEW__, L"Texture");
 				}
 			}
 			Texture::Texture(BYTE* tex_data, uint32_t tex_width, uint32_t tex_height, int32_t internal_format, int32_t format) :
@@ -35,15 +38,18 @@ PW_NAMESPACE_SRT
 					PW_GL_VOID_CALL(glGenTextures(1, &texture_id), false);
 					PW_GL_VOID_CALL(glBindTexture(GL_TEXTURE_2D, texture_id), false);
 
-					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT), false);
-					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT), false);
+					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE), false);
+					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE), false);
 
-					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST), false);
-					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST), false);
+					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR), false);
+					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR), false);
 
 					PW_GL_VOID_CALL(glTexImage2D(GL_TEXTURE_2D, 0, internal_format, tex_width, tex_height, 0, format, GL_UNSIGNED_BYTE, tex_data), false);
 
 					PW_GL_VOID_CALL(glPixelStorei(GL_UNPACK_ALIGNMENT, 1), false);
+				}
+				else {
+					throw er::Warning_Error(L"Texture", L"Texture data was nullptr.", std::move(EXCEPTION_LINE), __FILEW__, L"Texture");
 				}
 			}
 			Texture::Texture(PW_SRD_PTR(BYTE*) tex_data, uint32_t tex_width, uint32_t tex_height, int32_t internal_format, int32_t format) :
@@ -52,15 +58,18 @@ PW_NAMESPACE_SRT
 					PW_GL_VOID_CALL(glGenTextures(1, &texture_id), false);
 					PW_GL_VOID_CALL(glBindTexture(GL_TEXTURE_2D, texture_id), false);
 
-					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT), false);
-					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT), false);
+					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE), false);
+					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE), false);
 
-					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST), false);
-					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST), false);
+					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR), false);
+					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR), false);
 
 					PW_GL_VOID_CALL(glTexImage2D(GL_TEXTURE_2D, 0, internal_format, tex_width, tex_height, 0, format, GL_UNSIGNED_BYTE, *tex_data), false);
 
 					PW_GL_VOID_CALL(glPixelStorei(GL_UNPACK_ALIGNMENT, 1), false);
+				}
+				else {
+					throw er::Warning_Error(L"Texture", L"Texture data was nullptr.", std::move(EXCEPTION_LINE), __FILEW__, L"Texture");
 				}
 			}
 			Texture::~Texture() {

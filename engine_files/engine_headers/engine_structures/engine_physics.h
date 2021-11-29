@@ -38,13 +38,19 @@
 // C++ Headers              
 #include <map>
 //////////////////////////////////
-// Project Headers          
+// Project Headers
+#pragma warning(push)
+#pragma warning(disable:26495)
+#pragma warning(push)
+#pragma warning(disable:26812)
 #include <box2d\b2_settings.h>
 #include <box2d\b2_world.h>
 #include <box2d\b2_collision.h>
 #include <box2d\b2_polygon_shape.h>
 #include <box2d\b2_body.h>
 #include <box2d\b2_fixture.h>
+#pragma warning(pop)
+#pragma warning(pop)
 //////////////////////////////////
 // Engine Headers           
 #include "engine_common\engine_error.h"
@@ -194,6 +200,16 @@ PW_NAMESPACE_SRT
 			// Purpose: 
 			//  Creates an empty Box2D factory.
 			// //////////////////////////////////////////////////
+			// Parameters: NONE
+			// //////////////////////////////////////////////////
+			NO_USER_INTERACTION
+			CLASS_FUNCTION Pysics_Factory();
+			// //////////////////////////////////////////////////
+			// CLASS_FUNCTION Function: Pysics_Factory::Pysics_Factory
+			// //////////////////////////////////////////////////
+			// Purpose: 
+			//  Creates an empty Box2D factory.
+			// //////////////////////////////////////////////////
 			// Parameters: 4
 			// (1) b2Vec2 gravity;
 			// Purpose: 
@@ -295,7 +311,7 @@ PW_NAMESPACE_SRT
 		private:
 		// Private Variables        
 		private:
-			b2World world;
+			b2World* world;
 
 			int32_t velocity_it;
 			int32_t position_it;
