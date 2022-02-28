@@ -8,25 +8,95 @@ PW_NAMESPACE_SRT
 	//////////////////////////////////
 		// Engine_Queue
 		// Static Declarations
+		std::wstring co::Engine_Queue::m_project_name{};
+
+		std::wstring* co::Engine_Queue::m_current_scene{ nullptr };
+		std::map<std::wstring, st::Game_Scene*> co::Engine_Queue::m_scene_directory{};
+
+		std::function<void(const std::wstring&)> co::Engine_Queue::m_pre_scene_add{ nullptr };
+		std::function<void(const std::wstring&)> co::Engine_Queue::m_post_scene_add{ nullptr };
+
+		std::function<void(const std::wstring&)> co::Engine_Queue::m_pre_scene_change{ nullptr };
+		std::function<void(const std::wstring&)> co::Engine_Queue::m_post_scene_change{ nullptr };
+
+		std::function<void(const std::wstring&)> co::Engine_Queue::m_pre_scene_remove{ nullptr };
+		std::function<void(const std::wstring&)> co::Engine_Queue::m_post_scene_remove{ nullptr };
 		// Class Members
 			void Engine_Queue::Pre_Queue() {
-				if (current_scene != nullptr) {
-					scene_directory.at(*current_scene)->Pre_Render();
+				if (m_current_scene != nullptr) {
+					m_scene_directory.at(*m_current_scene)->Pre_Render();
 				}
 			}
 			void Engine_Queue::Run_Queue() {
-				if (current_scene != nullptr) {
-					scene_directory.at(*current_scene)->Render();
+				if (m_current_scene != nullptr) {
+					m_scene_directory.at(*m_current_scene)->Render();
 				}
 			}
-			void Engine_Queue::Refresh_Queue() {
-				if (current_scene != nullptr) {
-					scene_directory.at(*current_scene)->Refresh_Scene();
+			void Engine_Queue::Clear_Queue() {
+				for (auto i = m_scene_directory.begin(); i != m_scene_directory.end(); i++) {
+					Remove_Scene(i->first);
+					i = m_scene_directory.begin();
+					if (i == m_scene_directory.end()) {
+						break;
+					}
 				}
+				m_scene_directory.clear();
 			}
-			void Engine_Queue::Load_From_Dir(const wchar_t* directory, st::Shader& shader, PW_DUNI_PTR(GLFWwindow, cm::Engine_Constant::Destroy_GLFW)& main_window, PW_SRD_PTR(PW_FUNCTION) state_function) {
+			void Engine_Queue::Print_Debug_Stats() {
+				PRINT_INFO(L"HM    ", pw::Engine_Memory::Memory_String(pw::Engine_Memory::Heap_Memory()), TO_UINT16(0));
+				PRINT_INFO(L"HHM   ", pw::Engine_Memory::Memory_String(pw::Engine_Memory::High_Heap_Memory()), TO_UINT16(1));
+				PRINT_INFO(L"MEMCNT", std::to_wstring(pw::Engine_Memory::Allocations()), TO_UINT16(2));
+				PRINT_INFO(L"FPS   ", std::to_wstring(pw::cm::Engine_Constant::FPS()), TO_UINT16(3));
+				PRINT_INFO(L"FPSLST", std::to_wstring(pw::cm::Engine_Constant::Last_FPS()), TO_UINT16(4));
+				PRINT_INFO(L"FPSMAX", std::to_wstring(pw::cm::Engine_Constant::FPS_Max()), TO_UINT16(5));
 
-				co::File_Loader::Initialize_Loader(&Engine_Queue::Add_Scene, &Engine_Queue::Set_Current_Scene);
+				std::wstring v_fps_average = std::to_wstring(pw::cm::Engine_Constant::FPS_Average());
+
+				size_t v_period = v_fps_average.find(L".");
+				if (v_period != std::string::npos) {
+					size_t v_decimal_count = v_fps_average.size() - OFF64(v_period);
+					if (v_decimal_count > 2) {
+						v_decimal_count = v_decimal_count - 2;
+						v_fps_average.erase(OFF64(v_period) + 2, v_decimal_count);
+					}
+				}
+
+				PRINT_INFO(L"FPSAVG", v_fps_average, TO_UINT16(6));
+				PRINT_INFO(L"MODELS", std::to_wstring(st::Model::m_model_counter), TO_UINT16(7));
+				size_t v_render_count = 0;
+				if (m_current_scene != nullptr) {
+					v_render_count = m_scene_directory.at(*m_current_scene)->Last_Render_Count();
+				}
+				PRINT_INFO(L"RNDCNT", std::to_wstring(v_render_count), TO_UINT16(8));
+
+				std::wstring v_camera_position_x = std::to_wstring(st::Camera::Camera_Position().x);
+
+				v_period = v_camera_position_x.find(L".");
+				if (v_period != std::string::npos) {
+					size_t v_decimal_count = v_camera_position_x.size() - OFF64(v_period);
+					if (v_decimal_count > 2) {
+						v_decimal_count = v_decimal_count - 2;
+						v_camera_position_x.erase(OFF64(v_period) + 2, v_decimal_count);
+					}
+				}
+
+				PRINT_INFO(L"CAMXPS", v_camera_position_x, TO_UINT16(9));
+
+				std::wstring v_camera_position_y = std::to_wstring(st::Camera::Camera_Position().y);
+
+				v_period = v_camera_position_y.find(L".");
+				if (v_period != std::string::npos) {
+					size_t v_decimal_count = v_camera_position_y.size() - OFF64(v_period);
+					if (v_decimal_count > 2) {
+						v_decimal_count = v_decimal_count - 2;
+						v_camera_position_y.erase(OFF64(v_period) + 2, v_decimal_count);
+					}
+				}
+
+				PRINT_INFO(L"CAMYPS", v_camera_position_y, TO_UINT16(10));
+			}
+			void Engine_Queue::Load_From_Dir(std::unique_ptr<GLFWwindow, cm::Destroy_GLFW>& p_main_window, std::shared_ptr<PW_FUNCTION> p_state_function) {
+				co::File_Loader::Initialize_Loader(&Engine_Queue::Add_Scene, &Engine_Queue::Set_Current_Scene, &Engine_Queue::Remove_Scene);
 
 				// Set debug function if in debug mode
 				#ifdef PW_DEBUG_MODE
@@ -34,147 +104,147 @@ PW_NAMESPACE_SRT
 				#endif
 
 				// Find if the directory exist
-				std::wstring v_str_directory = directory;
+				std::wstring v_wstr_directory = pw::cm::Engine_Constant::Game_Path().generic_wstring();
 
-				std::filesystem::path v_path_to_animations{ v_str_directory + std::wstring(L"animations") };
-				std::filesystem::path v_path_to_data{ v_str_directory + std::wstring(L"data") };
-				std::filesystem::path v_path_to_fonts{ v_str_directory + std::wstring(L"fonts") };
-				std::filesystem::path v_path_to_icon{ v_str_directory + std::wstring(L"icon") };
-				std::filesystem::path v_path_to_linker_files{ v_str_directory + std::wstring(L"linker_files") };
-				std::filesystem::path v_path_to_textures{ v_str_directory + std::wstring(L"textures") };
+				std::filesystem::path v_path_to_animations{ v_wstr_directory + std::wstring(L"/animations") };
+				std::filesystem::path v_path_to_data{ v_wstr_directory + std::wstring(L"/data") };
+				std::filesystem::path v_path_to_fonts{ v_wstr_directory + std::wstring(L"/fonts") };
+				std::filesystem::path v_path_to_icon{ v_wstr_directory + std::wstring(L"/icon") };
+				std::filesystem::path v_path_to_linker_files{ v_wstr_directory + std::wstring(L"/linker_files") };
+				std::filesystem::path v_path_to_textures{ v_wstr_directory + std::wstring(L"/textures") };
+				std::filesystem::path v_path_to_sounds{ v_wstr_directory + std::wstring(L"/sounds") };
 
 				if (TRY_LINE std::filesystem::exists(v_path_to_animations) == false) {
-					PW_PRINT_ERROR(pw::er::Warning_Error(L"Pistonworks Engine", L"Could not find \"animations\" directory", std::move(EXCEPTION_LINE), __FILEW__, L"std::filesystem::exists"));
+					PW_PRINT_ERROR(pw::er::Warning_Error(L"Pistonworks Engine", L"Could not find \"animations\" directory", EXCEPTION_LINE, __FILEW__, L"std::filesystem::exists"));
 				}
 				else {
 					if (TRY_LINE std::filesystem::exists(v_path_to_data) == false) {
-						PW_PRINT_ERROR(pw::er::Warning_Error(L"Pistonworks Engine", L"Could not find \"data\" directory", std::move(EXCEPTION_LINE), __FILEW__, L"std::filesystem::exists"));
+						PW_PRINT_ERROR(pw::er::Warning_Error(L"Pistonworks Engine", L"Could not find \"data\" directory", EXCEPTION_LINE, __FILEW__, L"std::filesystem::exists"));
 					}
 					else {
 						if (TRY_LINE std::filesystem::exists(v_path_to_fonts) == false) {
-							PW_PRINT_ERROR(pw::er::Warning_Error(L"Pistonworks Engine", L"Could not find \"fonts\" directory", std::move(EXCEPTION_LINE), __FILEW__, L"std::filesystem::exists"));
+							PW_PRINT_ERROR(pw::er::Warning_Error(L"Pistonworks Engine", L"Could not find \"fonts\" directory", EXCEPTION_LINE, __FILEW__, L"std::filesystem::exists"));
 						}
 						else {
 							if (TRY_LINE std::filesystem::exists(v_path_to_icon) == false) {
-								PW_PRINT_ERROR(pw::er::Warning_Error(L"Pistonworks Engine", L"Could not find \"icon\" directory", std::move(EXCEPTION_LINE), __FILEW__, L"std::filesystem::exists"));
+								PW_PRINT_ERROR(pw::er::Warning_Error(L"Pistonworks Engine", L"Could not find \"icon\" directory", EXCEPTION_LINE, __FILEW__, L"std::filesystem::exists"));
 							}
 							else {
 								if (TRY_LINE std::filesystem::exists(v_path_to_linker_files) == false) {
-									PW_PRINT_ERROR(pw::er::Warning_Error(L"Pistonworks Engine", L"Could not find \"linker_files\" directory", std::move(EXCEPTION_LINE), __FILEW__, L"std::filesystem::exists"));
+									PW_PRINT_ERROR(pw::er::Warning_Error(L"Pistonworks Engine", L"Could not find \"linker_files\" directory", EXCEPTION_LINE, __FILEW__, L"std::filesystem::exists"));
 								}
 								else {
 									if (TRY_LINE std::filesystem::exists(v_path_to_textures) == false) {
-										PW_PRINT_ERROR(pw::er::Warning_Error(L"Pistonworks Engine", L"Could not find \"textures\" directory", std::move(EXCEPTION_LINE), __FILEW__, L"std::filesystem::exists"));
+										PW_PRINT_ERROR(pw::er::Warning_Error(L"Pistonworks Engine", L"Could not find \"textures\" directory", EXCEPTION_LINE, __FILEW__, L"std::filesystem::exists"));
 									}
 									else {
-										// First make sure the file location exists
-										std::wstring project_location = std::wstring();
-
-										bool found_file = false;
-
-										for (const auto& file_finder : std::filesystem::recursive_directory_iterator(v_path_to_linker_files)) {
-											// If the .pwproject is found break
-											if (found_file == true) {
-												break;
-											}
-											// If the .pwproject dir exists then search for the file
-											if (TRY_LINE file_finder.exists() == true) {
-												// If the path is empty 
-												if (file_finder.path().empty() == false) {
-													// Get rid of the path and only find the name
-													std::wstring temp_file_extention = file_finder.path().generic_wstring();
-													temp_file_extention.erase(0, temp_file_extention.find_last_of(L".") + 1);
-													// If the pwproject name is correct then we found the correct path
-													if (wcscmp(temp_file_extention.c_str(), L"csv") == 0) {
-														found_file = true;
-														// Save the correct path
-														project_location = file_finder.path().generic_wstring();
-													}
-												}
-											}
-										}
-										if (found_file == false) {
-											PW_PRINT_ERROR(er::Warning_Error(L"Pistonworks Engine", L"Could not find project file.", std::move(EXCEPTION_LINE), __FILEW__, L"recursive_directory_iterator"));
+										if (TRY_LINE std::filesystem::exists(v_path_to_sounds) == false) {
+											PW_PRINT_ERROR(pw::er::Warning_Error(L"Pistonworks Engine", L"Could not find \"sounds\" directory", EXCEPTION_LINE, __FILEW__, L"std::filesystem::exists"));
 										}
 										else {
-											// Create loading animation
-											std::tuple<st::Texture*, st::Animation*> v_animation = co::File_Loader::Load_Animation_File(L"Loading_Bar.gif", true);
-											st::Static_Model v_model = st::Static_Model(st::Mesh_Types::SQUARE, v_animation._Myfirst._Val, glm::vec2(0.0f, cm::Engine_Constant::Window_Height()), 0.0f, glm::vec2(cm::Engine_Constant::Window_Width(), cm::Engine_Constant::Window_Height()));
-											v_animation._Get_rest()._Myfirst._Val->Finish_Init(v_model.Model_Mesh().get()->Vertices(), v_model.Model_Mesh().get()->Vertex_Count());
-											st::AAsset_Model v_loading_bar = st::AAsset_Model(
-												std::make_shared<st::Static_Model>(v_model),
-												std::make_shared<st::Animation>(*v_animation._Get_rest()._Myfirst._Val)
-											);
-											v_animation = co::File_Loader::Load_Animation_File(L"Loading_PW_Logo.gif", true);
-											v_model = st::Static_Model(st::Mesh_Types::SQUARE, v_animation._Myfirst._Val, glm::vec2(637.0f, 163.0f), 0.0f, glm::vec2(163.0f, 163.0f));
-											v_animation._Get_rest()._Myfirst._Val->Finish_Init(v_model.Model_Mesh().get()->Vertices(), v_model.Model_Mesh().get()->Vertex_Count());
-											st::AAsset_Model v_loading_icon = st::AAsset_Model(
-												std::make_shared<st::Static_Model>(v_model),
-												std::make_shared<st::Animation>(*v_animation._Get_rest()._Myfirst._Val)
-											);
+											// First make sure the file location exists
+											std::filesystem::path v_project_location = co::File_Finder::Find_File(v_path_to_linker_files.generic_string(), "PWProject", ".csv");
 
 											// Load the .pwproject file
-											PW_PROJECT_FILE project = std::async(std::launch::async, [](
-												std::wstring project_location, std::wstring path_to_animations, std::wstring path_to_data,
-												std::wstring path_to_fonts, std::wstring path_to_icon, std::wstring path_to_linker_files, std::wstring path_to_textures) -> PW_PROJECT_FILE {
-													return co::File_Loader::Load_Project_File(project_location.c_str(),
-														path_to_animations, path_to_data, path_to_fonts,
-														path_to_icon, path_to_linker_files, path_to_textures);
-												}, project_location, v_path_to_animations.generic_wstring(),
+											PW_PROJECT_FILE v_project = std::async(std::launch::async, [](
+												const std::filesystem::path& p_project_location, const std::wstring& p_path_to_animations, const std::wstring& p_path_to_data,
+												const std::wstring& p_path_to_fonts, const std::wstring& p_path_to_icon, const std::wstring& p_path_to_linker_files,
+												const std::wstring& p_path_to_textures, const std::wstring& p_path_to_sounds) -> PW_PROJECT_FILE {
+													return co::File_Loader::Load_Project_File(p_project_location,
+														p_path_to_animations, p_path_to_data, p_path_to_fonts,
+														p_path_to_icon, p_path_to_linker_files, p_path_to_textures, p_path_to_sounds);
+												}, v_project_location, v_path_to_animations.generic_wstring(),
 													v_path_to_data.generic_wstring(), v_path_to_fonts.generic_wstring(),
 													v_path_to_icon.generic_wstring(), v_path_to_linker_files.generic_wstring(),
-													v_path_to_textures.generic_wstring()).get();
-
+													v_path_to_textures.generic_wstring(), v_path_to_sounds.generic_wstring()).get();
+											// Create loading animation
+											std::tuple<st::Texture*, st::Animation*> v_animation = co::File_Loader::Load_Animation_File(L"Loading_Bar.gif", false, true);
+											st::Model v_model = st::Model(st::Geometry_Types::SQUARE, v_animation._Myfirst._Val, glm::vec2(0.0f, cm::Engine_Constant::Window_Height()), 0.0f, glm::vec2(cm::Engine_Constant::Window_Width(), cm::Engine_Constant::Window_Height()));
+											v_animation._Get_rest()._Myfirst._Val->Finish_Init(v_model.Mesh()->Vertices(), v_model.Mesh()->Vertex_Count());
+											st::Actor v_loading_bar = st::Actor(&v_model, v_animation._Get_rest()._Myfirst._Val);
+											
+											v_animation = co::File_Loader::Load_Animation_File(L"Loading_PW_Logo.gif", false, true);
+											v_model = st::Model(st::Geometry_Types::SQUARE, v_animation._Myfirst._Val, glm::vec2(cm::Engine_Constant::Window_Width() - 163.0f, 163.0f), 0.0f, glm::vec2(163.0f, 163.0f));
+											v_animation._Get_rest()._Myfirst._Val->Finish_Init(v_model.Mesh()->Vertices(), v_model.Mesh()->Vertex_Count());
+											st::Actor v_loading_icon = st::Actor(&v_model, v_animation._Get_rest()._Myfirst._Val);
+											
 											v_loading_bar.Stop_Animation();
 											v_loading_bar.Advance_Animation();
 											while (true) {
+												st::Dynamic_Shader::Use();
 												// Calculate needed time constants
-												cm::Engine_Constant::Calc_Elapsed_Time(main_window.get());
-												cm::Engine_Constant::Calc_Delta_Time();
+												cm::Engine_Constant::Calc_Elapsed_Time(&*p_main_window);
 
 												// Engine Input
 												PW_GLFW_VOID_CALL(glfwPollEvents());
-												// Engine Frame / Shader
-												PW_GL_VOID_CALL(glClearColor(1.0f, 1.0f, 1.0f, 1.0f), false);
-												PW_GL_VOID_CALL(glClear(GL_COLOR_BUFFER_BIT), false);
 												// Update the projection information for the vertex shader / fragment shader
-												shader.Update_Projection();
+												st::Dynamic_Shader::Update_Projection();
 
 												v_loading_bar.Render();
 												v_loading_icon.Render();
 
 												// Swap Open GL Buffers
-												(*state_function.get())();
+												(*p_state_function)();
 												// Wait until the next frame should run
 												cm::Engine_Constant::Wait();
 
-												if (project._Myfirst._Val == true) {
+												if (v_project._Myfirst._Val == true) {
 													break;
 												}
 											}
+											PW_GLFW_VOID_CALL(glfwSetWindowTitle(&*p_main_window, TO_STRING(std::get<1>(v_project)).c_str()));
+											PW_GLFW_VOID_CALL(glfwSetWindowSize(&*p_main_window, cm::Engine_Constant::Window_Width(), cm::Engine_Constant::Window_Height()));
+
+											// Load font
+											std::filesystem::path v_file_location = co::File_Finder::Find_File(v_path_to_linker_files.generic_wstring(), TO_WSTRING(std::get<3>(v_project)), L".csv");
+
+											std::vector<std::wstring> v_font_ids{};
+											std::vector<std::wstring> v_font_names{};
+
+											std::string v_font_id{};
+											std::string v_font_name{};
+
+
+											io::CSVReader<2, io::trim_chars<' ', '\t'>, io::no_quote_escape<','>, io::throw_on_overflow, io::single_line_comment<'#'>>
+												v_font_reader{ v_file_location.generic_string().c_str() };
+											v_font_reader.read_header(io::ignore_extra_column,
+												"Font_Id", "Font_Name");
+											while (v_font_reader.read_row(v_font_id, v_font_name)) {
+												v_font_ids.push_back(TO_WSTRING(v_font_id));
+												v_font_names.push_back(TO_WSTRING(v_font_name));
+											}
+
+											st::Text_Renderer::Load_Engine_Fonts(v_path_to_fonts.generic_wstring(), v_font_ids, v_font_names);
+
+											// Load Icon
+											GLFWimage* icon = pw::co::File_Loader::Load_Icon(TO_WSTRING(std::get<4>(v_project)), false);
+
+											PW_GLFW_VOID_CALL(glfwSetWindowIcon(&*p_main_window, 1, icon));
+
+											pw::co::File_Loader::Unload_Icon();
+
+											pw::Engine_Memory::Deallocate<GLFWimage>(icon);
+											// Lock Window
+
+											pw::cm::Engine_Constant::Set_Window_Lock((bool)std::get<5>(v_project));
+
 											float v_loaded = 0;
 											std::wstring v_first_scene{};
 											float v_quarter = 0.25f;
 
-											for (auto i = std::get<2>(project).begin(); i != std::get<2>(project).end(); i++) {
+											for (auto i = std::get<2>(v_project).begin(); i != std::get<2>(v_project).end(); i++) {
 												if (std::get<1>(*i) == true) {
 													v_first_scene = std::get<0>(*i);
 												}
-												Add_Scene(std::get<0>(*i));
-
-												v_loaded = ((float)std::distance(std::get<2>(project).begin(), i) + 1.0f) / (float)std::get<2>(project).size();
 												{
+													st::Dynamic_Shader::Use();
 													// Calculate needed time constants
-													cm::Engine_Constant::Calc_Elapsed_Time(main_window.get());
-													cm::Engine_Constant::Calc_Delta_Time();
+													cm::Engine_Constant::Calc_Elapsed_Time(&*p_main_window);
 
 													// Engine Input
 													PW_GLFW_VOID_CALL(glfwPollEvents());
-													// Engine Frame / Shader
-													PW_GL_VOID_CALL(glClearColor(1.0f, 1.0f, 1.0f, 1.0f), false);
-													PW_GL_VOID_CALL(glClear(GL_COLOR_BUFFER_BIT), false);
 													// Update the projection information for the vertex shader / fragment shader
-													shader.Update_Projection();
+													st::Dynamic_Shader::Update_Projection();
 													if (v_loaded > v_quarter && v_quarter <= 1.0f) {
 														v_loading_bar.Advance_Animation();
 														v_quarter = v_quarter + 0.25f;
@@ -183,13 +253,35 @@ PW_NAMESPACE_SRT
 													v_loading_icon.Render();
 
 													// Swap Open GL Buffers
-													(*state_function.get())();
+													(*p_state_function)();
+													// Wait until the next frame should run
+													cm::Engine_Constant::Wait();
+												}
+												Add_Scene(std::get<0>(*i));
+
+												v_loaded = ((float)std::distance(std::get<2>(v_project).begin(), i) + 1.0f) / (float)std::get<2>(v_project).size();
+												{
+													st::Dynamic_Shader::Use();
+													// Calculate needed time constants
+													cm::Engine_Constant::Calc_Elapsed_Time(&*p_main_window);
+
+													// Engine Input
+													PW_GLFW_VOID_CALL(glfwPollEvents());
+													// Update the projection information for the vertex shader / fragment shader
+													st::Dynamic_Shader::Update_Projection();
+													if (v_loaded > v_quarter && v_quarter <= 1.0f) {
+														v_loading_bar.Advance_Animation();
+														v_quarter = v_quarter + 0.25f;
+													}
+													v_loading_bar.Render();
+													v_loading_icon.Render();
+
+													// Swap Open GL Buffers
+													(*p_state_function)();
 													// Wait until the next frame should run
 													cm::Engine_Constant::Wait();
 												}
 											}
-											v_loading_bar.Delete();
-											v_loading_icon.Delete();
 
 											Set_Current_Scene(v_first_scene.c_str());
 										}
@@ -200,102 +292,111 @@ PW_NAMESPACE_SRT
 					}
 				}
 			}
-			CORE void Engine_Queue::Print_Debug_Stats() {
-				PRINT_INFO(L"HM    ", pw::Engine_Memory::Memory_String(pw::Engine_Memory::Heap_Memory()), 0);
-				PRINT_INFO(L"HHM   ", pw::Engine_Memory::Memory_String(pw::Engine_Memory::High_Heap_Memory()), 1);
-				PRINT_INFO(L"FPS   ", std::to_wstring(pw::cm::Engine_Constant::FPS()), 2);
-				PRINT_INFO(L"FPSLST", std::to_wstring(pw::cm::Engine_Constant::Last_FPS()), 3);
-				PRINT_INFO(L"FPSMAX", std::to_wstring(pw::cm::Engine_Constant::FPS_Max()), 4);
-
-				std::wstring v_fps_average = std::to_wstring(pw::cm::Engine_Constant::FPS_Average());
-
-				uint16_t v_period = v_fps_average.find(L".");
-				if (v_period != std::string::npos) {
-					uint16_t v_decimal_count = v_fps_average.size() - OFF64(v_period);
-					if (v_decimal_count > 2) {
-						v_decimal_count = v_decimal_count - 2;
-						v_fps_average.erase(OFF64(v_period) + 2, v_decimal_count);
-					}
-				}
-
-				PRINT_INFO(L"FPSAVG", v_fps_average, 5);
-				PRINT_INFO(L"MODELS", std::to_wstring(st::Model::model_counter), 6);
-				size_t v_render_count = 0;
-				if (current_scene != nullptr) {
-					v_render_count = scene_directory.at(*current_scene)->Last_Render_Count();
-				}
-				PRINT_INFO(L"RNDCNT", std::to_wstring(v_render_count), 7);
-
-				std::wstring v_camera_position_x = std::to_wstring(st::Camera::Camera_Position().x);
-
-				v_period = v_camera_position_x.find(L".");
-				if (v_period != std::string::npos) {
-					uint16_t v_decimal_count = v_camera_position_x.size() - OFF64(v_period);
-					if (v_decimal_count > 2) {
-						v_decimal_count = v_decimal_count - 2;
-						v_camera_position_x.erase(OFF64(v_period) + 2, v_decimal_count);
-					}
-				}
-
-				PRINT_INFO(L"CAMXPS", v_camera_position_x, 8);
-
-				std::wstring v_camera_position_y = std::to_wstring(st::Camera::Camera_Position().y);
-
-				v_period = v_camera_position_y.find(L".");
-				if (v_period != std::string::npos) {
-					uint16_t v_decimal_count = v_camera_position_y.size() - OFF64(v_period);
-					if (v_decimal_count > 2) {
-						v_decimal_count = v_decimal_count - 2;
-						v_camera_position_y.erase(OFF64(v_period) + 2, v_decimal_count);
-					}
-				}
-
-				PRINT_INFO(L"CAMYPS", v_camera_position_y, 9);
-			}
-			st::Game_Scene* Engine_Queue::Current_Scene() {
-				return scene_directory.at(*current_scene);
-			}
-			void Engine_Queue::Clear_Queue() {
-				for (auto i = scene_directory.begin(); i != scene_directory.end(); i++) {
-					i->second->Delete();
-					pw::Engine_Memory::Deallocate<st::Game_Scene>(i->second);
-				}
-				scene_directory.clear();
-			}
-			void Engine_Queue::Add_Scene(std::wstring scene_name, bool set_current) {
-				auto v_found = scene_directory.find(scene_name);
+			void Engine_Queue::Add_Scene(const std::wstring& p_scene_name, const bool& p_set_current) {
+				auto v_found = m_scene_directory.find(p_scene_name);
 				// Can't load the same scene twice in once instance
-				if (v_found == scene_directory.end()) {
-					// Load scene
-					st::Game_Scene* v_scene = co::File_Loader::Load_Scene_File(scene_name.c_str());
+				if (v_found == m_scene_directory.end()) {
+					if (m_pre_scene_add != nullptr) {
+						m_pre_scene_add(p_scene_name);
+					}
 
-					scene_directory.insert(std::make_pair(scene_name, v_scene));
-					if (set_current == true) {
-						Set_Current_Scene(scene_name.c_str());
+					// Load scene
+					st::Game_Scene* v_scene = co::File_Loader::Load_Scene_File(p_scene_name.c_str());
+
+					m_scene_directory.insert(std::make_pair(p_scene_name, v_scene));
+					if (p_set_current == true) {
+						Set_Current_Scene(p_scene_name.c_str());
+					}
+					if (m_post_scene_add != nullptr) {
+						m_post_scene_add(p_scene_name);
 					}
 				}
 			}
-			void Engine_Queue::Set_Current_Scene(std::wstring name_id) {
-				auto v_found = scene_directory.find(name_id);
+			void Engine_Queue::Set_Current_Scene(const std::wstring& p_scene_name) {
+				auto v_found = m_scene_directory.find(p_scene_name);
 				// Check if the scene exists first
-				if (v_found != scene_directory.end()) {
-					if (current_scene == nullptr) {
-						current_scene = pw::Engine_Memory::Allocate<std::wstring>(name_id.c_str());
-						co::Engine_Input::Set_Current_Input(scene_directory.at(*current_scene)->Input());
-						co::Engine_Input::Set_Refresh_Function(scene_directory.at(*current_scene)->Refresh_Scene_Callback());
-						co::Engine_Input::Set_Scene_Event_Function(scene_directory.at(*current_scene)->Event_Callback());
-						scene_directory.at(*current_scene)->Re_Render();
+				if (v_found != m_scene_directory.end()) {
+					if (m_pre_scene_change != nullptr) {
+						m_pre_scene_change(p_scene_name);
+					}
+
+					if (m_current_scene == nullptr) {
+						m_current_scene = pw::Engine_Memory::Allocate<std::wstring>(p_scene_name.c_str());
+						co::Engine_Input::Set_Current_Input(m_scene_directory.at(*m_current_scene)->Input());
+						co::Engine_Input::Set_Scene_Event_Function(m_scene_directory.at(*m_current_scene)->Event_Callback());
+						m_scene_directory.at(*m_current_scene)->Re_Render();
 					}
 					else {
-						scene_directory.at(*current_scene)->Capture_Instance(st::Camera::Camera_Position());
+						m_scene_directory.at(*m_current_scene)->Capture_Instance(st::Camera::Camera_Position());
 
-						pw::Engine_Memory::Deallocate<std::wstring>(current_scene);
-						current_scene = pw::Engine_Memory::Allocate<std::wstring>(name_id.c_str());
-						co::Engine_Input::Set_Current_Input(scene_directory.at(*current_scene)->Input());
-						co::Engine_Input::Set_Refresh_Function(scene_directory.at(*current_scene)->Refresh_Scene_Callback());
-						co::Engine_Input::Set_Scene_Event_Function(scene_directory.at(*current_scene)->Event_Callback());
-						scene_directory.at(*current_scene)->Re_Render();
+						m_scene_directory.at(*m_current_scene)->Stop_All_Sounds();
+
+						pw::Engine_Memory::Deallocate<std::wstring>(m_current_scene);
+						m_current_scene = pw::Engine_Memory::Allocate<std::wstring>(p_scene_name.c_str());
+						co::Engine_Input::Set_Current_Input(m_scene_directory.at(*m_current_scene)->Input());
+						co::Engine_Input::Set_Scene_Event_Function(m_scene_directory.at(*m_current_scene)->Event_Callback());
+						m_scene_directory.at(*m_current_scene)->Re_Render();
 					}
+
+					if (m_post_scene_change != nullptr) {
+						m_post_scene_change(p_scene_name);
+					}
+				}
+			}
+			void Engine_Queue::Remove_Scene(const std::wstring& p_scene_name) {
+				auto v_found = m_scene_directory.find(p_scene_name);
+				// Can't load the same scene twice in once instance
+				if (v_found != m_scene_directory.end()) {
+					if (m_pre_scene_remove != nullptr) {
+						m_pre_scene_remove(p_scene_name);
+					}
+
+					if (m_current_scene != nullptr) {
+						if (v_found->first == *m_current_scene) {
+							m_current_scene = nullptr;
+						}
+					}
+
+					pw::Engine_Memory::Deallocate<pw::st::Game_Scene>(v_found->second);
+
+					m_scene_directory.erase(v_found->first);
+
+
+					if (m_post_scene_remove != nullptr) {
+						m_post_scene_remove(p_scene_name);
+					}
+				}
+			}
+			void Engine_Queue::Set_Scene_Functions(const std::function<void(const std::wstring&)>& p_pre_add,
+					const std::function<void(const std::wstring&)>& p_post_add,
+					const std::function<void(const std::wstring&)>& p_pre_change,
+					const std::function<void(const std::wstring&)>& p_post_change,
+					const std::function<void(const std::wstring&)>& p_pre_remove,
+					const std::function<void(const std::wstring&)>& p_post_remove) {
+
+				m_pre_scene_add = p_pre_add;
+				m_post_scene_add = p_post_add;
+				m_pre_scene_change = p_pre_change;
+				m_post_scene_change = p_post_change;
+				m_pre_scene_remove = p_pre_remove;
+				m_post_scene_remove = p_post_remove;
+			}
+			st::Game_Scene* Engine_Queue::Get_Scene(const std::wstring& p_scene_name) {
+				auto v_found = m_scene_directory.find(p_scene_name);
+				if (v_found != m_scene_directory.end()) {
+					return v_found->second;
+				}
+				else {
+					return nullptr;
+				}
+			}
+			st::Game_Scene* Engine_Queue::Current_Scene() {
+				auto v_found = m_scene_directory.find(*m_current_scene);
+				if (v_found != m_scene_directory.end()) {
+					return v_found->second;
+				}
+				else {
+					return nullptr;
 				}
 			}
 		// End of Class Members

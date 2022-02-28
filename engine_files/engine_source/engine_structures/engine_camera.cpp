@@ -8,89 +8,92 @@ PW_NAMESPACE_SRT
 	//////////////////////////////////
 		// Camera  
 		// Static Declarations 
-			float Camera::camera_zoom = 0;
-			float Camera::last_camera_zoom = -2;
-			float Camera::camera_x_position = 0.0f;
-			float Camera::camera_y_position = 0.0f;
-			float Camera::camera_width = 0.0f;
-			float Camera::camera_height = 0.0f;
-			float Camera::last_camera_x_position = -1.0f;
-			float Camera::last_camera_y_position = -1.0f;
-			glm::mat4 Camera::perspective = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
-			glm::mat4 Camera::camera = glm::lookAt(
-				glm::vec3(camera_x_position, camera_y_position, camera_zoom + 1),
-				glm::vec3(camera_x_position, camera_y_position, camera_zoom),
-				glm::vec3(0.0f, 1.0f, 0.0f));
+			float Camera::m_camera_zoom{ 1 };
+			float Camera::m_last_camera_zoom{ -2 };
+			glm::vec3 Camera::m_camera_position{ 0.0f, 0.0f,0.0f };
+			float Camera::m_camera_width{ 800.0f };
+			float Camera::m_camera_height{ 600.0f };
+			glm::vec3 Camera::m_last_camera_position{ 0.0f };
+			glm::mat4 Camera::m_perspective = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f, 0.1f, 100.0f);
+			glm::mat4 Camera::m_camera{ glm::lookAt(
+				glm::vec3(m_camera_position.x, m_camera_position.y, m_camera_zoom + 1),
+				glm::vec3(m_camera_position.x, m_camera_position.y, m_camera_zoom),
+				glm::vec3(0.0f, 1.0f, 0.0f)) };
+			glm::vec3 Camera::m_at_vector{ glm::vec3(m_camera_position.x, m_camera_position.y, m_camera_zoom) };
+			const glm::vec3 Camera::m_up_vector{ glm::vec3(0.0f, 1.0f, 0.0f) };
 		// Class Members  
-			glm::mat4& Camera::Update_Camera() {
-				if (camera_x_position != last_camera_x_position ||
-					camera_y_position != last_camera_y_position ||
-					camera_zoom != last_camera_zoom) {
+			const glm::mat4& Camera::Update_Camera() {
+				if (m_camera_position != m_last_camera_position ||
+					m_camera_zoom != m_last_camera_zoom) {
 
-					camera_width = (float)cm::Engine_Constant::Window_Width();
-					camera_height = (float)cm::Engine_Constant::Window_Height();
+					m_camera_width = (float)cm::Engine_Constant::Window_Width();
+					m_camera_height = (float)cm::Engine_Constant::Window_Height();
 
-					last_camera_x_position = camera_x_position;
-					last_camera_y_position = camera_y_position;
-					last_camera_zoom = camera_zoom;
-					camera = glm::lookAt(
-						glm::vec3(camera_x_position, camera_y_position, camera_zoom),
-						glm::vec3(camera_x_position, camera_y_position, camera_zoom + cm::Engine_Constant::Inverse_Z_Tan()),
+					m_last_camera_position = m_camera_position;
+
+					m_last_camera_zoom = m_camera_zoom;
+
+					m_at_vector = glm::vec3(m_camera_position.x, m_camera_position.y, cm::Engine_Constant::Inverse_Z_Tan());
+					m_camera = glm::lookAt(
+						glm::vec3(m_camera_position.x, m_camera_position.y, 0.0f),
+						m_at_vector,
 						glm::vec3(0.0f, 1.0f, 0.0f));
-					return camera;
+					return m_camera;
 				}
 				else {
-					last_camera_x_position = camera_x_position;
-					last_camera_y_position = camera_y_position;
-					last_camera_zoom = camera_zoom;
+					m_last_camera_position = m_camera_position;
 
-					camera_width = (float)cm::Engine_Constant::Window_Width();
-					camera_height = (float)cm::Engine_Constant::Window_Height();
+					m_last_camera_zoom = m_camera_zoom;
 
-					return camera;
+					m_camera_width = (float)cm::Engine_Constant::Window_Width();
+					m_camera_height = (float)cm::Engine_Constant::Window_Height();
+
+					return m_camera;
 				}
 			}
-			glm::mat4& Camera::Update_Projection() {
-				return perspective;
+			const glm::mat4& Camera::Update_Projection() {
+				m_perspective = glm::ortho(m_camera_position.x / m_camera_zoom, ((float)cm::Engine_Constant::Window_Width() + m_camera_position.x) / m_camera_zoom,
+					(m_camera_position.y + m_camera_height - (float)cm::Engine_Constant::Window_Height()) / m_camera_zoom, (m_camera_position.y + m_camera_height) / m_camera_zoom, 0.1f, 100.0f);
+				return m_perspective;
 			}
-			void Camera::Scroll_Forward() {
-				if (camera_zoom >= -2) {
-					camera_zoom -= ((32 / (float)cm::Engine_Constant::Window_Height()) * 2.0f);
-				}
+			void Camera::Center_Camera(const glm::vec2& p_new_center) {
+				glm::vec2 v_camera_center = glm::vec2((m_camera_position.x) + (m_camera_width / 2.0f), (m_camera_position.y) + m_camera_height - (m_camera_height / 2.0f));
+
+				glm::vec2 v_goal = p_new_center;
+
+				v_goal.x = v_goal.x / 2.0f;
+				v_goal.y = v_goal.y / 2.0f;
+
+				glm::vec2 v_difference = v_goal - v_camera_center;
+
+				m_camera_position.x = m_camera_position.x + v_difference.x + (m_camera_width / 4.0f);
+				m_camera_position.y = m_camera_position.y + v_difference.y + (m_camera_height / 4.0f);
 			}
-			void Camera::Scroll_Backward() {
-				if (camera_zoom <= std::abs(cm::Engine_Constant::Inverse_Z_Tan()) * 3) {
-					camera_zoom += ((32 / (float)cm::Engine_Constant::Window_Height()) * 2.0f);
-				}
+			void Camera::Update_Position(const glm::vec3& p_new_position) {
+				m_camera_position = p_new_position;
 			}
-			void Camera::Camera_Up() {
-				camera_y_position = camera_y_position + ((1 / (float)cm::Engine_Constant::Window_Height()) * 2.0f);
+			void Camera::Update_Zoom(const float& p_new_zoom) {
+				m_camera_zoom = p_new_zoom;
 			}
-			void Camera::Camera_Down() {
-				camera_y_position = camera_y_position - ((1 / (float)cm::Engine_Constant::Window_Height()) * 2.0f);
+			glm::vec3 Camera::Camera_Position() {
+				return glm::vec3((m_camera_position.x * 2.0f),
+					(m_camera_position.y * 2.0f) + m_camera_height, m_camera_position.z);
 			}
-			void Camera::Camera_Left() {
-				camera_x_position = camera_x_position - ((1 / (float)cm::Engine_Constant::Window_Width()) * 2.0f);
-			}
-			void Camera::Camera_Right() {
-				camera_x_position = camera_x_position + ((1 / (float)cm::Engine_Constant::Window_Width()) * 2.0f);
-			}
-			glm::vec2 Camera::Camera_Position_Raw() {
-				return glm::vec2(camera_x_position, camera_y_position);
-			}
-			glm::vec2 Camera::Camera_Position() {
-				return glm::vec2(((camera_x_position * (float)cm::Engine_Constant::Window_Width()) / 2.0f),
-					((camera_y_position * (float)cm::Engine_Constant::Window_Height()) / 2.0f) + camera_height);
-			}
-			glm::vec2 Camera::Camera_Position_Last() {
-				return glm::vec2(((last_camera_x_position * (float)cm::Engine_Constant::Window_Width()) / 2.0f),
-					((last_camera_y_position * (float)cm::Engine_Constant::Window_Height()) / 2.0f) + camera_height);
+			glm::vec3 Camera::Camera_Position_Last() {
+				return glm::vec3((m_last_camera_position.x * 2.0f),
+					(m_last_camera_position.y * 2.0f) + m_camera_height, m_last_camera_position.z);
 			}
 			glm::vec2 Camera::Camera_Size() {
-				return glm::vec2(camera_width, camera_height);
+				return glm::vec2(m_camera_width, m_camera_height);
 			}
 			float Camera::Camera_Zoom() {
-				return camera_zoom;
+				return m_camera_zoom;
+			}
+			const glm::vec3& Camera::Up_Vector() {
+				return m_up_vector;
+			}
+			glm::vec3& Camera::At_Vector() {
+				return m_at_vector;
 			}
 		// End of Class Members
 	//////////////////////////////////

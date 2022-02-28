@@ -6,128 +6,145 @@ PW_NAMESPACE_SRT
 	//////////////////////////////////
 	ST_NAMESPACE_SRT
 	//////////////////////////////////
-		// Shader               
-		// Static Declarations     
-			Shader Shader::this_shader = Shader();
-		// Class Members            
-			Shader::Shader() :
-					program_id{ 0 }, vertex_shader{ 0 }, fragment_shader{ 0 },
-					model_uniform{ 0 }, texture_uniform{ 0 }, view_uniform{ 0 }, projection_uniform{ 0 } {
-			}
-			Shader::~Shader() {
-				glDetachShader(program_id, vertex_shader);
+		// Shader_Loader
+		// Static Declarations
+		// Class Members
+			std::wstring Shader_Loader::Load_Shader(const std::wstring& p_file_name) {
+				std::wstring v_content = L"";
 
-				glDetachShader(program_id, fragment_shader);
+				std::wstring v_file_location = pw::cm::Engine_Constant::Pistonworks_Path().generic_wstring() + p_file_name;
 
-				glDeleteProgram(program_id);
-			}
-			void Shader::Create_Shader(const std::wstring& vertex_location, const std::wstring& fragment_location) {
-				try {
-					PW_GL_CALL(std::move(program_id = glCreateProgram()));
+				std::wifstream v_fileStream(v_file_location, std::ios::in);
 
-					vertex_shader = Compile_Shader(Load_Shader(vertex_location), GL_VERTEX_SHADER);
-					fragment_shader = Compile_Shader(Load_Shader(fragment_location), GL_FRAGMENT_SHADER);
-
-					glAttachShader(program_id, vertex_shader);
-					glAttachShader(program_id, fragment_shader);
-
-					glBindAttribLocation(program_id, 0, "object_position");
-					glBindAttribLocation(program_id, 1, "object_texture_coords");
-
-					glLinkProgram(program_id);
-
-					Check_Error(program_id, GL_LINK_STATUS, true, L"Failed to link program error: ");
-
-					glValidateProgram(program_id);
-
-					Check_Error(program_id, GL_VALIDATE_STATUS, true, L"Program Is Invalid Error: ");
-
-					PW_GL_VOID_CALL(model_uniform = glGetUniformLocation(program_id, "object_model"), false);
-					PW_GL_VOID_CALL(texture_uniform = glGetUniformLocation(program_id, "object_is_colored"), false);
-					PW_GL_VOID_CALL(view_uniform = glGetUniformLocation(program_id, "object_view"), false);
-					PW_GL_VOID_CALL(projection_uniform = glGetUniformLocation(program_id, "object_projection"), false);
-
-					this_shader = *this;
-				}
-				catch (const pw::er::Warning_Error& v_error) {
-					throw v_error;
-				}
-			}
-			void Shader::Use() {
-				glUseProgram(program_id);
-			}
-			void Shader::Update_Matrices(glm::mat4* model, int32_t& model_is_colored) {
-				glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(*model));
-				glUniform1iv(texture_uniform, 1, &model_is_colored);
-			}
-			void Shader::Update_Projection() {
-				glUniformMatrix4fv(view_uniform, 1, GL_FALSE, glm::value_ptr(st::Camera::Update_Camera()));
-				glUniformMatrix4fv(projection_uniform, 1, GL_FALSE, glm::value_ptr(st::Camera::Update_Projection()));
-			}
-			uint32_t Shader::Shader_Id() {
-				return program_id;
-			}
-			Shader Shader::Get_Shader() {
-				return this_shader;
-			}
-			std::wstring Shader::Load_Shader(const std::wstring& file_name) {
-				std::wstring content = L"";
-				std::wifstream fileStream(file_name, std::ios::in);
-
-				if (!fileStream.is_open()) {
-					wprintf(L"Shader: %s did not open\n", file_name.c_str());
+				if (!v_fileStream.is_open()) {
+					wprintf(L"Shader: %s did not open\n", p_file_name.c_str());
 					return L"";
 				}
 
-				std::wstring line = L"";
-				while (!fileStream.eof()) {
-					std::getline(fileStream, line);
-					content.append(line + L"\n");
+				std::wstring v_line = L"";
+				while (!v_fileStream.eof()) {
+					std::getline(v_fileStream, v_line);
+					v_content.append(v_line + L"\n");
 				}
-				fileStream.close();
-				return content;
+				v_fileStream.close();
+				return v_content;
 			}
-			GLuint Shader::Compile_Shader(const std::wstring shader_code, GLenum shader_type) {
-				GLuint shader = 0;
+			GLuint Shader_Loader::Compile_Shader(const std::wstring& p_shader_code, const GLenum& p_shader_type) {
+				GLuint v_shader = 0;
 
-				PW_GL_CALL(std::move(shader = glCreateShader(shader_type)));
+				PW_GL_CALL(std::move(v_shader = glCreateShader(p_shader_type)));
 
-				const GLchar* shader_str_source[1];
-				GLint shader_str_source_length[1];
-				
-				shader_str_source[0] = TO_CHAR(shader_code.c_str());
-				shader_str_source_length[0] = shader_code.size();
+				const GLchar* v_shader_str_source[1];
+				GLint v_shader_str_source_length[1];
 
-				glShaderSource(shader, 1, shader_str_source, shader_str_source_length);
-				glCompileShader(shader);
+				char* v_shader_code = TO_CHAR(p_shader_code.c_str());
+
+				v_shader_str_source[0] = v_shader_code;
+				v_shader_str_source_length[0] = (GLint)p_shader_code.size();
+
+				glShaderSource(v_shader, 1, v_shader_str_source, v_shader_str_source_length);
+
+				pw::Engine_Memory::Deallocate<char>(v_shader_code);
+
+				glCompileShader(v_shader);
 
 				try {
-					Check_Error(shader, GL_COMPILE_STATUS, false, L"Shader Compile Error: ");
+					Check_Error(v_shader, GL_COMPILE_STATUS, false, L"Shader Compile Error: ");
 				}
 				catch (const pw::er::Warning_Error& v_error) {
 					throw v_error;
 				}
 
-				return shader;
+				return v_shader;
 			}
-			void Shader::Check_Error(uint32_t object_id, GLenum error, bool is_program, std::wstring custom_error_msg) {
-				GLint success = 0;
-				GLchar error_message[1024] = { 0 };
+			void Shader_Loader::Check_Error(const uint32_t& p_object_id, const GLenum& p_error, const bool& p_is_program, const std::wstring& p_custom_error_msg) {
+				GLint v_success = 0;
+				GLchar v_error_message[1024] { 0 };
 
-				if (is_program) {
-					TRY_LINE glGetProgramiv(object_id, error, &success);
-					if (success == GL_FALSE) {
-						glGetProgramInfoLog(object_id, sizeof(error_message), NULL, error_message);
-						throw pw::er::Warning_Error(L"Shader", std::move(std::wstring(custom_error_msg + TO_WSTRING(error_message))), std::move(EXCEPTION_LINE), __FILEW__, L"glGetProgramInfoLog");
+				if (p_is_program) {
+					TRY_LINE glGetProgramiv(p_object_id, p_error, &v_success);
+					if (v_success == GL_FALSE) {
+						glGetProgramInfoLog(p_object_id, sizeof(v_error_message), NULL, v_error_message);
+						throw pw::er::Warning_Error(L"Shader", std::move(std::wstring(p_custom_error_msg + TO_WSTRING(std::string(v_error_message)))), EXCEPTION_LINE, __FILEW__, L"glGetProgramInfoLog");
 					}
 				}
 				else {
-					TRY_LINE glGetShaderiv(object_id, error, &success);
-					if (success == GL_FALSE) {
-						glGetShaderInfoLog(object_id, sizeof(error_message), NULL, error_message);
-						throw pw::er::Warning_Error(L"Shader", std::move(std::wstring(custom_error_msg + TO_WSTRING(error_message))), std::move(EXCEPTION_LINE), __FILEW__, L"glGetProgramInfoLog");
+					TRY_LINE glGetShaderiv(p_object_id, p_error, &v_success);
+					if (v_success == GL_FALSE) {
+						glGetShaderInfoLog(p_object_id, sizeof(v_error_message), NULL, v_error_message);
+						throw pw::er::Warning_Error(L"Shader", std::move(std::wstring(p_custom_error_msg + TO_WSTRING(std::string(v_error_message)))), EXCEPTION_LINE, __FILEW__, L"glGetProgramInfoLog");
 					}
 				}
+			}
+		// End of Class Members
+		// Dynamic_Shader               
+		// Static Declarations 
+			uint32_t Dynamic_Shader::m_program_id{ 0 };
+
+			uint32_t Dynamic_Shader::m_vertex_shader{ 0 };
+			uint32_t Dynamic_Shader::m_fragment_shader{ 0 };
+
+			uint32_t Dynamic_Shader::m_model_uniform{ 0 };
+			uint32_t Dynamic_Shader::m_view_uniform{ 0 };
+			uint32_t Dynamic_Shader::m_projection_uniform{ 0 };
+
+			uint32_t Dynamic_Shader::m_color_uniform{ 0 };
+			uint32_t Dynamic_Shader::m_text_uniform{ 0 };
+		// Class Members            
+			void Dynamic_Shader::Create_Shader(const std::wstring& p_vertex_location, const std::wstring& p_fragment_location) {
+				try {
+					PW_GL_CALL(std::move(m_program_id = glCreateProgram()));
+
+					m_vertex_shader = Shader_Loader::Compile_Shader(Shader_Loader::Load_Shader(p_vertex_location), GL_VERTEX_SHADER);
+					m_fragment_shader = Shader_Loader::Compile_Shader(Shader_Loader::Load_Shader(p_fragment_location), GL_FRAGMENT_SHADER);
+
+					glAttachShader(m_program_id, m_vertex_shader);
+					glAttachShader(m_program_id, m_fragment_shader);
+
+					glBindAttribLocation(m_program_id, 0, "object_position");
+					glBindAttribLocation(m_program_id, 1, "object_texture_coords");
+					glBindAttribLocation(m_program_id, 2, "object_color");
+
+					glLinkProgram(m_program_id);
+
+					Shader_Loader::Check_Error(m_program_id, GL_LINK_STATUS, true, L"Failed to link program error: ");
+
+					glValidateProgram(m_program_id);
+
+					Shader_Loader::Check_Error(m_program_id, GL_VALIDATE_STATUS, true, L"Program Is Invalid Error: ");
+
+					PW_GL_VOID_CALL(m_view_uniform = glGetUniformLocation(m_program_id, "object_view"), false);
+					PW_GL_VOID_CALL(m_projection_uniform = glGetUniformLocation(m_program_id, "object_projection"), false);
+
+					PW_GL_VOID_CALL(m_model_uniform = glGetUniformLocation(m_program_id, "object_model"), false);
+					PW_GL_VOID_CALL(m_color_uniform = glGetUniformLocation(m_program_id, "object_is_colored"), false);
+					PW_GL_VOID_CALL(m_text_uniform = glGetUniformLocation(m_program_id, "object_is_text"), false);
+				}
+				catch (const pw::er::Warning_Error& v_error) {
+					throw v_error;
+				}
+			}
+			void Dynamic_Shader::Delete_Shader() {
+				glDetachShader(m_program_id, m_vertex_shader);
+
+				glDetachShader(m_program_id, m_fragment_shader);
+
+				glDeleteProgram(m_program_id);
+			}
+			void Dynamic_Shader::Use() {
+				glUseProgram(m_program_id);
+			}
+			void Dynamic_Shader::Update_Matrices(const glm::mat4& p_model_matrix, const int32_t& p_model_is_colored, const int32_t& p_model_is_text) {
+				glUniformMatrix4fv(m_model_uniform, 1, GL_FALSE, glm::value_ptr(p_model_matrix));
+				glUniform1iv(m_color_uniform, 1, &p_model_is_colored);
+				glUniform1iv(m_text_uniform, 1, &p_model_is_text);
+			}
+			void Dynamic_Shader::Update_Projection() {
+				glUniformMatrix4fv(m_view_uniform, 1, GL_FALSE, glm::value_ptr(st::Camera::Update_Camera()));
+				glUniformMatrix4fv(m_projection_uniform, 1, GL_FALSE, glm::value_ptr(st::Camera::Update_Projection()));
+			}
+			const uint32_t& Dynamic_Shader::Shader_Id() {
+				return m_program_id;
 			}
 		// End of Class Members
 	//////////////////////////////////

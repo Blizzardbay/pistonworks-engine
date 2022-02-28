@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021, Darrian Corkadel
+// Copyright(c) 2021-2022, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,25 +30,33 @@
 #ifndef H_ENGINE_QUEUE
 #define H_ENGINE_QUEUE
 //////////////////////////////////
+#include "engine_common\engine_build.h"
+//////////////////////////////////
 // #FILE_INFO#
 // +(DUAL_FILE)
 //////////////////////////////////
 // C++ Headers
+#include <codeanalysis\warnings.h>
+#pragma warning (push)
+#pragma warning (disable:ALL_CODE_ANALYSIS_WARNINGS)
 #include <iostream>
 #include <filesystem>
 #include <fstream>
 #include <corecrt_wstring.h>
+#pragma warning (pop)
 //////////////////////////////////
 // Project Headers
 //////////////////////////////////
-// Engine Headers
-#include "engine_control\engine_file_loader.h"
-#include "engine_structures\engine_shader.h"
-//////////////////////////////////
 // Engine Macro Includes
+//////////////////////////////////
+// Engine Common Headers
 #include "engine_common\engine_error.h"
 //////////////////////////////////
-// Engine Macros
+// Engine Control Headers
+#include "engine_control\engine_file_loader.h"
+//////////////////////////////////
+// Engine Structures Headers
+#include "engine_structures\engine_shader.h"
 //////////////////////////////////
 // Pistonworks Engine           //
 // Created By : Darrian Corkadel//
@@ -58,108 +66,33 @@ PW_NAMESPACE_SRT
 	//////////////////////////////////
 	CO_NAMESPACE_SRT
 	//////////////////////////////////
-		//////////////////////////////////
-		// Classes
-
-		// //////////////////////////////////////////////////
-		// PW_CONTROL_API Class Name: pw::Engine_Queue
-		// //////////////////////////////////////////////////
-		// Purpose:
-		//  For handling all engine events and switching
-		//  from editor mode to game state.
-		// //////////////////////////////////////////////////
-		class PW_CONTROL_API Engine_Queue : protected cm::Engine_Constant {
+		class Engine_Queue {
 		// Default Class Structures
 		public:
 		private:
 		// Public Functions/Macros
 		public:
-			// //////////////////////////////////////////////////
-			// CORE FUNCTION: Engine_Queue::Pre_Queue
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Gets rendering information ready for scene render
-			// .
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			static CORE void Pre_Queue();
-			// //////////////////////////////////////////////////
-			// CORE FUNCTION: Engine_Queue::Run_Queue
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Runs the game engine rendering.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			static CORE void Run_Queue();
-			// //////////////////////////////////////////////////
-			// CORE FUNCTION: Engine_Queue::Refresh_Queue
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Refreshes the models in the queue after event.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			static CORE void Refresh_Queue();
-			// //////////////////////////////////////////////////
-			// CORE FUNCTION: Engine_Queue::Load_From_Dir
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Loads a project from a directory.
-			// //////////////////////////////////////////////////
-			// Parameters: 1
-			// (1) const wchar_t* directory; 
-			// Purpose:
-			//  The directory in which the project file resides.
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			static CORE void Load_From_Dir(const wchar_t* directory, st::Shader& shader, PW_DUNI_PTR(GLFWwindow, cm::Engine_Constant::Destroy_GLFW)& main_window,
-				PW_SRD_PTR(PW_FUNCTION) state_function);
-			// //////////////////////////////////////////////////
-			// CORE FUNCTION: Engine_Queue::Print_Debug_Stats
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Prints out debug stats about the engine.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			static CORE void Print_Debug_Stats();
-			// //////////////////////////////////////////////////
-			// CORE FUNCTION: Engine_Queue::Clear_Queue
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Clears the queue of all of its members.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			static CORE void Clear_Queue();
-			// //////////////////////////////////////////////////
-			// CORE FUNCTION: Engine_Queue::Add_Scene
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Adds a scene to the total queue.
-			// //////////////////////////////////////////////////
-			// Parameters: 2
-			// (1) std::wstring scene_name;
-			// Purpose:
-			//  The name of the scene to be added and loaded.
-			// (2) bool set_current = false;
-			// Purpose:
-			//  Do we set this to the current scene.
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			static CORE void Add_Scene(std::wstring scene_name, bool set_current = false);
-			// Mutator
-			USER_INTERACTION
-			static MUTATOR void Set_Current_Scene(std::wstring name_id);
-			// Accessors
-			NO_USER_INTERACTION
-			static ACCESSOR st::Game_Scene* Current_Scene();
+			static void Pre_Queue();
+			static void Run_Queue();
+			static void Clear_Queue();
+
+			static void Print_Debug_Stats();
+
+			static void Load_From_Dir(std::unique_ptr<GLFWwindow, pw::cm::Destroy_GLFW>& p_main_window, std::shared_ptr<PW_FUNCTION> p_state_function);
+			
+			static void Add_Scene(const std::wstring& p_scene_name, const bool& p_set_current = false);
+			static void Set_Current_Scene(const std::wstring& p_scene_name);
+			static void Remove_Scene(const std::wstring& p_scene_name);
+			
+			static void Set_Scene_Functions(const std::function<void(const std::wstring&)>& p_pre_add,
+				const std::function<void(const std::wstring&)>& p_post_add,
+				const std::function<void(const std::wstring&)>& p_pre_change,
+				const std::function<void(const std::wstring&)>& p_post_change,
+				const std::function<void(const std::wstring&)>& p_pre_remove,
+				const std::function<void(const std::wstring&)>& p_post_remove);
+
+			static st::Game_Scene* Get_Scene(const std::wstring& p_scene_name);
+			static st::Game_Scene* Current_Scene();
 		// Public Variables      
 		public:
 		// Private Functions/Macros
@@ -167,16 +100,23 @@ PW_NAMESPACE_SRT
 		// Private Variables       
 		private:
 			// Has the pwproject file been loaded
-			static bool loaded_project;
+			static bool m_loaded_project;
 			// Data to be loaded from the game
-			static std::wstring project_name;
+			static std::wstring m_project_name;
 
-			static std::wstring* current_scene;
+			static std::wstring* m_current_scene;
 
-			static std::map<std::wstring, st::Game_Scene*> scene_directory;
+			static std::map<std::wstring, st::Game_Scene*> m_scene_directory;
+
+			static std::function<void(const std::wstring&)> m_pre_scene_add;
+			static std::function<void(const std::wstring&)> m_post_scene_add;
+
+			static std::function<void(const std::wstring&)> m_pre_scene_change;
+			static std::function<void(const std::wstring&)> m_post_scene_change;
+
+			static std::function<void(const std::wstring&)> m_pre_scene_remove;
+			static std::function<void(const std::wstring&)> m_post_scene_remove;
 		};
-		// Functions
-		// Macros / Definitions
 	//////////////////////////////////
 	CO_NAMESPACE_END
 	//////////////////////////////////   

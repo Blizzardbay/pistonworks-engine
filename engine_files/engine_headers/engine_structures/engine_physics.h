@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021, Darrian Corkadel
+// Copyright(c) 2021-2022, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,35 +30,39 @@
 #ifndef H_ENGINE_PHYSICS
 #define H_ENGINE_PHYSICS
 //////////////////////////////////
+#include "engine_common\engine_build.h"
+//////////////////////////////////
 // #FILE_INFO#
 // +(DUAL_FILE)
 // +(MACRO)
 #define B2_USER_SETTINGS
 //////////////////////////////////
-// C++ Headers              
+// C++ Headers 
+#include <codeanalysis\warnings.h>
+#pragma warning (push)
+#pragma warning (disable:ALL_CODE_ANALYSIS_WARNINGS)
 #include <map>
+#pragma warning (pop)
 //////////////////////////////////
 // Project Headers
-#pragma warning(push)
-#pragma warning(disable:26495)
-#pragma warning(push)
-#pragma warning(disable:26812)
+#pragma warning (push)
+#pragma warning (disable:ALL_CODE_ANALYSIS_WARNINGS)
 #include <box2d\b2_settings.h>
+#include <box2d\b2_contact.h>
 #include <box2d\b2_world.h>
 #include <box2d\b2_collision.h>
 #include <box2d\b2_polygon_shape.h>
 #include <box2d\b2_body.h>
 #include <box2d\b2_fixture.h>
-#pragma warning(pop)
-#pragma warning(pop)
+#pragma warning (pop)         
 //////////////////////////////////
-// Engine Headers           
+// Engine Common Headers
 #include "engine_common\engine_error.h"
+//////////////////////////////////
+// Engine Control Headers
+//////////////////////////////////
+// Engine Structures Headers
 #include "engine_structures\engine_model.h"
-//////////////////////////////////
-// Engine Macro Includes    
-//////////////////////////////////
-// Engine Macros            
 //////////////////////////////////
 // Pistonworks Engine           //
 // Created By : Darrian Corkadel//
@@ -71,261 +75,86 @@ PW_NAMESPACE_SRT
 	//////////////////////////////////
 	ST_NAMESPACE_SRT
 	//////////////////////////////////
-		// //////////////////////////////////////////////////
-		// PW_STRUCTURES_API Class Name: pw::st::Pysics_Object
-		// //////////////////////////////////////////////////																				 
-		// Purpose:
-		//  An object that has physics in the Box2D API.
-		// //////////////////////////////////////////////////
-		class PW_STRUCTURES_API Pysics_Object {
+		class Physics_Object {
 		// Default Class Structures 
 		public:
-			// //////////////////////////////////////////////////
-			// CLASS_FUNCTION Function: Pysics_Object::Pysics_Object
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Creates a physics object tied to a model.
-			// //////////////////////////////////////////////////
-			// Parameters: 4
-			// (1) PW_SRD_PTR(Dynamic_Model) model;
-			// Purpose: 
-			//  The model to integrate physics.
-			// (2) b2BodyType type;
-			// Purpose: 
-			//  The type of physics object.
-			// (3) b2World* world;
-			// Purpose: 
-			//  A pointer to the world in which this object will
-			//  live.
-			// (4) bool is_fixed;
-			// Purpose: 
-			//  Can the character be able to be rotated.
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CLASS_FUNCTION Pysics_Object(PW_SRD_PTR(Dynamic_Model) model, b2BodyType type, b2World* world, bool is_fixed);
-			// //////////////////////////////////////////////////
-			// CLASS_FUNCTION Function: Pysics_Object::~Pysics_Object
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Deallocates all the memory of the object.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CLASS_FUNCTION ~Pysics_Object();
+			Physics_Object(st::Model* p_model, const b2BodyType& p_type, b2World* p_world, const bool& p_is_fixed, const float& p_friction, const float& p_restitution, const float& p_density);
+			~Physics_Object();
 		private:
-		// Public Functions/Macros  
+			// Public Functions/Macros  
 		public:
-			// //////////////////////////////////////////////////
-			// CORE Function: Pysics_Object::Delete
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Deletes the allocated information with the
-			//  structure.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CORE void Delete();
-			// //////////////////////////////////////////////////
-			// CORE Function: Pysics_Object::X_Pixels_Position
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Returns the position in screen coordinates scaled
-			//  by a scale factor. To get accurate position use
-			//  PW_SCALE_FACTOR as your scale factor.
-			// //////////////////////////////////////////////////
-			// Parameters: 1
-			// (1) int32_t scale_factor;
-			// Purpose:
-			//  Define what the engine should use as a standard
-			//  tile.
-			// //////////////////////////////////////////////////
-			USER_INTERACTION
-			CORE int32_t X_Pixels_Position(int32_t scale_factor = cm::Engine_Constant::PW_SCALE_FACTOR);
-			// //////////////////////////////////////////////////
-			// CORE Function: Pysics_Object::Y_Pixels_Position
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Returns the position in screen coordinates scaled
-			//  by a scale factor. To get accurate position use
-			//  PW_SCALE_FACTOR as your scale factor.
-			// //////////////////////////////////////////////////
-			// Parameters: 1
-			// (1) int32_t scale_factor;
-			// Purpose:
-			//  Define what the engine should use as a standard
-			//  tile.
-			// //////////////////////////////////////////////////
-			USER_INTERACTION
-			CORE int32_t Y_Pixels_Position(int32_t scale_factor = cm::Engine_Constant::PW_SCALE_FACTOR);
-			// Accessors
-			USER_INTERACTION
-			ACCESSOR b2Body* Body();
-			USER_INTERACTION
-			ACCESSOR b2Vec2 Size();
-			// Mutators
-			USER_INTERACTION
-			MUTATOR void Set_Body(b2Body* body);
-		// Public Variables         
+			int32_t X_Pixels_Position(const int32_t& p_scale_factor = cm::Engine_Constant::PW_SCALE_FACTOR);
+
+			int32_t Y_Pixels_Position(const int32_t& p_scale_factor = cm::Engine_Constant::PW_SCALE_FACTOR);
+
+			b2Body* Body();
+
+			const b2Vec2& Size();
+
+			void Set_Size_Px(const b2Vec2& p_size_px);
+			void Set_Size_M(const b2Vec2& p_size_m);
+
+			void Set_Size_Px(const glm::vec2& p_size_px);
+			void Set_Size_M(const glm::vec2& p_size_m);
+
+			void Set_Body(b2Body* p_body);
+			// Public Variables         
 		public:
-		// Private Functions/Macros 
+			// Private Functions/Macros 
 		private:
-		// Private Variables       
+			// Private Variables       
 		private:
 			// Body holds the shape and the fixture information
-			b2Body* body;
+			b2Body* m_body;
 			// Vertices for the shape
-			PW_SRD_PTR(b2Vec2) shape_vertices;
-			size_t vertex_count;
+			b2Vec2* m_shape_vertices;
+			uint32_t m_vertex_count;
 			// Fixture holds physics data such as
 			// Friction    (0.0f -> 1.0f)
 			// Restitution (0.0f - > 1.0f)
 			// Density     (dynamic (any) static (inf))
 			// Shape       (&b2PolygonShape)
-			b2Vec2 model_size;
+			b2Vec2 m_model_size;
+
+			float m_friction;
+			float m_restitution;
+			float m_density;
+
+			b2Fixture* m_current_fixture;
 		};
-		// //////////////////////////////////////////////////
-		// PW_STRUCTURES_API Class Name: pw::st::Pysics_Factory
-		// //////////////////////////////////////////////////																				 
-		// Purpose:
-		//  A factory for creation and running of the world.
-		// //////////////////////////////////////////////////
-		class PW_STRUCTURES_API Pysics_Factory {
+		class Physics_Factory {
 		// Default Class Structures 
 		public:
-			// //////////////////////////////////////////////////
-			// CLASS_FUNCTION Function: Pysics_Factory::Pysics_Factory
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Creates an empty Box2D factory.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CLASS_FUNCTION Pysics_Factory();
-			// //////////////////////////////////////////////////
-			// CLASS_FUNCTION Function: Pysics_Factory::Pysics_Factory
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Creates an empty Box2D factory.
-			// //////////////////////////////////////////////////
-			// Parameters: 4
-			// (1) b2Vec2 gravity;
-			// Purpose: 
-			//  The gravity the pulls downwards on the dynamic
-			//  objects. The units is x,y m/s/s
-			//  1m/s/s       = 32px/s/s
-			//  0.03125m/s/s = 1px/s/s
-			// (2) int32_t velocity_it;
-			// Purpose: 
-			//  The amount of velocity iterations.
-			// (3) int32_t position_it;
-			// Purpose: 
-			//  The amount of position iterations.
-			// (4) float time_step;
-			// Purpose: 
-			//  The max fps of the game screen.
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CLASS_FUNCTION Pysics_Factory(b2Vec2 gravity, int32_t velocity_it, int32_t position_it, float time_step);
-			// //////////////////////////////////////////////////
-			// CLASS_FUNCTION Function: Pysics_Factory::~Pysics_Factory
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Deallocates memory for the factory.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CLASS_FUNCTION ~Pysics_Factory();
+			Physics_Factory();
+			Physics_Factory(const b2Vec2& p_gravity, const int32_t& p_velocity_it, const int32_t& p_position_it, const float& p_time_step);
+			
+			~Physics_Factory();
 		private:
 		// Public Functions/Macros 
 		public:
-			// //////////////////////////////////////////////////
-			// CORE Function: Pysics_Factory::Run
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Does mathematical calculations for the physics
-			//  simulation.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CORE void Run();
-			// //////////////////////////////////////////////////
-			// CORE Function: Pysics_Factory::Delete
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Deletes all memory allocated for the factory.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CORE void Delete();
+			void Run();
 		// Public Variables         
 		public:
-			// //////////////////////////////////////////////////
-			// CORE Function: Pysics_Factory::Add_Object
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Adds an Pysics_Object to the factory.
-			// //////////////////////////////////////////////////
-			// Parameters: 4
-			// (1) PW_SRD_PTR(Dynamic_Model) model;
-			// Purpose: 
-			//  The model which will be added.
-			// (2) b2BodyType type;
-			// Purpose: 
-			//  The type of model to be added.
-			// (3) PW_ID object_id;
-			// Purpose: 
-			//  The id of the physics object.
-			// (4) bool is_fixed;
-			// Purpose: 
-			//  Will this object rotate when colliding.
-			// //////////////////////////////////////////////////
-			USER_INTERACTION
-			CORE void Add_Object(PW_SRD_PTR(Dynamic_Model) model, b2BodyType type, PW_ID object_id = NULL, bool is_fixed = false);
-			// //////////////////////////////////////////////////
-			// ACCESSOR Function: Pysics_Factory::Access_Memeber
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Returns a pointer to a physics object with the
-			//  given id. Returns nullptr if not found.
-			// //////////////////////////////////////////////////
-			// Parameters: 1
-			// (1) PW_ID id;
-			// Purpose: 
-			//  The id of the Pysics_Object you want to access.
-			//  Returns nullptr if it does not find the object.
-			// //////////////////////////////////////////////////
-			USER_INTERACTION
-			ACCESSOR Pysics_Object* Access_Memeber(PW_ID id);
-			// Accessors
-			USER_INTERACTION
-			ACCESSOR b2Body* Last_Added_Body();
-			USER_INTERACTION
-			ACCESSOR bool Current_Rect();
+			void Add_Object(st::Model* p_model, const b2BodyType& p_type, const PW_ID& p_object_id = NULL, const bool& p_is_fixed = false, const float& p_friction = 0.0f, const float& p_restitution = 0.0f, const float& p_density = 0.0f);
+			
+			st::Physics_Object* Access_Memeber(const PW_ID& p_id);
+			
+			b2Body* Last_Added_Body();
 		// Private Functions/Macros 
 		private:
 		// Private Variables        
 		private:
-			b2World* world;
+			b2World* m_world;
 
-			int32_t velocity_it;
-			int32_t position_it;
-			float time_step;
+			int32_t m_velocity_it;
+			int32_t m_position_it;
+			float m_time_step;
 
-			b2Body* last_added_body;
-			int32_t multiplier;
-			bool current_rect;
+			b2Body* m_last_added_body;
 
-			std::vector<Pysics_Object*> factory_static;
-			std::map<PW_ID, Pysics_Object*> factory_dynamic;
-		};
-		// Functions               
-		// Macros / Definitions                
+			std::vector<st::Physics_Object*> m_factory_static;
+			std::map<PW_ID, st::Physics_Object*> m_factory_dynamic;
+		};               
 	//////////////////////////////////
 	ST_NAMESPACE_END
 	//////////////////////////////////

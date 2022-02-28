@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021, Darrian Corkadel
+// Copyright(c) 2021-2022, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,15 +30,23 @@
 #ifndef H_ENGINE_CONSOLE_MANIP
 #define H_ENGINE_CONSOLE_MANIP
 //////////////////////////////////
+#include "engine_common\engine_build.h"
+//////////////////////////////////
 // #FILE_INFO#
 // +(DUAL_FILE)
 //////////////////////////////////
 // C++ Headers
+#include <codeanalysis\warnings.h>
+#pragma warning (push)
+#pragma warning (disable:ALL_CODE_ANALYSIS_WARNINGS)
 #include <Windows.h>
 #include <map>
 #include <future>
 #include <exception>
 #include <new>
+
+#pragma comment(lib,"user32.lib") 
+#pragma warning (pop)
 //////////////////////////////////
 // Project Headers
 #include "engine_common\engine_constant.h"
@@ -49,8 +57,6 @@
 // Engine Control Headers
 //////////////////////////////////
 // Engine Structures Headers
-//////////////////////////////////
-// Engine Macros
 //////////////////////////////////
 // Pistonworks Engine           //
 // Created By : Darrian Corkadel//
@@ -63,33 +69,13 @@ PW_NAMESPACE_SRT
 		//////////////////////////////////
 		CN_NAMESPACE_SRT
 		//////////////////////////////////
-			// //////////////////////////////////////////////////
-			// PW_CONSOLE_API Class: pw::co::cn::Console_Error
-			// //////////////////////////////////////////////////
-			// Purpose:
-			//  To hold a windows get error function.
-			// //////////////////////////////////////////////////
-			class PW_CONSOLE_API Console_Error : std::exception {
+			class Console_Error : std::exception {
 			// Default Class Structures
 			public:
 			private:
 			// Public Functions/Macros
 			public:
-				// //////////////////////////////////////////////////
-				// CORE Function: Console_Error:Windows_Last_Error 
-				// //////////////////////////////////////////////////
-				// Purpose:
-				//  Returns the last windows error detected by the 
-				//  system. If it does not get an error it returns an
-				//  empty std::wstring(). If it gets a function error
-				//  it will print so.  If the format function gets an
-				//  error, then the function will return a error msg
-				//  for the format msg and give any other possible
-				//  error information about the original error.
-				// //////////////////////////////////////////////////
-				// Parameters: NONE
-				// //////////////////////////////////////////////////
-				static CORE std::wstring Windows_Last_Error() noexcept;
+				static std::wstring Windows_Last_Error() noexcept;
 			// Public Variables
 			public:
 			// Private Functions/Macros
@@ -97,14 +83,6 @@ PW_NAMESPACE_SRT
 			// Private Variables
 			private:
 			};
-			// //////////////////////////////////////////////////
-			// PW_CONSOLE_API Enum: pw::co::cn::Win_Text_Color
-			// //////////////////////////////////////////////////
-			// Purpose:
-			//  Windows consoles need very specific color number
-			//  inputs. Using a enum structure makes this very
-			//	easy to navigate.
-			// //////////////////////////////////////////////////
 			enum class Win_Text_Color {
 				BLACK = 0,
 				DARK_BLUE = FOREGROUND_BLUE,
@@ -123,14 +101,6 @@ PW_NAMESPACE_SRT
 				YELLOW = FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY,
 				BRIGHT_WHITE = FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_INTENSITY
 			};
-			// //////////////////////////////////////////////////
-			// PW_CONSOLE_API Enum: pw::co::cn::Win_Backaround_Color
-			// //////////////////////////////////////////////////
-			// Purpose:
-			//  Like the console text color, the background text
-			//  color also needs a specific color enum value in
-			//  order for the text to be colored correctly.
-			// //////////////////////////////////////////////////
 			enum class Win_Backaround_Color {
 				BLACK = 0,
 				DARK_BLUE = BACKGROUND_BLUE,
@@ -149,82 +119,27 @@ PW_NAMESPACE_SRT
 				YELLOW = BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_INTENSITY,
 				BRIGHT_WHITE = BACKGROUND_RED | BACKGROUND_BLUE | BACKGROUND_GREEN | BACKGROUND_INTENSITY
 			};
-			// //////////////////////////////////////////////////
-			// PW_CONSOLE_API Class: pw::co::cn::Console_Color
-			// //////////////////////////////////////////////////
-			// Purpose:
-			//  A simple windows API color wrapper.
-			// //////////////////////////////////////////////////
-			struct PW_CONSOLE_API Console_Color {
+			struct Console_Color {
 			// Default Class Structures
 			public:
-				// //////////////////////////////////////////////////
-				// CLASS_FUNCTION Function: pw::co::cn::Console_Color
-				// //////////////////////////////////////////////////
-				// Purpose:
-				//  Initializes an empty console_color structure.
-				// //////////////////////////////////////////////////
-				// Parameters: NONE
-				// //////////////////////////////////////////////////
-				NO_USER_INTERACTION
-				CLASS_FUNCTION Console_Color();
-				// //////////////////////////////////////////////////
-				// CLASS_FUNCTION Function: pw::co::cn::Console_Color
-				// //////////////////////////////////////////////////
-				// Purpose:
-				//  Initializes an empty console color structure.
-				// //////////////////////////////////////////////////
-				// Parameters: 2
-				// (1) Win_Text_Color text_color;
-				// Purpose:
-				//  The color of the text.
-				// (2)
-				// Purpose:
-				//  The color of the background.
-				// //////////////////////////////////////////////////
-				NO_USER_INTERACTION
-				CLASS_FUNCTION Console_Color(Win_Text_Color text_color, Win_Backaround_Color backaround_color);
-				// //////////////////////////////////////////////////
-				// CLASS_FUNCTION Function: pw::co::cn::~Console_Color
-				// //////////////////////////////////////////////////
-				// Purpose:
-				//  Deallocates memory of the color structure.
-				// //////////////////////////////////////////////////
-				// Parameters: NONE
-				// //////////////////////////////////////////////////
-				NO_USER_INTERACTION
-				CLASS_FUNCTION ~Console_Color();
+				Console_Color();
+				Console_Color(const Win_Text_Color& p_text_color, const Win_Backaround_Color& p_backaround_color);
 			private:
 			// Public Functions/Macros
 			public:
-				// Accessors
-				USER_INTERACTION
-				const ACCESSOR uint16_t& Return_Color() const;
+				const uint16_t& Return_Color() const;
 			// Public Variables
 			public:
 			// Private Functions/Macros
 			private:
 			// Private Variables
 			private:
-				uint16_t m_color_creation;
+				uint16_t m_color_attribute;
 			};
-			// //////////////////////////////////////////////////
-			// PW_CONSOLE_API Class: pw::co::cn::Console_Manip
-			// //////////////////////////////////////////////////
-			// Purpose:
-			//  The control structure for the debug console.
-			// //////////////////////////////////////////////////
-			class PW_CONSOLE_API Console_Manip {
+			class Console_Manip {
 			// Default Class Structures
 			public:
-				// //////////////////////////////////////////////////
-				// PW_CONSOLE_API Enum: pw::co::cn::Console_Manip::Msg_Types
-				// //////////////////////////////////////////////////
-				// Purpose:
-				//  The different types of msg's that the console can
-				//  be sent.
-				// //////////////////////////////////////////////////
-				enum class PW_CONSOLE_API Msg_Types {
+				enum class Msg_Types {
 					E_CLEAR,
 					E_DEFAULT,
 					E_ENGINE,
@@ -237,203 +152,22 @@ PW_NAMESPACE_SRT
 			private:
 				// Public Functions/Macros
 			public:
-				// //////////////////////////////////////////////////
-				// CONSOLE Function: Console_Manip::Set_Up_Console
-				// //////////////////////////////////////////////////
-				// Purpose:
-				//  Initializes the console window for use. Note that
-				//  in release mode the console will not appear.
-				// //////////////////////////////////////////////////
-				// Parameters: NONE
-				// //////////////////////////////////////////////////
-				NO_USER_INTERACTION
-				static CONSOLE void Set_Up_Console();
-				// //////////////////////////////////////////////////
-				// CONSOLE Function: Console_Manip::Resize
-				// //////////////////////////////////////////////////
-				// Purpose:
-				//  Resizes the console window on a character size
-				//  basis.
-				// //////////////////////////////////////////////////
-				// Parameters: 2
-				// (1) uint32_t&& size_x;
-				// Purpose:
-				//  The size in characters the x-axis will extend.
-				//  Direction: Right
-				// (2) uint32_t&& size_y;
-				// Purpose:
-				//  The size in characters the y-axis will extend.
-				//  Direction: Down
-				// //////////////////////////////////////////////////
-				NO_USER_INTERACTION
-				static CONSOLE void Resize(uint32_t&& size_x, uint32_t&& size_y);
-				// //////////////////////////////////////////////////
-				// CONSOLE Function: Console_Manip::Draw_Screen
-				// //////////////////////////////////////////////////
-				// Purpose:
-				//  Draws a default built in screen template for the
-				//  console window to give information from.
-				// //////////////////////////////////////////////////
-				// Parameters: NONE
-				// //////////////////////////////////////////////////
-				NO_USER_INTERACTION
-				static CONSOLE void Draw_Screen();
-				// //////////////////////////////////////////////////
-				// CONSOLE Function: Console_Manip::Print_Console
-				// //////////////////////////////////////////////////
-				// Purpose:
-				//  Prints the msg to the console along with time,
-				//  sender and msg type information. 
-				// //////////////////////////////////////////////////
-				// Parameters: 3
-				// (1) wchar_t* from;
-				// Purpose:
-				//  The function or class sending the msg to the
-				//  console.
-				// (2) wchar_t* msg;
-				// Purpose:
-				//  The msg being printed to the console.
-				// (3) uint16_t&& line;
-				// Purpose:
-				//  The line to print the data on.
-				// //////////////////////////////////////////////////
-				NO_USER_INTERACTION
-				static CONSOLE void Print_Info(std::wstring&& from, std::wstring&& msg, uint16_t&& line);
-				// //////////////////////////////////////////////////
-				// CONSOLE Function: Console_Manip::Print_Console
-				// //////////////////////////////////////////////////
-				// Purpose:
-				//  Prints the msg to the console along with time,
-				//  sender and msg type information. 
-				// //////////////////////////////////////////////////
-				// Parameters: 4
-				// (1) wchar_t* from;
-				// Purpose:
-				//  The function or class sending the msg to the
-				//  console.
-				// (2) wchar_t* msg;
-				// Purpose:
-				//  The msg being printed to the console.
-				// (3) Msg_Types&& msg_type;
-				// Purpose:
-				//  The type of msg that is being printed.
-				// (4) bool&& block_msg;
-				// Purpose:
-				//  Is this msg a block or not.
-				// //////////////////////////////////////////////////
-				NO_USER_INTERACTION
-				static CONSOLE void Print_Console(std::wstring&& from, std::wstring&& msg, Msg_Types&& msg_type, bool&& block_msg);
-				// //////////////////////////////////////////////////
-				// CONSOLE Function: Console_Manip::Clear_Console
-				// //////////////////////////////////////////////////
-				// Purpose:
-				//  Clears the text portion of the console to black.
-				// //////////////////////////////////////////////////
-				// Parameters: NONE
-				// //////////////////////////////////////////////////
-				NO_USER_INTERACTION
-				static CONSOLE void Clear_Console();
-				// //////////////////////////////////////////////////
-				// CONSOLE Function: Console_Manip::Draw_WChar
-				// //////////////////////////////////////////////////
-				// Purpose:
-				//  Prints the character to the console screen. 
-				// //////////////////////////////////////////////////
-				// Parameters: 3
-				// (1) COORD&& position;
-				// Purpose:
-				//  The position of the character to be printed to.
-				// (2) const wchar_t&& character;
-				// Purpose:
-				//  The character being printed. Only one will be
-				//  printed.
-				// (3) Console_Color&& color;
-				// Purpose:
-				//  The color of the character being printed.
-				// //////////////////////////////////////////////////
-				NO_USER_INTERACTION
-				static CONSOLE void Draw_WChar(COORD&& position, const wchar_t&& character, Console_Color&& color);
-				// //////////////////////////////////////////////////
-				// CONSOLE Function: Console_Manip::Draw_Line
-				// //////////////////////////////////////////////////
-				// Purpose:
-				//  Draws a line of colored characters between two 
-				//  points. 
-				// //////////////////////////////////////////////////
-				// Parameters: 4
-				// (1) COORD&& start;
-				// Purpose:
-				//  The position of the first point.
-				// (2) COORD&& end;
-				// Purpose:
-				//  The position of the end point.
-				// (3) const wchar_t&& character;
-				// Purpose:
-				//  The character being printed. 
-				// (4) Console_Color&& color;
-				// Purpose:
-				//  The color of the character being printed.
-				// //////////////////////////////////////////////////
-				NO_USER_INTERACTION
-				static CONSOLE void Draw_Line(COORD&& start, COORD&& end, wchar_t&& character, Console_Color&& color);
-				// //////////////////////////////////////////////////
-				// CONSOLE Function: Console_Manip::Draw_Rectangle_Vertical
-				// //////////////////////////////////////////////////
-				// Purpose:
-				//  Draws a rectangle from its top left position. It
-				//  draws the rectangle in vertical lines.
-				// //////////////////////////////////////////////////
-				// Parameters: 4
-				// (1) COORD&& top_left;
-				// Purpose:
-				//  The position of the top left of the rectangle.
-				// (2) COORD&& size;
-				// Purpose:
-				//  The size of the rectangle.
-				// (3) const wchar_t&& character;
-				// Purpose:
-				//  The character being printed. 
-				// (4) Console_Color&& color;
-				// Purpose:
-				//  The color of the character being printed.
-				// //////////////////////////////////////////////////
-				NO_USER_INTERACTION
-				static CONSOLE void Draw_Rectangle_Vertical(COORD&& top_left, COORD&& size, wchar_t&& character, Console_Color&& color);
-				// //////////////////////////////////////////////////
-				// CONSOLE Function: Console_Manip::Draw_Rectangle_Horizontal
-				// //////////////////////////////////////////////////
-				// Purpose:
-				//  Draws a rectangle from its top left position. It
-				//  draws the rectangle in horizontal lines.
-				// //////////////////////////////////////////////////
-				// Parameters: 4
-				// (1) COORD&& top_left;
-				// Purpose:
-				//  The position of the top left of the rectangle.
-				// (2) COORD&& size;
-				// Purpose:
-				//  The size of the rectangle.
-				// (3) const wchar_t&& character;
-				// Purpose:
-				//  The character being printed. 
-				// (4) Console_Color&& color;
-				// Purpose:
-				//  The color of the character being printed.
-				// //////////////////////////////////////////////////
-				NO_USER_INTERACTION
-				static CONSOLE void Draw_Rectangle_Horizontal(COORD&& top_left, COORD&& size, wchar_t&& character, Console_Color&& color);
-				// //////////////////////////////////////////////////
-				// CONSOLE Function: Console_Manip::Delete_Console
-				// //////////////////////////////////////////////////
-				// Purpose:
-				//  When the main program is done, delete the console
-				//  .
-				// //////////////////////////////////////////////////
-				// Parameters: NONE
-				//  The color of the character being printed.
-				// //////////////////////////////////////////////////
-				NO_USER_INTERACTION
-				static CONSOLE void Delete_Console();
+				static void Set_Up_Console();
+				
+				static void Resize(const uint32_t& p_size_x, const uint32_t& p_size_y);
+				static void Draw_Screen();
+				
+				static void Print_Info(const std::wstring& p_from, const std::wstring& p_msg, const uint16_t& p_line);
+				static void Print_Console(const std::wstring& p_from, const std::wstring& p_msg, const Msg_Types& p_msg_type, const bool& p_block_msg);
+				static void Clear_Console();
+				
+				static void Draw_WChar(const COORD& p_position, const wchar_t& character, const Console_Color& color);
+				
+				static void Draw_Line(const COORD& p_start, const COORD& p_end, const wchar_t& p_character, const Console_Color& p_color);
+				static void Draw_Rectangle_Vertical(const COORD& p_top_left, const COORD& p_size, const wchar_t& p_character, const Console_Color& p_color);
+				static void Draw_Rectangle_Horizontal(const COORD& p_top_left, const COORD& p_size, const wchar_t& p_character, const Console_Color& p_color);
+				
+				static void Delete_Console();
 
 				#define CLEAR_MSG pw::co::cn::Console_Manip::Msg_Types::E_CLEAR
 				#define DEFAULT_MSG pw::co::cn::Console_Manip::Msg_Types::E_DEFAULT
@@ -445,82 +179,47 @@ PW_NAMESPACE_SRT
 				#define COUT_MSG pw::co::cn::Console_Manip::Msg_Types::E_CONSOLE_OUT
 
 
-				#define PRINT_MSG(from, msg, msg_type) { pw::co::cn::Console_Manip::Print_Console(std::move(std::wstring(from)), std::move(std::wstring(msg)), std::move(msg_type), false); }
-				#define PRINT_BLOCK(from, msg, msg_type) {  pw::co::cn::Console_Manip::Print_Console(L"", L"---------------------------------------------------------", COUT_MSG, true);  pw::co::cn::Console_Manip::Print_Console(std::move(std::wstring(from)), std::move(std::wstring(msg)), std::move(msg_type), false);  pw::co::cn::Console_Manip::Print_Console(L"", L"---------------------------------------------------------", COUT_MSG, true); }
-
-				#define PRINT_INFO(from, msg, line) { pw::co::cn::Console_Manip::Print_Info(std::move(std::wstring(from)), std::move(std::wstring(msg)), std::move(line)); }
-				// Accessors																																																																			 
-				USER_INTERACTION
-				static const ACCESSOR std::map<Msg_Types, Console_Color>& Msg_Colors();
+				#ifdef PW_DEBUG_MODE
+					#define PRINT_MSG(p_from, p_msg, p_msg_type) {																\
+						pw::co::cn::Console_Manip::Print_Console(std::wstring(p_from), std::wstring(p_msg), p_msg_type, false);	\
+					}
+					#define PRINT_BLOCK(p_from, p_msg, p_msg_type) {																					\
+						pw::co::cn::Console_Manip::Print_Console(L"", L"---------------------------------------------------------", COUT_MSG, true);	\
+						pw::co::cn::Console_Manip::Print_Console(std::wstring(p_from), std::wstring(p_msg), p_msg_type, false);							\
+						pw::co::cn::Console_Manip::Print_Console(L"", L"---------------------------------------------------------", COUT_MSG, true);	\
+					}
+					#define PRINT_INFO(p_from, p_msg, p_line) {														\
+						pw::co::cn::Console_Manip::Print_Info(std::wstring(p_from), std::wstring(p_msg), p_line);	\
+					}
+				#else
+					#define PRINT_MSG(p_from, p_msg, p_msg_type) 
+					#define PRINT_BLOCK(p_from, p_msg, p_msg_type)
+					#define PRINT_INFO(p_from, p_msg, p_line)
+				#endif // PW_DEBUG_MODE
+																																																																							 
+				static const std::map<Msg_Types, Console_Color>& Msg_Colors();
 				// Public Variables
 			public:
 				// Private Functions/Macros
 			private:
-				// //////////////////////////////////////////////////
-				// CONSOLE Function: Console_Manip::Draw_Line_Low
-				// //////////////////////////////////////////////////
-				// Purpose:
-				//  Draws a line of colored characters between two 
-				//  points. Draws it for "low" values.
-				// //////////////////////////////////////////////////
-				// Parameters: 4
-				// (1) COORD&& start;
-				// Purpose:
-				//  The position of the first point.
-				// (2) COORD&& end;
-				// Purpose:
-				//  The position of the end point.
-				// (3) const wchar_t&& character;
-				// Purpose:
-				//  The character being printed. Draws only the first
-				//  character. 
-				// (4) Console_Color&& color;
-				// Purpose:
-				//  The color of the character being printed.
-				// //////////////////////////////////////////////////
-				NO_USER_INTERACTION
-				static CONSOLE ALGORITHM void Draw_Line_Low(COORD&& start, COORD&& end, wchar_t&& character, Console_Color&& color);
-				// //////////////////////////////////////////////////
-				// CONSOLE Function: Console_Manip::Draw_Line_High
-				// //////////////////////////////////////////////////
-				// Purpose:
-				//  Draws a line of colored characters between two 
-				//  points. Draws it for "high" values.
-				// //////////////////////////////////////////////////
-				// Parameters: 4
-				// (1) COORD&& start;
-				// Purpose:
-				//  The position of the first point.
-				// (2) COORD&& end;
-				// Purpose:
-				//  The position of the end point.
-				// (3) const wchar_t&& character;
-				// Purpose:
-				//  The character being printed. Draws only the first
-				//  character. 
-				// (4) Console_Color&& color;
-				// Purpose:
-				//  The color of the character being printed.
-				// //////////////////////////////////////////////////
-				NO_USER_INTERACTION
-				static CONSOLE ALGORITHM void Draw_Line_High(COORD&& start, COORD&& end, wchar_t&& character, Console_Color&& color);
+				static void Draw_Line_Low(const COORD& p_start, const COORD& p_end, const wchar_t& p_character, const Console_Color& p_color);
+				
+				static void Draw_Line_High(const COORD& p_start, const COORD& p_end, const wchar_t& p_character, const Console_Color& p_color);
 				// Private Variables
 			private:
-				static uint16_t console_width;
-				static uint16_t console_height;
+				static uint16_t m_console_width;
+				static uint16_t m_console_height;
 
-				static wchar_t* console_screen_buffer;
-				static HWND window_handle;
-				static HANDLE screen_handle;
-				static HANDLE console_output;
+				static wchar_t* m_console_screen_buffer;
+				static HWND m_window_handle;
+				static HANDLE m_screen_handle;
+				static HANDLE m_console_output;
 
-				static COORD write_coord;
-				static uint16_t msg_line;
+				static COORD m_write_coord;
+				static uint16_t m_msg_line;
 
-				static std::map<Msg_Types, Console_Color> msg_colors;
+				static std::map<Msg_Types, Console_Color> m_msg_colors;
 			};
-			// Functions
-			// Macros / Definitions
 		//////////////////////////////////
 		CN_NAMESPACE_END
 		//////////////////////////////////

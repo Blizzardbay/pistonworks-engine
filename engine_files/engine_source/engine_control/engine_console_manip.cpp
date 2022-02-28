@@ -49,34 +49,32 @@ PW_NAMESPACE_SRT
 			// Static Declarations
 			// Class Members
 				Console_Color::Console_Color() :
-						m_color_creation{ 0 } {
+						m_color_attribute{ 0 } {
 				}
-				Console_Color::Console_Color(Win_Text_Color text_color, Win_Backaround_Color backaround_color) :
-						m_color_creation{ 0 } {
-					m_color_creation = (WORD)text_color | (WORD)backaround_color;
-				}
-				Console_Color::~Console_Color() {
+				Console_Color::Console_Color(const Win_Text_Color& p_text_color, const Win_Backaround_Color& p_backaround_color) :
+						m_color_attribute{ 0 } {
+					m_color_attribute = (WORD)p_text_color | (WORD)p_backaround_color;
 				}
 				const uint16_t& Console_Color::Return_Color() const {
-					return m_color_creation;
+					return m_color_attribute;
 				}
 			// End of Class Members
 			// Console_Manip
-				uint16_t Console_Manip::console_width{ 100 };
-				uint16_t Console_Manip::console_height{ 40 };
-				wchar_t* Console_Manip::console_screen_buffer{ nullptr };
-				HWND Console_Manip::window_handle{ NULL };
-				HANDLE Console_Manip::screen_handle{ NULL };
-				HANDLE Console_Manip::console_output{ NULL };
-				COORD Console_Manip::write_coord{ 0,0 };
-				uint16_t Console_Manip::msg_line{0};
-				std::map<Console_Manip::Msg_Types, Console_Color> Console_Manip::msg_colors{
+				uint16_t Console_Manip::m_console_width{ 100 };
+				uint16_t Console_Manip::m_console_height{ 40 };
+				wchar_t* Console_Manip::m_console_screen_buffer{ nullptr };
+				HWND Console_Manip::m_window_handle{ NULL };
+				HANDLE Console_Manip::m_screen_handle{ NULL };
+				HANDLE Console_Manip::m_console_output{ NULL };
+				COORD Console_Manip::m_write_coord{ 0,0 };
+				uint16_t Console_Manip::m_msg_line{ 0 };
+				std::map<Console_Manip::Msg_Types, Console_Color> Console_Manip::m_msg_colors{
 					std::make_pair(Console_Manip::Msg_Types::E_CLEAR, Console_Color{Win_Text_Color::BLACK, Win_Backaround_Color::BLACK}),
 					std::make_pair(Console_Manip::Msg_Types::E_DEFAULT, Console_Color{Win_Text_Color::BRIGHT_WHITE, Win_Backaround_Color::BLACK}),
 					std::make_pair(Console_Manip::Msg_Types::E_ENGINE, Console_Color{Win_Text_Color::GREEN, Win_Backaround_Color::BLACK}),
 					std::make_pair(Console_Manip::Msg_Types::E_GAME, Console_Color{Win_Text_Color::YELLOW, Win_Backaround_Color::BLACK}),
 					std::make_pair(Console_Manip::Msg_Types::E_INFO, Console_Color{Win_Text_Color::PINK, Win_Backaround_Color::BLACK}),
-					std::make_pair(Console_Manip::Msg_Types::E_ERROR, Console_Color{ Win_Text_Color::RED, Win_Backaround_Color::DARK_RED}),
+					std::make_pair(Console_Manip::Msg_Types::E_ERROR, Console_Color{ Win_Text_Color::RED, Win_Backaround_Color::BLACK}),
 					std::make_pair(Console_Manip::Msg_Types::E_SUCCESS, Console_Color{ Win_Text_Color::BLUE, Win_Backaround_Color::BLACK}),
 					std::make_pair(Console_Manip::Msg_Types::E_CONSOLE_OUT, Console_Color{ Win_Text_Color::WHITE, Win_Backaround_Color::BLACK})
 				};
@@ -84,40 +82,40 @@ PW_NAMESPACE_SRT
 			// Class Members
 				void Console_Manip::Set_Up_Console() {
 					try {
-						TRY_LINE window_handle = GetConsoleWindow();
+						TRY_LINE m_window_handle = GetConsoleWindow();
 						// In the event the GetConsoleWindow cannot find the console throw a 
 						// Console_Error
-						if (window_handle == FALSE) {
-							throw er::Severe_Error(L"Console", std::move(Console_Error::Windows_Last_Error()), std::move(EXCEPTION_LINE), __FILEW__, L"GetConsoleWindow");
+						if (m_window_handle == FALSE) {
+							throw er::Severe_Error(L"Console", Console_Error::Windows_Last_Error(), EXCEPTION_LINE, __FILEW__, L"GetConsoleWindow");
 						}
 						// The windows API does not standard error handling for this function
-						TRY_LINE ShowWindow(window_handle, SW_HIDE);
+						TRY_LINE ShowWindow(m_window_handle, SW_HIDE);
 
 						// Make it so we can draw on our console
-						TRY_LINE screen_handle = CreateConsoleScreenBuffer(GENERIC_READ, NULL, NULL, CONSOLE_TEXTMODE_BUFFER, NULL);
+						TRY_LINE m_screen_handle = CreateConsoleScreenBuffer(GENERIC_READ, NULL, NULL, CONSOLE_TEXTMODE_BUFFER, NULL);
 
-						if (screen_handle == INVALID_HANDLE_VALUE) {
-							throw er::Severe_Error(L"Console", std::move(Console_Error::Windows_Last_Error()), std::move(EXCEPTION_LINE), __FILEW__, L"CreateConsoleScreenBuffer");
+						if (m_screen_handle == INVALID_HANDLE_VALUE) {
+							throw er::Severe_Error(L"Console", Console_Error::Windows_Last_Error(), EXCEPTION_LINE, __FILEW__, L"CreateConsoleScreenBuffer");
 						}
 						// Make the console un-resize-able
-						if (TRY_LINE SetWindowLongA(window_handle, GWL_STYLE, GetWindowLongA(window_handle, GWL_STYLE) & ~WS_MAXIMIZEBOX & ~WS_SIZEBOX) == NULL) {
-							throw er::Severe_Error(L"Console", std::move(Console_Error::Windows_Last_Error()), std::move(EXCEPTION_LINE), __FILEW__, L"SetWindowLongA");
+						if (TRY_LINE SetWindowLongA(m_window_handle, GWL_STYLE, GetWindowLongA(m_window_handle, GWL_STYLE) & ~WS_MAXIMIZEBOX & ~WS_SIZEBOX) == NULL) {
+							throw er::Severe_Error(L"Console", Console_Error::Windows_Last_Error(), EXCEPTION_LINE, __FILEW__, L"SetWindowLongA");
 						}
 						// Make the cursor go away
-						TRY_LINE console_output = GetStdHandle(STD_OUTPUT_HANDLE);
+						TRY_LINE m_console_output = GetStdHandle(STD_OUTPUT_HANDLE);
 
-						if (TRY_LINE console_output == INVALID_HANDLE_VALUE || console_output == FALSE) {
-							throw er::Severe_Error(L"Console", std::move(Console_Error::Windows_Last_Error()), std::move(EXCEPTION_LINE), __FILEW__, L"GetStdHandle");
+						if (TRY_LINE m_console_output == INVALID_HANDLE_VALUE || m_console_output == FALSE) {
+							throw er::Severe_Error(L"Console", Console_Error::Windows_Last_Error(), EXCEPTION_LINE, __FILEW__, L"GetStdHandle");
 						}
 
 						if (TRY_LINE setlocale(LC_ALL, "chinese") == nullptr) {
-							throw er::Severe_Error(L"Console", std::move(Console_Error::Windows_Last_Error()), std::move(EXCEPTION_LINE), __FILEW__, L"setlocale");
+							throw er::Severe_Error(L"Console", Console_Error::Windows_Last_Error(), EXCEPTION_LINE, __FILEW__, L"setlocale");
 						}
 						if (TRY_LINE SetConsoleOutputCP(CP_UTF8) == FALSE) {
-							throw er::Severe_Error(L"Console", std::move(Console_Error::Windows_Last_Error()), std::move(EXCEPTION_LINE), __FILEW__, L"SetConsoleOutputCP");
+							throw er::Severe_Error(L"Console", Console_Error::Windows_Last_Error(), EXCEPTION_LINE, __FILEW__, L"SetConsoleOutputCP");
 						}
 						if (TRY_LINE SetConsoleCP(CP_UTF8) == FALSE) {
-							throw er::Severe_Error(L"Console", std::move(Console_Error::Windows_Last_Error()), std::move(EXCEPTION_LINE), __FILEW__, L"SetConsoleCP");
+							throw er::Severe_Error(L"Console", Console_Error::Windows_Last_Error(), EXCEPTION_LINE, __FILEW__, L"SetConsoleCP");
 						}
 
 						try {
@@ -131,39 +129,39 @@ PW_NAMESPACE_SRT
 
 							std::copy(v_font, v_font + (sizeof(v_font) / sizeof(wchar_t)), v_font_info.FaceName);
 
-							if (TRY_LINE SetCurrentConsoleFontEx(console_output, false, &v_font_info) == FALSE) {
-								throw er::Severe_Error(L"Console", std::move(Console_Error::Windows_Last_Error()), std::move(EXCEPTION_LINE), __FILEW__, L"SetCurrentConsoleFontEx");
+							if (TRY_LINE SetCurrentConsoleFontEx(m_console_output, false, &v_font_info) == FALSE) {
+								throw er::Severe_Error(L"Console", Console_Error::Windows_Last_Error(), EXCEPTION_LINE, __FILEW__, L"SetCurrentConsoleFontEx");
 							}
 						}
 						catch (const std::bad_alloc& v_error) {
-							throw er::Severe_Error(L"Console", TO_WSTRING(v_error.what()), std::move(EXCEPTION_LINE), __FILEW__, L"CONSOLE_FONT_INFOEX / Font");
+							throw er::Severe_Error(L"Console", TO_WSTRING(v_error.what()), EXCEPTION_LINE, __FILEW__, L"CONSOLE_FONT_INFOEX / Font");
 						}
 						try {
-							TRY_LINE CONSOLE_CURSOR_INFO cursor_info{};
+							TRY_LINE CONSOLE_CURSOR_INFO v_cursor_info{};
 
-							if (TRY_LINE GetConsoleCursorInfo(console_output, &cursor_info) == FALSE) {
-								throw er::Severe_Error(L"Console", std::move(Console_Error::Windows_Last_Error()), std::move(EXCEPTION_LINE), __FILEW__, L"GetConsoleCursorInfo");
+							if (TRY_LINE GetConsoleCursorInfo(m_console_output, &v_cursor_info) == FALSE) {
+								throw er::Severe_Error(L"Console", Console_Error::Windows_Last_Error(), EXCEPTION_LINE, __FILEW__, L"GetConsoleCursorInfo");
 							}
-							cursor_info.bVisible = false;
-							if (TRY_LINE SetConsoleCursorInfo(console_output, &cursor_info) == FALSE) {
-								throw er::Severe_Error(L"Console", std::move(Console_Error::Windows_Last_Error()), std::move(EXCEPTION_LINE), __FILEW__, L"SetConsoleCursorInfo");
+							v_cursor_info.bVisible = false;
+							if (TRY_LINE SetConsoleCursorInfo(m_console_output, &v_cursor_info) == FALSE) {
+								throw er::Severe_Error(L"Console", Console_Error::Windows_Last_Error(), EXCEPTION_LINE, __FILEW__, L"SetConsoleCursorInfo");
 							}
 						}
 						catch (const std::bad_alloc& v_error) {
-							throw er::Severe_Error(L"Console", TO_WSTRING(v_error.what()), std::move(EXCEPTION_LINE), __FILEW__, L"CONSOLE_FONT_INFOEX / Font");
+							throw er::Severe_Error(L"Console", TO_WSTRING(v_error.what()), EXCEPTION_LINE, __FILEW__, L"CONSOLE_FONT_INFOEX / Font");
 						}
 						catch (const er::Severe_Error& v_error) {
 							throw v_error;
 						}
 						try {
-							TRY_LINE console_screen_buffer = pw::Engine_Memory::Allocate<wchar_t>((size_t)console_width * (size_t)console_height);
+							TRY_LINE m_console_screen_buffer = pw::Engine_Memory::Allocate<wchar_t>(TO_UINT64(m_console_width) * TO_UINT64(m_console_height));
 						}
 						catch (const std::bad_alloc& v_error) {
-							throw er::Severe_Error(L"Console", TO_WSTRING(v_error.what()), std::move(EXCEPTION_LINE), __FILEW__, L"console_screen_buffer");
+							throw er::Severe_Error(L"Console", TO_WSTRING(v_error.what()), EXCEPTION_LINE, __FILEW__, L"console_screen_buffer");
 						}
 
 						if (TRY_LINE SetConsoleTitleW(L"Pistonworks Console") == FALSE) {
-							throw er::Severe_Error(L"Console", std::move(Console_Error::Windows_Last_Error()), std::move(EXCEPTION_LINE), __FILEW__, L"SetConsoleTitleW");
+							throw er::Severe_Error(L"Console", Console_Error::Windows_Last_Error(), EXCEPTION_LINE, __FILEW__, L"SetConsoleTitleW");
 						}
 						std::wstring v_temp_wstr{};
 
@@ -208,14 +206,14 @@ PW_NAMESPACE_SRT
 						v_temp_wstr.append(L"▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯");
 						v_temp_wstr.append(L"▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯▯");
 
-						for (size_t i = 0; i < console_height; i++) {
-							for (size_t j = 0; j < console_width; j++) {
-								console_screen_buffer[(i * console_width) + j] = v_temp_wstr[(i * TO_UINT64(console_width)) + j];
+						for (size_t i = 0; i < m_console_height; i++) {
+							for (size_t j = 0; j < m_console_width; j++) {
+								m_console_screen_buffer[(i * m_console_width) + j] = v_temp_wstr[(i * TO_UINT64(m_console_width)) + j];
 							}
 						}
 
-						if (TRY_LINE SetConsoleActiveScreenBuffer(console_output) == FALSE) {
-							throw er::Severe_Error(L"Console", std::move(Console_Error::Windows_Last_Error()), std::move(EXCEPTION_LINE), __FILEW__, L"SetConsoleActiveScreenBuffer");
+						if (TRY_LINE SetConsoleActiveScreenBuffer(m_console_output) == FALSE) {
+							throw er::Severe_Error(L"Console", Console_Error::Windows_Last_Error(), EXCEPTION_LINE, __FILEW__, L"SetConsoleActiveScreenBuffer");
 						}
 					}
 					catch (const er::Warning_Error& v_error) {
@@ -225,11 +223,11 @@ PW_NAMESPACE_SRT
 						throw v_error;
 					}
 				}
-				void Console_Manip::Resize(uint32_t&& p_size_x, uint32_t&& p_size_y) {
+				void Console_Manip::Resize(const uint32_t& p_size_x, const uint32_t& p_size_y) {
 					try {
 						TRY_LINE COORD v_size;
-						v_size.X = p_size_x;
-						v_size.Y = p_size_y;
+						v_size.X = TO_INT16(p_size_x);
+						v_size.Y = TO_INT16(p_size_y);
 
 						TRY_LINE SMALL_RECT v_console_rect;
 						v_console_rect.Left = 0;
@@ -237,27 +235,27 @@ PW_NAMESPACE_SRT
 						v_console_rect.Right = v_size.X - 1;
 						v_console_rect.Bottom = v_size.Y - 1;
 
-						if (TRY_LINE SetConsoleWindowInfo(console_output, TRUE, &v_console_rect) == FALSE) {
-							throw er::Severe_Error(L"Console", std::move(Console_Error::Windows_Last_Error()), std::move(EXCEPTION_LINE), __FILEW__, L"SetConsoleWindowInfo");
+						if (TRY_LINE SetConsoleWindowInfo(m_console_output, TRUE, &v_console_rect) == FALSE) {
+							throw er::Severe_Error(L"Console", Console_Error::Windows_Last_Error(), EXCEPTION_LINE, __FILEW__, L"SetConsoleWindowInfo");
 						}
-						if (TRY_LINE SetConsoleScreenBufferSize(console_output, v_size) == FALSE) {
-							throw er::Severe_Error(L"Console", std::move(Console_Error::Windows_Last_Error()), std::move(EXCEPTION_LINE), __FILEW__, L"SetConsoleScreenBufferSize");
+						if (TRY_LINE SetConsoleScreenBufferSize(m_console_output, v_size) == FALSE) {
+							throw er::Severe_Error(L"Console", Console_Error::Windows_Last_Error(), EXCEPTION_LINE, __FILEW__, L"SetConsoleScreenBufferSize");
 						}
-						if (TRY_LINE SetConsoleActiveScreenBuffer(console_output) == FALSE) {
-							throw er::Severe_Error(L"Console", std::move(Console_Error::Windows_Last_Error()), std::move(EXCEPTION_LINE), __FILEW__, L"SetConsoleActiveScreenBuffer");
+						if (TRY_LINE SetConsoleActiveScreenBuffer(m_console_output) == FALSE) {
+							throw er::Severe_Error(L"Console", Console_Error::Windows_Last_Error(), EXCEPTION_LINE, __FILEW__, L"SetConsoleActiveScreenBuffer");
 						}
 					}
 					catch (const std::bad_alloc& v_error) {
-						throw er::Severe_Error(L"Console", TO_WSTRING(v_error.what()), std::move(EXCEPTION_LINE), __FILEW__, L"COORD / SMALL_RECT");
+						throw er::Severe_Error(L"Console", TO_WSTRING(v_error.what()), EXCEPTION_LINE, __FILEW__, L"COORD / SMALL_RECT");
 					}
 					catch (const std::out_of_range& v_error) {
-						throw er::Severe_Error(L"Console", TO_WSTRING(v_error.what()), std::move(EXCEPTION_LINE), __FILEW__, L"v_console_rect");
+						throw er::Severe_Error(L"Console", TO_WSTRING(v_error.what()), EXCEPTION_LINE, __FILEW__, L"v_console_rect");
 					}
 					catch (const std::length_error& v_error) {
-						throw er::Severe_Error(L"Console", TO_WSTRING(v_error.what()), std::move(EXCEPTION_LINE), __FILEW__, L"v_size");
+						throw er::Severe_Error(L"Console", TO_WSTRING(v_error.what()), EXCEPTION_LINE, __FILEW__, L"v_size");
 					}
 					catch (const std::invalid_argument& v_error) {
-						throw er::Severe_Error(L"Console", TO_WSTRING(v_error.what()), std::move(EXCEPTION_LINE), __FILEW__, L"COORD / SMALL_RECT");
+						throw er::Severe_Error(L"Console", TO_WSTRING(v_error.what()), EXCEPTION_LINE, __FILEW__, L"COORD / SMALL_RECT");
 					}
 					catch (const er::Severe_Error& v_error) {
 						throw v_error;
@@ -265,48 +263,48 @@ PW_NAMESPACE_SRT
 				}
 				void Console_Manip::Draw_Screen() {
 					try {
-						WORD color{ (WORD)Win_Text_Color::GREY | (WORD)Win_Backaround_Color::GREY };
-						WORD color_default{ (WORD)Win_Text_Color::BLACK | (WORD)Win_Backaround_Color::BLACK };
+						WORD v_color{ (WORD)Win_Text_Color::GREY | (WORD)Win_Backaround_Color::GREY };
+						WORD v_color_default{ (WORD)Win_Text_Color::BLACK | (WORD)Win_Backaround_Color::BLACK };
 
-						DWORD bytes_received = 0;
+						DWORD v_bytes_received = 0;
 
 						TRY_LINE Resize(100, 40);
 
-						for (int i = 0; i < console_height; i++) {
-							std::wstring line{};
-							for (int j = 0; j < console_width; j++) {
-								line.push_back(console_screen_buffer[(i * console_width) + j]);
-								if (line.at(j) != L' ') {
-									if (TRY_LINE WriteConsoleOutputAttribute(console_output, &color, 1, { TO_INT16(j), TO_INT16(i) }, &bytes_received) == FALSE) {
-										throw er::Warning_Error(L"Console", std::move(Console_Error::Windows_Last_Error()), std::move(EXCEPTION_LINE), __FILEW__, L"WriteConsoleOutputAttribute");
+						for (int i = 0; i < m_console_height; i++) {
+							std::wstring v_line{};
+							for (int j = 0; j < m_console_width; j++) {
+								v_line.push_back(m_console_screen_buffer[(i * m_console_width) + j]);
+								if (v_line.at(j) != L' ') {
+									if (TRY_LINE WriteConsoleOutputAttribute(m_console_output, &v_color, 1, { TO_INT16(j), TO_INT16(i) }, &v_bytes_received) == FALSE) {
+										throw er::Warning_Error(L"Console", Console_Error::Windows_Last_Error(), EXCEPTION_LINE, __FILEW__, L"WriteConsoleOutputAttribute");
 									}
 								}
 								else {
-									if (TRY_LINE WriteConsoleOutputAttribute(console_output, &color_default, 1, { TO_INT16(j), TO_INT16(i) }, &bytes_received) == FALSE) {
-										throw er::Warning_Error(L"Console", std::move(Console_Error::Windows_Last_Error()), std::move(EXCEPTION_LINE), __FILEW__, L"WriteConsoleOutputAttribute");
+									if (TRY_LINE WriteConsoleOutputAttribute(m_console_output, &v_color_default, 1, { TO_INT16(j), TO_INT16(i) }, &v_bytes_received) == FALSE) {
+										throw er::Warning_Error(L"Console", Console_Error::Windows_Last_Error(), EXCEPTION_LINE, __FILEW__, L"WriteConsoleOutputAttribute");
 									}
 								}
 							}
-							if (TRY_LINE WriteConsoleOutputCharacterW(console_output, line.c_str(), console_width, { 0, TO_INT16(i) }, &bytes_received) == FALSE) {
-								throw er::Warning_Error(L"Console", std::move(Console_Error::Windows_Last_Error()), std::move(EXCEPTION_LINE), __FILEW__, L"WriteConsoleOutputCharacterW");
+							if (TRY_LINE WriteConsoleOutputCharacterW(m_console_output, v_line.c_str(), m_console_width, { 0, TO_INT16(i) }, &v_bytes_received) == FALSE) {
+								throw er::Warning_Error(L"Console", Console_Error::Windows_Last_Error(), EXCEPTION_LINE, __FILEW__, L"WriteConsoleOutputCharacterW");
 							}
 						}
 						// The windows API does not standard error handling for this function
-						TRY_LINE ShowWindow(window_handle, SW_SHOW);
+						TRY_LINE ShowWindow(m_window_handle, SW_SHOW);
 						// Not guaranteed but we can try
-						TRY_LINE SetFocus(window_handle);
-						if (TRY_LINE SetConsoleActiveScreenBuffer(console_output) == FALSE) {
-							throw er::Severe_Error(L"Console", std::move(Console_Error::Windows_Last_Error()), std::move(EXCEPTION_LINE), __FILEW__, L"SetConsoleActiveScreenBuffer");
+						TRY_LINE SetFocus(m_window_handle);
+						if (TRY_LINE SetConsoleActiveScreenBuffer(m_console_output) == FALSE) {
+							throw er::Severe_Error(L"Console", Console_Error::Windows_Last_Error(), EXCEPTION_LINE, __FILEW__, L"SetConsoleActiveScreenBuffer");
 						}
 					}
 					catch (const std::bad_alloc& v_error) {
-						throw er::Severe_Error(L"Console", TO_WSTRING(v_error.what()), std::move(EXCEPTION_LINE), __FILEW__, L"WORD / DWORD");
+						throw er::Severe_Error(L"Console", TO_WSTRING(v_error.what()), EXCEPTION_LINE, __FILEW__, L"WORD / DWORD");
 					}
 					catch (const std::length_error& v_error) {
-						throw er::Severe_Error(L"Console", TO_WSTRING(v_error.what()), std::move(EXCEPTION_LINE), __FILEW__, L"console_screen_buffer");
+						throw er::Severe_Error(L"Console", TO_WSTRING(v_error.what()), EXCEPTION_LINE, __FILEW__, L"console_screen_buffer");
 					}
 					catch (const std::invalid_argument& v_error) {
-						throw er::Severe_Error(L"Console", TO_WSTRING(v_error.what()), std::move(EXCEPTION_LINE), __FILEW__, L"console_screen_buffer");
+						throw er::Severe_Error(L"Console", TO_WSTRING(v_error.what()), EXCEPTION_LINE, __FILEW__, L"console_screen_buffer");
 					}
 					catch (const er::Warning_Error& v_error) {
 						throw v_error;
@@ -315,28 +313,17 @@ PW_NAMESPACE_SRT
 						throw v_error;
 					}
 				}
-				void Console_Manip::Print_Info(std::wstring&& from, std::wstring&& msg, uint16_t&& line) {
-					// Line 1 Reserved: 
-					// Line 1 Reserved:
-					// Line 1 Reserved:
-					// Line 1 Reserved:
-					// Line 1 Reserved:
-					// Line 1 Reserved:
-					// Line 1 Reserved:
-					// Line 1 Reserved:
+				void Console_Manip::Print_Info(const std::wstring& p_from, const std::wstring& p_msg, const uint16_t& p_line) {
 					try {
-						DWORD bytes_written = 0;
-						std::wstring wstr{ L"||" };
+						std::wstring v_wstr{ L"||" };
 
-						size_t converted_chars = 0;
+						v_wstr.insert(1, p_from);
 
-						wstr.insert(1, from);
+						v_wstr.insert(p_from.size() + 2, p_msg);
 
-						wstr.insert(from.size() + 2, msg);
-
-						int16_t x_off = 80;
+						int16_t v_x_off = 80;
 						// Fix weird Unicode character flaw
-						std::wstring temp_wstr{ wstr };
+						std::wstring temp_wstr{ v_wstr };
 
 						for (size_t i = 0; i < temp_wstr.size(); i++) {
 							if ((DWORD)temp_wstr.at(i) > 127) {
@@ -350,29 +337,29 @@ PW_NAMESPACE_SRT
 								}
 							}
 						}
-						wstr = temp_wstr;
+						v_wstr = temp_wstr;
 
-						if (wstr.size() > 18) {
+						if (v_wstr.size() > 18) {
 							for (size_t i = 0; i < 18; i++) {
-								int16_t x_pos = x_off + (int16_t)i;
-								Console_Manip::Draw_WChar(COORD{ x_pos, TO_INT16(line + 2) }, std::move(wstr.at(i)), std::move(msg_colors.at(Console_Manip::Msg_Types::E_DEFAULT)));
+								int16_t x_pos = TO_INT16(v_x_off + (int16_t)i);
+								Console_Manip::Draw_WChar(COORD{ x_pos, TO_INT16(p_line + 2) }, v_wstr.at(i), m_msg_colors.at(Console_Manip::Msg_Types::E_DEFAULT));
 							}
-							Console_Manip::Draw_WChar(COORD{ TO_INT16(x_off + 17), TO_INT16(line + 2) }, L'|', std::move(msg_colors.at(Console_Manip::Msg_Types::E_DEFAULT)));
+							Console_Manip::Draw_WChar(COORD{ TO_INT16(v_x_off + 17), TO_INT16(p_line + 2) }, L'|', m_msg_colors.at(Console_Manip::Msg_Types::E_DEFAULT));
 						}
 						else {
-							for (size_t i = 0; i < wstr.size(); i++) {
-								int16_t x_pos = x_off + (int16_t)i;
-								Console_Manip::Draw_WChar(COORD{ x_pos, TO_INT16(line + 2) }, std::move(wstr.at(i)), std::move(msg_colors.at(Console_Manip::Msg_Types::E_DEFAULT)));
+							for (size_t i = 0; i < v_wstr.size(); i++) {
+								int16_t x_pos = TO_INT16(v_x_off + (int16_t)i);
+								Console_Manip::Draw_WChar(COORD{ x_pos, TO_INT16(p_line + 2) }, v_wstr.at(i), m_msg_colors.at(Console_Manip::Msg_Types::E_DEFAULT));
 							}
-							for (size_t i = 0; i < (18 - wstr.size()); i++) {
-								int16_t x_pos = x_off + (int16_t)i + wstr.size();
-								Console_Manip::Draw_WChar(COORD{ x_pos, TO_INT16(line + 2) }, L' ', std::move(msg_colors.at(Console_Manip::Msg_Types::E_DEFAULT)));
+							for (size_t i = 0; i < (18 - v_wstr.size()); i++) {
+								int16_t x_pos = TO_INT16(v_x_off + (int16_t)i + v_wstr.size());
+								Console_Manip::Draw_WChar(COORD{ x_pos, TO_INT16(p_line + 2) }, L' ', m_msg_colors.at(Console_Manip::Msg_Types::E_DEFAULT));
 							}
-							Console_Manip::Draw_WChar(COORD{ TO_INT16(x_off + 17), TO_INT16(line + 2) }, L'|', std::move(msg_colors.at(Console_Manip::Msg_Types::E_DEFAULT)));
+							Console_Manip::Draw_WChar(COORD{ TO_INT16(v_x_off + 17), TO_INT16(p_line + 2) }, L'|', m_msg_colors.at(Console_Manip::Msg_Types::E_DEFAULT));
 						}
 					}
 					catch (const std::invalid_argument& v_error) {
-						throw er::Severe_Error(L"Console", TO_WSTRING(v_error.what()), std::move(EXCEPTION_LINE), __FILEW__, L"Draw_WChar");
+						throw er::Severe_Error(L"Console", TO_WSTRING(v_error.what()), EXCEPTION_LINE, __FILEW__, L"Draw_WChar");
 					}
 					catch (const er::Warning_Error& v_error) {
 						throw v_error;
@@ -381,105 +368,103 @@ PW_NAMESPACE_SRT
 						throw v_error;
 					}
 				}
-				void Console_Manip::Print_Console(std::wstring&& from, std::wstring&& msg, Msg_Types&& msg_type, bool&& block_msg) {
+				void Console_Manip::Print_Console(const std::wstring& p_from, const std::wstring& p_msg, const Msg_Types& p_msg_type, const bool& p_block_msg) {
 					try {
-						DWORD bytes_written = 0;
-						std::wstring wstr{ L"|||" };
+						DWORD v_bytes_written = 0;
+						std::wstring v_wstr{ L"|||" };
 
-						size_t converted_chars = 0;
+						v_wstr.insert(1, TO_WSTRING(__TIME__));
 
-						wstr.insert(1, TO_WSTRING(__TIME__));
-
-						switch (msg_type) {
+						switch (p_msg_type) {
 							case Msg_Types::E_CLEAR: {
 								break;
 							}
 							case Msg_Types::E_ENGINE: {
-								wstr.insert(10, L"ENGINE ");
+								v_wstr.insert(10, L"ENGINE ");
 								break;
 							}
 							case Msg_Types::E_ERROR: {
-								wstr.insert(10, L"ERROR  ");
+								v_wstr.insert(10, L"ERROR  ");
 								break;
 							}
 							case Msg_Types::E_GAME: {
-								wstr.insert(10, L"GAME   ");
+								v_wstr.insert(10, L"GAME   ");
 								break;
 							}
 							case Msg_Types::E_INFO: {
-								wstr.insert(10, L"INFO   ");
+								v_wstr.insert(10, L"INFO   ");
 								break;
 							}
 							case Msg_Types::E_SUCCESS: {
-								wstr.insert(10, L"SUCCESS");
+								v_wstr.insert(10, L"SUCCESS");
 								break;
 							}
 							case Msg_Types::E_DEFAULT:
 							default: {
-								wstr.insert(10, L"COUTMSG");
+								v_wstr.insert(10, L"COUTMSG");
 								break;
 							}
 						}
-						if (block_msg == true) {
-							wstr.insert(18, from);
-							wstr.insert(from.size() + 18, msg);
+						if (p_block_msg == true) {
+							v_wstr.insert(18, p_from);
+							v_wstr.insert(p_from.size() + 18, p_msg);
 						}
 						else {
-							wstr.insert(18, std::wstring(from + L"| "));
-							wstr.insert(from.size() + 20, msg);
+							v_wstr.insert(18, std::wstring(p_from + L"| "));
+							v_wstr.insert(p_from.size() + 20, p_msg);
 						}
 
-						int16_t x_off = 2;
+						int16_t v_x_off = 2;
 						// Fix weird Unicode character flaw
-						std::wstring temp_wstr{ wstr };
+						std::wstring v_temp_wstr{ v_wstr };
 
-						for (size_t i = 0; i < temp_wstr.size(); i++) {
-							if ((DWORD)temp_wstr.at(i) > 127) {
+						for (size_t i = 0; i < v_temp_wstr.size(); i++) {
+							if ((DWORD)v_temp_wstr.at(i) > 127) {
 								if (i != 0) {
-									temp_wstr.insert(i + 1, 1, L' ');
+									v_temp_wstr.insert(i + 1, 1, L' ');
 									i = i + 1;
 
 								}
 								else {
-									temp_wstr.insert(0, 1, L' ');
+									v_temp_wstr.insert(0, 1, L' ');
 								}
 							}
 						}
-						wstr = temp_wstr;
+						v_wstr = v_temp_wstr;
 
-						er::Error_Log::Dump_Log(wstr.c_str());
+						er::Error_Log::Dump_Log(pw::cm::Engine_Constant::Pistonworks_Path(), v_wstr.c_str());
 
-						if (wstr.size() > 75) {
+						if (v_wstr.size() > 75) {
 							for (size_t i = 0; i < 76; i++) {
-								int16_t x_pos = x_off + (int16_t)i;
-								Console_Manip::Draw_WChar(COORD{ x_pos, TO_INT16(msg_line + 2) }, std::move(wstr.at(i)), std::move(msg_colors.at(Console_Manip::Msg_Types::E_DEFAULT)));
+								int16_t x_pos = v_x_off + (int16_t)i;
+								Console_Manip::Draw_WChar(COORD{ x_pos, TO_INT16(m_msg_line + 2) }, v_wstr.at(i), m_msg_colors.at(Console_Manip::Msg_Types::E_DEFAULT));
 							}
-							Console_Manip::Draw_WChar(COORD{ 77, TO_INT16(msg_line + 2) }, L'|', std::move(msg_colors.at(Console_Manip::Msg_Types::E_DEFAULT)));
+							Console_Manip::Draw_WChar(COORD{ 77, TO_INT16(m_msg_line + 2) }, L'|', m_msg_colors.at(Console_Manip::Msg_Types::E_DEFAULT));
 						}
 						else {
-							for (size_t i = 0; i < wstr.size(); i++) {
-								int16_t x_pos = x_off + (int16_t)i;
-								Console_Manip::Draw_WChar(COORD{ x_pos, TO_INT16(msg_line + 2) }, std::move(wstr.at(i)), std::move(msg_colors.at(Console_Manip::Msg_Types::E_DEFAULT)));
+							for (size_t i = 0; i < v_wstr.size(); i++) {
+								int16_t x_pos = v_x_off + (int16_t)i;
+								Console_Manip::Draw_WChar(COORD{ x_pos, TO_INT16(m_msg_line + 2) }, v_wstr.at(i), m_msg_colors.at(Console_Manip::Msg_Types::E_DEFAULT));
 							}
-							Console_Manip::Draw_WChar(COORD{ 77, TO_INT16(msg_line + 2) }, L'|', std::move(msg_colors.at(Console_Manip::Msg_Types::E_DEFAULT)));
+							Console_Manip::Draw_WChar(COORD{ 77, TO_INT16(m_msg_line + 2) }, L'|', m_msg_colors.at(Console_Manip::Msg_Types::E_DEFAULT));
 						}
 
 						for (size_t i = 0; i < 7; i++) {
-							int16_t x_pos = x_off + (int16_t)i + 10;
+							int16_t x_pos = v_x_off + (int16_t)i + 10;
 
-							if (TRY_LINE WriteConsoleOutputAttribute(console_output, &msg_colors.at(msg_type).Return_Color(), 1, { x_pos, TO_INT16(msg_line + 2) }, &bytes_written) == FALSE) {
-								throw er::Warning_Error(L"Console", std::move(Console_Error::Windows_Last_Error()), std::move(EXCEPTION_LINE), __FILEW__, L"WriteConsoleOutputAttribute");
+							if (TRY_LINE WriteConsoleOutputAttribute(m_console_output, &m_msg_colors.at(p_msg_type).Return_Color(), 1, { x_pos, TO_INT16(m_msg_line + 2) }, &v_bytes_written) == FALSE) {
+								throw er::Warning_Error(L"Console", Console_Error::Windows_Last_Error(), EXCEPTION_LINE, __FILEW__, L"WriteConsoleOutputAttribute");
 							}
 						}
 
-						msg_line = msg_line + 1;
-						if (msg_line > 35) {
-							msg_line = 0;
+						m_msg_line = m_msg_line + 1;
+						if (m_msg_line > 35) {
+							m_msg_line = 0;
 							Clear_Console();
 						}
 					}
 					catch (const std::invalid_argument& v_error) {
-						throw er::Severe_Error(L"Console", TO_WSTRING(v_error.what()), std::move(EXCEPTION_LINE), __FILEW__, L"Draw_WChar");
+						throw er::Severe_Error(L"Console", TO_WSTRING(v_error.what()), EXCEPTION_LINE, __FILEW__, L"Draw_WChar");
 					}
 					catch (const er::Warning_Error& v_error) {
 						throw v_error;
@@ -490,136 +475,136 @@ PW_NAMESPACE_SRT
 				}
 				void Console_Manip::Clear_Console() {
 					try {
-						int16_t x_off = 2;
+						int16_t v_x_off = 2;
 
 						for (int16_t i = 0; i < 76; i++) {
 							for (int16_t j = 0; j < 36; j++) {
-								Console_Manip::Draw_WChar(COORD{ TO_INT16(i + x_off),  TO_INT16(j + 2) }, L' ', std::move(msg_colors.at(Console_Manip::Msg_Types::E_CLEAR)));
+								Console_Manip::Draw_WChar(COORD{ TO_INT16(i + v_x_off),  TO_INT16(j + 2) }, L' ', m_msg_colors.at(Console_Manip::Msg_Types::E_CLEAR));
 							}
 						}
 					}
-					catch (const std::invalid_argument& error) {
-						throw error;
+					catch (const std::invalid_argument& v_error) {
+						throw v_error;
 					}
 				}
-				void Console_Manip::Draw_WChar(COORD&& position, const wchar_t&& character, Console_Color&& color) {
-					DWORD bytes_written = 0;
-					if (position.X < 0 || position.Y < 0) {
+				void Console_Manip::Draw_WChar(const COORD& p_position, const wchar_t& p_character, const Console_Color& p_color) {
+					DWORD v_bytes_written = 0;
+					if (p_position.X < 0 || p_position.Y < 0) {
 						throw std::invalid_argument("position");
 					}
 
-					if (TRY_LINE WriteConsoleOutputCharacterW(console_output, &character, 1, position, &bytes_written) == FALSE) {
-						throw er::Warning_Error(L"Console", std::move(Console_Error::Windows_Last_Error()), std::move(EXCEPTION_LINE), __FILEW__, L"WriteConsoleOutputCharacterW");
+					if (TRY_LINE WriteConsoleOutputCharacterW(m_console_output, &p_character, 1, p_position, &v_bytes_written) == FALSE) {
+						throw er::Warning_Error(L"Console", Console_Error::Windows_Last_Error(), EXCEPTION_LINE, __FILEW__, L"WriteConsoleOutputCharacterW");
 					}
-					if (TRY_LINE WriteConsoleOutputAttribute(console_output, &color.Return_Color(), 1, position, &bytes_written) == FALSE) {
-						throw er::Warning_Error(L"Console", std::move(Console_Error::Windows_Last_Error()), std::move(EXCEPTION_LINE), __FILEW__, L"WriteConsoleOutputAttribute");
+					if (TRY_LINE WriteConsoleOutputAttribute(m_console_output, &p_color.Return_Color(), 1, p_position, &v_bytes_written) == FALSE) {
+						throw er::Warning_Error(L"Console", Console_Error::Windows_Last_Error(), EXCEPTION_LINE, __FILEW__, L"WriteConsoleOutputAttribute");
 					}
 				}
-				void Console_Manip::Draw_Line(COORD&& start, COORD&& end, wchar_t&& character, Console_Color&& color) {
+				void Console_Manip::Draw_Line(const COORD& p_start, const COORD& p_end, const wchar_t& p_character, const Console_Color& p_color) {
 					try {
-						if (start.X < 0 || start.Y < 0) {
+						if (p_start.X < 0 || p_start.Y < 0) {
 							throw std::invalid_argument("start");
 						}
-						if (end.X < 0 || end.Y < 0) {
+						if (p_end.X < 0 || p_end.Y < 0) {
 							throw std::invalid_argument("end");
 						}
 
-						if (abs(end.Y - start.Y) < abs(end.X - start.X)) {
-							if (start.X > end.X) {
-								Draw_Line_Low(std::move(end), std::move(start), std::move(character), std::move(color));
+						if (abs(p_end.Y - p_start.Y) < abs(p_end.X - p_start.X)) {
+							if (p_start.X > p_end.X) {
+								Draw_Line_Low(p_end, p_start, p_character, p_color);
 							}
 							else {
-								Draw_Line_Low(std::move(start), std::move(end), std::move(character), std::move(color));
+								Draw_Line_Low(p_start, p_end, p_character, p_color);
 							}
 						}
 						else {
-							if (start.Y > end.Y) {
-								Draw_Line_High(std::move(end), std::move(start), std::move(character), std::move(color));
+							if (p_start.Y > p_end.Y) {
+								Draw_Line_High(p_end, p_start, p_character, p_color);
 							}
 							else {
-								Draw_Line_High(std::move(start), std::move(end), std::move(character), std::move(color));
+								Draw_Line_High(p_start, p_end, p_character, p_color);
 							}
 						}
 					}
-					catch (const std::invalid_argument& error) {
-						throw error;
+					catch (const std::invalid_argument& v_error) {
+						throw v_error;
 					}
 				}
-				void Console_Manip::Draw_Line_Low(COORD&& start, COORD&& end, wchar_t&& character, Console_Color&& color) {
+				void Console_Manip::Draw_Line_Low(const COORD& p_start, const COORD& p_end, const wchar_t& p_character, const Console_Color& p_color) {
 					try {
 						// Does not need to check if start and end values are correct the previous function Draw_Line does that automatically
-						int16_t dx = end.X - start.X;
-						int16_t dy = end.Y - start.Y;
+						int16_t v_dx = p_end.X - p_start.X;
+						int16_t v_dy = p_end.Y - p_start.Y;
 
-						int16_t yi = 1;
-						if (dy < 0) {
-							yi = -1;
-							dy = -(dy);
+						int16_t v_yi = 1;
+						if (v_dy < 0) {
+							v_yi = -1;
+							v_dy = -(v_dy);
 						}
-						int16_t d = (dy * 2) - dx;
-						int16_t y = start.Y;
+						int16_t d = (v_dy * 2) - v_dx;
+						int16_t y = p_start.Y;
 
-						for (int16_t x = start.X; x < end.X; x++) {
-							Draw_WChar({ x,y }, std::move(character), std::move(color));
+						for (int16_t x = p_start.X; x < p_end.X; x++) {
+							Draw_WChar({ x,y }, p_character, p_color);
 							if (d > 0) {
-								y = y + yi;
-								d = d + (2 * (dy - dx));
+								y = y + v_yi;
+								d = d + (2 * (v_dy - v_dx));
 							}
 							else {
-								d = d + 2 * dy;
+								d = d + 2 * v_dy;
 							}
 						}
 					}
-					catch (const std::invalid_argument& error) {
-						throw error;
+					catch (const std::invalid_argument& v_error) {
+						throw v_error;
 					}
 				}
-				void Console_Manip::Draw_Line_High(COORD&& start, COORD&& end, wchar_t&& character, Console_Color&& color) {
+				void Console_Manip::Draw_Line_High(const COORD& p_start, const COORD& p_end, const wchar_t& p_character, const Console_Color& p_color) {
 					try {
 						// Does not need to check if start and end values are correct the previous function Draw_Line does that automatically
-						int16_t dx = end.X - start.X;
-						int16_t dy = end.Y - start.Y;
+						int16_t v_dx = p_end.X - p_start.X;
+						int16_t v_dy = p_end.Y - p_start.Y;
 
-						int16_t xi = 1;
-						if (dy < 0) {
-							xi = -1;
-							dx = -(dx);
+						int16_t v_xi = 1;
+						if (v_dy < 0) {
+							v_xi = -1;
+							v_dx = -(v_dx);
 						}
-						int16_t d = (dx * 2) - dy;
-						int16_t x = start.X;
+						int16_t d = (v_dx * 2) - v_dy;
+						int16_t x = p_start.X;
 
-						for (int16_t y = start.Y; y < end.Y; y++) {
-							Draw_WChar({ x,y }, std::move(character), std::move(color));
+						for (int16_t y = p_start.Y; y < p_end.Y; y++) {
+							Draw_WChar({ x,y }, p_character, p_color);
 							if (d > 0) {
-								x = x + xi;
-								d = d + (2 * (dx - dy));
+								x = x + v_xi;
+								d = d + (2 * (v_dx - v_dy));
 							}
 							else {
-								d = d + 2 * dx;
+								d = d + 2 * v_dx;
 							}
 						}
 					}
-					catch (const std::invalid_argument& error) {
-						throw error;
+					catch (const std::invalid_argument& v_error) {
+						throw v_error;
 					}
 				}
-				void Console_Manip::Draw_Rectangle_Vertical(COORD&& top_left, COORD&& size, wchar_t&& character, Console_Color&& color) { 
+				void Console_Manip::Draw_Rectangle_Vertical(const COORD& p_top_left, const COORD& p_size, const wchar_t& p_character, const Console_Color& p_color) {
 					try {
 						int16_t v_t1_width = 0;
 						int16_t v_t2_width = 0;
 						int16_t v_t3_width = 0;
 						int16_t v_t4_width = 0;
 						// 2 or greater
-						assert(size.X != 0 && size.X != 1);
-						assert(size.Y != 0 && size.Y != 1);
+						assert(p_size.X != 0 && p_size.X != 1);
+						assert(p_size.Y != 0 && p_size.Y != 1);
 						// Even
-						if (size.X % 2 == 0) {
-							switch (size.X % 4) {
+						if (p_size.X % 2 == 0) {
+							switch (p_size.X % 4) {
 								case 2: {
-									int16_t full_quartets = size.X / 4;
+									int16_t v_full_quartets = p_size.X / 4;
 									v_t1_width = v_t1_width + 1;
 									v_t2_width = v_t2_width + 1;
-									for (int16_t i = 0; i < full_quartets; i++) {
+									for (int16_t i = 0; i < v_full_quartets; i++) {
 										v_t1_width = v_t1_width + 1;
 										v_t2_width = v_t2_width + 1;
 										v_t3_width = v_t3_width + 1;
@@ -628,8 +613,8 @@ PW_NAMESPACE_SRT
 									break;
 								}
 								case 0: {
-									int16_t full_quartets = size.X / 4;
-									for (int16_t i = 0; i < full_quartets; i++) {
+									int16_t v_full_quartets = p_size.X / 4;
+									for (int16_t i = 0; i < v_full_quartets; i++) {
 										v_t1_width = v_t1_width + 1;
 										v_t2_width = v_t2_width + 1;
 										v_t3_width = v_t3_width + 1;
@@ -646,13 +631,13 @@ PW_NAMESPACE_SRT
 							// Odd, still works
 							v_t1_width = 1;
 							// Any odd number accept 1
-							if (size.X - v_t1_width != 0) {
-								switch ((size.X - v_t1_width) % 4) {
+							if (p_size.X - v_t1_width != 0) {
+								switch ((p_size.X - v_t1_width) % 4) {
 									case 2: {
-										int16_t full_quartets = (size.X - v_t1_width) / 4;
+										int16_t v_full_quartets = (p_size.X - v_t1_width) / 4;
 										v_t1_width = v_t1_width + 1;
 										v_t2_width = v_t2_width + 1;
-										for (int16_t i = 0; i < full_quartets; i++) {
+										for (int16_t i = 0; i < v_full_quartets; i++) {
 											v_t1_width = v_t1_width + 1;
 											v_t2_width = v_t2_width + 1;
 											v_t3_width = v_t3_width + 1;
@@ -661,8 +646,8 @@ PW_NAMESPACE_SRT
 										break;
 									}
 									case 0: {
-										int16_t full_quartets = size.X / 4;
-										for (int16_t i = 0; i < full_quartets; i++) {
+										int16_t v_full_quartets = p_size.X / 4;
+										for (int16_t i = 0; i < v_full_quartets; i++) {
 											v_t1_width = v_t1_width + 1;
 											v_t2_width = v_t2_width + 1;
 											v_t3_width = v_t3_width + 1;
@@ -679,59 +664,57 @@ PW_NAMESPACE_SRT
 						// Now that we know the width of every thread we run them in order to draw the shape
 						// t1 and t2 always are 1 or more
 						uint16_t v_total_width = v_t1_width;
-						auto v_thread_1 = std::async(std::launch::async, [](int16_t total_width, COORD* top_left, COORD* size, wchar_t&& character, Console_Color&& color) {
-							for (int16_t x = top_left->X; x < top_left->X + total_width; x++) {
-								Draw_Line({ x, top_left->Y }, { x, (int16_t)(top_left->Y + size->Y) }, std::move(character), std::move(color));
+						auto v_thread_1 = std::async(std::launch::async, [](const int16_t& p_total_width, const COORD& p_top_left, const COORD& p_size, const wchar_t& p_character, const Console_Color& p_color) {
+							for (int16_t x = p_top_left.X; x < p_top_left.X + p_total_width; x++) {
+								Draw_Line({ x, p_top_left.Y }, { x, (int16_t)(p_top_left.Y + p_size.Y) }, p_character, p_color);
 							}
-						}, v_total_width, &top_left, &size, std::move(character), std::move(color));
+						}, v_total_width, p_top_left, p_size, p_character, p_color);
 						uint16_t v_last_width = v_total_width;
 						v_total_width = v_total_width + v_t2_width;
-						auto v_thread_2 = std::async(std::launch::async, [](int16_t total_width, int16_t last_width, COORD* top_left, COORD* size, wchar_t&& character, Console_Color&& color) {
-							for (int16_t x = top_left->X + last_width; x < top_left->X + total_width; x++) {
-								Draw_Line({ x, top_left->Y }, { x, (int16_t)(top_left->Y + size->Y) }, std::move(character), std::move(color));
+						auto v_thread_2 = std::async(std::launch::async, [](const int16_t& p_total_width, const int16_t& last_width, const COORD& p_top_left, const COORD& p_size, const wchar_t& p_character, const Console_Color& p_color) {
+							for (int16_t x = p_top_left.X + last_width; x < p_top_left.X + p_total_width; x++) {
+								Draw_Line({ x, p_top_left.Y }, { x, (int16_t)(p_top_left.Y + p_size.Y) }, p_character, p_color);
 							}
-						}, v_total_width, v_last_width, & top_left, & size, std::move(character), std::move(color));
+						}, v_total_width, v_last_width, p_top_left, p_size, p_character, p_color);
 						// t3 and t4 can be 0
 						if (v_t3_width != 0) {
 							v_last_width = v_total_width;
 							v_total_width = v_total_width + v_t3_width;
-							auto v_thread_3 = std::async(std::launch::async, [](int16_t total_width, int16_t last_width, COORD* top_left, COORD* size, wchar_t&& character, Console_Color&& color) {
-								for (int16_t x = top_left->X + last_width; x < top_left->X + total_width; x++) {
-									Draw_Line({ x, top_left->Y }, { x, (int16_t)(top_left->Y + size->Y) }, std::move(character), std::move(color));
+							auto v_thread_3 = std::async(std::launch::async, [](const int16_t& p_total_width, const int16_t& last_width, const COORD& p_top_left, const COORD& p_size, const wchar_t& p_character, const Console_Color& p_color) {
+								for (int16_t x = p_top_left.X + last_width; x < p_top_left.X + p_total_width; x++) {
+									Draw_Line({ x, p_top_left.Y }, { x, (int16_t)(p_top_left.Y + p_size.Y) }, p_character, p_color);
 								}
-							}, v_total_width, v_last_width, &top_left, &size, std::move(character), std::move(color));
+							}, v_total_width, v_last_width, p_top_left, p_size, p_character, p_color);
 						}
 						if (v_t4_width != 0) {
 							v_last_width = v_total_width;
 							v_total_width = v_total_width + v_t4_width;
-							auto v_thread_4 = std::async(std::launch::async, [](int16_t total_width, int16_t last_width, COORD* top_left, COORD* size, wchar_t&& character, Console_Color&& color) {
-								for (int16_t x = top_left->X + last_width; x < top_left->X + total_width; x++) {
-									Draw_Line({ x, top_left->Y }, { x, (int16_t)(top_left->Y + size->Y) }, std::move(character), std::move(color));
+							auto v_thread_4 = std::async(std::launch::async, [](const int16_t& p_total_width, const int16_t& last_width, const COORD& p_top_left, const COORD& p_size, const wchar_t& p_character, const Console_Color& p_color) {
+								for (int16_t x = p_top_left.X + last_width; x < p_top_left.X + p_total_width; x++) {
+									Draw_Line({ x, p_top_left.Y }, { x, (int16_t)(p_top_left.Y + p_size.Y) }, p_character, p_color);
 								}
-							}, v_total_width, v_last_width, &top_left, &size, std::move(character), std::move(color));
+							}, v_total_width, v_last_width, p_top_left, p_size, p_character, p_color);
 						}
 					}
-					catch (const std::invalid_argument& error) {
-						throw error;
+					catch (const std::invalid_argument& v_error) {
+						throw v_error;
 					}
 				}
-				void Console_Manip::Draw_Rectangle_Horizontal(COORD&& top_left, COORD&& size, wchar_t&& character, Console_Color&& color) {
+				void Console_Manip::Draw_Rectangle_Horizontal(const COORD& p_top_left, const COORD& p_size, const wchar_t& p_character, const Console_Color& p_color) {
 					try {
-						for (int16_t y = top_left.Y; y < top_left.Y + size.Y; y++) {
-							Draw_Line({ top_left.X, y }, { (int16_t)(top_left.X + size.X), y }, std::move(character), std::move(color));
+						for (int16_t y = p_top_left.Y; y < p_top_left.Y + p_size.Y; y++) {
+							Draw_Line({ p_top_left.X, y }, { (int16_t)(p_top_left.X + p_size.X), y }, p_character, p_color);
 						}
 					}
-					catch (const std::invalid_argument& error) {
-						throw error;
+					catch (const std::invalid_argument& v_error) {
+						throw v_error;
 					}
 				}
 				const std::map<Console_Manip::Msg_Types, Console_Color>& Console_Manip::Msg_Colors() {
-					return msg_colors;
+					return m_msg_colors;
 				}
 				void Console_Manip::Delete_Console() {
-					if (TRY_LINE PostMessageW(window_handle, WM_CLOSE, 0, 0) == FALSE) {
-						throw er::Severe_Error(L"Console", std::move(Console_Error::Windows_Last_Error()), std::move(EXCEPTION_LINE), __FILEW__, L"PostMessageW");
-					}
+					FreeConsole();
 				}
 			// End of Class Members
 		//////////////////////////////////

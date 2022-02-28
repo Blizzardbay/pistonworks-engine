@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021, Darrian Corkadel
+// Copyright(c) 2021-2022, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,25 +30,36 @@
 #ifndef H_ENGINE_ERROR
 #define H_ENGINE_ERROR
 //////////////////////////////////
+#include "engine_common\engine_build.h"
+//////////////////////////////////
 // #FILE_INFO#
 // +(HEADER_ONLY)
 //////////////////////////////////
 // C++ Headers
+#include <codeanalysis\warnings.h>
+#pragma warning (push)
+#pragma warning (disable:ALL_CODE_ANALYSIS_WARNINGS)
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
 #include <codecvt>
 #include <locale.h>
+#pragma warning (pop)
 //////////////////////////////////
 // Project Headers
+#pragma warning (push)
+#pragma warning (disable:ALL_CODE_ANALYSIS_WARNINGS)
 #ifndef PW_GLEW_H
 #define PW_GLEW_H
 #include <GL\glew.h>
-#endif // PW_GLEW_H 
+#endif // !PW_GLEW_H 
+#undef APIENTRY
 #include <GLFW\glfw3.h>
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include <freetype\fterrors.h>
+#include <AL\alut.h>
+#pragma warning (pop)
 //////////////////////////////////
 // Engine Common Headers
 //////////////////////////////////
@@ -59,12 +70,13 @@
 // Exception to format to fix <Windows.h> bug
 #ifndef PW_FI_H
 #define PW_FI_H
-#include "freeimage\FreeImage.h"
-#endif // PW_FI_H 
+#pragma warning (push)
+#pragma warning (disable:ALL_CODE_ANALYSIS_WARNINGS)
+#include <freeimage\FreeImage.h>
+#pragma warning (pop)
+#endif // !PW_FI_H 
 //////////////////////////////////
 // Engine Structures Headers
-//////////////////////////////////
-// Engine Macros
 //////////////////////////////////
 // Pistonworks Engine           //
 // Created By : Darrian Corkadel//
@@ -74,36 +86,15 @@ PW_NAMESPACE_SRT
 	//////////////////////////////////
 	ER_NAMESPACE_SRT
 	//////////////////////////////////
-		//////////////////////////////////
-		// Classes
-
-		// //////////////////////////////////////////////////
-		// Class Name: pw::er::Engine_Error
-		// //////////////////////////////////////////////////
-		// Purpose:
-		//  For handling error
-		//  within parts of the engine.
-		// //////////////////////////////////////////////////
-		class PW_ERROR_API Engine_Error {
+		class Engine_Error {
 		// Default Class Structures
 		public:
 		private:
 		// Public Functions/Macros
 		public:
-			// //////////////////////////////////////////////////
-			// ERROR_HANDLE Function: Engine_Error::PW_Print_Error
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Prints a custom error msg.
-			// //////////////////////////////////////////////////
-			// Parameters: 1
-			// (1) const pw::er::Warning_Error& p_error;
-			// Purpose: 
-			//  The error to be printed.
-			// //////////////////////////////////////////////////
-			static ERROR_HANDLE void PW_Print_Error(const pw::er::Warning_Error& p_error) {
+			static void PW_Print_Error(const pw::er::Warning_Error& p_error) {
 				#ifdef PW_DEBUG_MODE
-					if (pw::er::Error_Log::Dump_Log(p_error) == false) {
+					if (pw::er::Error_Log::Dump_Log(pw::cm::Engine_Constant::Pistonworks_Path(), p_error) == false) {
 						PRINT_MSG(p_error.From(), L"Failed to dump error", ERROR_MSG);
 					}
 					std::wstring v_line{ std::to_wstring(p_error.Line()) };
@@ -133,20 +124,9 @@ PW_NAMESPACE_SRT
 					PRINT_MSG(p_error.From(), p_error.Function(), ERROR_MSG);
 				#endif // PW_DEBUG_MODE
 			}
-			// //////////////////////////////////////////////////
-			// ERROR_HANDLE Function: Engine_Error::PW_Print_Error
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Prints a custom error msg.
-			// //////////////////////////////////////////////////
-			// Parameters: 1
-			// (1) const pw::er::Severe_Error& p_error;
-			// Purpose: 
-			//  The error to be printed.
-			// //////////////////////////////////////////////////
-			static ERROR_HANDLE void PW_Print_Error(const pw::er::Severe_Error& p_error) {
+			static void PW_Print_Error(const pw::er::Severe_Error& p_error) {
 				#ifdef PW_DEBUG_MODE
-					if (pw::er::Error_Log::Dump_Log(p_error) == false) {
+					if (pw::er::Error_Log::Dump_Log(pw::cm::Engine_Constant::Pistonworks_Path(), p_error) == false) {
 						PRINT_MSG(p_error.From(), L"Failed to dump error", ERROR_MSG);
 					}
 					std::wstring v_line{ std::to_wstring(p_error.Line()) };
@@ -176,7 +156,7 @@ PW_NAMESPACE_SRT
 					PRINT_MSG(p_error.From(), p_error.Function(), ERROR_MSG);
 				#endif // PW_DEBUG_MODE
 			}
-			static ERROR_HANDLE void Evaluate_Error(std::any p_error) {
+			static void Evaluate_Error(const std::any& p_error) {
 				if (p_error.type() == typeid(pw::er::Warning_Error)) {
 					PW_Print_Error(std::any_cast<pw::er::Warning_Error>(p_error));
 				}
@@ -184,27 +164,11 @@ PW_NAMESPACE_SRT
 					PW_Print_Error(std::any_cast<pw::er::Severe_Error>(p_error));
 				}
 			}
-			// //////////////////////////////////////////////////
-			// ERROR_HANDLE Function: Engine_Error::PW_GLFW_Callback_Handle
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Prints error msg's sent to the function from
-			//  glfw.
-			// //////////////////////////////////////////////////
-			// Parameters: 2
-			// (1) int32_t&& result;
-			// Purpose: 
-			//  The result of the function to be evaluated.
-			// (2) std::wstring description;
-			// Purpose: 
-			//  The description of the error.
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			static ERROR_HANDLE void PW_GLFW_Callback_Handle(int32_t result, const char* description) {
-				if (result != 65537) {
+			static void PW_GLFW_Callback_Handle(int32_t p_result, const char* p_description) {
+				if (p_result != 65537) {
 					try {
-						PW_Print_Error(er::Severe_Error(L"GLFW", TO_WSTRING(description).c_str(), std::move(PW_LINE_), PW_FILE_.c_str(), L"PW_GLFW_Callback_Handle"));
-						throw er::Severe_Error(L"GLFW", TO_WSTRING(description).c_str(), std::move(PW_LINE_), PW_FILE_.c_str(), L"PW_GLFW_Callback_Handle");
+						PW_Print_Error(er::Severe_Error(L"GLFW", TO_WSTRING(p_description).c_str(), std::move(PW_LINE_), PW_FILE_.c_str(), L"PW_GLFW_Callback_Handle"));
+						throw er::Severe_Error(L"GLFW", TO_WSTRING(p_description).c_str(), std::move(PW_LINE_), PW_FILE_.c_str(), L"PW_GLFW_Callback_Handle");
 					}
 					catch (const er::Warning_Error& v_error) {
 						throw v_error;
@@ -214,30 +178,11 @@ PW_NAMESPACE_SRT
 					}
 				}
 			}
-			// //////////////////////////////////////////////////
-			// ERROR_HANDLE Function: Engine_Error::PW_GLFW_Handle
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Takes a result and finds if it is an error or not
-			//  .
-			// //////////////////////////////////////////////////
-			// Parameters: 3
-			// (1) const int32_t&& result;
-			// Purpose: 
-			//  The result of the function to be evaluated.
-			// (2) const int32_t&& line;
-			// Purpose: 
-			//  The line the error was on.
-			// (3) std::wstring file;
-			// Purpose: 
-			//  The file the error happened in.
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			static ERROR_HANDLE void PW_GLFW_Handle(const int32_t&& result, int32_t&& line, std::wstring&& file) {
-				if (result != GLFW_NO_ERROR && result != GLFW_TRUE) {
+			static void PW_GLFW_Handle(const int32_t& p_result, const int32_t& p_line, const std::wstring& p_file) {
+				if (p_result != GLFW_NO_ERROR && p_result != GLFW_TRUE) {
 					try {
-						PW_Print_Error(er::Severe_Error(L"GLFW", L"Function Error", std::move(line), std::move(file), L"PW_GLFW_Handle"));
-						throw er::Severe_Error(L"GLFW", L"Function Error", std::move(line), std::move(file), L"PW_GLFW_Handle");
+						PW_Print_Error(er::Severe_Error(L"GLFW", L"Function Error", std::move(p_line), std::move(p_file), L"PW_GLFW_Handle"));
+						throw er::Severe_Error(L"GLFW", L"Function Error", std::move(p_line), std::move(p_file), L"PW_GLFW_Handle");
 					}
 					catch (const er::Warning_Error& v_error) {
 						throw v_error;
@@ -246,39 +191,19 @@ PW_NAMESPACE_SRT
 						throw v_error;
 					}
 				}
-			#ifdef PW_DEBUG_MODE
+				#ifdef PW_DEBUG_MODE
 				else {
 					PRINT_MSG(L"GLFW", L"Function Success ( Completed )", SUCCESS_MSG);
 				}
-			#endif // PW_DEBUG_MODE
+				#endif // PW_DEBUG_MODE
 			}
-			// //////////////////////////////////////////////////
-			// ERROR_HANDLE Function: Engine_Error::PW_GL_VOID_Handle
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Finds an error from a opengl function with a void
-			//  return.
-			// //////////////////////////////////////////////////
-			// Parameters: 4
-			// (1) const GLenum&& result;
-			// Purpose: 
-			//  The result of the function to be evaluated.
-			// (2) int32_t&& line;
-			// Purpose: 
-			//  The line the error was on.
-			// (3) std::wstring file;
-			// Purpose: 
-			//  The file the error happened in.
-			// (4) bool&& handle_type;
-			// Purpose:
-			//  Should the error be printed or not.
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			static ERROR_HANDLE void PW_GL_VOID_Handle(const GLenum&& result, int32_t&& line, std::wstring&& file, bool&& handle_type) {
-				if (result != 0 && result != 1282) {
+			static void PW_GL_VOID_Handle(const GLenum& p_result, const int32_t& p_line, const wchar_t* p_file, const bool& p_handle_type) {
+				if (p_result != 0 && p_result != 1282) {
 					try {
-						PW_Print_Error(er::Severe_Error(L"GL", std::wstring(std::wstring(L"Function Error: ") + std::to_wstring(result)), std::move(line), std::move(file), L"PW_GL_VOID_Handle"));
-						throw er::Severe_Error(L"GL", std::wstring(std::wstring(L"Function Error: ") + std::to_wstring(result)), std::move(line), std::move(file), L"PW_GL_VOID_Handle");
+						PW_Print_Error(er::Severe_Error(L"GL", std::wstring(std::wstring(L"Function Error: ") + std::to_wstring(p_result)),
+							p_line, p_file, L"PW_GL_VOID_Handle"));
+						throw er::Severe_Error(L"GL", std::wstring(std::wstring(L"Function Error: ") + std::to_wstring(p_result)),
+							p_line, p_file, L"PW_GL_VOID_Handle");
 					}
 					catch (const er::Warning_Error& v_error) {
 						throw v_error;
@@ -289,34 +214,19 @@ PW_NAMESPACE_SRT
 				}
 			#ifdef PW_DEBUG_MODE
 				else {
-					if (handle_type == true) {
+					if (p_handle_type == true) {
 						PRINT_MSG(L"GL", L"Function Success ( Completed )", SUCCESS_MSG);
 					}
 				}
 			#endif // PW_DEBUG_MODE
-			}
-			// //////////////////////////////////////////////////
-			// ERROR_HANDLE Function: Engine_Error::PW_FI_Callback_Handle
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Prints error msg's sent to the function from FI.
-			// //////////////////////////////////////////////////
-			// Parameters: 2
-			// (1) FREE_IMAGE_FORMAT&& result;
-			// Purpose: 
-			//  The result of the function to be evaluated.
-			// (2) std::wstring description;
-			// Purpose: 
-			//  The description of the error.
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			static ERROR_HANDLE void PW_FI_Callback_Handle(FREE_IMAGE_FORMAT result, const char* description) {
-				if (result != FIF_UNKNOWN) {
-					std::string str = std::string(description);
-					str.insert(0, "Unknown Image Format ");
+			}			
+			static void PW_FI_Callback_Handle(FREE_IMAGE_FORMAT p_result, const char* p_description) {
+				if (p_result != FREE_IMAGE_FORMAT::FIF_UNKNOWN) {
+					std::string v_str = std::string(p_description);
+					v_str.insert(0, "Unknown Image Format ");
 					try {
-						PW_Print_Error(er::Warning_Error(L"FI", TO_WSTRING(str.c_str()).c_str(), std::move(PW_LINE_), std::move(PW_FILE_), L"PW_FI_Callback_Handle"));
-						throw er::Warning_Error(L"FI", TO_WSTRING(str.c_str()).c_str(), std::move(PW_LINE_), std::move(PW_FILE_), L"PW_FI_Callback_Handle");
+						PW_Print_Error(er::Warning_Error(L"FI", TO_WSTRING(v_str.c_str()).c_str(), std::move(PW_LINE_), std::move(PW_FILE_), L"PW_FI_Callback_Handle"));
+						throw er::Warning_Error(L"FI", TO_WSTRING(v_str.c_str()).c_str(), std::move(PW_LINE_), std::move(PW_FILE_), L"PW_FI_Callback_Handle");
 					}
 					catch (const er::Warning_Error& v_error) {
 						throw v_error;
@@ -326,11 +236,11 @@ PW_NAMESPACE_SRT
 					}
 				}
 				else {
-					std::string str = std::string(description);
-					str.insert(0, "Known Image Format ");
+					std::string v_str = std::string(p_description);
+					v_str.insert(0, "Known Image Format ");
 					try {
-						PW_Print_Error(er::Warning_Error(L"FI", TO_WSTRING(str.c_str()).c_str(), std::move(PW_LINE_), std::move(PW_FILE_), L"PW_FI_Callback_Handle"));
-						throw er::Warning_Error(L"FI", TO_WSTRING(str.c_str()).c_str(), std::move(PW_LINE_), std::move(PW_FILE_), L"PW_FI_Callback_Handle");
+						PW_Print_Error(er::Warning_Error(L"FI", TO_WSTRING(v_str.c_str()).c_str(), std::move(PW_LINE_), std::move(PW_FILE_), L"PW_FI_Callback_Handle"));
+						throw er::Warning_Error(L"FI", TO_WSTRING(v_str.c_str()).c_str(), std::move(PW_LINE_), std::move(PW_FILE_), L"PW_FI_Callback_Handle");
 					}
 					catch (const er::Warning_Error& v_error) {
 						throw v_error;
@@ -340,29 +250,11 @@ PW_NAMESPACE_SRT
 					}
 				}
 			}
-			// //////////////////////////////////////////////////
-			// ERROR_HANDLE Function: Engine_Error::PW_GL_Handle
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Interprets a result form a opengl function.
-			// //////////////////////////////////////////////////
-			// Parameters: 3
-			// (1) const GLenum&& result;
-			// Purpose: 
-			//  The result of the function to be evaluated.
-			// (2) const int32_t&& line;
-			// Purpose: 
-			//  The line the error was on.
-			// (3) std::wstring file;
-			// Purpose: 
-			//  The file the error happened in.
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			static ERROR_HANDLE void PW_GL_Handle(const GLenum&& result, int32_t&& line, std::wstring&& file) {
+			static void PW_GL_Handle(const GLenum& p_result, const int32_t& p_line, const std::wstring& p_file) {
 				try {
-					if (result <= 0) {
-						PW_Print_Error(er::Severe_Error(L"GL", std::wstring(std::wstring(L"Function Error: ") + std::to_wstring(result)).c_str(), std::move(line), std::move(file), L"PW_GL_Handle"));
-						throw er::Severe_Error(L"GL", std::wstring(std::wstring(L"Function Error: ") + std::to_wstring(result)).c_str(), std::move(line), std::move(file), L"PW_GL_Handle");
+					if (p_result <= 0) {
+						PW_Print_Error(er::Severe_Error(L"GL", std::wstring(std::wstring(L"Function Error: ") + std::to_wstring(p_result)).c_str(), std::move(p_line), std::move(p_file), L"PW_GL_Handle"));
+						throw er::Severe_Error(L"GL", std::wstring(std::wstring(L"Function Error: ") + std::to_wstring(p_result)).c_str(), std::move(p_line), std::move(p_file), L"PW_GL_Handle");
 					}
 					#ifdef PW_DEBUG_MODE
 						else {
@@ -377,42 +269,52 @@ PW_NAMESPACE_SRT
 					throw v_error;
 				}
 			}
-			// //////////////////////////////////////////////////
-			// ERROR_HANDLE Function: Engine_Error::PW_FT_Handle
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Handles possible font loading issues.
-			// //////////////////////////////////////////////////
-			// Parameters: 3
-			// (1) const FT_Error&& result;
-			// Purpose: 
-			//  The result of the function to be evaluated.
-			// (2) const int32_t&& line;
-			// Purpose: 
-			//  The line the error was on.
-			// (3) std::wstring file;
-			// Purpose: 
-			//  The file the error happened in.
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			static ERROR_HANDLE void PW_FT_Handle(const FT_Error&& result, int32_t&& line, std::wstring&& file, std::wstring&& function) {
-				if (result != FT_Err_Ok) {
+			static void PW_FT_Handle(const FT_Error& p_result, const int32_t& p_line, const std::wstring& p_file, const std::wstring& p_function) {
+				if (p_result != FT_Err_Ok) {
 					PW_Print_Error(pw::er::Warning_Error(L"FT",
-						std::move(TO_WSTRING(FT_Error_String(result))), std::move(line), std::move(file), std::move(function)));
+						std::move(TO_WSTRING(FT_Error_String(p_result))), std::move(p_line), std::move(p_file), std::move(p_function)));
 					throw pw::er::Warning_Error(L"FT",
-						std::move(TO_WSTRING(FT_Error_String(result))), std::move(line), std::move(file), std::move(function));
+						std::move(TO_WSTRING(FT_Error_String(p_result))), std::move(p_line), std::move(p_file), std::move(p_function));
 				}
 			}
-			#define PW_GLFW_VOID_CALL(funct)				{ funct; pw::er::Engine_Error::PW_LINE_ = __LINE__; pw::er::Engine_Error::PW_FILE_ = __FILEW__; }
-			#define PW_GLFW_CALL(funct)						{ pw::er::Engine_Error::PW_GLFW_Handle(funct, __LINE__, __FILEW__); }
-			#define PW_GL_VOID_CALL(funct, handle_type)		{ funct; pw::er::Engine_Error::PW_GL_VOID_Handle(glGetError(), __LINE__, __FILEW__,handle_type); }
-			#define PW_FI_VOID_CALL(funct)					{ funct; pw::er::Engine_Error::PW_LINE_ = __LINE__; pw::er::Engine_Error::PW_FILE_ = __FILEW__; }
-			#define PW_FI_VOID_CALL_C(funct)				{ funct; pw::er::Engine_Error::PW_LINE_ = __LINE__; pw::er::Engine_Error::PW_FILE_ = __FILEW__; funct }
-			#define PW_GL_CALL(funct)						{ pw::er::Engine_Error::PW_GL_Handle(funct, __LINE__, __FILEW__); }
-			#define PW_FT_CALL(funct)						{ pw::er::Engine_Error::PW_FT_Handle(funct, __LINE__, __FILEW__, L"No Function");}
-			
-			#define PW_PRINT_ERROR(p_error) { pw::er::Engine_Error::Evaluate_Error(p_error); }
-
+			static void PW_AL_Handle(const ALenum& p_result, const int32_t& p_line, const std::wstring& p_file, const std::wstring& p_function) {
+				if (p_result != AL_NO_ERROR) {
+					PW_Print_Error(pw::er::Warning_Error(L"AL",
+						std::move(TO_WSTRING(alGetString(p_result))), std::move(p_line), std::move(p_file), std::move(p_function)));
+					throw pw::er::Warning_Error(L"AL",
+						std::move(TO_WSTRING(alGetString(p_result))), std::move(p_line), std::move(p_file), std::move(p_function));
+				}
+			}
+			#define PW_GLFW_VOID_CALL(p_funct) {			\
+				p_funct;									\
+				pw::er::Engine_Error::PW_LINE_ = __LINE__;	\
+				pw::er::Engine_Error::PW_FILE_ = __FILEW__;	\
+			}
+			#define PW_GLFW_CALL(p_funct) {											\
+				pw::er::Engine_Error::PW_GLFW_Handle(p_funct, __LINE__, __FILEW__);	\
+			}
+			#define PW_GL_VOID_CALL(p_funct, p_handle_type) {												\
+				p_funct;																					\
+				pw::er::Engine_Error::PW_GL_VOID_Handle(glGetError(), __LINE__, __FILEW__, p_handle_type);	\
+			}
+			#define PW_FI_VOID_CALL(p_funct) {				\
+				p_funct;									\
+				pw::er::Engine_Error::PW_LINE_ = __LINE__;	\
+				pw::er::Engine_Error::PW_FILE_ = __FILEW__;	\
+			}
+			#define PW_GL_CALL(p_funct)	{											\
+				pw::er::Engine_Error::PW_GL_Handle(p_funct, __LINE__, __FILEW__);	\
+			}
+			#define PW_FT_CALL(p_funct) {															\
+				pw::er::Engine_Error::PW_FT_Handle(p_funct, __LINE__, __FILEW__, L"No Function");	\
+			}
+			#define PW_AL_VOID_CALL(p_funct) {																				\
+				p_funct;																									\
+				pw::er::Engine_Error::PW_AL_Handle(alGetError(), __LINE__, __FILEW__, TO_WSTRING(VARIABLE_NAME(p_funct)));	\
+			}  
+			#define PW_PRINT_ERROR(p_error) {					\
+				pw::er::Engine_Error::Evaluate_Error(p_error);	\
+			}
 		// Public Variables
 		public:
 			static int32_t PW_LINE_;
@@ -422,8 +324,6 @@ PW_NAMESPACE_SRT
 		// Private Variables
 		private:
 		};
-		// Functions
-		// Macros / Definitions
 	//////////////////////////////////
 	ER_NAMESPACE_END
 	//////////////////////////////////

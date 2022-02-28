@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021, Darrian Corkadel
+// Copyright(c) 2021-2022, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,6 +30,8 @@
 #ifndef H_GAME_HEADER
 #define H_GAME_HEADER
 //////////////////////////////////
+#include "engine_common\engine_build.h"
+//////////////////////////////////
 // #FILE_INFO#
 // +(HEADER_FILE)
 //////////////////////////////////
@@ -37,12 +39,12 @@
 //////////////////////////////////
 // Project Headers         
 //////////////////////////////////
-// Engine Headers     
+// Engine Common Headers
+#include "engine_common\engine_macro.h"
 //////////////////////////////////
-// Engine Macro Includes 
-#include "engine_common\engine_error.h"
+// Engine Control Headers
 //////////////////////////////////
-// Engine Macros    
+// Engine Structures Headers
 //////////////////////////////////
 // Pistonworks Engine           //
 // Created By : Darrian Corkadel//
@@ -55,68 +57,11 @@ PW_NAMESPACE_SRT
 	//////////////////////////////////
 	ST_NAMESPACE_SRT
 	//////////////////////////////////
-		//////////////////////////////////
-		// Classes
-
-		// //////////////////////////////////////////////////
-		// PW_STRUCTURES_API Class Name: pw::st::Scene_Model
-		// //////////////////////////////////////////////////																				 
-		// Purpose:
-		//  A template class for Asset models and Actor
-		//  models.
-		// //////////////////////////////////////////////////
-		class PW_STRUCTURES_API Scene_Model;
-		// //////////////////////////////////////////////////
-		// PW_STRUCTURES_API Class Name: pw::st::Asset_Model
-		// //////////////////////////////////////////////////																				 
-		// Purpose: 
-		//  A non-changing model that does not get updated
-		//  frequently.
-		// //////////////////////////////////////////////////
-		class PW_STRUCTURES_API Asset_Model;
-		// //////////////////////////////////////////////////
-		// Class Name: pw::st::AAsset_Model
-		// //////////////////////////////////////////////////																				 
-		// Purpose:
-		//  A non-changing model that does not get updated
-		//  frequently and has animations.
-		// //////////////////////////////////////////////////
-		class PW_STRUCTURES_API AAsset_Model;
-		// //////////////////////////////////////////////////
-		// PW_STRUCTURES_API Class Name: pw::st::Actor_Model
-		// //////////////////////////////////////////////////																				 
-		// Purpose:
-		//  A changing model that does get updated frequently
-		//  .(IE. every frame)
-		// //////////////////////////////////////////////////
-		class PW_STRUCTURES_API Actor_Model;
-		// //////////////////////////////////////////////////
-		// PW_STRUCTURES_API Class Name: pw::st::AActor_Model
-		// //////////////////////////////////////////////////																				 
-		// Purpose:
-		//  A changing model that does get updated
-		//  frequently with animations. (IE. every frame).
-		// //////////////////////////////////////////////////
-		class PW_STRUCTURES_API AActor_Model;
-		// //////////////////////////////////////////////////
-		// PW_STRUCTURES_API Class Name: pw::st::Scene_Event
-		// //////////////////////////////////////////////////																				 
-		// Purpose:
-		//  A event that is triggered by a model event
-		//  happening within a scene.
-		// //////////////////////////////////////////////////
-		class PW_STRUCTURES_API Scene_Event;
-		// //////////////////////////////////////////////////
-		// Class Name: pw::st::Game_Scene
-		// //////////////////////////////////////////////////																				 
-		// Purpose:
-		//  A class for handling scene drawing and texture
-		//  drawing in a scene, as well as sound and other
-		//	events.
-		// //////////////////////////////////////////////////
-		class PW_STRUCTURES_API Game_Scene;
-		// Functions      
-		// Macros / Definitions
+		class Actor;
+		
+		class Scene_Event;
+		
+		class Game_Scene;
 	//////////////////////////////////
 	ST_NAMESPACE_END
 	//////////////////////////////////

@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021, Darrian Corkadel
+// Copyright(c) 2021-2022, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,44 +30,59 @@
 #ifndef H_FILE_LOADER
 #define H_FILE_LOADER
 //////////////////////////////////
+#include "engine_common\engine_build.h"
+//////////////////////////////////
 // #FILE_INFO#
 // +(DUAL_FILE)
 //////////////////////////////////
 // C++ Headers
+#include <codeanalysis\warnings.h>
+#pragma warning (push)
+#pragma warning (disable:ALL_CODE_ANALYSIS_WARNINGS)
 #include <tuple>
 #include <filesystem>
 #include <cmath>
 #include <functional>
+#pragma warning (pop)
 //////////////////////////////////
 // Project Headers
-#pragma warning(push)
-#pragma warning(disable:4244)
-#pragma warning(push)
-#pragma warning(disable:4267)
-#pragma warning(push)
-#pragma warning(disable:26495)
-#pragma warning(push)
-#pragma warning(disable:26451)
+#pragma warning (push)
+#pragma warning (disable:ALL_CODE_ANALYSIS_WARNINGS)
+#pragma warning (push)
+#pragma warning (disable:4458)
+#pragma warning (push)
+#pragma warning (disable:4267)
+#pragma warning (push)
+#pragma warning (disable:4244)
+#pragma warning (push)
+#pragma warning (disable:4189)
 #include <CSV\csv.h>
-#pragma warning(pop)
-#pragma warning(pop)
-#pragma warning(pop)
-#pragma warning(pop)
+#include <OpenAL\al.h>
+#include <OpenAL\alc.h>
+#include <AL\alut.h>
+#include <glm\detail\type_vec4.hpp>
+#pragma warning (pop)
+#pragma warning (pop)
+#pragma warning (pop)
+#pragma warning (pop)
+#pragma warning (pop)
 //////////////////////////////////
 // Engine Common Headers
 #include "engine_common\engine_error.h"
 // Exception to format to fix <Windows.h> bug
+#pragma warning(push)
+#pragma warning (disable:ALL_CODE_ANALYSIS_WARNINGS)
 #ifndef PW_FI_H
 #define PW_FI_H
-#include "freeimage\FreeImage.h"
+#include <freeimage\FreeImage.h>
 #endif // PW_FI_H 
+#pragma warning(pop)
 //////////////////////////////////
 // Engine Control Headers
+#include "engine_control\engine_file_finder.h"
 //////////////////////////////////
 // Engine Structures Headers
 #include "engine_structures\engine_game_scene.h"
-//////////////////////////////////
-// Engine Macros    
 //////////////////////////////////
 // Pistonworks Engine           //
 // Created By : Darrian Corkadel//
@@ -80,25 +95,9 @@ PW_NAMESPACE_SRT
 	//////////////////////////////////
 	CO_NAMESPACE_SRT
 	//////////////////////////////////
-		//////////////////////////////////
-		// Classes
-
-		// //////////////////////////////////////////////////
-		// Class Name: pw::ie::File_Loader
-		// //////////////////////////////////////////////////																				 
-		// Purpose:
-		//  Loads different types of files
-		//  and translates them to engine objects.
-		// //////////////////////////////////////////////////
-		class PW_CONTROL_API File_Loader : protected cm::Engine_Constant {
+		class File_Loader {
 		// Default Class Structures 
 		public:
-			// //////////////////////////////////////////////////
-			// Enum Name: pw::ie::File_Loader::Default_Colors
-			// //////////////////////////////////////////////////																				 
-			// Purpose:
-			//  A structure that holds default color data.
-			// //////////////////////////////////////////////////
 			enum class Default_Colors {
 				//LIT_RED				#ff 80 80 
 				//RED					#ff 00 00 
@@ -156,211 +155,67 @@ PW_NAMESPACE_SRT
 		private:
 		// Public Functions/Macros 
 		public:
-			// //////////////////////////////////////////////////
-			// CORE File_Loader::Initialize_Loader
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Loads a 32 bit RGBA File.
-			//  Available types: PNG, BMP, JPEG
-			// //////////////////////////////////////////////////
-			// Parameters: 2
-			// (1) const wchar_t* file_name;
-			// Purpose: 
-			//  The name of the file to be loaded.
-			// (2) bool engine_dir;
-			// Purpose: 
-			//  Should the engine use the game dir or the engine
-			//  dir?
-			// (3) const wchar_t* override_dir;
-			// Purpose: 
-			//  For single image animations it needs to be loaded
-			//  as a texture from the animation directory.
-			// //////////////////////////////////////////////////
-			USER_INTERACTION
-			static CORE void Initialize_Loader(std::function<void(std::wstring, bool)> p_add_scene_function, std::function<void(std::wstring)> p_change_scene_function);
-			// //////////////////////////////////////////////////
-			// LOADER File_Loader::Load_Texture_File
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Loads a 32 bit RGBA File.
-			//  Available types: PNG, BMP, JPEG
-			// //////////////////////////////////////////////////
-			// Parameters: 2
-			// (1) const wchar_t* file_name;
-			// Purpose: 
-			//  The name of the file to be loaded.
-			// (2) bool engine_dir;
-			// Purpose: 
-			//  Should the engine use the game dir or the engine
-			//  dir?
-			// (3) const wchar_t* override_dir;
-			// Purpose: 
-			//  For single image animations it needs to be loaded
-			//  as a texture from the animation directory.
-			// //////////////////////////////////////////////////
-			USER_INTERACTION
-			static LOADER st::Texture& Load_Texture_File(const wchar_t* file_name, bool engine_dir = false, const wchar_t* override_dir = nullptr);
-			// //////////////////////////////////////////////////
-			// LOADER File_Loader::Load_Animation_File
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Loads a 32 bit RGBA File.
-			//	Available types: GIF
-			//  Note: You must create the model and finish
-			//  initialization of the animation using the function
-			//  Finish_Init.
-			// //////////////////////////////////////////////////
-			// Parameters: 1
-			// (1) const wchar_t* file_name;
-			// Purpose: 
-			//  The name of the file to be loaded.
-			// //////////////////////////////////////////////////
-			USER_INTERACTION
-			static LOADER std::tuple<st::Texture*, st::Animation*> Load_Animation_File(const wchar_t* file_name, bool engine_dir = false, const wchar_t* override_dir = nullptr);
-			// //////////////////////////////////////////////////
-			// LOADER File_Loader::Load_Icon
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Loads a 32 bit RGBA PNG.
-			//	Available types: PNG
-			// //////////////////////////////////////////////////
-			// Parameters: 1
-			// (1) const wchar_t* file_name;
-			// Purpose: 
-			//  The name of the file to be loaded.
-			// (2) bool engine_dir;
-			// Purpose: 
-			//  Should the engine use the game dir or the engine
-			//  dir?
-			// //////////////////////////////////////////////////
-			USER_INTERACTION
-			static LOADER GLFWimage& Load_Icon(const wchar_t* file_name, bool engine_dir);
-			// //////////////////////////////////////////////////
-			// LOADER  File_Loader::Unload_Icon
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Unload the icon after its use.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			USER_INTERACTION
-			static LOADER void Unload_Icon();
-			// //////////////////////////////////////////////////
-			// LOADER File_Loader::Load_Project_File
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Loads the project file information for the queue.
-			// //////////////////////////////////////////////////
-			// Parameters: 7
-			// (1) const wchar_t* file_location;
-			// Purpose: 
-			//  The location of the file to be loaded.
-			// (2) std::wstring path_to_animations;
-			// Purpose:
-			//  The path to the animations within the game.
-			// (3) std::wstring path_to_data;
-			// Purpose:
-			//  The path to the data within the game.
-			// (4) std::wstring path_to_fonts;
-			// Purpose:
-			//  The path to the fonts within the game.
-			// (5) std::wstring path_to_icon;
-			// Purpose:
-			//  The path to the icons within the game.
-			// (6) std::wstring path_to_linker_files;
-			// Purpose:
-			//  The path to the linker_files within the game.
-			// (7) std::wstring path_to_textures;
-			// Purpose:
-			//  The path to the textures within the game.
-			// //////////////////////////////////////////////////
-			USER_INTERACTION
-			static LOADER PW_PROJECT_FILE Load_Project_File(const wchar_t* file_location, std::wstring path_to_animations,
-				std::wstring path_to_data, std::wstring path_to_fonts, std::wstring path_to_icon, std::wstring path_to_linker_files, std::wstring path_to_textures);
-			// //////////////////////////////////////////////////
-			// LOADER File_Loader::Load_Scene_File
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Loads a scene.csv file with the scene's content
-			//  information.
-			// //////////////////////////////////////////////////
-			// Parameters: 5
-			// (1) const wchar_t* file_name;
-			// Purpose: 
-			//  The name of the scene file.
-			// //////////////////////////////////////////////////
-			USER_INTERACTION
-			static LOADER st::Game_Scene* Load_Scene_File(const wchar_t* file_name);
-			// Accessors
-			USER_INTERACTION
-			static ACCESSOR glm::vec4 Default_Color(Default_Colors color);
+			static void Initialize_Loader();
+			static void Initialize_Loader(const std::function<void(const std::wstring&, const bool&)>& p_add_scene_function,
+											const std::function<void(const std::wstring&)>& p_change_scene_function,
+											const std::function<void(const std::wstring&)>& p_remove_scene_function);
+
+			static st::Texture* Load_Texture_File(const std::wstring& p_file_name,
+				const bool& p_repeat, const bool& p_engine_dir = false, std::wstring* p_override_dir = nullptr);
+
+			static std::tuple<st::Texture*, st::Animation*> Load_Animation_File(const std::wstring& p_file_name,
+				const bool& p_repeat, const bool& p_engine_dir = false, std::wstring* p_override_dir = nullptr);
+
+			static GLFWimage* Load_Icon(const std::wstring& p_file_name, const bool& p_engine_dir);
+			static void Unload_Icon();
+			
+			static PW_PROJECT_FILE Load_Project_File(const std::filesystem::path& p_file_location, const std::wstring& p_path_to_animations,
+				const std::wstring& p_path_to_data, const std::wstring& p_path_to_fonts, const std::wstring& p_path_to_icon, const std::wstring& p_path_to_linker_files,
+				const std::wstring& p_path_to_textures, const std::wstring& p_path_to_sounds);
+
+			static st::Game_Scene* Load_Scene_File(const std::wstring& p_file_name);
+
+			static void Load_Data_File(std::vector<st::Actor*>& p_scene_models,
+				std::vector<st::Actor*>& p_collision_models,
+				std::vector<std::tuple<std::wstring, st::Actor*, int32_t>>& p_s_id_holder,
+				std::map<std::wstring, st::Sub_Scene_Structure*>& p_sub_scene_structures,
+				std::filesystem::path& p_location, uint32_t& p_has_physics_factory, st::Physics_Factory* p_physics_factory,
+				std::string& p_main_scene, std::vector<std::string>& p_sub_scenes);
+			
+			static glm::vec4 Default_Color(const Default_Colors& p_color);
+
+			static st::Sound* Load_Audio_File(const std::wstring& file_name, const bool& p_loops, const float& p_volume, const bool& p_windows_style);
 		// Public Variables         
 		public:
 		// Private Functions/Macros 
 		private:
-			// //////////////////////////////////////////////////
-			// LOADER File_Loader::Load_PNG
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Loads a 32 bit RGBA PNG.
-			// //////////////////////////////////////////////////
-			// Parameters: 1
-			// (1) const wchar_t* file_location;
-			// Purpose: 
-			//  The location of the file to be loaded.
-			// //////////////////////////////////////////////////
-			static LOADER st::Texture& Load_PNG(const wchar_t* file_location);
-			// //////////////////////////////////////////////////
-			// LOADER File_Loader::Load_BMP
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Loads a 32 bit RGBA BMP.
-			// //////////////////////////////////////////////////
-			// Parameters: 1
-			// (1) const wchar_t* file_location;
-			// Purpose: 
-			//  The location of the file to be loaded.
-			// //////////////////////////////////////////////////
-			static LOADER st::Texture& Load_BMP(const wchar_t* file_location);
-			// //////////////////////////////////////////////////
-			// LOADER File_Loader::Load_JPEG
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Loads a 32 bit RGBA JPEG.
-			// //////////////////////////////////////////////////
-			// Parameters: 1
-			// (1) const wchar_t* file_location;
-			// Purpose: 
-			//  The location of the file to be loaded.
-			// //////////////////////////////////////////////////
-			static LOADER st::Texture& Load_JPEG(const wchar_t* file_location);
+			static st::Texture* Load_PNG(const std::filesystem::path& p_file_location, const bool& p_repeat);
+			static st::Texture* Load_BMP(const std::filesystem::path& p_file_location, const bool& p_repeat);
+			static st::Texture* Load_JPEG(const std::filesystem::path& p_file_location, const bool& p_repeat);
 		// Private Variables        
 		private:
-			static FIBITMAP* current_icon; // Current icon to be unloaded
+			static FIBITMAP* m_current_icon; // Current icon to be unloaded
 
-			static bool loaded_project; // Once a project is loaded you can load other textures
+			static bool m_loaded_project; // Once a project is loaded you can load other textures
 
-			static std::wstring animation_location;
-			static std::wstring data_location;
-			static std::wstring font_location;
-			static std::wstring icon_location;
-			static std::wstring linker_location;
-			static std::wstring texture_location;
+			static std::wstring m_animation_location;
+			static std::wstring m_data_location;
+			static std::wstring m_font_location;
+			static std::wstring m_icon_location;
+			static std::wstring m_linker_location;
+			static std::wstring m_texture_location;
+			static std::wstring m_sound_location;
 
-			static std::wstring engine_icon_dir; // The directory of the icon depository
-			static std::wstring engine_texture_dir; // The directory of the texture depository
-			static std::wstring engine_animation_dir; // The directory of the animation depository
+			static std::wstring m_engine_icon_dir; // The directory of the icon depository
+			static std::wstring m_engine_texture_dir; // The directory of the texture depository
+			static std::wstring m_engine_animation_dir; // The directory of the animation depository
 
-			static std::function<void(std::wstring, bool)> add_scene_function;
-			static std::function<void(std::wstring)> change_scene_function;
+			static std::function<void(const std::wstring&, const bool&)> m_add_scene_function;
+			static std::function<void(const std::wstring&)> m_change_scene_function;
+			static std::function<void(const std::wstring&)> m_remove_scene_function;
 
-			static std::map<FREE_IMAGE_FORMAT, std::map<std::wstring, std::tuple<std::vector<BYTE>, uint32_t, uint32_t>>> texture_repository;
-			static std::map<FREE_IMAGE_FORMAT, std::map<std::wstring, std::tuple<std::tuple<BYTE*, uint32_t, uint32_t>,std::tuple<float, uint32_t, uint32_t>>>> animation_repository;
-
-			static glm::vec4 Engine_Colors[(uint32_t)Default_Colors::Color_Count];
+			static glm::vec4 m_engine_colors[(uint32_t)Default_Colors::Color_Count];
 		};
-		// Functions      
-		// Macros / Definitions
 	//////////////////////////////////
 	CO_NAMESPACE_END
 	//////////////////////////////////

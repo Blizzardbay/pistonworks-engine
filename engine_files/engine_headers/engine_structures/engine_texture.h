@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021, Darrian Corkadel
+// Copyright(c) 2021-2022, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,21 +30,33 @@
 #ifndef H_ENGINE_TEXTURE
 #define H_ENGINE_TEXTURE
 //////////////////////////////////
+#include "engine_common\engine_build.h"
+//////////////////////////////////
 // #FILE_INFO#
 // +(DUAL_FILE)
 //////////////////////////////////
-// C++ Headers              
+// C++ Headers 
+#include <codeanalysis\warnings.h>
+#pragma warning (push)
+#pragma warning (disable:ALL_CODE_ANALYSIS_WARNINGS)
 #include <cassert>
+#pragma warning (pop)
 //////////////////////////////////
 // Project Headers
+#pragma warning (push)
+#pragma warning (disable:ALL_CODE_ANALYSIS_WARNINGS)
+#pragma warning (push)
+#pragma warning (disable:4201)
 #include <glm\glm.hpp>
+#pragma warning (pop)
+#pragma warning (pop)
 //////////////////////////////////
-// Engine Headers           
-//////////////////////////////////
-// Engine Macro Includes    
+// Engine Common Headers
 #include "engine_common\engine_error.h"
 //////////////////////////////////
-// Engine Macros           
+// Engine Control Headers
+//////////////////////////////////
+// Engine Structures Headers
 //////////////////////////////////
 // Pistonworks Engine           //
 // Created By : Darrian Corkadel//
@@ -57,173 +69,56 @@ PW_NAMESPACE_SRT
 	//////////////////////////////////
 	ST_NAMESPACE_SRT
 	//////////////////////////////////
-		//////////////////////////////////
-		// Classes
-		
-		// //////////////////////////////////////////////////
-		// PW_STRUCTURES_API Class: pw::st::Texture
-		// //////////////////////////////////////////////////
-		// Purpose:
-		//  Handles textures in opengl. 
-		// //////////////////////////////////////////////////
-		class PW_STRUCTURES_API Texture {
+		class Texture {
 		// Default Class Structures 
-		public:
-			// //////////////////////////////////////////////////
-			// PW_STRUCTURES_API CLASS_FUNCTION: Texture::Texture
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Creates a uninitialized texture. Will not draw.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			USER_INTERACTION
-			CLASS_FUNCTION Texture();
-			// //////////////////////////////////////////////////
-			// PW_STRUCTURES_API CLASS_FUNCTION: Texture::Texture
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Loads a texture from data.
-			// //////////////////////////////////////////////////
-			// Parameters: 5
-			// (1) BYTE* tex_data;
-			// Purpose:
-			//  The pixel data of the function in a specified
-			//  format.
-			// (2) uint32_t tex_width;
-			// Purpose:
-			//  The width of the texture in pixels.
-			// (3) uint32_t tex_height;
-			// Purpose:
-			//  The height of the texture in pixels.
-			// (4) int32_t internal_format;
-			// Purpose:
-			//  The internal format the pixel data is. When
-			//  loading the texture using another function not
-			//  from Pistonworks make sure to know the internal
-			//  format of the data you are loading.
-			// (5) int32_t format;
-			// Purpose:
-			//  The external format of the pixel data. On Windows
-			//  it is BGRA usually. Most API's ignore windows 
-			//  specific formats and load RGBA. Be careful. 
-			// //////////////////////////////////////////////////
-			USER_INTERACTION
-			CLASS_FUNCTION Texture(BYTE* tex_data, uint32_t tex_width, uint32_t tex_height, int32_t internal_format, int32_t format);
-			// //////////////////////////////////////////////////
-			// PW_STRUCTURES_API CLASS_FUNCTION: Texture::Texture
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Loads a texture from data.
-			// //////////////////////////////////////////////////
-			// Parameters: 5
-			// (1) BYTE* tex_data;
-			// Purpose:
-			//  The pixel data of the function in a specified
-			//  format.
-			// (2) uint32_t target;
-			// Purpose:
-			//  The type of OpenGL texture you want to create.
-			//  Normally it is a GL_TEXTURE_2D.
-			// (3) uint32_t tex_width;
-			// Purpose:
-			//  The width of the texture in pixels.
-			// (4) uint32_t tex_height;
-			// Purpose:
-			//  The height of the texture in pixels.
-			// (5) int32_t internal_format;
-			// Purpose:
-			//  The internal format the pixel data is. When
-			//  loading the texture using another function not
-			//  from Pistonworks make sure to know the internal
-			//  format of the data you are loading.
-			// (6) int32_t format;
-			// Purpose:
-			//  The external format of the pixel data. On Windows
-			//  it is BGRA usually. Most API's ignore windows 
-			//  specific formats and load RGBA. Be careful. 
-			// //////////////////////////////////////////////////
-			USER_INTERACTION
-			CLASS_FUNCTION Texture(BYTE* tex_data, uint32_t target, uint32_t tex_width, uint32_t tex_height, int32_t internal_format, int32_t format);
-			// //////////////////////////////////////////////////
-			// PW_STRUCTURES_API CLASS_FUNCTION: Texture::Texture
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Loads a texture from data.
-			// //////////////////////////////////////////////////
-			// Parameters: 5
-			// (1) PW_SRD_PTR(BYTE*) tex_data;
-			// Purpose:
-			//  The pixel data of the function in a specified
-			//  format.
-			// (2) uint32_t tex_width;
-			// Purpose:
-			//  The width of the texture in pixels.
-			// (3) uint32_t tex_height;
-			// Purpose:
-			//  The height of the texture in pixels.
-			// (4) int32_t internal_format;
-			// Purpose:
-			//  The internal format the pixel data is. When
-			//  loading the texture using another function not
-			//  from Pistonworks make sure to know the internal
-			//  format of the data you are loading.
-			// (5) int32_t format;
-			// Purpose:
-			//  The external format of the pixel data. On Windows
-			//  it is BGRA usually. Most API's ignore windows 
-			//  specific formats and load RGBA. Be careful. 
-			// //////////////////////////////////////////////////
-			USER_INTERACTION
-			CLASS_FUNCTION Texture(PW_SRD_PTR(BYTE*) tex_data, uint32_t tex_height, uint32_t tex_length, int32_t internal_format, int32_t format);
-			// //////////////////////////////////////////////////
-			// PW_STRUCTURES_API CLASS_FUNCTION: Texture::~Texture
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Deallocates the texture memory.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			USER_INTERACTION
-			CLASS_FUNCTION ~Texture();
+		public:			
+			Texture();
+
+			Texture(BYTE* p_tex_data, const uint32_t& p_texture_width, const uint32_t& p_texture_height, const int32_t& p_internal_format, const int32_t& p_format, const bool& p_repeat = false);
+			Texture(BYTE* p_tex_data, const uint32_t& p_target, const uint32_t& p_texture_width, const uint32_t& p_texture_height, const int32_t& p_internal_format, const int32_t& p_format, const bool& p_repeat = false);
+
+			Texture(const Texture& p_other);
+			~Texture();
 		private:
 		// Public Functions/Macros  
 		public:
-			// //////////////////////////////////////////////////
-			// CORE Function: Texture::Bind
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Draws the texture to the screen.
-			// //////////////////////////////////////////////////
-			// Parameters: 1
-			// (1) uint32_t unit;
-			// Purpose:
-			//  Usually 0. Binds the texture to a grouping to be
-			//  rendered by OpenGL. 
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CORE void Bind(uint32_t unit);
-			// //////////////////////////////////////////////////
-			// CORE Function: Texture::Delete
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Deletes the allocated memory.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CORE void Delete();
+			void Bind(const uint32_t& p_unit);
 		// Public Variables         
 		public:
 		// Private Functions/Macros 
 		private:
 		// Private Variables       
 		private:
-			uint32_t texture_id;
+			bool m_copy;
 
-			uint32_t texture_width;
-			uint32_t texture_height;
-		};                  
+			uint32_t m_texture_id;
+
+			uint32_t m_texture_width;
+			uint32_t m_texture_height;
+		};
+		struct Texture_Structure {
+		// Default Class Structures 
+		public:
+			Texture_Structure(st::Texture* p_texture);
+			Texture_Structure(const std::vector<st::Texture*>& p_textures, const std::vector<std::wstring>& p_texture_ids);
+
+			~Texture_Structure();
+		private:
+		// Public Functions/Macros 
+		public:
+			// If the structure only has one animation it will return a shared ptr to the animation else a nullptr
+			st::Texture* Texture() const;
+			st::Texture* Texture(const std::wstring& p_texture_id);
+		// Public Variables         
+		public:
+		// Private Functions/Macros 
+		private:
+		// Private Variables        
+		private:
+			bool m_single_texture;
+			std::map<std::wstring, st::Texture*> m_textures;
+			st::Texture* m_current_access;
+		};
 	//////////////////////////////////
 	ST_NAMESPACE_END
 	//////////////////////////////////

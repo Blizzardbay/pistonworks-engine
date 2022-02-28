@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021, Darrian Corkadel
+// Copyright(c) 2021-2022, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,25 +30,38 @@
 #ifndef H_ENGINE_SHADER
 #define H_ENGINE_SHADER
 //////////////////////////////////
+#include "engine_common\engine_build.h"
+//////////////////////////////////
 // #FILE_INFO#
 // +(DUAL_FILE)
 //////////////////////////////////
-// C++ Headers              
+// C++ Headers 
+#include <codeanalysis\warnings.h>
+#pragma warning (push)
+#pragma warning (disable:ALL_CODE_ANALYSIS_WARNINGS)
 #include <fstream>
 #include <stdio.h>
+#pragma warning (pop)
 //////////////////////////////////
-// Project Headers          
+// Project Headers
+#pragma warning (push)
+#pragma warning (disable:ALL_CODE_ANALYSIS_WARNINGS)
+#pragma warning (push)
+#pragma warning (disable:4201)
 #include <GL\glew.h>
 #include <glm\gtc\type_ptr.hpp>
 #include <glm\glm.hpp>
+#pragma warning (pop)
+#pragma warning (pop)
 //////////////////////////////////
-// Engine Headers           
-#include "engine_structures\engine_camera.h"
-//////////////////////////////////
-// Engine Macro Includes    
+// Engine Common Headers
 #include "engine_common\engine_error.h"
 //////////////////////////////////
-// Engine Macros            
+// Engine Control Headers
+#include "engine_control\engine_file_finder.h"
+//////////////////////////////////
+// Engine Structures Headers
+#include "engine_structures\engine_camera.h"
 //////////////////////////////////
 // Pistonworks Engine           //
 // Created By : Darrian Corkadel//
@@ -61,170 +74,55 @@ PW_NAMESPACE_SRT
 	//////////////////////////////////
 	ST_NAMESPACE_SRT
 	//////////////////////////////////
-		//////////////////////////////////
-		// Classes
-
-		// //////////////////////////////////////////////////
-		// PW_STRUCTURES_API Class Name: pw::st::Shader
-		// //////////////////////////////////////////////////																				 
-		// Purpose: 
-		//  A class for handling the shaders in opengl.
-		// //////////////////////////////////////////////////
-		class PW_STRUCTURES_API Shader {
+		class Shader_Loader {
 		// Default Class Structures 
 		public:
-			// //////////////////////////////////////////////////
-			// CLASS_FUNCTION Function: Shader::Shader
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Creates a uninitialized shader.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CLASS_FUNCTION Shader();
-			// //////////////////////////////////////////////////
-			// CLASS_FUNCTION Function: Shader::~Shader
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Deallocates all data used for the shader.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CLASS_FUNCTION ~Shader();
 		private:
 		// Public Functions/Macros  
 		public:
-			// //////////////////////////////////////////////////
-			// CORE Function: Shader::Create_Shader
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Creates a new shader after one has been loaded
-			//  from file.
-			// //////////////////////////////////////////////////
-			// Parameters: 2
-			// (1) const std::wstring& vertex_location;
-			// Purpose: 
-			//  The location of the vertex shader.
-			// (2) const std::wstring& fragment_location;
-			// Purpose: 
-			//  The location of the fragment shader.
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			void CORE Create_Shader(const std::wstring& vertex_location, const std::wstring& fragment_location);
-			// //////////////////////////////////////////////////
-			// CORE Function: Shader::Use
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Gets the shader ready for use.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			void CORE Use();
-			// //////////////////////////////////////////////////
-			// CORE Function: Shader::Update_Matrices
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Updates the matrices of the model.
-			// //////////////////////////////////////////////////
-			// Parameters: 2
-			// (1) glm::mat4 model;
-			// Purpose: 
-			//  The model to be updated by the shader. 
-			// (2) int32_t& model_is_colored;
-			// Purpose: 
-			//  Is the model colored or not.
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			void CORE Update_Matrices(glm::mat4* model, int32_t& model_is_colored);
-			// //////////////////////////////////////////////////
-			// CORE Function: Shader::Update_Projection
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Updates the camera projection.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			void CORE Update_Projection();
-			// Accessors
-			USER_INTERACTION
-			ACCESSOR uint32_t Shader_Id();
-			USER_INTERACTION
-			static ACCESSOR Shader Get_Shader();
+			static std::wstring Load_Shader(const std::wstring& p_file_name);
+			static uint32_t Compile_Shader(const std::wstring& p_shader_code, const GLenum& p_shader_type);
+			static void Check_Error(const uint32_t& p_object_id, const GLenum& p_error, const bool& p_is_program, const std::wstring& p_custom_error_msg);
 		// Public Variables         
 		public:
 		// Private Functions/Macros 
 		private:
-			// //////////////////////////////////////////////////
-			// LOADER Function: Shader::Load_Shader
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Loads a shader from file.
-			// //////////////////////////////////////////////////
-			// Parameters: 1
-			// (1) const std::wstring& file_name;
-			// Purpose: 
-			//  The file name of the shader. 
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			static LOADER std::wstring Load_Shader(const std::wstring& file_name);
-			// //////////////////////////////////////////////////
-			// CORE Function: Shader::Compile_Shader
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Complies the shader for use.
-			// //////////////////////////////////////////////////
-			// Parameters: 2
-			// (1) const std::wstring shader_code;
-			// Purpose: 
-			//  The shader id.
-			// (2) GLenum shader_type;
-			// Purpose: 
-			//  The type of shader, i.e. vertex or fragment. 
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			static CORE uint32_t Compile_Shader(const std::wstring shader_code, GLenum shader_type);
-			// //////////////////////////////////////////////////
-			// CORE Function: Shader::Check_Error
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Checks if the shader is not correctly made.
-			// //////////////////////////////////////////////////
-			// Parameters: 4
-			// (1) uint32_t object_id;
-			// Purpose: 
-			//  The shader id.
-			// (2) GLenum error;
-			// Purpose: 
-			//  The type of shader, i.e. vertex or fragment.
-			// (3) bool is_program;
-			// Purpose: 
-			//  The type of shader, i.e. vertex or fragment.
-			// (4) const wchar_t* custom_error_msg;
-			// Purpose: 
-			//  The type of shader, i.e. vertex or fragment. 
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			static CORE void Check_Error(uint32_t object_id, GLenum error, bool is_program, std::wstring custom_error_msg);
 		// Private Variables        
 		private:
-			static Shader this_shader;
-
-			uint32_t program_id;
-
-			uint32_t vertex_shader;
-			uint32_t fragment_shader;
-
-			uint32_t model_uniform;
-			uint32_t texture_uniform;
-			uint32_t view_uniform;
-			uint32_t projection_uniform;
 		};
-		// Functions                
-		// Macros / Definitions                  
+		class Dynamic_Shader {
+		// Default Class Structures 
+		public:
+		private:
+		// Public Functions/Macros  
+		public:
+			static void Create_Shader(const std::wstring& p_vertex_location, const std::wstring& p_fragment_location);
+			
+			static void Delete_Shader();
+			static void Use();
+			
+			static void Update_Matrices(const glm::mat4& p_model_matrix, const int32_t& p_model_is_colored, const int32_t& p_model_is_text);
+			static void Update_Projection();
+			
+			static const uint32_t& Shader_Id();
+		// Public Variables         
+		public:
+		// Private Functions/Macros 
+		private:
+		// Private Variables        
+		private:
+			static uint32_t m_program_id;
+
+			static uint32_t m_vertex_shader;
+			static uint32_t m_fragment_shader;
+
+			static uint32_t m_model_uniform;
+			static uint32_t m_view_uniform;
+			static uint32_t m_projection_uniform;
+
+			static uint32_t m_color_uniform;
+			static uint32_t m_text_uniform;
+		};                 
 	//////////////////////////////////
 	ST_NAMESPACE_END
 	//////////////////////////////////

@@ -55,19 +55,16 @@
     <Filter Include="engine_files\engine_source\engine_structures">
       <UniqueIdentifier>{103b75a8-3509-4ff8-842a-084094f6abdc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="test_files">
-      <UniqueIdentifier>{9d85e6e7-2fa0-4f6a-ba59-b5fb70387454}</UniqueIdentifier>
-    </Filter>
     <Filter Include="engine_files\engine_resource\engine_info">
       <UniqueIdentifier>{a59ef633-0035-47d1-96af-59812ba71c71}</UniqueIdentifier>
     </Filter>
+    <Filter Include="engine_files\engine_source\engine_common">
+      <UniqueIdentifier>{e68a85d0-3ff5-4880-80c4-106ff75b8891}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="config\b2_user_settings.h">
+    <ClInclude Include="config\physics_config\b2_user_settings.h">
       <Filter>config</Filter>
-    </ClInclude>
-    <ClInclude Include="engine_files\engine_headers\engine_common\engine_constant.h">
-      <Filter>engine_files\engine_headers\engine_common</Filter>
     </ClInclude>
     <ClInclude Include="engine_files\engine_headers\engine_common\engine_error.h">
       <Filter>engine_files\engine_headers\engine_common</Filter>
@@ -132,20 +129,35 @@
     <ClInclude Include="engine_files\engine_headers\engine_structures\engine_game_header.h">
       <Filter>engine_files\engine_headers\engine_structures</Filter>
     </ClInclude>
+    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_sound.h">
+      <Filter>engine_files\engine_headers\engine_structures</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_files\engine_headers\engine_common\engine_constant.h">
+      <Filter>engine_files\engine_headers\engine_common</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_files\engine_headers\engine_common\engine_math.h">
+      <Filter>engine_files\engine_headers\engine_common</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_files\engine_headers\engine_common\engine_typedef.h">
+      <Filter>engine_files\engine_headers\engine_common</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_files\engine_headers\engine_common\engine_timer.h">
+      <Filter>engine_files\engine_headers\engine_common</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_files\engine_headers\engine_control\engine_file_finder.h">
+      <Filter>engine_files\engine_headers\engine_control</Filter>
+    </ClInclude>
+    <ClInclude Include="engine_files\engine_headers\engine_common\engine_build.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="engine_files\engine_resource\engine_essential\engine_shader\fragment_shader.shader">
+    <None Include="engine_files\engine_resource\engine_essential\engine_shader\dynamic_fragment.shader">
       <Filter>engine_files\engine_resource\engine_essential\engine_shader</Filter>
     </None>
-    <None Include="engine_files\engine_resource\engine_essential\engine_shader\vertex_shader.shader">
+    <None Include="engine_files\engine_resource\engine_essential\engine_shader\dynamic_vertex.shader">
       <Filter>engine_files\engine_resource\engine_essential\engine_shader</Filter>
     </None>
-    <None Include="cpp.hint">
-      <Filter>config</Filter>
-    </None>
-    <None Include="engine_files\engine_resource\engine_info\engine_game_file_structure.info">
-      <Filter>engine_files\engine_resource\engine_info</Filter>
-    </None>
+    <None Include="engine_files\engine_resource\engine_info\engine_event_types.info" />
+    <None Include="engine_files\engine_resource\engine_info\engine_function_descriptions.info" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="engine_files\engine_resource\engine_essential\engine_icon\Icon.png">
@@ -274,9 +286,6 @@
     <ClCompile Include="engine_files\engine_source\engine_control\engine_file_loader.cpp">
       <Filter>engine_files\engine_source\engine_control</Filter>
     </ClCompile>
-    <ClCompile Include="engine_files\engine_source\engine_control\engine_game_scene.cpp">
-      <Filter>engine_files\engine_source\engine_control</Filter>
-    </ClCompile>
     <ClCompile Include="engine_files\engine_source\engine_control\engine_input.cpp">
       <Filter>engine_files\engine_source\engine_control</Filter>
     </ClCompile>
@@ -310,11 +319,21 @@
     <ClCompile Include="engine_files\engine_source\engine_structures\engine_physics.cpp">
       <Filter>engine_files\engine_source\engine_structures</Filter>
     </ClCompile>
-    <ClCompile Include="game\code\game.cpp">
-      <Filter>test_files</Filter>
-    </ClCompile>
     <ClCompile Include="engine_files\engine_source\engine_control\engine_console_manip.cpp">
       <Filter>engine_files\engine_source\engine_control</Filter>
     </ClCompile>
+    <ClCompile Include="engine_files\engine_source\engine_structures\engine_sound.cpp">
+      <Filter>engine_files\engine_source\engine_structures</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_files\engine_source\engine_structures\engine_game_scene.cpp">
+      <Filter>engine_files\engine_source\engine_structures</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_files\engine_source\engine_common\engine_common.cpp">
+      <Filter>engine_files\engine_source\engine_common</Filter>
+    </ClCompile>
+    <ClCompile Include="engine_files\engine_source\engine_control\engine_file_finder.cpp">
+      <Filter>engine_files\engine_source\engine_control</Filter>
+    </ClCompile>
+    <ClCompile Include="temp\temp.cpp" />
   </ItemGroup>
 </Project>

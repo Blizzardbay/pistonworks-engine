@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021, Darrian Corkadel
+// Copyright(c) 2021-2022, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,22 +30,31 @@
 #ifndef H_ENGINE_CAMERA
 #define H_ENGINE_CAMERA
 //////////////////////////////////
+#include "engine_common\engine_build.h"
+//////////////////////////////////
 // #FILE_INFO#
 // +(DUAL_FILE)
 //////////////////////////////////
 // C++ Headers
 //////////////////////////////////
 // Project Headers
+#include <codeanalysis\warnings.h>
+#pragma warning (push)
+#pragma warning (disable:ALL_CODE_ANALYSIS_WARNINGS)
+#pragma warning (push)
+#pragma warning (disable:4201)
 #include <glm\glm.hpp>
 #include <glm\gtc\matrix_transform.hpp>
+#pragma warning (pop)
+#pragma warning (pop)
 //////////////////////////////////
-// Engine Headers       
+// Engine Common Headers
 #include "engine_common\engine_constant.h"
-//////////////////////////////////
-// Engine Macro Includes  
 #include "engine_common\engine_error.h"
 //////////////////////////////////
-// Engine Macros    
+// Engine Control Headers
+//////////////////////////////////
+// Engine Structures Headers
 //////////////////////////////////
 // Pistonworks Engine           //
 // Created By : Darrian Corkadel//
@@ -58,144 +67,52 @@ PW_NAMESPACE_SRT
 	//////////////////////////////////
 	ST_NAMESPACE_SRT
 	//////////////////////////////////
-		//////////////////////////////////
-		// Classes
-
-		// //////////////////////////////////////////////////
-		// PW_STRUCTURES_API Class Name: pw::st::Camera
-		// //////////////////////////////////////////////////
-		// Purpose:
-		//  Handles the camera function in the engine.
-		// //////////////////////////////////////////////////
-		class PW_STRUCTURES_API Camera {
+		class Camera {
 		// Default Class Structures
 		public:
 		private:
 		// Public Functions/Macros
 		public:
-			// //////////////////////////////////////////////////
-			// CORE Function: Camera::Update_Camera
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used  to Used to update the camera's current look
-			//  / position.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE 
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			static CORE glm::mat4& Update_Camera();
-			// //////////////////////////////////////////////////
-			// CORE Function: Camera::Update_Projection
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to update the current projection matrix
-			//  for displaying the information on screen.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE 
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			static CORE glm::mat4& Update_Projection();
-			// //////////////////////////////////////////////////
-			// UTILITY Function: Camera::Scroll_Forward
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to change camera zoom in a negative
-			//  direction.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE 
-			// //////////////////////////////////////////////////
-			USER_INTERACTION
-			static UTILITY void Scroll_Forward();
-			// //////////////////////////////////////////////////
-			// UTILITY Function: Camera::Scroll_Backward
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to change camera zoom in a positive
-			//  direction.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE 
-			// //////////////////////////////////////////////////
-			USER_INTERACTION
-			static UTILITY void Scroll_Backward();
-			// //////////////////////////////////////////////////
-			// UTILITY Function: Camera::Camera_Up
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to translate the camera in the positive
-			//  y direction.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE 
-			// //////////////////////////////////////////////////
-			USER_INTERACTION
-			static UTILITY void Camera_Up();
-			// //////////////////////////////////////////////////
-			// UTILITY Function: Camera::Camera_Down
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to translate the camera in the negative
-			//  y direction.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE 
-			// //////////////////////////////////////////////////
-			USER_INTERACTION
-			static UTILITY void Camera_Down();
-			// //////////////////////////////////////////////////
-			// UTILITY Function: Camera::Camera_Left
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Use to translate the camera in the negative x
-			//  direction.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE 
-			// //////////////////////////////////////////////////
-			USER_INTERACTION
-			static UTILITY void Camera_Left();
-			// //////////////////////////////////////////////////
-			// UTILITY Function: Camera::Camera_Right
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to translate the camera in the positive x 
-			//  direction.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE 
-			// //////////////////////////////////////////////////
-			USER_INTERACTION
-			static UTILITY void Camera_Right();
-			// Accessors
-			USER_INTERACTION
-			static ACCESSOR glm::vec2 Camera_Position_Raw();
-			USER_INTERACTION
-			static ACCESSOR glm::vec2 Camera_Position();
-			USER_INTERACTION
-			static ACCESSOR glm::vec2 Camera_Position_Last();
-			USER_INTERACTION
-			static ACCESSOR glm::vec2 Camera_Size();
-			USER_INTERACTION
-			static ACCESSOR float Camera_Zoom();
+			static const glm::mat4& Update_Camera();
+			
+			static const glm::mat4& Update_Projection();
 
+			static void Center_Camera(const glm::vec2& p_new_center);
+
+			static void Update_Position(const glm::vec3& p_new_position);
+			static void Update_Zoom(const float& p_new_zoom);
+
+			static glm::vec3 Camera_Position();
+			
+			static glm::vec3 Camera_Position_Last();
+			
+			static glm::vec2 Camera_Size();
+
+			static const glm::vec3& Up_Vector();
+			static glm::vec3& At_Vector();
+			
+			static float Camera_Zoom();
 		// Public Variables   
 		public:
 		// Private Functions/Macros 
 		private:
 		// Private Variables  
 		private:
-			static float camera_zoom;
-			static float last_camera_zoom;
+			static float m_camera_zoom;
+			static float m_last_camera_zoom;
 
-			static float camera_x_position;
-			static float camera_y_position;
+			static glm::vec3 m_camera_position;
 
-			static float camera_width;
-			static float camera_height;
+			static float m_camera_width;
+			static float m_camera_height;
 
-			static float last_camera_x_position;
-			static float last_camera_y_position;
+			static glm::vec3 m_last_camera_position;
 
-			static glm::mat4 perspective;
-			static glm::mat4 camera;
+			static glm::mat4 m_perspective;
+			static glm::mat4 m_camera;
+			static glm::vec3 m_at_vector;
+			static const glm::vec3 m_up_vector;
 		};
-		// Functions  
-		// Macros / Definitions
 	//////////////////////////////////
 	ST_NAMESPACE_END
 	//////////////////////////////////

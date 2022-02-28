@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021, Darrian Corkadel
+// Copyright(c) 2021-2022, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,22 +30,34 @@
 #ifndef H_ENGINE_MESH
 #define H_ENGINE_MESH
 //////////////////////////////////
+#include "engine_common\engine_build.h"
+//////////////////////////////////
 // #FILE_INFO#
 // +(DUAL_FILE)
 //////////////////////////////////
-// C++ Headers      
+// C++ Headers 
+#include <codeanalysis\warnings.h>
+#pragma warning (push)
+#pragma warning (disable:ALL_CODE_ANALYSIS_WARNINGS)
 #include <vector>
+#pragma warning (pop)
 //////////////////////////////////
-// Project Headers   
+// Project Headers 
+#pragma warning (push)
+#pragma warning (disable:ALL_CODE_ANALYSIS_WARNINGS)
+#pragma warning (push)
+#pragma warning (disable:4201)
 #include <GL\glew.h>
 #include <glm\glm.hpp>
+#pragma warning (pop)
+#pragma warning (pop)
 //////////////////////////////////
-// Engine Headers  
+// Engine Common Headers
+#include "engine_common\engine_error.h"
 //////////////////////////////////
-// Engine Macro Includes   
-#include "engine_common\engine_error.h" 
+// Engine Control Headers
 //////////////////////////////////
-// Engine Macros       
+// Engine Structures Headers
 //////////////////////////////////
 // Pistonworks Engine           //
 // Created By : Darrian Corkadel//
@@ -58,233 +70,70 @@ PW_NAMESPACE_SRT
 	//////////////////////////////////
 	ST_NAMESPACE_SRT
 	//////////////////////////////////
-		//////////////////////////////////
-		// Classes
-
-		// //////////////////////////////////////////////////
-		// PW_STRUCTURES_API Class: pw::st::ID_Vertex_Data
-		// //////////////////////////////////////////////////
-		// Purpose:
-		//  Holds the data for each vertex in the model. 
-		// //////////////////////////////////////////////////
-		struct PW_STRUCTURES_API ID_Vertex_Data {
+		struct Vertex_Data {
 		// Default Class Structures 
 		public:
-			// //////////////////////////////////////////////////
-			// INTERNAL_DATA_API CLASS FUNCTION: ID_Vertex_Data::ID_Vertex_Data
-			// //////////////////////////////////////////////////
-			// Purpose:
-			//  Initializes empty vertex data.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CLASS_FUNCTION ID_Vertex_Data();
-			// //////////////////////////////////////////////////
-			// INTERNAL_DATA_API CLASS FUNCTION: ID_Vertex_Data::ID_Vertex_Data
-			// //////////////////////////////////////////////////
-			// Purpose:
-			//  Initializes vertex data using user given values.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CLASS_FUNCTION ID_Vertex_Data(const glm::vec3& vertex_position, const glm::vec2& texture_coord);
-			// //////////////////////////////////////////////////
-			// INTERNAL_DATA_API CLASS FUNCTION: ID_Vertex_Data::~ID_Vertex_Data
-			// //////////////////////////////////////////////////
-			// Purpose:
-			//  Clears allocated vertex data. 
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CLASS_FUNCTION ~ID_Vertex_Data();
+			Vertex_Data();
+			Vertex_Data(const glm::vec3& p_vertex_position, const glm::vec2& p_texture_coord);
+			
+			 ~Vertex_Data();
 		private:
 		// Public Functions/Macros  
 		public:
-			// Accessors
-			USER_INTERACTION
-			ACCESSOR const glm::vec3& Vertex_Position();
-			USER_INTERACTION
-			ACCESSOR const glm::vec2& Texture_Coord();
-			USER_INTERACTION
-			ACCESSOR const glm::vec4& Color_Data();
-			// Mutators
-			USER_INTERACTION
-			MUTATOR void Set_Vertex_Position(glm::vec3 vertex_position);
-			USER_INTERACTION
-			MUTATOR void Set_Texture_Coord(glm::vec2 texture_coord);
-			USER_INTERACTION
-			MUTATOR void Set_Color_Data(glm::vec4 color_data);
+			 const glm::vec3& Vertex_Position() const;
+			 void Set_Vertex_Position(const glm::vec3& p_vertex_position);
+			
+			 const glm::vec2& Texture_Coord() const;
+			 void Set_Texture_Coord(const glm::vec2& p_texture_coord);
+				 
+			 const glm::vec4& Color_Data() const;
+			 void Set_Color_Data(const glm::vec4& p_color_data);
 		// Public Variables        
 		public:
 		// Private Functions/Macros 
 		private:
 		// Private Variables      
 		private:
-			glm::vec3 vertex_position;
-			glm::vec2 texture_coord;
-			glm::vec4 color_data;
+			glm::vec3 m_vertex_position;
+			glm::vec2 m_texture_coord;
+			glm::vec4 m_color_data;
 		};
-		// //////////////////////////////////////////////////
-		// PW_STRUCTURES_API Class: pw::st::Mesh
-		// //////////////////////////////////////////////////
-		// Purpose:
-		//  Creates and send the vertex data to the shader. 
-		// //////////////////////////////////////////////////
-		class PW_STRUCTURES_API Mesh {
+		class Mesh {
 		// Default Class Structures 
 		public:
-			// //////////////////////////////////////////////////
-			// PW_STRUCTURES_API CLASS_FUNCTION: Mesh::Mesh
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Creates an empty mesh. Do not draw.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CLASS_FUNCTION Mesh();
-			// //////////////////////////////////////////////////
-			// PW_STRUCTURES_API CLASS_FUNCTION: Mesh::Mesh
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Creates a mesh. A mesh's data may be changed at
-			//  runtime.
-			// //////////////////////////////////////////////////
-			// Parameters: 4
-			// (1) ID_Vertex_Data* vertices;
-			// Purpose: 
-			//  A pointer to all of the vertices in the mesh. 
-			// (2) const uint16_t vertex_count;
-			// Purpose: 
-			//  The total count of the vertices.
-			// (3) uint32_t* indices;
-			// Purpose: 
-			//  The indices of the mesh. Used for texture
-			//  coordinates. 
-			// (4) const uint16_t indice_count;
-			// Purpose:
-			//  The total count of the indices. 
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CLASS_FUNCTION Mesh(ID_Vertex_Data* vertices, const uint16_t vertex_count, uint32_t* indices, const uint16_t indice_count);
-			// //////////////////////////////////////////////////
-			// PW_STRUCTURES_API CLASS_FUNCTION: Mesh::Mesh
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Creates a mesh. A mesh's data may be changed at
-			//  runtime.
-			// //////////////////////////////////////////////////
-			// Parameters: 4
-			// (1) const ID_Vertex_Data* vertices;
-			// Purpose: 
-			//  A pointer to all of the vertices in the mesh. 
-			// (2) const uint16_t vertex_count;
-			// Purpose: 
-			//  The total count of the vertices.
-			// (3) const uint32_t* indices;
-			// Purpose: 
-			//  The indices of the mesh. Used for texture
-			//  coordinates. 
-			// (4) const uint16_t indice_count;
-			// Purpose:
-			//  The total count of the indices. 
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-				CLASS_FUNCTION Mesh(const ID_Vertex_Data* vertices, const uint16_t vertex_count, const uint32_t* indices, const uint16_t indice_count);
-			// //////////////////////////////////////////////////
-			// PW_STRUCTURES_API CLASS_FUNCTION: Mesh::~Mesh
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Deallocates memory contained by the mesh.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CLASS_FUNCTION ~Mesh();
-			// //////////////////////////////////////////////////
-			// PW_STRUCTURES_API CLASS_FUNCTION: Mesh::operator=
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Handles the copying of one mesh to another.
-			// //////////////////////////////////////////////////
-			// Parameters: 1
-			// (1) const Mesh& rhs;
-			// Purpose:
-			//  The other mesh to be copied to this mesh.
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CLASS_FUNCTION Mesh operator=(const Mesh& rhs);
-			// //////////////////////////////////////////////////
-			// PW_STRUCTURES_API CLASS_FUNCTION: Mesh::operator==
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Allows for the testing of a mesh's likeness to
-			//  another.
-			// //////////////////////////////////////////////////
-			// Parameters: 1
-			// (1) const Mesh& rhs;
-			// Purpose:
-			//  The other mesh to be compared to this mesh.
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CLASS_FUNCTION bool operator==(const Mesh& rhs);
+			Mesh();
+			Mesh(Vertex_Data* p_vertices, const uint16_t& p_vertex_count, const uint32_t* p_indices, const uint16_t& p_indice_count, const glm::vec2& p_size);
+
+			~Mesh();
 		private:
 		// Public Functions/Macros 
 		public:
-			// //////////////////////////////////////////////////
-			// CORE Function: Mesh::Draw
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Draws the mesh.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CORE void Draw();
-			// //////////////////////////////////////////////////
-			// CORE Function: Mesh::Delete
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Deletes and frees the memory of the mesh.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CORE void Delete();
-			// Accessors
-			USER_INTERACTION
-			ACCESSOR ID_Vertex_Data* Vertices();
-			USER_INTERACTION
-			ACCESSOR const uint32_t& Vertex_Count();
-			// Mutators
-			USER_INTERACTION
-			MUTATOR void Update_Vertices(ID_Vertex_Data* new_vertices);
-			USER_INTERACTION
-			MUTATOR void Change_Color_Data(glm::vec4 new_color_data);
-			USER_INTERACTION
-			MUTATOR void Change_Texture_Data(ID_Vertex_Data* new_texture_data);
+			void Draw();
+
+			Vertex_Data* Vertices();
+			void Update_Vertices(Vertex_Data* p_new_vertices);
+
+			void Change_Color_Data(const glm::vec4& p_new_color_data);
+			void Change_Texture_Data(Vertex_Data* p_new_texture_data);
+
+			const uint32_t& Vertex_Count() const;
 		// Public Variables         
 		public:
 		// Private Functions/Macros 
 		private:
 		// Private Variables      
 		private:
-			PW_SRD_PTR(ID_Vertex_Data*) vertices;
+			Vertex_Data* m_vertices;
 
-			uint32_t draw_count;
-			uint32_t vertex_count;
+			uint32_t m_indice_count;
+			uint32_t m_vertex_count;
 
-			uint32_t vertex_array_object;
-			uint32_t vertex_buffer_object;
-			uint32_t vertex_texture_object;
-			uint32_t vertex_color_object;
-			uint32_t vertex_element_object;
-		};
-		// Functions               
-		// Macros / Definitions       
+			uint32_t m_vertex_array_object;
+			uint32_t m_vertex_buffer_object;
+			uint32_t m_vertex_texture_object;
+			uint32_t m_vertex_color_object;
+			uint32_t m_vertex_element_object;
+		}; 
 	//////////////////////////////////
 	ST_NAMESPACE_END
 	//////////////////////////////////

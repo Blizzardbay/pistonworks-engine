@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021, Darrian Corkadel
+// Copyright(c) 2021-2022, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,35 +30,42 @@
 #ifndef H_GAME_SCENE
 #define H_GAME_SCENE
 //////////////////////////////////
+#include "engine_common\engine_build.h"
+//////////////////////////////////
 // #FILE_INFO#
 // +(DUAL_FILE)
-// +(Disabled Warnings)
-#pragma warning(push)
-#pragma warning(disable:4172)
 //////////////////////////////////
 // C++ Headers 
+#include <codeanalysis\warnings.h>
+#pragma warning (push)
+#pragma warning (disable:ALL_CODE_ANALYSIS_WARNINGS)
 #include <fstream>
 #include <vector>
 #include <map>
 #include <Windows.h>
 #include <unordered_set>
 #include <algorithm>
+#pragma warning (pop)
 //////////////////////////////////
 // Project Headers
-#include "Quadtree\Quadtree.h"          
+#pragma warning (push)
+#pragma warning (disable:ALL_CODE_ANALYSIS_WARNINGS)
+#include <Quadtree\Quadtree.h>     
+#pragma warning (pop)
 //////////////////////////////////
-// Engine Headers 
+// Engine Common Headers
+#include "engine_common\engine_error.h"
+//////////////////////////////////
+// Engine Control Headers
+#include "engine_control\engine_input.h"
+//////////////////////////////////
+// Engine Structures Headers
 #include "engine_structures\engine_event.h"
 #include "engine_structures\engine_model.h"
 #include "engine_structures\engine_physics.h"
 #include "engine_structures\engine_animation.h"
 #include "engine_structures\engine_text.h"
-#include "engine_control\engine_input.h"
-//////////////////////////////////
-// Engine Macro Includes 
-#include "engine_common\engine_error.h"
-//////////////////////////////////
-// Engine Macros    
+#include "engine_structures\engine_sound.h"
 //////////////////////////////////
 // Pistonworks Engine           //
 // Created By : Darrian Corkadel//
@@ -71,1170 +78,564 @@ PW_NAMESPACE_SRT
 	//////////////////////////////////
 	ST_NAMESPACE_SRT
 	//////////////////////////////////
-		//////////////////////////////////
-		// Classes
+		class Actor {
+		// Default Class Structures 
+		public:
+			Actor();
+			
+			Actor(st::Model* p_model, const int32_t& p_layer = 0);
+			Actor(st::Model* p_model, st::Text* p_text, const int32_t& p_layer = 0);
+			Actor(st::Model* p_model, st::Texture_Structure* p_multi_texture, const int32_t& p_layer = 0);
 
-		// //////////////////////////////////////////////////
-		// PW_STRUCTURES_API Class Name: pw::st::Scene_Model
-		// //////////////////////////////////////////////////																				 
-		// Purpose:
-		//  A template class for Asset models and Actor
-		//  models.
-		// //////////////////////////////////////////////////
-		class PW_STRUCTURES_API Scene_Model {
-		// Default Class Structures 
-		public:
-			enum class Type_Identifier {
-				NO_TYPE,
-				ASSET_MODEL,
-				AASSET_MODEL,
-				ACTOR_MODEL,
-				AACTOR_MODEL
-			};
-		private:
-		// Public Functions/Macros 
-		public:
-			// //////////////////////////////////////////////////
-			// CORE Function: Scene_Model::Render
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to render the model being used, 
-			//  also may be used for changing animation frames.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			virtual CORE void Render();
-			// //////////////////////////////////////////////////
-			// CORE Function: Scene_Model::Delete
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to delete the class structure and
-			//  delete all other allocated data.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			virtual CORE void Delete();
-			// //////////////////////////////////////////////////
-			// CORE Function: Scene_Model::Refresh
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to refresh the model when some sort of
-			//  update happens to the engine.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			virtual CORE void Refresh();
-			// //////////////////////////////////////////////////
-			// CORE Function: Scene_Model::Model_Identifier
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to find the type of model.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			virtual CORE Type_Identifier Model_Identifier();
-		// Public Variables         
-		public:
-		// Private Functions/Macros 
-		private:
-		// Private Variables        
-		private:
-		};
-		// //////////////////////////////////////////////////
-		// PW_STRUCTURES_API Class Name: pw::st::Asset_Model
-		// //////////////////////////////////////////////////																				 
-		// Purpose: 
-		//  A non-changing model that does not get updated
-		//  frequently.
-		// //////////////////////////////////////////////////
-		class PW_STRUCTURES_API Asset_Model : public Scene_Model {
-		// Default Class Structures 
-		public:
-			// //////////////////////////////////////////////////
-			// CLASS_FUNCTION Function: Asset_Model::Asset_Model
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to initialize all class structures to
-			//  default structures.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CLASS_FUNCTION Asset_Model();
-			// //////////////////////////////////////////////////
-			// CLASS_FUNCTION Function: Asset_Model::Asset_Model
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to initialize all class structures to
-			//  a given model and default structures.
-			// //////////////////////////////////////////////////
-			// Parameters: 1
-			// (1) PW_SRD_PTR(Static_Model) model;
-			// Purpose:
-			//  The model that the asset will use.
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CLASS_FUNCTION Asset_Model(PW_SRD_PTR(Static_Model) model, int32_t layer = 0);
-			// //////////////////////////////////////////////////
-			// CLASS_FUNCTION Function: Asset_Model::Asset_Model
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to initialize all class structures to
-			//  a given model and default structures.
-			// //////////////////////////////////////////////////
-			// Parameters: 2
-			// (1) PW_SRD_PTR(Static_Model) model;
-			// Purpose:
-			//  The model that the asset will use.
-			// (2) PW_SRD_PTR(Text) text;
-			// Purpose:
-			//  The text that will be displayed.
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CLASS_FUNCTION Asset_Model(PW_SRD_PTR(Static_Model) model, Text* text, int32_t layer = 0);
-			// //////////////////////////////////////////////////
-			// CLASS_FUNCTION Function: Asset_Model::~Asset_Model
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to deconstruct all allocated memory.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			virtual CLASS_FUNCTION ~Asset_Model();
+			// Sound Constructors
+			Actor(st::Model* p_model, st::Sound_Structure* p_sound_deposit, const int32_t& p_layer = 0);
+			Actor(st::Model* p_model, st::Text* p_text, st::Sound_Structure* p_sound_deposit, const int32_t& p_layer = 0);
+			Actor(st::Model* p_model, st::Texture_Structure* p_multi_texture, st::Sound_Structure* p_sound_deposit, const int32_t& p_layer = 0);
+
+			Actor(st::Model* p_model, st::Animation* p_animation, const int32_t& p_layer = 0);
+			Actor(st::Model* p_model, const std::vector<std::tuple<st::Animation*, st::Texture*>>& p_animations, const std::vector<std::wstring>& p_animation_ids, const int32_t& p_layer = 0);
+			Actor(st::Model* p_model, st::Animation* p_animation, st::Sound_Structure* p_sound_deposit, const int32_t& p_layer = 0);
+			Actor(st::Model* p_model, const std::vector<std::tuple<st::Animation*, st::Texture*>>& p_animations, const std::vector<std::wstring>& p_animation_ids, st::Sound_Structure* p_sound_deposit, const int32_t& p_layer = 0);
+
+			~Actor();
 		private:
 		// Public Functions/Macros  
 		public:
-			// //////////////////////////////////////////////////
-			// CORE Function: Asset_Model::Render
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to render the model to the screen.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CORE void Render();
-			// //////////////////////////////////////////////////
-			// CORE Function: Asset_Model::Delete
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to delete the model and default class
-			//  structures.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CORE void Delete();
-			// //////////////////////////////////////////////////
-			// CORE Function: Asset_Model::Refresh
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to refresh the model's data
-			//  after a update of some sort happens to the
-			//  engine.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CORE void Refresh();
-			// //////////////////////////////////////////////////
-			// CORE Function: Asset_Model::Model_Identifier
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to find the type of model.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CORE Type_Identifier Model_Identifier();
-			// Accessors
-			USER_INTERACTION
-			ACCESSOR Static_Model& Model();
-			USER_INTERACTION
-			ACCESSOR st::Text* Text();
-			USER_INTERACTION
-			ACCESSOR int32_t Layer();
-		// Public Variables         
-		public:
-		// Private Functions/Macros 
-		private:
-		// Private Variables       
-		private:
-			PW_SRD_PTR(Static_Model) model;
-			st::Text* m_text;
-			// The layer the model will be drawn on.
-			int32_t layer;
-		};
-		// //////////////////////////////////////////////////
-		// Class Name: pw::st::AAsset_Model
-		// //////////////////////////////////////////////////																				 
-		// Purpose:
-		//  A non-changing model that does not get updated
-		//  frequently and has animations.
-		// //////////////////////////////////////////////////
-		class PW_STRUCTURES_API AAsset_Model : public Asset_Model {
-		// Default Class Structures
-		public:
-			// //////////////////////////////////////////////////
-			// CLASS_FUNCTION Function: AAsset_Model::AAsset_Model
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to initialize a static model with
-			//  an animation.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CLASS_FUNCTION AAsset_Model();
-			// //////////////////////////////////////////////////
-			// CLASS_FUNCTION Function: AAsset_Model::AAsset_Model
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to initialize a static model with
-			//  an animation.
-			// //////////////////////////////////////////////////
-			// Parameters: 2
-			// (1) PW_SRD_PTR(Static_Model) model;
-			// Purpose:
-			//  The model that the asset will use.
-			// (2) PW_SRD_PTR(Animation) animation;
-			// Purpose:
-			//  The animation that the Asset will use.
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CLASS_FUNCTION AAsset_Model(PW_SRD_PTR(Static_Model) model, PW_SRD_PTR(Animation) animation, int32_t layer = 0);
-			// //////////////////////////////////////////////////
-			// CLASS_FUNCTION Function: AAsset_Model::AAsset_Model
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to initialize the actor's model and
-			//  animation.
-			// //////////////////////////////////////////////////
-			// Parameters: 3
-			// (1) PW_SRD_PTR(Static_Model) model;
-			// Purpose:
-			//  The model to be used for the structure. 
-			// (2) std::vector<PW_SRD_PTR(st::Animation)> p_animations;
-			// Purpose:
-			//  The animations to go into the structure.
-			// (3) std::vector<std::wstring> p_animation_ids;
-			// Purpose:
-			//  The id's of the animation in the order of the
-			//  animations.
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CLASS_FUNCTION AAsset_Model(PW_SRD_PTR(Static_Model) model, std::vector<std::tuple<PW_SRD_PTR(st::Animation), st::Texture*>> p_animations, std::vector<std::wstring> p_animation_ids, int32_t layer = 0);
-			// //////////////////////////////////////////////////
-			// CLASS_FUNCTION Function: AAsset_Model::~AAsset_Model
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to deallocate the class information.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			virtual CLASS_FUNCTION ~AAsset_Model();
-		private:
-		// Public Functions/Macros  
-		public:
-			// //////////////////////////////////////////////////
-			// CORE Function: AAsset_Model::Render
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to draw the model information to the screen
-			//  and run the necessary animation information.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CORE void Render();
-			// //////////////////////////////////////////////////
-			// CORE Function: AAsset_Model::Delete
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to delete the class structure's and models.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CORE void Delete();
-			// //////////////////////////////////////////////////
-			// CORE Function: AAsset_Model::Refresh
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to update the model and animation
-			//  information when the engine updates in some way.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CORE void Refresh();
-			// //////////////////////////////////////////////////
-			// CORE Function: AAsset_Model::Run_Animation
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to update and change animation information.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CORE void Run_Animation();
-			// //////////////////////////////////////////////////
-			// CORE Function: AAsset_Model::Advance_Animation
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Forces the animation to the next frame.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			USER_INTERACTION
-			CORE void Advance_Animation();
-			// //////////////////////////////////////////////////
-			// CORE Function: AAsset_Model::Start_Animation
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Makes the animation start to animate.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			USER_INTERACTION
-			CORE void Start_Animation();
-			// //////////////////////////////////////////////////
-			// CORE Function: AAsset_Model::Stop_Animation
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Stops the animation from animating. Can still be
-			//  advanced manually.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			USER_INTERACTION
-			CORE void Stop_Animation();
-			// //////////////////////////////////////////////////
-			// CORE Function: AAsset_Model::Model_Identifier
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to find the type of model.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CORE Type_Identifier Model_Identifier();
-			// Accessors
-			USER_INTERACTION
-			ACCESSOR st::Animation* Model_Animation();
-		// Public Variables       		  
-		public:
-		// Private Functions/Macros 
-		private:
-		// Private Variables        
-		private:
-			st::Animation* m_current_animation;
-			Animation_Structure m_animations;
-		};
-		// //////////////////////////////////////////////////
-		// PW_STRUCTURES_API Class Name: pw::st::Actor_Model
-		// //////////////////////////////////////////////////																				 
-		// Purpose:
-		//  A changing model that does get updated frequently
-		//  .(IE. every frame)
-		// //////////////////////////////////////////////////
-		class PW_STRUCTURES_API Actor_Model : public Scene_Model {
-		// Default Class Structures 
-		public:
-			// //////////////////////////////////////////////////
-			// CLASS_FUNCTION Function: Actor_Model::Actor_Model
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to initialize the class structures.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CLASS_FUNCTION Actor_Model();
-			// //////////////////////////////////////////////////
-			// CLASS_FUNCTION Function: Actor_Model::Actor_Model
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to initialize the class structures
-			//  and initialize the model contained within.
-			// //////////////////////////////////////////////////
-			// Parameters: 1
-			// (1) PW_SRD_PTR(Dynamic_Model) model;
-			// Purpose:
-			//  The model to be used.
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CLASS_FUNCTION Actor_Model(PW_SRD_PTR(Dynamic_Model) model, int32_t layer = 0);
-			// //////////////////////////////////////////////////
-			// CLASS_FUNCTION Function: Actor_Model::Asset_Model
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to initialize all class structures to
-			//  a given model and default structures.
-			// //////////////////////////////////////////////////
-			// Parameters: 2
-			// (1) PW_SRD_PTR(Dynamic_Model) model;
-			// Purpose:
-			//  The model to be used.
-			// (2) PW_SRD_PTR(Text) text;
-			// Purpose:
-			//  The text that will be displayed.
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CLASS_FUNCTION Actor_Model(PW_SRD_PTR(Dynamic_Model) model, Text* text, int32_t layer = 0);
-			// //////////////////////////////////////////////////
-			// CLASS_FUNCTION Function: Actor_Model::~Actor_Model
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to get rid of base class structures
-			//  and deallocated allocated memory.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			virtual CLASS_FUNCTION ~Actor_Model();
-		private:
-		// Public Functions/Macros  
-		public:
-			// //////////////////////////////////////////////////
-			// CORE Function: Actor_Model::Render
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to draw the model information to
-			//  the screen.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CORE void Render();
-			// //////////////////////////////////////////////////
-			// CORE Function: Actor_Model::Delete
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to delete the model and
-			//  default class information.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CORE void Delete();
-			// //////////////////////////////////////////////////
-			// CORE Function: Actor_Model::Refresh
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to update model / class information
-			//  when ever the engine updates in some sort of 
-			//  way.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CORE void Refresh();
-			// //////////////////////////////////////////////////
-			// CORE Function: Actor_Model::Model_Identifier
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to find the type of model.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CORE Type_Identifier Model_Identifier();
-			// Mutators
-			USER_INTERACTION
-			MUTATOR void Set_Poly_Body(b2Body* poly_body);
-			USER_INTERACTION
-			MUTATOR void Set_Event_ID(PW_ID id);
-			NO_USER_INTERACTION
-			MUTATOR void Set_S_ID(std::wstring s_id);
-			// Accessors
-			USER_INTERACTION
-			ACCESSOR Dynamic_Model& Model();
-			USER_INTERACTION
-			ACCESSOR PW_ID Event_ID() const;
-			USER_INTERACTION
-			ACCESSOR std::wstring* S_ID();
-			USER_INTERACTION
-			ACCESSOR st::Text* Text();
-			USER_INTERACTION
-			ACCESSOR int32_t Layer();
-			// //////////////////////////////////////////////////
-			// CORE Function: Actor_Model::Increment_ID_Index
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to increment the global id by 1.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			static CORE void Increment_ID_Index();
-			// //////////////////////////////////////////////////
-			// ACCESSOR Function: Actor_Model::Increment_ID_Index
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Returns the current global id from the
-			//  actor class. This global id is incremented
-			//  per new event.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			USER_INTERACTION
-			static const ACCESSOR PW_ID Global_ID();
+			void Render();
+
+			void Play_Sound(std::wstring p_sound_s_id, bool p_reset_play);
+			void Pause_Sound(std::wstring p_sound_s_id);
+			void Stop_Sound(std::wstring p_sound_s_id);
+			void Reset_Sound(std::wstring p_sound_s_id);
+			void Pause_All_Sounds();
+			void Stop_All_Sounds();
+			void Reset_All_Sounds();
+			
+			void Change_Volume(std::wstring p_sound_s_id, float p_new_volume, bool windows_style);
+
+			void Run_Animation();
+			void Advance_Animation();
+			void Start_Animation();
+			void Stop_Animation();
+			void Change_Animation(std::wstring p_animation_id, bool p_reset = true);
+
+			 // Tests for a non-b2Body collision between shapes
+			 // so they don't just bounce off each other
+			bool Test_Collision(st::Actor* p_other_model);
+			
+			void Set_Physics_Object(st::Physics_Object* p_body);
+
+			void Set_S_ID(const std::wstring& p_s_id);
+
+			void Set_Texture(std::wstring p_s_id);
+
+			void Set_Render_State(const bool& p_state);
+
+			void Set_Size_X(const float& p_size_x);
+			void Set_Size_Y(const float& p_size_y);
+			void Set_Size(const glm::vec2& p_size_px);
+			
+			void Set_Text(std::wstring p_new_text);
+
+			void Set_Text_Color(glm::vec4 p_color);
+
+			void Toggle_Render();
+			void Set_Render_Toggle(const bool& p_state);
+
+			st::Model* Model() const;
+			st::Physics_Object* Physics_Object() const;
+			st::Texture_Structure* Multi_Texture() const;
+
+			st::Sound_Structure* Sound_Structure() const;
+			
+			const bool& Is_Rendered() const;
+			const bool& Render_Toggle() const;
+
+			const std::wstring& S_Id() const;
+
+			st::Text* Text() const;
+
+			st::Animation* Animation() const;
+			st::Animation_Structure* Animation_Structure() const;
+			
+			const int32_t& Layer() const;
+
+			static void Increment_ID_Index();
+
+			static const PW_ID& Global_ID();
 		// Public Variables
 		public:
 		// Private Functions/Macros 
 		private:
 		// Private Variables       
 		private:
-			PW_SRD_PTR(Dynamic_Model) model;
-			b2Body* poly_body;
-			PW_ID event_id;
+			st::Model* m_model;
+			st::Physics_Object* m_body;
+			st::Texture_Structure* m_multi_texture;
+			// Sound structure
+			st::Sound_Structure* m_sound_deposit;
+			// Was the model rendered before the next frame runs
+			bool m_is_rendered;
+			// Should the model render or not
+			bool m_render_toggle;
 			// This is a special string id used for accessing a specific model
-			std::wstring s_id;
+			std::wstring m_s_id;
 			// A pointer to possible text the structure may be covering.
 			st::Text* m_text;
-			// The layer the model will be drawn on.
-			int32_t layer;
-			static PW_ID global_index;
-		};
-		// //////////////////////////////////////////////////
-		// PW_STRUCTURES_API Class Name: pw::st::AActor_Model
-		// //////////////////////////////////////////////////																				 
-		// Purpose:
-		//  A changing model that does get updated
-		//  frequently with animations. (IE. every frame).
-		// //////////////////////////////////////////////////
-		class PW_STRUCTURES_API AActor_Model : public Actor_Model {
-		// Default Class Structures 
-		public:
-			// //////////////////////////////////////////////////
-			// CLASS_FUNCTION Function: AActor_Model::AActor_Model
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to initialize the actor's model and
-			//  animation.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CLASS_FUNCTION AActor_Model();
-			// //////////////////////////////////////////////////
-			// CLASS_FUNCTION Function: AActor_Model::AActor_Model
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to initialize the actor's model and
-			//  animation.
-			// //////////////////////////////////////////////////
-			// Parameters: 2
-			// (1) PW_SRD_PTR(Dynamic_Model) model;
-			// Purpose:
-			//  The model to be used for the structure. 
-			// (2) PW_SRD_PTR(Animation) animation;
-			// Purpose:
-			//  The animation to be used for the model.
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CLASS_FUNCTION AActor_Model(PW_SRD_PTR(Dynamic_Model) model, PW_SRD_PTR(Animation) animation, int32_t layer = 0);
-			// //////////////////////////////////////////////////
-			// CLASS_FUNCTION Function: AActor_Model::AActor_Model
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to initialize the actor's model and
-			//  animation.
-			// //////////////////////////////////////////////////
-			// Parameters: 3
-			// (1) PW_SRD_PTR(Dynamic_Model) model;
-			// Purpose:
-			//  The model to be used for the structure. 
-			// (2) std::vector<PW_SRD_PTR(st::Animation)> p_animations;
-			// Purpose:
-			//  The animations to go into the structure.
-			// (3) std::vector<std::wstring> p_animation_ids;
-			// Purpose:
-			//  The id's of the animation in the order of the
-			//  animations.
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CLASS_FUNCTION AActor_Model(PW_SRD_PTR(Dynamic_Model) model, std::vector<std::tuple<PW_SRD_PTR(st::Animation), st::Texture*>> p_animations, std::vector<std::wstring> p_animation_ids, int32_t layer = 0);
-			// //////////////////////////////////////////////////
-			// CLASS_FUNCTION Function: AActor_Model::~AActor_Model
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to deallocate memory allocated by the actor
-			//  model and the animation.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			virtual CLASS_FUNCTION ~AActor_Model();
-		private:
-		// Public Functions/Macros  
-		public:
-			// //////////////////////////////////////////////////
-			// CORE Function: AActor_Model::Render
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to draw the actor model information to
-			//  the screen and is also used to update animation
-			//  information.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CORE void Render();
-			// //////////////////////////////////////////////////
-			// CORE Function: AActor_Model::Delete
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to delete the actor model data and animation
-			//  .
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CORE void Delete();
-			// //////////////////////////////////////////////////
-			// CORE Function: AActor_Model::Refresh
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to refresh all data in the AActor_Model
-			//  class when ever the engine is updated in any way.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CORE void Refresh();
-			// //////////////////////////////////////////////////
-			// CORE Function: AActor_Model::Run_Animation
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to update animation information
-			//  and change model texture information accordantly.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CORE void Run_Animation();
-			// //////////////////////////////////////////////////
-			// CORE Function: AActor_Model::Advance_Animation
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Forces the animation to the next frame.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			USER_INTERACTION
-			CORE void Advance_Animation();
-			// //////////////////////////////////////////////////
-			// CORE Function: AActor_Model::Start_Animation
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Makes the animation start to animate.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			USER_INTERACTION
-			CORE void Start_Animation();
-			// //////////////////////////////////////////////////
-			// CORE Function: AActor_Model::Stop_Animation
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Stops the animation from animating. Can still be
-			//  advanced manually.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			USER_INTERACTION
-			CORE void Stop_Animation();
-			// //////////////////////////////////////////////////
-			// CORE Function: AActor_Model::Change_Animation
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Stops the animation from animating. Can still be
-			//  advanced manually.
-			// //////////////////////////////////////////////////
-			// Parameters: 1
-			// (1) const std::wstring&& p_animation_id;
-			// Purpose:
-			//  The Id of the other animation to change to.
-			// (2) bool reset;
-			// Purpose:
-			//  Should we reset the animation when we change it.
-			// //////////////////////////////////////////////////
-			USER_INTERACTION
-			CORE void Change_Animation(std::wstring p_animation_id, bool reset = true);
-			// //////////////////////////////////////////////////
-			// CORE Function: AActor_Model::Model_Identifier
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to find the type of model.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CORE Type_Identifier Model_Identifier();
-			// Accessors
-			ACCESSOR st::Animation* Model_Animation();
-		// Public Variables         
-		public:
-		// Private Functions/Macros 
-		private:
-		// Private Variables        
-		private:
+
 			st::Animation* m_current_animation;
-			Animation_Structure m_animations;
+			st::Animation_Structure* m_animations;
+			// The layer the model will be drawn on.
+			int32_t m_layer;
+			static PW_ID m_global_index;
 		};
-		// //////////////////////////////////////////////////
-		// PW_STRUCTURES_API Class Name: pw::st::Scene_Event
-		// //////////////////////////////////////////////////																				 
-		// Purpose:
-		//  A event that is triggered by a model event
-		//  happening within a scene.
-		// //////////////////////////////////////////////////
-		class PW_STRUCTURES_API Scene_Event {
+		class Scene_Event {
 		// Default Class Structures 
 		public:
-			// //////////////////////////////////////////////////
-			// CLASS_FUNCTION Function: Scene_Event::Scene_Event
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to initialize all scene event
-			//  structures and variables.
-			// //////////////////////////////////////////////////
-			// Parameters: 2
-			// (1) PW_SRD_PTR(Actor_Model) model_pointer;
-			// Purpose:
-			//  The pointer to the model that the event triggers
-			//  from.
-			// (2) st::Event model_event;
-			// Purpose:
-			//  The event that will trigger upon a action.
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CLASS_FUNCTION Scene_Event(Actor_Model* model_pointer, st::Event_Base* model_event);
-			// //////////////////////////////////////////////////
-			// CLASS_FUNCTION Function: Scene_Event::~Scene_Event
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to deallocate all memory used 
-			//  by this class.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CLASS_FUNCTION ~Scene_Event();
+			Scene_Event(st::Actor* p_model_pointer, st::Event_Base* p_model_event);
+			
+			~Scene_Event();
 		private:
 		// Public Functions/Macros 
 		public:
-			// //////////////////////////////////////////////////
-			// CORE Function: Scene_Event::Run_Event
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used when the event is trigger is some
-			//  sort of way. This is determined by the Game_Scene
-			//  class.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			CORE void Run_Event();
-			// Accessors
-			USER_INTERACTION
-			ACCESSOR st::Event_Base* Event() const;
-			USER_INTERACTION
-			ACCESSOR Actor_Model* Model() const;
+			void Run_Event();
+			
+			st::Event_Base* Event() const;
+			
+			st::Actor* Model() const;
 		// Public Variables         
 		public:
 		// Private Functions/Macros 
 		private:
 		// Private Variables        
 		private:
-			Actor_Model* m_model;
+			st::Actor* m_model;
 			st::Event_Base* m_model_event;
 		};
-		// //////////////////////////////////////////////////
-		// Class Name: pw::st::Game_Scene
-		// //////////////////////////////////////////////////																				 
-		// Purpose:
-		//  A class for handling scene drawing and texture
-		//  drawing in a scene, as well as sound and other
-		//	events.
-		// //////////////////////////////////////////////////
-		class PW_STRUCTURES_API Game_Scene {
+		struct Sub_Scene_Structure {
+			// Default Class Structures
+		public:
+			Sub_Scene_Structure();
+			Sub_Scene_Structure(const std::wstring& p_sub_scene_id, const std::vector<st::Actor*>& p_scene_repository, const bool& p_should_render);
+			~Sub_Scene_Structure();
+		private:
+			// Public Functions/Macros 
+		public:
+			void Pre_Render(quadtree::Quadtree<st::Actor*, std::function<quadtree::Box<float>(st::Actor*)>>& p_quadtree_renderer);
+			void De_Render(quadtree::Quadtree<st::Actor*, std::function<quadtree::Box<float>(st::Actor*)>>& p_quadtree_renderer);
+
+			void Set_Render_State(const bool& p_is_rendering);
+			void Set_Render_Toggle(bool p_render_structure);
+			void Push_Screen_Models(std::vector<st::Actor*>& p_screen_models);
+
+			const bool& Is_Rendered();
+			const bool& Should_Render();
+			std::vector<st::Actor*>& Scenes();
+			const std::wstring& Sub_Scene_Id();
+			// Public Variables     
+		public:
+			// Private Functions/Macros 
+		private:
+			// Private Variables       
+		private:
+			std::wstring m_sub_scene_id;
+
+			std::vector<st::Actor*> m_scene_repository;
+			// Is it currently rendered as of the last frame
+			bool m_is_rendered;
+			// Should the structure be rendered
+			bool m_should_render;
+		};
+		class Game_Scene {
 		// Default Class Structures
 		public:
-			// //////////////////////////////////////////////////
-			// CLASS_FUNCTION Function: Game_Scene::Game_Scene
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to initialize a scene.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			USER_INTERACTION
-			CLASS_FUNCTION Game_Scene();
-			// //////////////////////////////////////////////////
-			// CLASS_FUNCTION Function: Game_Scene::Game_Scene
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to initialize a scene.
-			// //////////////////////////////////////////////////
-			// Parameters: 7
-			// (1) const wchar_t* scene_name;
-			// Purpose:
-			//  The name of the scene.
-			// (2) std::vector<PW_SRD_PTR(Scene_Model)> scene_models;
-			// Purpose:
-			//  The models within the scene.
-			// (3) std::vector<PW_SRD_PTR(Actor_Model)> collision_models;
-			// Purpose:
-			//  A vector of pointers to actor models that can collide.
-			// (4) co::Engine_Input* scene_input;
-			// Purpose:
-			//  The input structure that controls the scene's input.
-			// (5) std::map<PW_EVENT_ID, std::map<PW_BUTTON_CODE, std::map<PW_STATE, Scene_Event>>> scene_events;
-			// Purpose:
-			//  The events that the scene has.
-			// (6) std::vector<PW_SRD_PTR(Scene_Event)> current_scene_events;
-			// Purpose:
-			//  The current scene events that are currently active.
-			// (7) Pysics_Factory* scene_physics;
-			// Purpose:
-			//  The physics structure that controls physics for 
-			//  the scene.
-			// //////////////////////////////////////////////////
-			USER_INTERACTION
-			CLASS_FUNCTION Game_Scene(const wchar_t* scene_name, std::vector<PW_SRD_PTR(Scene_Model)> scene_models, std::vector<PW_SRD_PTR(Actor_Model)> collision_models,
-					co::Engine_Input* scene_input, Pysics_Factory* scene_physics);
-			// //////////////////////////////////////////////////
-			// CLASS_FUNCTION Function: Game_Scene::~Game_Scene
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to deallocate scenes and get rid of memory.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
+			Game_Scene();
+			
+			Game_Scene(const std::wstring& p_scene_name, const std::vector<st::Actor*>& p_scene_models, const std::vector<st::Actor*>& p_collision_models,
+				 const std::map<std::wstring, co::Engine_Input*>& p_scene_input, st::Physics_Factory* p_scene_physics,
+					const std::map<std::wstring, st::Sub_Scene_Structure*>& p_sub_scene_deposit, const std::wstring& p_listener_id);
+
 			~Game_Scene();
 		private:
 		// Public Functions/Macros 
 		public:
-			// //////////////////////////////////////////////////
-			// CORE Function: Game_Scene::Pre_Render
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Updates render information before render.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CORE void Pre_Render();
-			// //////////////////////////////////////////////////
-			// CORE Function: Game_Scene::Render
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to draw all members on to a screen.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CORE void Render();
-			// //////////////////////////////////////////////////
-			// CORE Function: Game_Scene::Delete
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to delete all of the related members
-			//  within the scene and then delete the scene itself
-			// .
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CORE void Delete();
-			// //////////////////////////////////////////////////
-			// CORE Function: Game_Scene::Refresh_Scene
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to refresh all of the scene members when
-			//  ever the engine is updated.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CORE void Refresh_Scene();
-			// //////////////////////////////////////////////////
-			// CORE Function: Game_Scene::Create_Event
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to create an event that is tied to a model
-			//  and triggers a function when it happens.
-			// //////////////////////////////////////////////////
-			// Parameters: 6
-			// (1) PW_EVENT_ID event_type;
-			// Purpose:
-			//  The id of the pw event type.
-			// (2) PW_BUTTON_CODE button;
-			// Purpose:
-			//  The button that has to be pressed in order for
-			//  the event to trigger.
-			// (3) PW_STATE state;
-			// Purpose:
-			//  The state of the button in order to trigger the
-			//  event.
-			// (4) Actor_Model* model_pointer;
-			// Purpose:
-			//  A pointer to the model that has to be interacted
-			//  with.
-			// (5) PW_SRD_PTR(std::function<type(args...)>) trigger_function;
-			// Purpose:
-			//  The function that will be triggered on event
-			//  trigger.
-			// (6) bool play_once;
-			// Purpose:
-			//  Should the event be triggered continuously until
-			//  the opposite trigger is activated. 
-			// (7) args... p_arguments;
-			// Purpose:
-			//  The arguments for the function to be triggered. 
-			// //////////////////////////////////////////////////
-			// std::map<PW_EVENT_ID, std::map<PW_BUTTON_CODE, std::map<PW_STATE, std::map<PW_ID, st::Scene_Event>>>>
-			NO_USER_INTERACTION
+			void Pre_Render();
+			
+			void Render();
+
+			void Pause_All_Sounds();
+			void Stop_All_Sounds();
+			void Reset_All_Sounds();
+			
 			template<class type, class ...args>
-			CORE void Create_Event(PW_EVENT_ID event_type, PW_BUTTON_CODE button, PW_STATE state, Actor_Model* model_pointer, PW_SRD_PTR(std::function<type(args...)>) trigger_function, bool play_once, args... p_arguments) {
-				if (scene_events.count(event_type) < 1) {
-					std::map<PW_ID, Scene_Event> id_event = std::map<PW_ID, Scene_Event>();
-					id_event.insert(std::make_pair(scene_id_counter, Scene_Event(model_pointer,
-						pw::Engine_Memory::Allocate<st::Event<int, int, type, args...>>(st::Event<int, int, type, args...>(state, trigger_function, play_once, p_arguments...)))));
+			void Create_Event(const std::wstring& p_event_holder_id, const PW_EVENT_ID& p_event_type, const PW_BUTTON_CODE& p_button, const PW_STATE& p_state, st::Actor* p_test_pointer,
+						st::Actor* p_id_pointer, const std::shared_ptr<std::function<type(args...)>>& p_trigger_function, const bool& p_play_once, args... p_arguments) {
+				if (p_trigger_function != nullptr) {
+					switch (p_event_type) {
+						case pw::cm::Engine_Constant::PW_ANIMATION_START_EVENT:
+						case pw::cm::Engine_Constant::PW_ANIMATION_END_EVENT: {
+							if (m_scene_alt_events.count(p_event_holder_id) < 1) {
+								std::map<PW_ID, Scene_Event*> id_event{};
+								Scene_Event* v_temp = pw::Engine_Memory::Allocate<Scene_Event, bool>(p_id_pointer,
+									pw::Engine_Memory::Allocate<st::Event<type, args...>, bool>(p_button, p_state, p_trigger_function, p_play_once, p_arguments...));
 
-					scene_id_counter = scene_id_counter + 1;
+								id_event.insert(std::make_pair(m_scene_id_counter, v_temp));
 
-					std::map<PW_STATE, std::map<PW_ID, Scene_Event>> state_event = std::map<PW_STATE, std::map<PW_ID, Scene_Event>>();
-					state_event.insert(std::make_pair(state, id_event));
+								std::map<std::wstring, std::map<PW_ID, st::Scene_Event*>> model_id{};
+								model_id.insert(std::make_pair(p_id_pointer->S_Id(), id_event));
 
-					std::map<PW_BUTTON_CODE, std::map<PW_STATE, std::map<PW_ID, Scene_Event>>> button_event = std::map<PW_BUTTON_CODE, std::map<PW_STATE, std::map<PW_ID, Scene_Event>>>();
-					button_event.insert(std::make_pair(button, state_event));
+								std::map<PW_EVENT_ID, std::map<std::wstring, std::map<PW_ID, st::Scene_Event*>>> event_id{};
 
-					scene_events.insert(std::make_pair(event_type, button_event));
-				}
-				else {
-					if (scene_events.at(event_type).count(button) < 1) {
-						std::map<PW_ID, Scene_Event> id_event = std::map<PW_ID, Scene_Event>();
-						id_event.insert(std::make_pair(scene_id_counter, Scene_Event(model_pointer,
-							pw::Engine_Memory::Allocate<st::Event<int, int, type, args...>>(st::Event<int, int, type, args...>(state, trigger_function, play_once, p_arguments...)))));
+								event_id.insert(std::make_pair(p_event_type, model_id));
 
-						scene_id_counter = scene_id_counter + 1;
+								m_scene_alt_events.insert(std::make_pair(p_event_holder_id, event_id));
 
-						std::map<PW_STATE, std::map<PW_ID, Scene_Event>> state_event = std::map<PW_STATE, std::map<PW_ID, Scene_Event>>();
-						state_event.insert(std::make_pair(state, id_event));
+								v_temp = nullptr;
 
-						scene_events.at(event_type).insert(std::make_pair(button, state_event));
-					}
-					else {
-						if (scene_events.at(event_type).at(button).count(state) < 1) {
-							std::map<PW_ID, Scene_Event> id_event = std::map<PW_ID, Scene_Event>();
-							id_event.insert(std::make_pair(scene_id_counter, Scene_Event(model_pointer,
-								pw::Engine_Memory::Allocate<st::Event<int, int, type, args...>>(st::Event<int, int, type, args...>(state, trigger_function, play_once, p_arguments...)))));
+								m_scene_id_counter = m_scene_id_counter + 1;
+							}
+							else {
+								if (m_scene_alt_events.at(p_event_holder_id).count(p_event_type) < 1) {
+									std::map<PW_ID, Scene_Event*> id_event{};
+									Scene_Event* v_temp = pw::Engine_Memory::Allocate<Scene_Event, bool>(p_id_pointer,
+										pw::Engine_Memory::Allocate<st::Event<type, args...>, bool>(p_button, p_state, p_trigger_function, p_play_once, p_arguments...));
 
-							scene_id_counter = scene_id_counter + 1;
+									id_event.insert(std::make_pair(m_scene_id_counter, v_temp));
 
-							scene_events.at(event_type).at(button).insert(std::make_pair(state, id_event));
+									std::map<std::wstring, std::map<PW_ID, st::Scene_Event*>> model_id{};
+									model_id.insert(std::make_pair(p_id_pointer->S_Id(), id_event));
+
+									m_scene_alt_events.at(p_event_holder_id).insert(std::make_pair(p_event_type, model_id));
+
+									v_temp = nullptr;
+
+									m_scene_id_counter = m_scene_id_counter + 1;
+								}
+								else {
+									if (m_scene_alt_events.at(p_event_holder_id).at(p_event_type).count(p_id_pointer->S_Id()) < 1) {
+										std::map<PW_ID, Scene_Event*> id_event{};
+										Scene_Event* v_temp = pw::Engine_Memory::Allocate<Scene_Event, bool>(p_id_pointer,
+											pw::Engine_Memory::Allocate<st::Event<type, args...>, bool>(p_button, p_state, p_trigger_function, p_play_once, p_arguments...));
+
+										id_event.insert(std::make_pair(m_scene_id_counter, v_temp));
+
+										m_scene_alt_events.at(p_event_holder_id).at(p_event_type).insert(std::make_pair(p_id_pointer->S_Id(), id_event));
+
+										v_temp = nullptr;
+
+										m_scene_id_counter = m_scene_id_counter + 1;
+									}
+									else {
+										Scene_Event* v_temp = pw::Engine_Memory::Allocate<Scene_Event, bool>(p_id_pointer,
+											pw::Engine_Memory::Allocate<st::Event<type, args...>, bool>(p_button, p_state, p_trigger_function, p_play_once, p_arguments...));
+
+										m_scene_alt_events.at(p_event_holder_id).at(p_event_type).at(p_id_pointer->S_Id()).insert(std::make_pair(m_scene_id_counter, v_temp));
+
+										v_temp = nullptr;
+
+										m_scene_id_counter = m_scene_id_counter + 1;
+									}
+								}
+							}
+							break;
 						}
-						else {
-							scene_events.at(event_type).at(button).at(state).insert(std::make_pair(scene_id_counter,
-								Scene_Event(model_pointer, pw::Engine_Memory::Allocate<st::Event<int, int, type, args...>>(st::Event<int, int, type, args...>(state, trigger_function, play_once, p_arguments...)))));
+						default: {
+							if (m_scene_events.count(p_event_holder_id) < 1) {
+								std::map<PW_ID, Scene_Event*> id_event{};
+								Scene_Event* v_temp = pw::Engine_Memory::Allocate<Scene_Event, bool>(p_id_pointer,
+									pw::Engine_Memory::Allocate<st::Event<type, args...>, bool>(p_button, p_state, p_trigger_function, p_play_once, p_arguments...));
 
-							scene_id_counter = scene_id_counter + 1;
+								id_event.insert(std::make_pair(m_scene_id_counter, v_temp));
+
+								std::map<st::Actor*, std::map<PW_ID, Scene_Event*>> actor_event{};
+								actor_event.insert(std::make_pair(p_test_pointer, id_event));
+
+								std::map<PW_STATE, std::map<st::Actor*, std::map<PW_ID, Scene_Event*>>> state_event{};
+								state_event.insert(std::make_pair(p_state, actor_event));
+
+								std::map<PW_BUTTON_CODE, std::map<PW_STATE, std::map<st::Actor*, std::map<PW_ID, Scene_Event*>>>> button_event{};
+								button_event.insert(std::make_pair(p_button, state_event));
+
+								std::map<PW_EVENT_ID, std::map<PW_BUTTON_CODE, std::map<PW_STATE, std::map<st::Actor*, std::map<PW_ID, Scene_Event*>>>>> event_id{};
+								event_id.insert(std::make_pair(p_event_type, button_event));
+
+								m_scene_events.insert(std::make_pair(p_event_holder_id, event_id));
+
+								v_temp = nullptr;
+
+								m_scene_id_counter = m_scene_id_counter + 1;
+							}
+							else {
+								if (m_scene_events.at(p_event_holder_id).count(p_event_type) < 1) {
+									std::map<PW_ID, Scene_Event*> id_event{};
+									Scene_Event* v_temp = pw::Engine_Memory::Allocate<Scene_Event, bool>(p_id_pointer,
+										pw::Engine_Memory::Allocate<st::Event<type, args...>, bool>(p_button, p_state, p_trigger_function, p_play_once, p_arguments...));
+
+									id_event.insert(std::make_pair(m_scene_id_counter, v_temp));
+
+									std::map<st::Actor*, std::map<PW_ID, Scene_Event*>> actor_event{};
+									actor_event.insert(std::make_pair(p_test_pointer, id_event));
+
+									std::map<PW_STATE, std::map<st::Actor*, std::map<PW_ID, Scene_Event*>>> state_event{};
+									state_event.insert(std::make_pair(p_state, actor_event));
+
+									std::map<PW_BUTTON_CODE, std::map<PW_STATE, std::map<st::Actor*, std::map<PW_ID, Scene_Event*>>>> button_event{};
+									button_event.insert(std::make_pair(p_button, state_event));
+
+									m_scene_events.at(p_event_holder_id).insert(std::make_pair(p_event_type, button_event));
+
+									v_temp = nullptr;
+
+									m_scene_id_counter = m_scene_id_counter + 1;
+								}
+								else {
+									if (m_scene_events.at(p_event_holder_id).at(p_event_type).count(p_button) < 1) {
+										std::map<PW_ID, Scene_Event*> id_event{};
+										Scene_Event* v_temp = pw::Engine_Memory::Allocate<Scene_Event, bool>(p_id_pointer,
+											pw::Engine_Memory::Allocate<st::Event<type, args...>, bool>(p_button, p_state, p_trigger_function, p_play_once, p_arguments...));
+
+										id_event.insert(std::make_pair(m_scene_id_counter, v_temp));
+
+										std::map<st::Actor*, std::map<PW_ID, Scene_Event*>> actor_event{};
+										actor_event.insert(std::make_pair(p_test_pointer, id_event));
+
+										std::map<PW_STATE, std::map<st::Actor*, std::map<PW_ID, Scene_Event*>>> state_event{};
+										state_event.insert(std::make_pair(p_state, actor_event));
+
+										m_scene_events.at(p_event_holder_id).at(p_event_type).insert(std::make_pair(p_button, state_event));
+
+										v_temp = nullptr;
+
+										m_scene_id_counter = m_scene_id_counter + 1;
+									}
+									else {
+										if (m_scene_events.at(p_event_holder_id).at(p_event_type).at(p_button).count(p_state) < 1) {
+											std::map<PW_ID, Scene_Event*> id_event{};
+											Scene_Event* v_temp = pw::Engine_Memory::Allocate<Scene_Event, bool>(p_id_pointer,
+												pw::Engine_Memory::Allocate<st::Event<type, args...>, bool>(p_button, p_state, p_trigger_function, p_play_once, p_arguments...));
+
+											id_event.insert(std::make_pair(m_scene_id_counter, v_temp));
+
+											std::map<st::Actor*, std::map<PW_ID, Scene_Event*>> actor_event{};
+											actor_event.insert(std::make_pair(p_test_pointer, id_event));
+
+											m_scene_events.at(p_event_holder_id).at(p_event_type).at(p_button).insert(std::make_pair(p_state, actor_event));
+
+											v_temp = nullptr;
+
+											m_scene_id_counter = m_scene_id_counter + 1;
+										}
+										else {
+											if (m_scene_events.at(p_event_holder_id).at(p_event_type).at(p_button).at(p_state).count(p_test_pointer) < 1) {
+												std::map<PW_ID, Scene_Event*> id_event{};
+												Scene_Event* v_temp = pw::Engine_Memory::Allocate<Scene_Event, bool>(p_id_pointer,
+													pw::Engine_Memory::Allocate<st::Event<type, args...>, bool>(p_button, p_state, p_trigger_function, p_play_once, p_arguments...));
+
+												id_event.insert(std::make_pair(m_scene_id_counter, v_temp));
+
+												m_scene_events.at(p_event_holder_id).at(p_event_type).at(p_button).at(p_state).insert(std::make_pair(p_test_pointer, id_event));
+
+												v_temp = nullptr;
+
+												m_scene_id_counter = m_scene_id_counter + 1;
+											}
+											else {
+												std::map<PW_ID, Scene_Event*> id_event{};
+												Scene_Event* v_temp = pw::Engine_Memory::Allocate<Scene_Event, bool>(p_id_pointer,
+													pw::Engine_Memory::Allocate<st::Event<type, args...>, bool>(p_button, p_state, p_trigger_function, p_play_once, p_arguments...));
+
+												m_scene_events.at(p_event_holder_id).at(p_event_type).at(p_button).at(p_state).at(p_test_pointer).insert(std::make_pair(m_scene_id_counter, v_temp));
+
+												v_temp = nullptr;
+
+												m_scene_id_counter = m_scene_id_counter + 1;
+											}
+										}
+									}
+								}
+							}
+							break;
 						}
 					}
 				}
 			}
-			// //////////////////////////////////////////////////
-			// CORE Function: Game_Scene::Create_Event
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Used to create an event that is tied to a model
-			//  and triggers a function when it happens.
-			// //////////////////////////////////////////////////
-			// Parameters: 6
-			// (1) PW_EVENT_ID event_type;
-			// Purpose:
-			//  The id of the pw event type.
-			// (2) PW_BUTTON_CODE button;
-			// Purpose:
-			//  The button that has to be pressed in order for
-			//  the event to trigger.
-			// (3) PW_STATE state;
-			// Purpose:
-			//  The state of the button in order to trigger the
-			//  event.
-			// (4) Actor_Model* model_pointer;
-			// Purpose:
-			//  A pointer to the model that has to be interacted
-			//  with.
-			// (6) bool play_once;
-			// Purpose:
-			//  Should the event be triggered continuously until
-			//  the opposite trigger is activated. 
-			// (7) std::_Mem_fn<function_type> function;
-			// Purpose:
-			//  A member function pointer to the function being
-			//  executed.
-			// (8) mem_class& object;
-			// Purpose:
-			//  The object the function is tied to.
-			// (9) args... arguments;
-			// Purpose:
-			//  The arguments for the function.
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			template<class function_type, class mem_class, class type, class ...args>
-			CORE void Create_Event(PW_EVENT_ID event_type, PW_BUTTON_CODE button, PW_STATE state, Actor_Model* model_pointer, bool play_once, std::_Mem_fn<function_type> function, mem_class& object, args... arguments) {
-				if (scene_events.count(event_type) < 1) {
-					std::map<PW_ID, Scene_Event> id_event = std::map<PW_ID, Scene_Event>();
-					id_event.insert(std::make_pair(scene_id_counter,
-						Scene_Event(model_pointer, pw::Engine_Memory::Allocate<st::Event<function_type, mem_class, type, args...>>(st::Event<function_type, mem_class, type, args...>(state, play_once, function, object, arguments...)))));
+			template<class type, class ...args>
+			void Create_Event(const std::wstring& p_event_holder_id, const std::wstring& p_sound_id, const PW_EVENT_ID& p_event_type, const PW_STATE& p_state, st::Actor* p_model_pointer,
+				const std::shared_ptr<std::function<type(args...)>>& p_trigger_function, const bool& p_play_once, args... p_arguments) {
+				if (p_trigger_function != nullptr) {
+					if (m_scene_alt_events.count(p_event_holder_id) < 1) {
+						std::map<PW_ID, Scene_Event*> id_event{};
+						Scene_Event* v_temp = pw::Engine_Memory::Allocate<Scene_Event, bool>(p_model_pointer,
+							pw::Engine_Memory::Allocate<st::Event<type, args...>, bool>(NULL, p_state, p_trigger_function, p_play_once, p_arguments...));
 
-					scene_id_counter = scene_id_counter + 1;
+						id_event.insert(std::make_pair(m_scene_id_counter, v_temp));
 
-					std::map<PW_STATE, std::map<PW_ID, Scene_Event>> state_event = std::map<PW_STATE, std::map<PW_ID, Scene_Event>>();
-					state_event.insert(std::make_pair(state, id_event));
+						std::map<std::wstring, std::map<PW_ID, st::Scene_Event*>> model_id{};
+						model_id.insert(std::make_pair(p_sound_id, id_event));
 
-					std::map<PW_BUTTON_CODE, std::map<PW_STATE, std::map<PW_ID, Scene_Event>>> button_event = std::map<PW_BUTTON_CODE, std::map<PW_STATE, std::map<PW_ID, Scene_Event>>>();
-					button_event.insert(std::make_pair(button, state_event));
+						std::map<PW_EVENT_ID, std::map<std::wstring, std::map<PW_ID, st::Scene_Event*>>> event_id{};
 
-					scene_events.insert(std::make_pair(event_type, button_event));
-				}
-				else {
-					if (scene_events.at(event_type).count(button) < 1) {
-						std::map<PW_ID, Scene_Event> id_event = std::map<PW_ID, Scene_Event>();
-						id_event.insert(std::make_pair(scene_id_counter,
-							Scene_Event(model_pointer, pw::Engine_Memory::Allocate<st::Event<function_type, mem_class, type, args...>>(st::Event<function_type, mem_class, type, args...>(state, play_once, function, object, arguments...)))));
+						event_id.insert(std::make_pair(p_event_type, model_id));
 
-						scene_id_counter = scene_id_counter + 1;
+						m_scene_alt_events.insert(std::make_pair(p_event_holder_id, event_id));
 
-						std::map<PW_STATE, std::map<PW_ID, Scene_Event>> state_event = std::map<PW_STATE, std::map<PW_ID, Scene_Event>>();
-						state_event.insert(std::make_pair(state, id_event));
+						v_temp = nullptr;
 
-						scene_events.at(event_type).insert(std::make_pair(button, state_event));
+						m_scene_id_counter = m_scene_id_counter + 1;
 					}
 					else {
-						if (scene_events.at(event_type).at(button).count(state) < 1) {
-							std::map<PW_ID, Scene_Event> id_event = std::map<PW_ID, Scene_Event>();
-							id_event.insert(std::make_pair(scene_id_counter,
-								Scene_Event(model_pointer, pw::Engine_Memory::Allocate<st::Event<function_type, mem_class, type, args...>>(st::Event<function_type, mem_class, type, args...>(state, play_once, function, object, arguments...)))));
+						if (m_scene_alt_events.at(p_event_holder_id).count(p_event_type) < 1) {
+							std::map<PW_ID, Scene_Event*> id_event{};
+							Scene_Event* v_temp = pw::Engine_Memory::Allocate<Scene_Event, bool>(p_model_pointer,
+								pw::Engine_Memory::Allocate<st::Event<type, args...>, bool>(NULL, p_state, p_trigger_function, p_play_once, p_arguments...));
 
-							scene_id_counter = scene_id_counter + 1;
+							id_event.insert(std::make_pair(m_scene_id_counter, v_temp));
 
-							scene_events.at(event_type).at(button).insert(std::make_pair(state, id_event));
+							std::map<std::wstring, std::map<PW_ID, st::Scene_Event*>> model_id{};
+							model_id.insert(std::make_pair(p_sound_id, id_event));
+
+							m_scene_alt_events.at(p_event_holder_id).insert(std::make_pair(p_event_type, model_id));
+
+							v_temp = nullptr;
+
+							m_scene_id_counter = m_scene_id_counter + 1;
 						}
 						else {
-							scene_events.at(event_type).at(button).at(state).insert(std::make_pair(scene_id_counter,
-								Scene_Event(model_pointer, pw::Engine_Memory::Allocate<st::Event<function_type, mem_class, type, args...>>(st::Event<function_type, mem_class, type, args...>(state, play_once, function, object, arguments...)))));
+							if (m_scene_alt_events.at(p_event_holder_id).at(p_event_type).count(p_sound_id) < 1) {
+								std::map<PW_ID, Scene_Event*> id_event{};
+								Scene_Event* v_temp = pw::Engine_Memory::Allocate<Scene_Event, bool>(p_model_pointer,
+									pw::Engine_Memory::Allocate<st::Event<type, args...>, bool>(NULL, p_state, p_trigger_function, p_play_once, p_arguments...));
 
-							scene_id_counter = scene_id_counter + 1;
+								id_event.insert(std::make_pair(m_scene_id_counter, v_temp));
+
+								m_scene_alt_events.at(p_event_holder_id).at(p_event_type).insert(std::make_pair(p_sound_id, id_event));
+
+								v_temp = nullptr;
+
+								m_scene_id_counter = m_scene_id_counter + 1;
+							}
+							else {
+								Scene_Event* v_temp = pw::Engine_Memory::Allocate<Scene_Event, bool>(p_model_pointer,
+									pw::Engine_Memory::Allocate<st::Event<type, args...>, bool>(NULL, p_state, p_trigger_function, p_play_once, p_arguments...));
+
+								m_scene_alt_events.at(p_event_holder_id).at(p_event_type).at(p_sound_id).insert(std::make_pair(m_scene_id_counter, v_temp));
+
+								v_temp = nullptr;
+
+								m_scene_id_counter = m_scene_id_counter + 1;
+							}
 						}
 					}
 				}
 			}
-			// //////////////////////////////////////////////////
-			// CORE Function: Game_Scene::Activate_Event
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Activates a event if the present information is
-			//  correct.
-			// //////////////////////////////////////////////////
-			// Parameters: 3
-			// (1) PW_EVENT_ID event_type;
-			// Purpose:
-			//  The id of the pw event type.
-			// (2) PW_BUTTON_CODE button;
-			// Purpose:
-			//  The button that has to be pressed in order for
-			//  the event to trigger.
-			// (3) PW_STATE state;
-			// Purpose:
-			//  The state of the button in order to trigger the
-			//  event.
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CORE void Activate_Event(PW_EVENT_ID event_type, PW_BUTTON_CODE button, PW_STATE state);
-			// //////////////////////////////////////////////////
-			// CORE Function: Game_Scene::Activate_Event
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Activates a event if the present information is
-			//  correct.
-			// //////////////////////////////////////////////////
-			// Parameters: 2
-			// (1) std::wstring s_id;
-			// Purpose:
-			//  The new s_id to be tested.
-			// (2) PW_SRD_PTR(Actor_Model) model;
-			// Purpose:
-			//  The model to register the id to.
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CORE void Register_S_ID(std::wstring s_id, Actor_Model* model);
-			// //////////////////////////////////////////////////
-			// CORE Function: Game_Scene::Get_Box
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Returns the box that the model takes up.
-			// //////////////////////////////////////////////////
-			// Parameters: 1
-			// (1) Scene_Model* p_model;
-			// Purpose:
-			//  The model to get the box from.
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			static CORE quadtree::Box<float> Get_Box(Scene_Model* p_model);
-			// //////////////////////////////////////////////////
-			// CORE Function: Game_Scene::Re_Render
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Sets the first render parameter to true.
-			// //////////////////////////////////////////////////
-			// Parameters: NONE
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CORE void Re_Render();
-			// //////////////////////////////////////////////////
-			// CORE Function: Game_Scene::Re_Render
-			// //////////////////////////////////////////////////
-			// Purpose: 
-			//  Captures where the current camera position is
-			//  for when the scene is re-rendered later.
-			// //////////////////////////////////////////////////
-			// Parameters: 1
-			// (1) glm::vec2 camera_position;
-			// Purpose:
-			//  The camera's current position.
-			// //////////////////////////////////////////////////
-			NO_USER_INTERACTION
-			CORE void Capture_Instance(glm::vec2 camera_position);
-			// Accessors
-			USER_INTERACTION
-			ACCESSOR COMPLEX_FUNCTION_3(PW_EVENT_ID, PW_BUTTON_CODE, PW_STATE) Event_Callback();
-			USER_INTERACTION
-			ACCESSOR Actor_Model& Access_Model(std::wstring s_id);
-		    USER_INTERACTION
-			ACCESSOR std::vector<PW_SRD_PTR(Scene_Model)> Scene() const;
-			USER_INTERACTION
-			ACCESSOR const size_t& Last_Render_Count() const;
-			USER_INTERACTION
-			ACCESSOR Pysics_Factory* Scene_Physics();
-			USER_INTERACTION
-			ACCESSOR co::Engine_Input* Input();
-			USER_INTERACTION
-			ACCESSOR PW_FUNCTION Refresh_Scene_Callback();
-			USER_INTERACTION
-			static ACCESSOR int32_t Asset_Count();
-			USER_INTERACTION
-			static ACCESSOR int32_t Actor_Count();
+			template<class type, class ...args>
+			void Create_Event(const std::wstring& p_event_holder_id, const std::wstring& p_collider_s_id, const std::wstring& p_object_s_id, 
+					const std::shared_ptr<std::function<type(args...)>>& p_trigger_function, const bool& p_play_once, args... p_arguments) {
+				 if (p_trigger_function != nullptr) {
+					 if (m_scene_collision_events.count(p_event_holder_id) < 1) {
+						 std::map<PW_ID, Scene_Event*> id_event{};
+						 Scene_Event* v_temp = pw::Engine_Memory::Allocate<Scene_Event, bool>(nullptr,
+							 pw::Engine_Memory::Allocate<st::Event<type, args...>, bool>(NULL, NULL, p_trigger_function, p_play_once, p_arguments...));
+
+						 id_event.insert(std::make_pair(m_scene_id_counter, v_temp));
+
+						 std::map<std::wstring, std::map<PW_ID, Scene_Event*>> object_event{};
+						 object_event.insert(std::make_pair(p_object_s_id, id_event));
+
+						 std::map<std::wstring, std::map<std::wstring, std::map<PW_ID, Scene_Event*>>> host_event{};
+						 host_event.insert(std::make_pair(p_collider_s_id, object_event));
+
+						 m_scene_collision_events.insert(std::make_pair(p_event_holder_id, host_event));
+
+						 v_temp = nullptr;
+
+						 m_scene_id_counter = m_scene_id_counter + 1;
+					 }
+					 else {
+						 if (m_scene_collision_events.at(p_event_holder_id).count(p_collider_s_id) < 1) {
+							 std::map<PW_ID, Scene_Event*> id_event{};
+							 Scene_Event* v_temp = pw::Engine_Memory::Allocate<Scene_Event, bool>(nullptr,
+								 pw::Engine_Memory::Allocate<st::Event<type, args...>, bool>(NULL, NULL, p_trigger_function, p_play_once, p_arguments...));
+
+							 id_event.insert(std::make_pair(m_scene_id_counter, v_temp));
+
+							 std::map<std::wstring, std::map<PW_ID, Scene_Event*>> object_event{};
+							 object_event.insert(std::make_pair(p_object_s_id, id_event));
+
+							 m_scene_collision_events.at(p_event_holder_id).insert(std::make_pair(p_collider_s_id, object_event));
+
+							 v_temp = nullptr;
+
+							 m_scene_id_counter = m_scene_id_counter + 1;
+						 }
+						 else {
+							 if (m_scene_collision_events.at(p_event_holder_id).at(p_collider_s_id).count(p_object_s_id) < 1) {
+								 std::map<PW_ID, Scene_Event*> id_event{};
+								 Scene_Event* v_temp = pw::Engine_Memory::Allocate<Scene_Event, bool>(nullptr,
+									 pw::Engine_Memory::Allocate<st::Event<type, args...>, bool>(NULL, NULL, p_trigger_function, p_play_once, p_arguments...));
+
+								 id_event.insert(std::make_pair(m_scene_id_counter, v_temp));
+
+								 m_scene_collision_events.at(p_event_holder_id).at(p_collider_s_id).insert(std::make_pair(p_object_s_id, id_event));
+
+								 v_temp = nullptr;
+
+								 m_scene_id_counter = m_scene_id_counter + 1;
+							 }
+							 else {
+								 Scene_Event* v_temp = pw::Engine_Memory::Allocate<Scene_Event, bool>(nullptr,
+									 pw::Engine_Memory::Allocate<st::Event<type, args...>, bool>(NULL, NULL, p_trigger_function, p_play_once, p_arguments...));
+
+								 m_scene_collision_events.at(p_event_holder_id).at(p_collider_s_id).at(p_object_s_id).insert(std::make_pair(m_scene_id_counter, v_temp));
+
+								 m_scene_id_counter = m_scene_id_counter + 1;
+
+								 v_temp = nullptr;
+
+								 m_scene_id_counter = m_scene_id_counter + 1;
+							 }
+						 }
+					 }
+				 }
+			}
+			void Activate_Event(const PW_EVENT_ID& p_event_type, const PW_BUTTON_CODE& p_button, const PW_STATE& p_state);
+
+			void Activate_Event(const std::wstring& p_collider_s_id, const std::wstring& p_object_s_id);
+
+			void Activate_Event(const PW_EVENT_ID& p_event_type, const std::wstring& p_model_s_id);
+			
+			void Register_S_ID(const std::wstring& p_s_id, st::Actor* p_model);
+
+			// Adds the model to the current model list to be rendered
+			void Add_Model(st::Actor* p_new_model);
+			// Your model must have an id to be deleted
+			void Toggle_Render(std::wstring p_s_id);
+			void Toggle_Render(const std::wstring& p_s_id, const bool& p_state);
+			void Remove_Model(const std::wstring& p_s_id);
+
+			static quadtree::Box<float> Get_Box(st::Actor* p_model);
+			
+			void Re_Render();
+			
+			void Capture_Instance(const glm::vec2& p_camera_position);
+			 
+			void Set_Active_Input(std::wstring p_new_input_s_id);
+			
+			st::Actor* Access_Model(const std::wstring& p_s_id);
+
+			COMPLEX_FUNCTION_3(const PW_EVENT_ID&, const PW_BUTTON_CODE&, const PW_STATE&) Event_Callback();
+		    
+			const std::vector<st::Actor*>& Main_Scene_Models() const;
+			
+			const size_t& Last_Render_Count() const;
+			
+			st::Physics_Factory* Scene_Physics() const;
+			
+			co::Engine_Input* Input() const;
+
+			static const int32_t& Actor_Count();
+
+			const std::wstring& Scene_Name() const;
 		// Public Variables     
 		public:
 		// Private Functions/Macros 
@@ -1242,49 +643,56 @@ PW_NAMESPACE_SRT
 		// Private Variables       
 		private:
 			// General Scene Information
-			const wchar_t* scene_name;
+			std::wstring m_scene_name;
 			// Model Information
-			std::vector<PW_SRD_PTR(Scene_Model)> scene_models;
-			std::vector<Scene_Model*> render_queue;
+			std::vector<st::Actor*> m_main_scene_models;
+
+			std::map<std::wstring, st::Sub_Scene_Structure*> m_sub_scene_deposit;
+
+			std::vector<st::Actor*> m_render_queue;
+			std::vector<st::Actor*> m_screen_models;
 			size_t m_last_render_count;
-			std::vector<PW_SRD_PTR(Actor_Model)> collision_models;
+			std::vector<st::Actor*> m_collision_models;
+			std::map<st::Physics_Object*, st::Actor*> m_body_models;
 			// We need to keep track of the models that have special id's
-			std::map<std::wstring, Actor_Model*> s_id_models;
+			std::map<std::wstring, st::Actor*> s_id_models;
 			// Input / Event Information
-			co::Engine_Input* scene_input;
+			std::map<std::wstring, co::Engine_Input*> m_scene_input;
+			co::Engine_Input** m_current_scene_input;
 
-			std::map<PW_EVENT_ID, std::map<PW_BUTTON_CODE, std::map<PW_STATE, std::map<PW_ID, st::Scene_Event>>>> scene_events;
-			std::vector<PW_SRD_PTR(st::Scene_Event)> current_scene_events;
-			uint32_t scene_id_counter;
+			std::map<std::wstring, std::map<std::wstring, std::map<std::wstring, std::map<PW_ID, st::Scene_Event*>>>> m_scene_collision_events;
+			std::map<std::wstring, std::map<std::wstring, std::map<PW_ID, st::Scene_Event*>>>* m_current_scene_collision_events;
+
+			std::map<std::wstring, std::map<PW_EVENT_ID, std::map<PW_BUTTON_CODE, std::map<PW_STATE, std::map<st::Actor*, std::map<PW_ID, st::Scene_Event*>>>>>> m_scene_events;
+			std::map<PW_EVENT_ID, std::map<PW_BUTTON_CODE, std::map<PW_STATE, std::map<st::Actor*, std::map<PW_ID, st::Scene_Event*>>>>>* m_current_scene_events;
+			std::vector<st::Scene_Event*> m_active_scene_events;
+			uint32_t m_scene_id_counter;
 			// Physics ( If the scene has it in the first place )
-			Pysics_Factory* scene_physics;
+			st::Physics_Factory* m_scene_physics;
+			// Alternate event holder for model specific sound / animation events
+			std::map<std::wstring, std::map<PW_EVENT_ID, std::map<std::wstring, std::map<PW_ID, st::Scene_Event*>>>> m_scene_alt_events;
+			std::map<PW_EVENT_ID, std::map<std::wstring, std::map<PW_ID, st::Scene_Event*>>>* m_current_scene_alt_events;
 
-			// The game world will have 4 quadtree's to contain the models 
-			quadtree::Quadtree<Scene_Model*, std::function<quadtree::Box<float>(Scene_Model*)>> quadrant_1;
-			quadtree::Box<float> quadrant_1_box;
-			quadtree::Quadtree<Scene_Model*, std::function<quadtree::Box<float>(Scene_Model*)>> quadrant_2;
-			quadtree::Box<float> quadrant_2_box;
-			quadtree::Quadtree<Scene_Model*, std::function<quadtree::Box<float>(Scene_Model*)>> quadrant_3;
-			quadtree::Box<float> quadrant_3_box;
-			quadtree::Quadtree<Scene_Model*, std::function<quadtree::Box<float>(Scene_Model*)>> quadrant_4;
-			quadtree::Box<float> quadrant_4_box;
+			// Put all of the models into the quadtree for quick rendering and de-rendering
+			quadtree::Quadtree<st::Actor*, std::function<quadtree::Box<float>(st::Actor*)>> m_quadtree_renderer;
+			quadtree::Box<float> m_quadtree_render_box;
 
 			// Layer Information
-			// Bottom most is -3, Top most is 3
-			// Camera following is 4
+			// Bottom most is INT_32MIN, Top most is 3
+			// Camera following is 4 >=
 			
 			// The scene can be changed from but when we return we need to do special coordinate
 			// calculations for the layer 4 models
 			// This will also be done for safety at the start of the scene's rendering anyways.
-			bool re_render;
+			bool m_re_render;
+			bool m_new_input;
 
-			glm::vec2 camera_position_instance;
+			glm::vec2 m_camera_position_instance;
+
+			std::wstring m_listener_id;
 			// How many models are currently loaded
-			static int32_t global_asset_count;
-			static int32_t global_actor_count;
+			static int32_t m_global_actor_count;
 		};
-		// Functions      
-		// Macros / Definitions
 	//////////////////////////////////
 	ST_NAMESPACE_END
 	//////////////////////////////////
