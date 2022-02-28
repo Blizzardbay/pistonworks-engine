@@ -1,0 +1,9 @@
+﻿  engine_control.cpp
+  engine_file_loader.cpp
+  engine_queue.cpp
+  engine_animation.cpp
+  engine_game_scene.cpp
+  temp.cpp
+  Running Code Analysis for C/C++...
+  Generating Code...
+  Pistonworks Engine.vcxproj -> E:\Program Files (x86)\Solution Folder C++\Pistonworks Engine\x64\Debug\Pistonworks Engine.lib
