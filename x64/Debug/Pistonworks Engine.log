@@ -1,58 +1,22 @@
-﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(1091,5): warning MSB8027: Two or more files with the name of CMakeCCompilerId.c will produce outputs to the same location. This can lead to an incorrect build result.  The files involved are dependencies\audio_win64\Alut\CMakeFiles\3.20.0-rc2\CompilerIdC\CMakeCCompilerId.c, dependencies\physics_win64\box2d-main\build\CMakeFiles\3.20.0-rc2\CompilerIdC\CMakeCCompilerId.c.
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(1091,5): warning MSB8027: Two or more files with the name of main.cpp will produce outputs to the same location. This can lead to an incorrect build result.  The files involved are dependencies\audio_win64\OpenAL\samples\renderer\Source\main.cpp, dependencies\physics_win64\box2d-main\testbed\main.cpp.
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(1091,5): warning MSB8027: Two or more files with the name of ftdebug.c will produce outputs to the same location. This can lead to an incorrect build result.  The files involved are dependencies\graphics_win64\freetype-2.10.4\builds\amiga\src\base\ftdebug.c, dependencies\graphics_win64\freetype-2.10.4\builds\wince\ftdebug.c, dependencies\graphics_win64\freetype-2.10.4\builds\windows\ftdebug.c, dependencies\graphics_win64\freetype-2.10.4\src\base\ftdebug.c.
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(1091,5): warning MSB8027: Two or more files with the name of ftsystem.c will produce outputs to the same location. This can lead to an incorrect build result.  The files involved are dependencies\graphics_win64\freetype-2.10.4\builds\amiga\src\base\ftsystem.c, dependencies\graphics_win64\freetype-2.10.4\builds\unix\ftsystem.c, dependencies\graphics_win64\freetype-2.10.4\builds\vms\ftsystem.c, dependencies\graphics_win64\freetype-2.10.4\src\base\ftsystem.c.
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(1091,5): warning MSB8027: Two or more files with the name of ftmac.c will produce outputs to the same location. This can lead to an incorrect build result.  The files involved are dependencies\graphics_win64\freetype-2.10.4\builds\mac\ftmac.c, dependencies\graphics_win64\freetype-2.10.4\src\base\ftmac.c.
-  CMakeCCompilerId.c
-  HAVE___INT8.c
-  hello_world.c
-  playfile.c
-  alutBufferData.c
-E:\Program Files (x86)\Solution Folder C++\Pistonworks Engine\dependencies\audio_win64\freealut-master\src\alutInternal.h(24,1): fatal error C1189: #error:  Do not know sized types on this platform
-  alutCodec.c
-E:\Program Files (x86)\Solution Folder C++\Pistonworks Engine\dependencies\audio_win64\freealut-master\src\alutInternal.h(24,1): fatal error C1189: #error:  Do not know sized types on this platform
-  alutError.c
-E:\Program Files (x86)\Solution Folder C++\Pistonworks Engine\dependencies\audio_win64\freealut-master\src\alutInternal.h(24,1): fatal error C1189: #error:  Do not know sized types on this platform
-  alutInit.c
-E:\Program Files (x86)\Solution Folder C++\Pistonworks Engine\dependencies\audio_win64\freealut-master\src\alutInternal.h(24,1): fatal error C1189: #error:  Do not know sized types on this platform
-  alutInputStream.c
-E:\Program Files (x86)\Solution Folder C++\Pistonworks Engine\dependencies\audio_win64\freealut-master\src\alutInternal.h(24,1): fatal error C1189: #error:  Do not know sized types on this platform
-  alutLoader.c
-E:\Program Files (x86)\Solution Folder C++\Pistonworks Engine\dependencies\audio_win64\freealut-master\src\alutInternal.h(24,1): fatal error C1189: #error:  Do not know sized types on this platform
-  alutOutputStream.c
-E:\Program Files (x86)\Solution Folder C++\Pistonworks Engine\dependencies\audio_win64\freealut-master\src\alutInternal.h(24,1): fatal error C1189: #error:  Do not know sized types on this platform
-  alutUtil.c
-E:\Program Files (x86)\Solution Folder C++\Pistonworks Engine\dependencies\audio_win64\freealut-master\src\alutInternal.h(24,1): fatal error C1189: #error:  Do not know sized types on this platform
-  alutVersion.c
-E:\Program Files (x86)\Solution Folder C++\Pistonworks Engine\dependencies\audio_win64\freealut-master\src\alutInternal.h(24,1): fatal error C1189: #error:  Do not know sized types on this platform
-  alutWaveform.c
-E:\Program Files (x86)\Solution Folder C++\Pistonworks Engine\dependencies\audio_win64\freealut-master\src\alutInternal.h(24,1): fatal error C1189: #error:  Do not know sized types on this platform
-  test_errorstuff.c
-  test_fileloader.c
-  test_memoryloader.c
-E:\Program Files (x86)\Solution Folder C++\Pistonworks Engine\dependencies\audio_win64\freealut-master\test_suite\test_memoryloader.c(42,65): warning C4267: 'function': conversion from 'size_t' to 'ALsizei', possible loss of data
-  test_retrostuff.c
-E:\Program Files (x86)\Solution Folder C++\Pistonworks Engine\dependencies\audio_win64\freealut-master\test_suite\test_retrostuff.c(25,3): warning C4996: 'alutLoadWAVFile': was declared deprecated
-  test_version.c
-  test_waveforms.c
+﻿  engine_common.cpp
+  engine_console_manip.cpp
+  engine_control.cpp
+  engine_file_finder.cpp
+  engine_file_loader.cpp
+  engine_input.cpp
+  engine_queue.cpp
+  engine_animation.cpp
+  engine_camera.cpp
+  engine_event.cpp
+  engine_game_scene.cpp
+  engine_mesh.cpp
+  engine_model.cpp
+  engine_physics.cpp
+  engine_shader.cpp
+  engine_sound.cpp
+  engine_text.cpp
+  engine_texture.cpp
+  temp.cpp
   Running Code Analysis for C/C++...
   Generating Code...
-  Compiling...
-  linux-gtk.c
-E:\Program Files (x86)\Solution Folder C++\Pistonworks Engine\dependencies\graphics_win64\FreeImage\Examples\Linux\linux-gtk.c(1,10): fatal error C1083: Cannot open include file: 'gtk/gtk.h': No such file or directory
-  linux-svgalib.c
-E:\Program Files (x86)\Solution Folder C++\Pistonworks Engine\dependencies\graphics_win64\FreeImage\Examples\Linux\linux-svgalib.c(1,10): fatal error C1083: Cannot open include file: 'vga.h': No such file or directory
-  ftdebug.c
-E:\Program Files (x86)\Solution Folder C++\Pistonworks Engine\dependencies\graphics_win64\freetype-2.10.4\builds\amiga\src\base\ftdebug.c(51,10): fatal error C1083: Cannot open include file: 'exec/types.h': No such file or directory
-  ftsystem.c
-E:\Program Files (x86)\Solution Folder C++\Pistonworks Engine\dependencies\graphics_win64\freetype-2.10.4\builds\amiga\src\base\ftsystem.c(47,10): fatal error C1083: Cannot open include file: 'proto/exec.h': No such file or directory
-  ftmac.c
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\ucrt\corecrt_wstdio.h(309,5): fatal error C1001: Internal compiler error.
-  (compiler file 'msc1.cpp', line 1603)
-   To work around this problem, try simplifying or changing the program near the locations listed above.
-  If possible please provide a repro here: https://developercommunity.visualstudio.com
-  Please choose the Technical Support command on the Visual C++
-   Help menu, or open the Technical Support help file for more information
-  INTERNAL COMPILER ERROR in 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\bin\HostX86\x64\CL.exe'
-      Please choose the Technical Support command on the Visual C++
-      Help menu, or open the Technical Support help file for more information
+  Pistonworks Engine.vcxproj -> E:\Solution Folder C++\Pistonworks Engine\x64\Debug\Pistonworks Engine.lib
