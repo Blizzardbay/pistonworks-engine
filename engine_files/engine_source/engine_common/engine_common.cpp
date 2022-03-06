@@ -37,39 +37,51 @@ std::filesystem::path pw::cm::Engine_Constant::m_pistonworks_path{
 	[]() ->std::filesystem::path {
 		std::filesystem::path v_pistonworks_path{ std::filesystem::current_path() };
 
-		for (const auto& v_directory_finder : std::filesystem::recursive_directory_iterator(v_pistonworks_path)) {
-			if (v_directory_finder.is_directory() == true) {
-				if (v_directory_finder.path().generic_string().find("Pistonworks Engine") != std::string::npos) {
-					v_pistonworks_path = v_directory_finder;
-					break;
+		if (v_pistonworks_path.generic_string().find("Pistonworks Engine") == std::string::npos) {
+			for (const auto& v_directory_finder : std::filesystem::recursive_directory_iterator(v_pistonworks_path)) {
+				if (v_directory_finder.is_directory() == true) {
+					if (v_directory_finder.path().generic_string().find("Pistonworks Engine") != std::string::npos) {
+						v_pistonworks_path = v_directory_finder;
+						break;
+					}
 				}
 			}
-		}
-		if (v_pistonworks_path != std::filesystem::current_path()) {
-			return v_pistonworks_path;
+
+			if (v_pistonworks_path != std::filesystem::current_path()) {
+				return v_pistonworks_path;
+			}
+			else {
+				return std::filesystem::path();
+			}
 		}
 		else {
-			return std::filesystem::path();
+			return v_pistonworks_path;
 		}
+		
 	}()
 };
 std::filesystem::path pw::cm::Engine_Constant::m_game_path{
    []() ->std::filesystem::path {
 		std::filesystem::path v_game_path{ std::filesystem::current_path() };
 
-		for (const auto& v_directory_finder : std::filesystem::recursive_directory_iterator(v_game_path)) {
-			if (v_directory_finder.is_directory() == true) {
-				if (v_directory_finder.path().generic_string().find("game") != std::string::npos) {
-					v_game_path = v_directory_finder;
-					break;
+		if (v_game_path.generic_string().find("game") == std::string::npos) {
+			for (const auto& v_directory_finder : std::filesystem::recursive_directory_iterator(v_game_path)) {
+				if (v_directory_finder.is_directory() == true) {
+					if (v_directory_finder.path().generic_string().find("game") != std::string::npos) {
+						v_game_path = v_directory_finder;
+						break;
+					}
 				}
 			}
-		}
-		if (v_game_path != std::filesystem::current_path()) {
-			return v_game_path;
+			if (v_game_path != std::filesystem::current_path()) {
+				return v_game_path;
+			}
+			else {
+				return std::filesystem::path();
+			}
 		}
 		else {
-			return std::filesystem::path();
+			return v_game_path;
 		}
 	}()
 };

@@ -149,15 +149,13 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <UseDebugLibraries>true</UseDebugLibraries>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -183,12 +181,14 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <EnableMicrosoftCodeAnalysis>true</EnableMicrosoftCodeAnalysis>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <OutDir>$(Solution)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(Solution)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <VcpkgInstalledDir>
@@ -223,18 +223,15 @@
       <WarningLevel>Level3</WarningLevel>
       <AdditionalIncludeDirectories>$(Solution)dependencies\graphics_win64\glew-2.1.0\include;$(Solution)dependencies\audio_win64\freealut-master\include;$(Solution)dependencies\audio_win64\OpenAL\include;$(Solution)dependencies\data_structures_win64\Quadtree-master\include;$(Solution)dependencies\graphics_win64\FreeImage\Dist\x64;$(Solution)dependencies\graphics_win64\freetype-2.10.4\include;$(Solution)dependencies\graphics_win64\glfw-3.3.3.bin.WIN64\include;$(Solution)dependencies\graphics_win64\glm\glm;$(Solution)dependencies\parser_win64\fast-cpp-csv-parser-master;$(Solution)dependencies\physics_win64\box2d-main\include;$(Solution)engine_files\engine_headers;$(Solution)config</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalOptions>/analyze:stacksize 32768 %(AdditionalOptions)</AdditionalOptions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;FT2_BUILD_LIBRARY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <DisableAnalyzeExternal>true</DisableAnalyzeExternal>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(Solution)dependencies\graphics_win64\glew-2.1.0\lib\Release\x64;$(Solution)dependencies\graphics_win64\glfw-3.3.3.bin.WIN64\lib-vc2019;$(Solution)dependencies\physics_win64\box2d-main\build\bin\Debug;$(Solution)dependencies\graphics_win64\freetype-2.10.4\objs\x64\Debug;$(Solution)dependencies\graphics_win64\FreeImage\Dist\x64;$(Solution)dependencies\audio_win64\OpenAL\libs\Win64;$(Solution)dependencies\audio_win64\Alut\src\Debug</AdditionalLibraryDirectories>
       <AdditionalDependencies>FreeImage.lib;freetype.lib;box2d.lib;opengl32.lib;glew32.lib;glfw3dll.lib;OpenAL32.lib;alut.lib</AdditionalDependencies>
-      <AdditionalOptions>/NODEFAULTLIB:MSVCRT %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/machine:x64 %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -272,24 +269,17 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CRT_SECURE_NO_WARNINGS;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;FT2_BUILD_LIBRARY</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>NDEBUG;_CRT_SECURE_NO_WARNINGS;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;FT2_BUILD_LIBRARY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(Solution)dependencies\graphics_win64\glew-2.1.0\include;$(Solution)dependencies\audio_win64\freealut-master\include;$(Solution)dependencies\audio_win64\OpenAL\include;$(Solution)dependencies\data_structures_win64\Quadtree-master\include;$(Solution)dependencies\graphics_win64\FreeImage\Dist\x64;$(Solution)dependencies\graphics_win64\freetype-2.10.4\include;$(Solution)dependencies\graphics_win64\glfw-3.3.3.bin.WIN64\include;$(Solution)dependencies\graphics_win64\glm\glm;$(Solution)dependencies\parser_win64\fast-cpp-csv-parser-master;$(Solution)dependencies\physics_win64\box2d-main\include;$(Solution)engine_files\engine_headers;$(Solution)config</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(Solution)dependencies\graphics_win64\glew-2.1.0\lib\Release\x64;$(Solution)dependencies\graphics_win64\glfw-3.3.3.bin.WIN64\lib-vc2019;$(Solution)dependencies\physics_win64\box2d-main\build\bin\Debug;$(Solution)dependencies\graphics_win64\freetype-2.10.4\objs\x64\Release;$(Solution)dependencies\graphics_win64\FreeImage\Dist\x64;$(Solution)dependencies\audio_win64\OpenAL\libs\Win64;$(Solution)dependencies\audio_win64\Alut\src\Release</AdditionalLibraryDirectories>
-      <AdditionalDependencies>FreeImage.lib;freetype.lib;box2d.lib;opengl32.lib;glew32.lib;glfw3dll.lib;OpenAL32.lib;alut.lib</AdditionalDependencies>
-      <AdditionalOptions>/NODEFAULTLIB:MSVCRT %(AdditionalOptions)</AdditionalOptions>
-      <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
+      <AdditionalLibraryDirectories>$(Solution)dependencies\graphics_win64\glew-2.1.0\lib\Release\x64;$(Solution)dependencies\graphics_win64\glfw-3.3.3.bin.WIN64\lib-vc2019;$(Solution)dependencies\physics_win64\box2d-main\build\bin\Release;$(Solution)dependencies\graphics_win64\freetype-2.10.4\objs\x64\Release;$(Solution)dependencies\graphics_win64\FreeImage\Dist\x64;$(Solution)dependencies\audio_win64\OpenAL\libs\Win64;$(Solution)dependencies\audio_win64\Alut\src\Release</AdditionalLibraryDirectories>
+      <AdditionalDependencies>FreeImage.lib;freetype.lib;box2d.lib;opengl32.lib;glew32.lib;glfw3dll.lib;OpenAL32.lib;alut.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <EntryPointSymbol>
+      </EntryPointSymbol>
+      <AdditionalOptions>/machine:x64 %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <Lib>
       <AdditionalDependencies>FreeImage.lib;freetype.lib;box2d.lib;opengl32.lib;glew32.lib;glfw3dll.lib;alut.lib;OpenAL32.lib</AdditionalDependencies>

@@ -98,11 +98,6 @@ PW_NAMESPACE_SRT
 			void Engine_Queue::Load_From_Dir(std::unique_ptr<GLFWwindow, cm::Destroy_GLFW>& p_main_window, std::shared_ptr<PW_FUNCTION> p_state_function) {
 				co::File_Loader::Initialize_Loader(&Engine_Queue::Add_Scene, &Engine_Queue::Set_Current_Scene, &Engine_Queue::Remove_Scene);
 
-				// Set debug function if in debug mode
-				#ifdef PW_DEBUG_MODE
-					cm::Engine_Constant::Set_Debug_Function(Print_Debug_Stats);
-				#endif
-
 				// Find if the directory exist
 				std::wstring v_wstr_directory = pw::cm::Engine_Constant::Game_Path().generic_wstring();
 

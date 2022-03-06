@@ -96,7 +96,7 @@ PW_NAMESPACE_SRT
 		private:
 		// Public Functions/Macros
 		public:
-			void Init_Engine(int argc, char* argv[], const std::wstring& p_window_name, const int32_t& p_window_width = 800, const int32_t& p_window_height = 608);
+			void Init_Engine(int argc, char* argv[], const std::wstring& p_window_name, const int32_t& p_window_width, const int32_t& p_window_height, const bool& p_require_game_path);
 
 			void Run_Engine();
 			void Terminate_Engine();
@@ -126,6 +126,8 @@ PW_NAMESPACE_SRT
 		private:
 		// Private Variables
 		private:
+			// For running without scene loading
+			bool m_require_game_path;
 			// For termination of the engine
 			bool m_no_error;
 			bool m_has_terminated;
@@ -147,4 +149,46 @@ PW_NAMESPACE_SRT
 //////////////////////////////////
 PW_NAMESPACE_END
 //////////////////////////////////
+
+#define USE_DEFAULT_ENGINE_CONTROL															\
+	void pw::co::Engine_Control::Pre_Load() {										\
+	}																				\
+	void pw::co::Engine_Control::Init_Game() {										\
+	}																				\
+	void pw::co::Engine_Control::Before_Queue() {									\
+	}																				\
+	void pw::co::Engine_Control::After_Queue() {									\
+	}																				\
+	void pw::co::Engine_Control::Terminate_Game() {									\
+	}																				\
+	void pw::co::Engine_Control::Pre_Scene_Load(const std::wstring& p_scene) {		\
+	}																				\
+	void pw::co::Engine_Control::Pre_Scene_Change(const std::wstring& p_scene) {	\
+	}																				\
+	void pw::co::Engine_Control::Pre_Scene_Removal(const std::wstring& p_scene) {	\
+	}																				\
+	void pw::co::Engine_Control::Post_Scene_Load() {								\
+	}																				\
+	void pw::co::Engine_Control::Post_Scene_Change() {								\
+	}																				\
+	void pw::co::Engine_Control::Post_Scene_Removal() {								\
+	}
+#define USE_PISTONWORKS_ENGINE(p_window_size_x, p_window_size_y, p_require_game_path)		\
+	int main(int argc, char* argv[]) {														\
+		pw::co::Engine_Control engine{};													\
+		engine.Init_Engine(argc, argv, L"Pistonworks Window",								\
+			TO_UINT32(p_window_size_x), TO_UINT32(p_window_size_y),							\
+			TO_BOOL(p_require_game_path));													\
+		if (engine.No_Error() == false) {													\
+			engine.Terminate_Engine();														\
+			return 1;																		\
+		}																					\
+		else {																				\
+			engine.Run_Engine();															\
+			engine.Terminate_Engine();														\
+			return 0;																		\
+		}																					\
+		return 0;																			\
+	}															
+
 #endif // !H_ENGINE_CONTROL

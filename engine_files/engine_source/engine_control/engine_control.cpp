@@ -10,23 +10,28 @@ PW_NAMESPACE_SRT
 		// Static Declarations
 		// Class Members
 			Engine_Control::Engine_Control():
+					m_require_game_path{ false },
 					m_no_error{ true }, m_has_terminated{ false },
 					m_console_complete{ false }, m_glfw_complete{ false },
 					m_font_complete{ false }, m_queue_complete{ false }, 
 					m_alut_complete{ false }, m_main_window{} {
 			}
-			void Engine_Control::Init_Engine(int argc, char* argv[], const std::wstring& p_window_name, const int32_t& p_window_width, const int32_t& p_window_height) {
+			void Engine_Control::Init_Engine(int argc, char* argv[], const std::wstring& p_window_name, const int32_t& p_window_width, const int32_t& p_window_height, const bool& p_require_game_path) {
 				if (pw::cm::Engine_Constant::Pistonworks_Path() == std::filesystem::path()) {
 					m_no_error = false;
 					FreeConsole();
 					return;
 				}
-				if (pw::cm::Engine_Constant::Game_Path() == std::filesystem::path()) {
-					m_no_error = false;
-					FreeConsole();
-					return;
-				}
 
+				m_require_game_path = p_require_game_path;
+
+				if (m_require_game_path == true) {
+					if (pw::cm::Engine_Constant::Game_Path() == std::filesystem::path()) {
+						m_no_error = false;
+						FreeConsole();
+						return;
+					}
+				}
 				try {
 					//////////////////////////////////
 					// Settings
@@ -83,7 +88,7 @@ PW_NAMESPACE_SRT
 							NULL, NULL));
 						// For checking if any errors occurred
 						if (!m_main_window) {
-							throw er::Severe_Error(L"GLFW", L"Function Error", std::move(pw::er::Engine_Exception::Exception_Line()), __FILEW__, L"glfwCreateWindow");
+							throw er::Severe_Error(L"GLFW", L"Function Error", pw::er::Engine_Exception::Exception_Line(), __FILEW__, L"glfwCreateWindow");
 						}
 						#ifdef PW_DEBUG_MODE
 							else {
@@ -188,7 +193,7 @@ PW_NAMESPACE_SRT
 						PW_GLFW_VOID_CALL(glfwShowWindow(&*m_main_window));
 
 						if (TRY_LINE alutInit(&argc, argv) != AL_TRUE) {
-							throw er::Severe_Error(L"Alut", L"Function Error", std::move(pw::er::Engine_Exception::Exception_Line()), __FILEW__, L"alutInit");
+							throw er::Severe_Error(L"Alut", L"Function Error", pw::er::Engine_Exception::Exception_Line(), __FILEW__, L"alutInit");
 						}
 						else {
 							m_alut_complete = true;
@@ -201,6 +206,11 @@ PW_NAMESPACE_SRT
 							std::bind(&Engine_Control::Post_Scene_Change, this),
 							std::bind(&Engine_Control::Pre_Scene_Removal, this, std::placeholders::_1),
 							std::bind(&Engine_Control::Post_Scene_Removal, this));
+
+						// Set debug function if in debug mode
+						#ifdef PW_DEBUG_MODE
+							cm::Engine_Constant::Set_Debug_Function(pw::co::Engine_Queue::Print_Debug_Stats);
+						#endif // PW_DEBUG_MODE
 					}
 				}
 				catch (const er::Warning_Error& v_error) {
@@ -225,7 +235,9 @@ PW_NAMESPACE_SRT
 
 						Pre_Load();
 
-						Engine_Queue::Load_From_Dir(m_main_window, std::make_shared<PW_FUNCTION>(std::bind(&pw::co::Engine_Control::Update_Engine_State, this)));
+						if (m_require_game_path == true) {
+							Engine_Queue::Load_From_Dir(m_main_window, std::make_shared<PW_FUNCTION>(std::bind(&pw::co::Engine_Control::Update_Engine_State, this)));
+						}
 
 						m_font_complete = true;
 
@@ -374,17 +386,3 @@ PW_NAMESPACE_SRT
 //////////////////////////////////
 PW_NAMESPACE_END
 //////////////////////////////////
-
-int main(int argc, char* argv[]) {
-	pw::co::Engine_Control engine{};
-	engine.Init_Engine(argc, argv, L"Pistonworks Window");
-	if (engine.No_Error() == false) {
-		engine.Terminate_Engine();
-	}
-	else {
-		engine.Run_Engine();
-		engine.Terminate_Engine();
-		return 0;
-	}
-	return 0;
-}

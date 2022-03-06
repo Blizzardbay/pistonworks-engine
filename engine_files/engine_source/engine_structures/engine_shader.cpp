@@ -98,18 +98,18 @@ PW_NAMESPACE_SRT
 					m_vertex_shader = Shader_Loader::Compile_Shader(Shader_Loader::Load_Shader(p_vertex_location), GL_VERTEX_SHADER);
 					m_fragment_shader = Shader_Loader::Compile_Shader(Shader_Loader::Load_Shader(p_fragment_location), GL_FRAGMENT_SHADER);
 
-					glAttachShader(m_program_id, m_vertex_shader);
-					glAttachShader(m_program_id, m_fragment_shader);
+					PW_GL_VOID_CALL(glAttachShader(m_program_id, m_vertex_shader), false);
+					PW_GL_VOID_CALL(glAttachShader(m_program_id, m_fragment_shader), false);
 
-					glBindAttribLocation(m_program_id, 0, "object_position");
-					glBindAttribLocation(m_program_id, 1, "object_texture_coords");
-					glBindAttribLocation(m_program_id, 2, "object_color");
+					PW_GL_VOID_CALL(glBindAttribLocation(m_program_id, 0, "object_position"), false);
+					PW_GL_VOID_CALL(glBindAttribLocation(m_program_id, 1, "object_texture_coords"), false);
+					PW_GL_VOID_CALL(glBindAttribLocation(m_program_id, 2, "object_color"), false);
 
-					glLinkProgram(m_program_id);
+					PW_GL_VOID_CALL(glLinkProgram(m_program_id), false);
 
 					Shader_Loader::Check_Error(m_program_id, GL_LINK_STATUS, true, L"Failed to link program error: ");
 
-					glValidateProgram(m_program_id);
+					PW_GL_VOID_CALL(glValidateProgram(m_program_id), false);
 
 					Shader_Loader::Check_Error(m_program_id, GL_VALIDATE_STATUS, true, L"Program Is Invalid Error: ");
 
@@ -125,23 +125,33 @@ PW_NAMESPACE_SRT
 				}
 			}
 			void Dynamic_Shader::Delete_Shader() {
-				glDetachShader(m_program_id, m_vertex_shader);
-
-				glDetachShader(m_program_id, m_fragment_shader);
-
-				glDeleteProgram(m_program_id);
+				if (m_vertex_shader != NULL) {
+					if (glIsShader(m_vertex_shader) == GL_TRUE) {
+						PW_GL_VOID_CALL(glDetachShader(m_program_id, m_vertex_shader), false);
+					}
+				}
+				if (m_fragment_shader != NULL) {
+					if (glIsShader(m_fragment_shader) == GL_TRUE) {
+						PW_GL_VOID_CALL(glDetachShader(m_program_id, m_fragment_shader), false);
+					}
+				}
+				if (m_program_id != NULL) {
+					if (glIsProgram(m_program_id) == GL_TRUE) {
+						PW_GL_VOID_CALL(glDeleteProgram(m_program_id), false);
+					}
+				}
 			}
 			void Dynamic_Shader::Use() {
-				glUseProgram(m_program_id);
+				PW_GL_VOID_CALL(glUseProgram(m_program_id), false);
 			}
 			void Dynamic_Shader::Update_Matrices(const glm::mat4& p_model_matrix, const int32_t& p_model_is_colored, const int32_t& p_model_is_text) {
-				glUniformMatrix4fv(m_model_uniform, 1, GL_FALSE, glm::value_ptr(p_model_matrix));
-				glUniform1iv(m_color_uniform, 1, &p_model_is_colored);
-				glUniform1iv(m_text_uniform, 1, &p_model_is_text);
+				PW_GL_VOID_CALL(glUniformMatrix4fv(m_model_uniform, 1, GL_FALSE, glm::value_ptr(p_model_matrix)), false);
+				PW_GL_VOID_CALL(glUniform1iv(m_color_uniform, 1, &p_model_is_colored), false);
+				PW_GL_VOID_CALL(glUniform1iv(m_text_uniform, 1, &p_model_is_text), false);
 			}
 			void Dynamic_Shader::Update_Projection() {
-				glUniformMatrix4fv(m_view_uniform, 1, GL_FALSE, glm::value_ptr(st::Camera::Update_Camera()));
-				glUniformMatrix4fv(m_projection_uniform, 1, GL_FALSE, glm::value_ptr(st::Camera::Update_Projection()));
+				PW_GL_VOID_CALL(glUniformMatrix4fv(m_view_uniform, 1, GL_FALSE, glm::value_ptr(st::Camera::Update_Camera())), false);
+				PW_GL_VOID_CALL(glUniformMatrix4fv(m_projection_uniform, 1, GL_FALSE, glm::value_ptr(st::Camera::Update_Projection())), false);
 			}
 			const uint32_t& Dynamic_Shader::Shader_Id() {
 				return m_program_id;

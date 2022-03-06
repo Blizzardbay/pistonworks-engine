@@ -62,7 +62,8 @@ PW_NAMESPACE_SRT
 		// Static Declarations
 		// Class Members
 			Text::Text() :
-					m_text{}, m_text_string{}, m_text_position{ glm::vec2(0.0f, 0.0f) }, m_text_size{ glm::vec2(0.0f, 0.0f) } {
+					m_text{}, m_text_string{}, m_text_position{ glm::vec2(0.0f, 0.0f) }, m_text_size{ glm::vec2(0.0f, 0.0f) }, m_text_color{},
+					m_raw_text_position{}, m_raw_text_size{} {
 			}
 			Text::Text(const std::wstring& p_text, const glm::ivec2& p_position, const glm::ivec2& p_size, const glm::vec4& p_color, const std::wstring& p_font_type) :
 					m_text{ p_text }, m_text_string{}, m_text_position{ p_position }, m_text_size{ glm::vec2(0.0f, p_size.y) }, m_text_font{ p_font_type }, m_text_color{ p_color },
@@ -221,15 +222,15 @@ PW_NAMESPACE_SRT
 			}
 			void Text::Set_Size(const glm::vec2& p_size) {
 				try {
-					float v_x_ratio = p_size.x / m_text_size.x;
-					float v_y_ratio = p_size.y / m_text_size.y;
+					double v_x_ratio = p_size.x / m_text_size.x;
+					double v_y_ratio = p_size.y / m_text_size.y;
 
 					size_t v_spacing = 0;
 					for (size_t i = 0; i < m_text_string.size(); i++) {
 						Model* v_current_model = m_text_string.at(i);
 
-						if (i + 1 < m_text_string.size()) {
-							v_spacing = TO_UINT64((v_current_model->Position().x + v_current_model->Size().x) - m_text_string.at(i + 1)->Position().x);
+						if (OFFU64(i) < m_text_string.size()) {
+							v_spacing = TO_UINT64((TO_UINT64(v_current_model->Position().x) + TO_UINT64(v_current_model->Size().x)) - TO_UINT64(m_text_string.at(OFFU64(i))->Position().x));
 						}
 
 						v_spacing = TO_UINT64(TO_FLOAT(v_spacing) * v_x_ratio);

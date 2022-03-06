@@ -32,7 +32,7 @@ PW_NAMESPACE_SRT
 					alcMakeContextCurrent(m_context);
 				}
 				else {
-					throw pw::er::Severe_Error(L"Engine Sound", L"Unable to find default audio device.", std::move(pw::er::Engine_Exception::Exception_Line()), __FILEW__, L"alcOpenDevice");
+					throw pw::er::Severe_Error(L"Engine Sound", L"Unable to find default audio device.", pw::er::Engine_Exception::Exception_Line(), __FILEW__, L"alcOpenDevice");
 				}
 
 				PW_AL_VOID_CALL(alListenerfv(AL_POSITION, &m_position[0]));
@@ -71,7 +71,7 @@ PW_NAMESPACE_SRT
 					alcMakeContextCurrent(m_context);
 				}
 				else {
-					throw pw::er::Severe_Error(L"Engine Sound", L"Unable to find default audio device.", std::move(pw::er::Engine_Exception::Exception_Line()), __FILEW__, L"alcOpenDevice");
+					throw pw::er::Severe_Error(L"Engine Sound", L"Unable to find default audio device.", pw::er::Engine_Exception::Exception_Line(), __FILEW__, L"alcOpenDevice");
 				}
 
 				PW_AL_VOID_CALL(alListenerfv(AL_POSITION, &m_position[0]));
@@ -129,7 +129,7 @@ PW_NAMESPACE_SRT
 			if (m_created_listener == true) {
 				TRY_LINE m_current_device = alcOpenDevice(TO_STRING(p_device_name).c_str());
 				if (m_current_device == NULL) {
-					throw pw::er::Warning_Error(L"Engine Sound", TO_WSTRING(alGetString(alGetError())), std::move(pw::er::Engine_Exception::Exception_Line()), __FILEW__, L"alcOpenDevice");
+					throw pw::er::Warning_Error(L"Engine Sound", TO_WSTRING(alGetString(alGetError())), pw::er::Engine_Exception::Exception_Line(), __FILEW__, L"alcOpenDevice");
 				}
 			}
 		}
@@ -185,7 +185,7 @@ PW_NAMESPACE_SRT
 				m_audio_source_id { p_source_id }, m_position{}, m_center_calculator{}, m_source_state{ AL_INITIAL }, m_loop{ p_loop },
 				m_start{ true }, m_end{ false }, m_natural_stop{ false } {
 			if (TRY_LINE alIsSource(m_audio_source_id) != AL_TRUE) {
-				throw pw::er::Warning_Error(L"Engine Sound", L"Loaded audio source not found.", std::move(pw::er::Engine_Exception::Exception_Line()), __FILEW__, L"alIsSource");
+				throw pw::er::Warning_Error(L"Engine Sound", L"Loaded audio source not found.", pw::er::Engine_Exception::Exception_Line(), __FILEW__, L"alIsSource");
 			}
 			else {
 				PW_AL_VOID_CALL(alSourcefv(m_audio_source_id, AL_POSITION, &m_position[0]));

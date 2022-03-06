@@ -40,7 +40,6 @@
 #pragma warning (push)
 #pragma warning (disable:ALL_CODE_ANALYSIS_WARNINGS)
 #include <fstream>
-#include <stdio.h>
 #pragma warning (pop)
 //////////////////////////////////
 // Project Headers

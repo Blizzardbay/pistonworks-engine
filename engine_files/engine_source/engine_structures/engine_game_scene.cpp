@@ -446,7 +446,7 @@ PW_NAMESPACE_SRT
 					m_scene_name{}, m_main_scene_models{}, m_collision_models{},
 					m_scene_input{}, m_scene_events{}, m_scene_id_counter{ 0 }, m_active_scene_events{}, m_scene_physics{ nullptr }, s_id_models{}, m_render_queue{}, m_screen_models{}, m_last_render_count{ 0 }, m_re_render{ true },
 					m_camera_position_instance{ st::Camera::Camera_Position() },
-					m_body_models{}, 
+					m_body_models{}, m_current_scene_collision_events{},
 					m_quadtree_render_box{ quadtree::Box<float>{(float)INT32_MIN, (float)INT32_MIN, 2.0f * (float)INT32_MAX, 2.0f * (float)INT32_MAX} },
 					m_quadtree_renderer{ quadtree::Box<float>{(float)INT32_MIN, (float)INT32_MIN, 2.0f * (float)INT32_MAX, 2.0f * (float)INT32_MAX},
 					Game_Scene::Get_Box }, m_sub_scene_deposit{}, m_listener_id{}, m_current_scene_input{ nullptr }, m_current_scene_events{ nullptr }, m_scene_alt_events{}, m_current_scene_alt_events{nullptr},
@@ -462,7 +462,7 @@ PW_NAMESPACE_SRT
 					m_quadtree_render_box{ quadtree::Box<float>{(float)INT32_MIN, (float)INT32_MIN, 2.0f * (float)INT32_MAX, 2.0f * (float)INT32_MAX} },
 					m_quadtree_renderer{ quadtree::Box<float>{(float)INT32_MIN, (float)INT32_MIN, 2.0f * (float)INT32_MAX, 2.0f * (float)INT32_MAX},
 					Game_Scene::Get_Box }, m_sub_scene_deposit{ p_sub_scene_deposit }, m_listener_id{ p_listener_id }, m_current_scene_input{ nullptr }, m_current_scene_events{ nullptr }, m_scene_alt_events{},
-					m_current_scene_alt_events{ nullptr },
+					m_current_scene_alt_events{ nullptr }, m_current_scene_collision_events{},
 					m_new_input{ false } {
 				// Put models into the different quad-trees
 

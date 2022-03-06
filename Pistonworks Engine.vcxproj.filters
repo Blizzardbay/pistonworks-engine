@@ -63,9 +63,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="config\physics_config\b2_user_settings.h">
-      <Filter>config</Filter>
-    </ClInclude>
     <ClInclude Include="engine_files\engine_headers\engine_common\engine_error.h">
       <Filter>engine_files\engine_headers\engine_common</Filter>
     </ClInclude>
@@ -148,6 +145,7 @@
       <Filter>engine_files\engine_headers\engine_control</Filter>
     </ClInclude>
     <ClInclude Include="engine_files\engine_headers\engine_common\engine_build.h" />
+    <ClInclude Include="config\physics_config\b2_user_settings.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="engine_files\engine_resource\engine_essential\engine_shader\dynamic_fragment.shader">

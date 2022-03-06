@@ -41,7 +41,6 @@
 #pragma warning (disable:ALL_CODE_ANALYSIS_WARNINGS)
 #include <tuple>
 #include <filesystem>
-#include <cmath>
 #include <functional>
 #pragma warning (pop)
 //////////////////////////////////

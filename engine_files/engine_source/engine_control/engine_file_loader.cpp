@@ -374,7 +374,7 @@ PW_NAMESPACE_SRT
 
 					FreeImage_Unload(v_file);
 
-					return std::move(v_texture);
+					return v_texture;
 				}
 				else {
 					throw er::Warning_Error(L"File Loader", L"No Pixel Data", EXCEPTION_LINE, __FILEW__, L"FreeImage_HasPixels");
@@ -411,7 +411,7 @@ PW_NAMESPACE_SRT
 
 					FreeImage_Unload(v_file);
 
-					return std::move(v_texture);
+					return v_texture;
 				}
 				else {
 					throw er::Warning_Error(L"File Loader", L"No Pixel Data", EXCEPTION_LINE, __FILEW__, L"FreeImage_HasPixels");
@@ -448,7 +448,7 @@ PW_NAMESPACE_SRT
 
 					FreeImage_Unload(v_file);
 
-					return std::move(v_texture);
+					return v_texture;
 				}
 				else {
 					throw er::Warning_Error(L"File Loader", L"No Pixel Data", EXCEPTION_LINE, __FILEW__, L"FreeImage_HasPixels");
@@ -1373,7 +1373,7 @@ PW_NAMESPACE_SRT
 					v_scene->Set_Active_Input(TO_WSTRING(v_current_input));
 				}
 
-				return std::move(v_scene);
+				return v_scene;
 			}
 			void File_Loader::Load_Data_File(std::vector<st::Actor*>& p_scene_models,
 				std::vector<st::Actor*>& p_collision_models,

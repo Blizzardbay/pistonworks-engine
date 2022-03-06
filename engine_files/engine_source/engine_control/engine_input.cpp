@@ -14,7 +14,7 @@ PW_NAMESPACE_SRT
 		// Class Members
 			Engine_Input::Engine_Input() :
 					m_current_key_events{}, m_key_events{}, m_current_mouse_events{},
-					m_mouse_events{}, m_scroll_events{} {
+					m_mouse_events{}, m_scroll_events{}, m_event_id_assigner{ 0 } {
 			}
 			Engine_Input::Engine_Input(
 				std::vector<st::Event_Base*> p_current_key_events,

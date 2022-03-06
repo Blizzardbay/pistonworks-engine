@@ -150,10 +150,13 @@ PW_NAMESPACE_SRT
 					return To_WChar(std::any_cast<std::string>(p_str));
 				}
 				if (p_str.type() == typeid(const wchar_t*)) {
-					return (wchar_t*)(std::any_cast<const wchar_t*>(p_str));
+					return To_WChar(std::any_cast<const wchar_t*>(p_str));
 				}
 				if (p_str.type() == typeid(std::wstring)) {
-					return (wchar_t*)(std::any_cast<std::wstring>(p_str).c_str());
+					return To_WChar(std::any_cast<std::wstring>(p_str).c_str());
+				}
+				if (p_str.type() == typeid(wchar_t*)) {
+					return std::any_cast<wchar_t*>(p_str);
 				}
 				return nullptr;
 			}
@@ -227,18 +230,49 @@ PW_NAMESPACE_SRT
 					}
 				}
 			}
+			static wchar_t* To_WChar(const wchar_t* p_msg) {
+				// Check if the characters exist
+				if (TRY_LINE p_msg == nullptr) {
+					throw pw::er::Warning_Error(L"Engine Constant", L"Invalid Argument", EXCEPTION_LINE, __FILEW__, L"To_WChar");
+				}
+				else {
+					try {
+						// Get the msg size
+						TRY_LINE size_t v_msg_size = std::wcslen(p_msg) + 1;
+						if (v_msg_size == 0) {
+							throw pw::er::Warning_Error(L"Engine Constant", L"Invalid Argument", EXCEPTION_LINE, __FILEW__, L"To_WChar");
+						}
+						// Allocate the memory for the new msg
+						wchar_t* v_msg = pw::Engine_Memory::Allocate<wchar_t>(v_msg_size);
+						
+						for (size_t i = 0; i < v_msg_size; i++) {
+							v_msg[i] = p_msg[i];
+						}
+						return v_msg;
+					}
+					catch (const pw::er::Warning_Error& v_error) {
+						throw v_error;
+					}
+					catch (const pw::er::Severe_Error& v_error) {
+						throw v_error;
+					}
+				}
+			}
 			static char* Evaluate_Str(const std::any& p_str) {
 				if (p_str.type() == typeid(const char*)) {
 					return (char*)(std::any_cast<const char*>(p_str));
 				}
 				if (p_str.type() == typeid(std::string)) {
-					return (char*)(std::any_cast<std::string>(p_str).c_str());
+					return To_Char(std::any_cast<std::string>(p_str).c_str());
 				}
 				if (p_str.type() == typeid(const wchar_t*)) {
 					return To_Char(std::any_cast<const wchar_t*>(p_str));
 				}
 				if (p_str.type() == typeid(std::wstring)) {
 					return To_Char(std::any_cast<std::wstring>(p_str));
+				}
+				if (p_str.type() == typeid(char*)) {
+					return std::any_cast<char*>(p_str);
 				}
 				return nullptr;
 			}
@@ -305,6 +339,35 @@ PW_NAMESPACE_SRT
 							throw pw::er::Warning_Error(L"Engine Constant", L"Function Failed: wcstombs_s", EXCEPTION_LINE,
 								__FILEW__, L"To_Char");
 						}
+					}
+					catch (const pw::er::Warning_Error& v_error) {
+						throw v_error;
+					}
+					catch (const pw::er::Severe_Error& v_error) {
+						throw v_error;
+					}
+				}
+			}
+			static char* To_Char(const char* p_msg) {
+				// Check if the characters exist
+				if (TRY_LINE p_msg == nullptr) {
+					throw pw::er::Warning_Error(L"Engine Constant", L"Invalid Argument", EXCEPTION_LINE, __FILEW__, L"To_Char");
+				}
+				else {
+					try {
+						// Get the msg size 
+						TRY_LINE size_t v_msg_size = std::strlen(p_msg) + 1;
+						if (v_msg_size == 0) {
+							throw pw::er::Warning_Error(L"Engine Constant", L"Invalid Argument", EXCEPTION_LINE, __FILEW__, L"To_Char");
+						}
+						// Allocate the memory for the new msg
+						char* v_msg = pw::Engine_Memory::Allocate<char>(v_msg_size);
+						
+						for (size_t i = 0; i < v_msg_size; i++) {
+							v_msg[i] = p_msg[i];
+						}
+						
+						return v_msg;
 					}
 					catch (const pw::er::Warning_Error& v_error) {
 						throw v_error;

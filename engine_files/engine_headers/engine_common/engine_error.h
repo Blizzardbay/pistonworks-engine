@@ -181,8 +181,8 @@ PW_NAMESPACE_SRT
 			static void PW_GLFW_Handle(const int32_t& p_result, const int32_t& p_line, const std::wstring& p_file) {
 				if (p_result != GLFW_NO_ERROR && p_result != GLFW_TRUE) {
 					try {
-						PW_Print_Error(er::Severe_Error(L"GLFW", L"Function Error", std::move(p_line), std::move(p_file), L"PW_GLFW_Handle"));
-						throw er::Severe_Error(L"GLFW", L"Function Error", std::move(p_line), std::move(p_file), L"PW_GLFW_Handle");
+						PW_Print_Error(er::Severe_Error(L"GLFW", L"Function Error", p_line, p_file, L"PW_GLFW_Handle"));
+						throw er::Severe_Error(L"GLFW", L"Function Error", p_line, p_file, L"PW_GLFW_Handle");
 					}
 					catch (const er::Warning_Error& v_error) {
 						throw v_error;
@@ -253,8 +253,8 @@ PW_NAMESPACE_SRT
 			static void PW_GL_Handle(const GLenum& p_result, const int32_t& p_line, const std::wstring& p_file) {
 				try {
 					if (p_result <= 0) {
-						PW_Print_Error(er::Severe_Error(L"GL", std::wstring(std::wstring(L"Function Error: ") + std::to_wstring(p_result)).c_str(), std::move(p_line), std::move(p_file), L"PW_GL_Handle"));
-						throw er::Severe_Error(L"GL", std::wstring(std::wstring(L"Function Error: ") + std::to_wstring(p_result)).c_str(), std::move(p_line), std::move(p_file), L"PW_GL_Handle");
+						PW_Print_Error(er::Severe_Error(L"GL", std::wstring(std::wstring(L"Function Error: ") + std::to_wstring(p_result)).c_str(), p_line, p_file, L"PW_GL_Handle"));
+						throw er::Severe_Error(L"GL", std::wstring(std::wstring(L"Function Error: ") + std::to_wstring(p_result)).c_str(), p_line, p_file, L"PW_GL_Handle");
 					}
 					#ifdef PW_DEBUG_MODE
 						else {
@@ -272,17 +272,17 @@ PW_NAMESPACE_SRT
 			static void PW_FT_Handle(const FT_Error& p_result, const int32_t& p_line, const std::wstring& p_file, const std::wstring& p_function) {
 				if (p_result != FT_Err_Ok) {
 					PW_Print_Error(pw::er::Warning_Error(L"FT",
-						std::move(TO_WSTRING(FT_Error_String(p_result))), std::move(p_line), std::move(p_file), std::move(p_function)));
+						std::move(TO_WSTRING(FT_Error_String(p_result))), p_line, p_file, p_function));
 					throw pw::er::Warning_Error(L"FT",
-						std::move(TO_WSTRING(FT_Error_String(p_result))), std::move(p_line), std::move(p_file), std::move(p_function));
+						std::move(TO_WSTRING(FT_Error_String(p_result))), p_line, p_file, p_function);
 				}
 			}
 			static void PW_AL_Handle(const ALenum& p_result, const int32_t& p_line, const std::wstring& p_file, const std::wstring& p_function) {
 				if (p_result != AL_NO_ERROR) {
 					PW_Print_Error(pw::er::Warning_Error(L"AL",
-						std::move(TO_WSTRING(alGetString(p_result))), std::move(p_line), std::move(p_file), std::move(p_function)));
+						std::move(TO_WSTRING(alGetString(p_result))), p_line, p_file, p_function));
 					throw pw::er::Warning_Error(L"AL",
-						std::move(TO_WSTRING(alGetString(p_result))), std::move(p_line), std::move(p_file), std::move(p_function));
+						std::move(TO_WSTRING(alGetString(p_result))), p_line, p_file, p_function);
 				}
 			}
 			#define PW_GLFW_VOID_CALL(p_funct) {			\

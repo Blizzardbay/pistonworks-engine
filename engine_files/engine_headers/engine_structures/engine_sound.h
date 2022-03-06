@@ -144,7 +144,6 @@ PW_NAMESPACE_SRT
 			bool m_natural_stop;
 
 			bool m_loop;
-			bool m_should_play;
 
 			uint32_t m_audio_source_id;
 			glm::vec2 m_position;
