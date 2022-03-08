@@ -115,9 +115,9 @@ PW_NAMESPACE_SRT
 			void Pre_Scene_Change(const std::wstring& p_scene);
 			void Pre_Scene_Removal(const std::wstring& p_scene);
 
-			void Post_Scene_Load();
-			void Post_Scene_Change();
-			void Post_Scene_Removal();
+			void Post_Scene_Load(const std::wstring& p_scene);
+			void Post_Scene_Change(const std::wstring& p_scene);
+			void Post_Scene_Removal(const std::wstring& p_scene);
 
 			const bool& No_Error() const;
 		// Public Variables
@@ -150,7 +150,7 @@ PW_NAMESPACE_SRT
 PW_NAMESPACE_END
 //////////////////////////////////
 
-#define USE_DEFAULT_ENGINE_CONTROL															\
+#define USE_DEFAULT_ENGINE_CONTROL													\
 	void pw::co::Engine_Control::Pre_Load() {										\
 	}																				\
 	void pw::co::Engine_Control::Init_Game() {										\
@@ -167,11 +167,11 @@ PW_NAMESPACE_END
 	}																				\
 	void pw::co::Engine_Control::Pre_Scene_Removal(const std::wstring& p_scene) {	\
 	}																				\
-	void pw::co::Engine_Control::Post_Scene_Load() {								\
+	void pw::co::Engine_Control::Post_Scene_Load(const std::wstring& p_scene) {		\
 	}																				\
-	void pw::co::Engine_Control::Post_Scene_Change() {								\
+	void pw::co::Engine_Control::Post_Scene_Change(const std::wstring& p_scene) {	\
 	}																				\
-	void pw::co::Engine_Control::Post_Scene_Removal() {								\
+	void pw::co::Engine_Control::Post_Scene_Removal(const std::wstring& p_scene) {	\
 	}
 #define USE_PISTONWORKS_ENGINE(p_window_size_x, p_window_size_y, p_require_game_path)		\
 	int main(int argc, char* argv[]) {														\

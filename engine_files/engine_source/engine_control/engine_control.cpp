@@ -201,11 +201,11 @@ PW_NAMESPACE_SRT
 
 						pw::co::Engine_Queue::Set_Scene_Functions(
 							std::bind(&Engine_Control::Pre_Scene_Load, this, std::placeholders::_1),
-							std::bind(&Engine_Control::Post_Scene_Load, this),
+							std::bind(&Engine_Control::Post_Scene_Load, this, std::placeholders::_1),
 							std::bind(&Engine_Control::Pre_Scene_Change, this, std::placeholders::_1),
-							std::bind(&Engine_Control::Post_Scene_Change, this),
+							std::bind(&Engine_Control::Post_Scene_Change, this, std::placeholders::_1),
 							std::bind(&Engine_Control::Pre_Scene_Removal, this, std::placeholders::_1),
-							std::bind(&Engine_Control::Post_Scene_Removal, this));
+							std::bind(&Engine_Control::Post_Scene_Removal, this, std::placeholders::_1));
 
 						// Set debug function if in debug mode
 						#ifdef PW_DEBUG_MODE
