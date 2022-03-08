@@ -21,7 +21,7 @@ PW_NAMESPACE_SRT
 
 		std::function<void(const std::wstring&)> co::Engine_Queue::m_pre_scene_remove{ nullptr };
 		std::function<void(const std::wstring&)> co::Engine_Queue::m_post_scene_remove{ nullptr };
-		std::function<void()> m_user_debug_function{ nullptr };
+		std::function<void()> co::Engine_Queue::m_user_debug_function{ nullptr };
 		// Class Members
 			void Engine_Queue::Pre_Queue() {
 				if (m_current_scene != nullptr) {
@@ -96,7 +96,7 @@ PW_NAMESPACE_SRT
 
 				PRINT_INFO(L"CAMYPS", v_camera_position_y, TO_UINT16(10));
 
-				if (m_user_debug_function == nullptr) {
+				if (m_user_debug_function != nullptr) {
 					m_user_debug_function();
 				}
 			}
