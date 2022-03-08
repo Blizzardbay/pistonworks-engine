@@ -188,7 +188,9 @@ PW_NAMESPACE_SRT
 						pw::co::cn::Console_Manip::Print_Console(std::wstring(p_from), std::wstring(p_msg), p_msg_type, false);							\
 						pw::co::cn::Console_Manip::Print_Console(L"", L"---------------------------------------------------------", COUT_MSG, true);	\
 					}
+					//assert(p_line > 0 && p_line < 																								
 					#define PRINT_INFO(p_from, p_msg, p_line) {														\
+						assert(p_line > 0 && p_line < 36);															\
 						pw::co::cn::Console_Manip::Print_Info(std::wstring(p_from), std::wstring(p_msg), p_line);	\
 					}
 				#else

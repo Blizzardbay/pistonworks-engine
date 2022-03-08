@@ -21,6 +21,7 @@ PW_NAMESPACE_SRT
 
 		std::function<void(const std::wstring&)> co::Engine_Queue::m_pre_scene_remove{ nullptr };
 		std::function<void(const std::wstring&)> co::Engine_Queue::m_post_scene_remove{ nullptr };
+		std::function<void()> m_user_debug_function{ nullptr };
 		// Class Members
 			void Engine_Queue::Pre_Queue() {
 				if (m_current_scene != nullptr) {
@@ -94,6 +95,10 @@ PW_NAMESPACE_SRT
 				}
 
 				PRINT_INFO(L"CAMYPS", v_camera_position_y, TO_UINT16(10));
+
+				if (m_user_debug_function == nullptr) {
+					m_user_debug_function();
+				}
 			}
 			void Engine_Queue::Load_From_Dir(std::unique_ptr<GLFWwindow, cm::Destroy_GLFW>& p_main_window, std::shared_ptr<PW_FUNCTION> p_state_function) {
 				co::File_Loader::Initialize_Loader(&Engine_Queue::Add_Scene, &Engine_Queue::Set_Current_Scene, &Engine_Queue::Remove_Scene);
@@ -375,6 +380,9 @@ PW_NAMESPACE_SRT
 				m_post_scene_change = p_post_change;
 				m_pre_scene_remove = p_pre_remove;
 				m_post_scene_remove = p_post_remove;
+			}
+			void Engine_Queue::Set_User_Debug_Function(const std::function<void()>& p_debug_function) {
+				m_user_debug_function = p_debug_function;
 			}
 			st::Game_Scene* Engine_Queue::Get_Scene(const std::wstring& p_scene_name) {
 				auto v_found = m_scene_directory.find(p_scene_name);

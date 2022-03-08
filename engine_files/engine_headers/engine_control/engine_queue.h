@@ -90,6 +90,7 @@ PW_NAMESPACE_SRT
 				const std::function<void(const std::wstring&)>& p_post_change,
 				const std::function<void(const std::wstring&)>& p_pre_remove,
 				const std::function<void(const std::wstring&)>& p_post_remove);
+			static void Set_User_Debug_Function(const std::function<void()>& p_debug_function);
 
 			static st::Game_Scene* Get_Scene(const std::wstring& p_scene_name);
 			static st::Game_Scene* Current_Scene();
@@ -116,6 +117,9 @@ PW_NAMESPACE_SRT
 
 			static std::function<void(const std::wstring&)> m_pre_scene_remove;
 			static std::function<void(const std::wstring&)> m_post_scene_remove;
+
+			// Open Debug Slots 11 - 35
+			static std::function<void()> m_user_debug_function;
 		};
 	//////////////////////////////////
 	CO_NAMESPACE_END
