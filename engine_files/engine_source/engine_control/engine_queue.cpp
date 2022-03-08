@@ -343,7 +343,7 @@ PW_NAMESPACE_SRT
 					}
 				}
 			}
-			void Engine_Queue::Remove_Scene(const std::wstring& p_scene_name) {
+			void Engine_Queue::Remove_Scene(std::wstring p_scene_name) {
 				auto v_found = m_scene_directory.find(p_scene_name);
 				// Can't load the same scene twice in once instance
 				if (v_found != m_scene_directory.end()) {

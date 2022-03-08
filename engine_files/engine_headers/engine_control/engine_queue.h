@@ -82,7 +82,7 @@ PW_NAMESPACE_SRT
 			
 			static void Add_Scene(const std::wstring& p_scene_name, const bool& p_set_current = false);
 			static void Set_Current_Scene(const std::wstring& p_scene_name);
-			static void Remove_Scene(const std::wstring& p_scene_name);
+			static void Remove_Scene(std::wstring p_scene_name);
 			
 			static void Set_Scene_Functions(const std::function<void(const std::wstring&)>& p_pre_add,
 				const std::function<void(const std::wstring&)>& p_post_add,
