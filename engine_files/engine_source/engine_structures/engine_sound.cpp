@@ -90,9 +90,11 @@ PW_NAMESPACE_SRT
 		}
 		void Listener::Change_Bound_Listener(const std::function<glm::vec2()>& p_new_position_tie) {
 			if (m_created_listener == true) {
-				m_position = p_new_position_tie();
+				if (p_new_position_tie != nullptr) {
+					m_position = p_new_position_tie();
 
-				PW_AL_VOID_CALL(alListenerfv(AL_POSITION, &m_position[0]));
+					PW_AL_VOID_CALL(alListenerfv(AL_POSITION, &m_position[0]));
+				}
 			}
 		}
 		void Listener::Update() {
