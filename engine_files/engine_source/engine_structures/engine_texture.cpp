@@ -22,8 +22,8 @@ PW_NAMESPACE_SRT
 					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, p_repeat ? GL_REPEAT : GL_CLAMP_TO_EDGE), false);
 					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, p_repeat ? GL_REPEAT : GL_CLAMP_TO_EDGE), false);
 
-					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR), false);
-					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR), false);
+					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST), false);
+					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST), false);
 
 					PW_GL_VOID_CALL(glTexImage2D(p_target, 0, p_internal_format, p_texture_width, p_texture_height, 0, p_format, GL_UNSIGNED_BYTE, p_tex_data), false);
 				}
@@ -41,8 +41,8 @@ PW_NAMESPACE_SRT
 					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, p_repeat ? GL_REPEAT : GL_CLAMP_TO_EDGE), false);
 					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, p_repeat ? GL_REPEAT : GL_CLAMP_TO_EDGE), false);
 
-					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR), false);
-					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR), false);
+					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST), false);
+					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST), false);
 
 					PW_GL_VOID_CALL(glTexImage2D(GL_TEXTURE_2D, 0, p_internal_format, p_texture_width, p_texture_height, 0, p_format, GL_UNSIGNED_BYTE, p_tex_data), false);
 				}

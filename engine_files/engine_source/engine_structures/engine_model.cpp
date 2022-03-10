@@ -413,7 +413,7 @@ PW_NAMESPACE_SRT
 				}
 			}
 			void Model::Set_Texture(st::Texture* p_new_texture) {
-				*m_texture = *p_new_texture;
+				m_texture = p_new_texture;
 			}
 			void Model::Set_Model_Color(const glm::vec4& p_new_color) {
 				m_color = p_new_color;
