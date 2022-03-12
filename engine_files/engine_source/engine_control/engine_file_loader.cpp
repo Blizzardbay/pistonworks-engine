@@ -1424,7 +1424,7 @@ PW_NAMESPACE_SRT
 				std::string v_sound_structure{};
 
 				uint32_t v_is_attached{ 0 };
-				std::wstring v_attachment_id{};
+				std::string v_attachment_id{};
 				float v_offset_x{ 0.0f };
 				float v_offset_y{ 0.0f };
 
@@ -1619,7 +1619,7 @@ PW_NAMESPACE_SRT
 								p_s_id_holder.push_back(std::make_tuple(vw_s_id, va_model, v_is_main_s_id));
 							}
 							if (v_is_attached == 1) {
-								p_model_attachments.push_back(std::make_tuple(v_attachment_id, va_model, glm::vec2(v_offset_x, v_offset_y)));
+								p_model_attachments.push_back(std::make_tuple(TO_WSTRING(v_attachment_id), va_model, glm::vec2(v_offset_x, v_offset_y)));
 							}
 
 							if (p_has_physics_factory == 1) {
@@ -1676,7 +1676,7 @@ PW_NAMESPACE_SRT
 								}
 
 								if (v_is_attached == 1) {
-									p_model_attachments.push_back(std::make_tuple(v_attachment_id, va_model, glm::vec2(v_offset_x, v_offset_y)));
+									p_model_attachments.push_back(std::make_tuple(TO_WSTRING(v_attachment_id), va_model, glm::vec2(v_offset_x, v_offset_y)));
 								}
 
 								if (p_has_physics_factory == 1) {
@@ -1742,7 +1742,7 @@ PW_NAMESPACE_SRT
 								}
 
 								if (v_is_attached == 1) {
-									p_model_attachments.push_back(std::make_tuple(v_attachment_id, va_model, glm::vec2(v_offset_x, v_offset_y)));
+									p_model_attachments.push_back(std::make_tuple(TO_WSTRING(v_attachment_id), va_model, glm::vec2(v_offset_x, v_offset_y)));
 								}
 
 								if (p_has_physics_factory == 1) {
@@ -1878,7 +1878,7 @@ PW_NAMESPACE_SRT
 							}
 
 							if (v_is_attached == 1) {
-								p_model_attachments.push_back(std::make_tuple(v_attachment_id, va_model, glm::vec2(v_offset_x, v_offset_y)));
+								p_model_attachments.push_back(std::make_tuple(TO_WSTRING(v_attachment_id), va_model, glm::vec2(v_offset_x, v_offset_y)));
 							}
 
 							if (p_has_physics_factory == 1) {
@@ -1930,7 +1930,7 @@ PW_NAMESPACE_SRT
 								}
 
 								if (v_is_attached == 1) {
-									p_model_attachments.push_back(std::make_tuple(v_attachment_id, va_model, glm::vec2(v_offset_x, v_offset_y)));
+									p_model_attachments.push_back(std::make_tuple(TO_WSTRING(v_attachment_id), va_model, glm::vec2(v_offset_x, v_offset_y)));
 								}
 
 								if (p_has_physics_factory == 1) {
@@ -1990,7 +1990,7 @@ PW_NAMESPACE_SRT
 								}
 
 								if (v_is_attached == 1) {
-									p_model_attachments.push_back(std::make_tuple(v_attachment_id, va_model, glm::vec2(v_offset_x, v_offset_y)));
+									p_model_attachments.push_back(std::make_tuple(TO_WSTRING(v_attachment_id), va_model, glm::vec2(v_offset_x, v_offset_y)));
 								}
 
 								if (p_has_physics_factory == 1) {
@@ -2217,7 +2217,7 @@ PW_NAMESPACE_SRT
 								}
 
 								if (v_is_attached == 1) {
-									p_model_attachments.push_back(std::make_tuple(v_attachment_id, va_model, glm::vec2(v_offset_x, v_offset_y)));
+									p_model_attachments.push_back(std::make_tuple(TO_WSTRING(v_attachment_id), va_model, glm::vec2(v_offset_x, v_offset_y)));
 								}
 
 								v_sub_scene_models.push_back(va_model);
@@ -2259,7 +2259,7 @@ PW_NAMESPACE_SRT
 									}
 
 									if (v_is_attached == 1) {
-										p_model_attachments.push_back(std::make_tuple(v_attachment_id, va_model, glm::vec2(v_offset_x, v_offset_y)));
+										p_model_attachments.push_back(std::make_tuple(TO_WSTRING(v_attachment_id), va_model, glm::vec2(v_offset_x, v_offset_y)));
 									}
 
 									v_sub_scene_models.push_back(va_model);
@@ -2310,7 +2310,7 @@ PW_NAMESPACE_SRT
 									}
 
 									if (v_is_attached == 1) {
-										p_model_attachments.push_back(std::make_tuple(v_attachment_id, va_model, glm::vec2(v_offset_x, v_offset_y)));
+										p_model_attachments.push_back(std::make_tuple(TO_WSTRING(v_attachment_id), va_model, glm::vec2(v_offset_x, v_offset_y)));
 									}
 
 									v_sub_scene_models.push_back(va_model);
@@ -2432,7 +2432,7 @@ PW_NAMESPACE_SRT
 								}
 
 								if (v_is_attached == 1) {
-									p_model_attachments.push_back(std::make_tuple(v_attachment_id, va_model, glm::vec2(v_offset_x, v_offset_y)));
+									p_model_attachments.push_back(std::make_tuple(TO_WSTRING(v_attachment_id), va_model, glm::vec2(v_offset_x, v_offset_y)));
 								}
 
 								v_sub_scene_models.push_back(va_model);
@@ -2468,7 +2468,7 @@ PW_NAMESPACE_SRT
 									}
 
 									if (v_is_attached == 1) {
-										p_model_attachments.push_back(std::make_tuple(v_attachment_id, va_model, glm::vec2(v_offset_x, v_offset_y)));
+										p_model_attachments.push_back(std::make_tuple(TO_WSTRING(v_attachment_id), va_model, glm::vec2(v_offset_x, v_offset_y)));
 									}
 
 									v_sub_scene_models.push_back(va_model);
@@ -2513,7 +2513,7 @@ PW_NAMESPACE_SRT
 									}
 
 									if (v_is_attached == 1) {
-										p_model_attachments.push_back(std::make_tuple(v_attachment_id, va_model, glm::vec2(v_offset_x, v_offset_y)));
+										p_model_attachments.push_back(std::make_tuple(TO_WSTRING(v_attachment_id), va_model, glm::vec2(v_offset_x, v_offset_y)));
 									}
 
 									v_sub_scene_models.push_back(va_model);
