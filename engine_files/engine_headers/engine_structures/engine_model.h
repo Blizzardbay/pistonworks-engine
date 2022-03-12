@@ -254,7 +254,7 @@ PW_NAMESPACE_SRT
 			void Set_Offset(const glm::vec2& p_offset);
 
 			void Set_Rotation(const float& p_new_rotation);
-			void Set_Rotation(const float& p_new_rotation, b2Body*& p_body);
+			void Set_Rotation(const float& p_new_rotation, b2Body* p_body);
 
 			const Geometry_Types& Type() const;
 			st::Mesh* Mesh() const;

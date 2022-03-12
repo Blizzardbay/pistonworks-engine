@@ -450,7 +450,7 @@ PW_NAMESPACE_SRT
 			void Model::Set_Rotation(const float& p_new_rotation) {
 				m_rotation = p_new_rotation;
 			}
-			void Model::Set_Rotation(const float& p_new_rotation, b2Body*& p_body) {
+			void Model::Set_Rotation(const float& p_new_rotation, b2Body* p_body) {
 				if (p_body != nullptr) {
 					p_body->SetTransform(p_body->GetTransform().p, glm::radians(p_new_rotation));
 				}
