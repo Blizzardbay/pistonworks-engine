@@ -431,9 +431,9 @@ PW_NAMESPACE_SRT
 				m_attached = p_attached;
 				*m_position = p_new_position;
 			}
-			void Model::Attach_To(glm::vec2& p_position) {
+			void Model::Attach_To(glm::vec2* p_position) {
 				m_attached = true;
-				*m_position = p_position;
+				m_position = p_position;
 			}
 			void Model::Set_Size_X(const float& p_size_x) {
 				m_size.x = p_size_x;
@@ -478,6 +478,9 @@ PW_NAMESPACE_SRT
 				v_position.y = v_position.y + m_offset.y;
 
 				return v_position;
+			}
+			glm::vec2* Model::Position_Reference() {
+				return m_position;
 			}
 			const glm::vec2& Model::Last_Postition() const {
 				return m_last_position;

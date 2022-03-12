@@ -13,7 +13,7 @@ PW_NAMESPACE_SRT
 					m_copy{ false }, m_texture_id{ 0 }, m_texture_width{ 0 }, m_texture_height{ 0 } {
 			}
 			Texture::Texture(BYTE* p_tex_data, const uint32_t& p_target, const uint32_t& p_texture_width, const uint32_t& p_texture_height,
-								const int32_t& p_internal_format, const int32_t& p_format, const bool& p_repeat) :
+								const int32_t& p_internal_format, const int32_t& p_format, const bool& p_repeat, const bool& p_linear) :
 					m_copy{ false }, m_texture_id{ 0 }, m_texture_width{ p_texture_width }, m_texture_height{ p_texture_height } {
 				if (TRY_LINE p_tex_data != nullptr) {
 					PW_GL_VOID_CALL(glGenTextures(1, &m_texture_id), false);
@@ -22,8 +22,8 @@ PW_NAMESPACE_SRT
 					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, p_repeat ? GL_REPEAT : GL_CLAMP_TO_EDGE), false);
 					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, p_repeat ? GL_REPEAT : GL_CLAMP_TO_EDGE), false);
 
-					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST), false);
-					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST), false);
+					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, p_linear ? GL_LINEAR : GL_NEAREST), false);
+					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, p_linear ? GL_LINEAR : GL_NEAREST), false);
 
 					PW_GL_VOID_CALL(glTexImage2D(p_target, 0, p_internal_format, p_texture_width, p_texture_height, 0, p_format, GL_UNSIGNED_BYTE, p_tex_data), false);
 				}
@@ -32,7 +32,7 @@ PW_NAMESPACE_SRT
 				}
 			}
 			Texture::Texture(BYTE* p_tex_data, const uint32_t& p_texture_width, const uint32_t& p_texture_height,
-								const int32_t& p_internal_format, const int32_t& p_format, const bool& p_repeat) :
+								const int32_t& p_internal_format, const int32_t& p_format, const bool& p_repeat, const bool& p_linear) :
 					m_copy{ false }, m_texture_id{ 0 }, m_texture_width{ p_texture_width }, m_texture_height{ p_texture_height } {
 				if (p_tex_data != nullptr) {
 					PW_GL_VOID_CALL(glGenTextures(1, &m_texture_id), false);
@@ -41,8 +41,8 @@ PW_NAMESPACE_SRT
 					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, p_repeat ? GL_REPEAT : GL_CLAMP_TO_EDGE), false);
 					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, p_repeat ? GL_REPEAT : GL_CLAMP_TO_EDGE), false);
 
-					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST), false);
-					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST), false);
+					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, p_linear ? GL_LINEAR : GL_NEAREST), false);
+					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, p_linear ? GL_LINEAR : GL_NEAREST), false);
 
 					PW_GL_VOID_CALL(glTexImage2D(GL_TEXTURE_2D, 0, p_internal_format, p_texture_width, p_texture_height, 0, p_format, GL_UNSIGNED_BYTE, p_tex_data), false);
 				}

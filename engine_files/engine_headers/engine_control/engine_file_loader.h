@@ -160,10 +160,10 @@ PW_NAMESPACE_SRT
 											const std::function<void(const std::wstring&)>& p_remove_scene_function);
 
 			static st::Texture* Load_Texture_File(const std::wstring& p_file_name,
-				const bool& p_repeat, const bool& p_engine_dir = false, std::wstring* p_override_dir = nullptr);
+				const bool& p_repeat, const bool& p_linear, const bool& p_engine_dir = false, std::wstring* p_override_dir = nullptr);
 
 			static std::tuple<st::Texture*, st::Animation*> Load_Animation_File(const std::wstring& p_file_name,
-				const bool& p_repeat, const bool& p_engine_dir = false, std::wstring* p_override_dir = nullptr);
+				const bool& p_repeat, const bool& p_linear, const bool& p_engine_dir = false, std::wstring* p_override_dir = nullptr);
 
 			static GLFWimage* Load_Icon(const std::wstring& p_file_name, const bool& p_engine_dir);
 			static void Unload_Icon();
@@ -179,7 +179,7 @@ PW_NAMESPACE_SRT
 				std::vector<std::tuple<std::wstring, st::Actor*, int32_t>>& p_s_id_holder,
 				std::map<std::wstring, st::Sub_Scene_Structure*>& p_sub_scene_structures,
 				std::filesystem::path& p_location, uint32_t& p_has_physics_factory, st::Physics_Factory* p_physics_factory,
-				std::string& p_main_scene, std::vector<std::string>& p_sub_scenes);
+				std::string& p_main_scene, std::vector<std::string>& p_sub_scenes, std::vector<std::tuple<std::wstring, st::Actor*, glm::vec2>>& p_model_attachments);
 			
 			static glm::vec4 Default_Color(const Default_Colors& p_color);
 
@@ -188,9 +188,9 @@ PW_NAMESPACE_SRT
 		public:
 		// Private Functions/Macros 
 		private:
-			static st::Texture* Load_PNG(const std::filesystem::path& p_file_location, const bool& p_repeat);
-			static st::Texture* Load_BMP(const std::filesystem::path& p_file_location, const bool& p_repeat);
-			static st::Texture* Load_JPEG(const std::filesystem::path& p_file_location, const bool& p_repeat);
+			static st::Texture* Load_PNG(const std::filesystem::path& p_file_location, const bool& p_repeat, const bool& p_linear);
+			static st::Texture* Load_BMP(const std::filesystem::path& p_file_location, const bool& p_repeat, const bool& p_linear);
+			static st::Texture* Load_JPEG(const std::filesystem::path& p_file_location, const bool& p_repeat, const bool& p_linear);
 		// Private Variables        
 		private:
 			static FIBITMAP* m_current_icon; // Current icon to be unloaded

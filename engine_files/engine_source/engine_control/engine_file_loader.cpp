@@ -119,7 +119,7 @@ PW_NAMESPACE_SRT
 				m_change_scene_function = p_change_scene_function;
 				m_remove_scene_function = p_remove_scene_function;
 			}
-			st::Texture* File_Loader::Load_Texture_File(const std::wstring& p_file_name, const bool& p_repeat, const bool& p_engine_dir, std::wstring* p_override_dir) {
+			st::Texture* File_Loader::Load_Texture_File(const std::wstring& p_file_name, const bool& p_repeat, const bool& p_linear, const bool& p_engine_dir, std::wstring* p_override_dir) {
 				// File Type
 				FREE_IMAGE_FORMAT v_image_type{ FREE_IMAGE_FORMAT::FIF_UNKNOWN };
 				// First make sure the file location exists
@@ -140,13 +140,13 @@ PW_NAMESPACE_SRT
 				if (TRY_LINE FreeImage_FIFSupportsReading(v_image_type) == (BOOL)true) {
 					switch (v_image_type) {
 						case FREE_IMAGE_FORMAT::FIF_PNG: {
-							return Load_PNG(v_location, p_repeat);
+							return Load_PNG(v_location, p_repeat, p_linear);
 						}
 						case FREE_IMAGE_FORMAT::FIF_BMP: {
-							return Load_BMP(v_location, p_repeat);
+							return Load_BMP(v_location, p_repeat, p_linear);
 						}
 						case FREE_IMAGE_FORMAT::FIF_JPEG: {
-							return Load_JPEG(v_location, p_repeat);
+							return Load_JPEG(v_location, p_repeat, p_linear);
 						}
 						default: {
 							throw er::Warning_Error(L"File Loader", L"Unsupported Type", EXCEPTION_LINE, __FILEW__, L"FreeImage_FIFSupportsReading");
@@ -157,7 +157,7 @@ PW_NAMESPACE_SRT
 					throw er::Warning_Error(L"File Loader", L"Unsupported Type", EXCEPTION_LINE, __FILEW__, L"FreeImage_FIFSupportsReading");
 				}
 			}
-			std::tuple<st::Texture*, st::Animation*> File_Loader::Load_Animation_File(const std::wstring& p_file_name, const bool& p_repeat, const bool& p_engine_dir, std::wstring* p_override_dir) {
+			std::tuple<st::Texture*, st::Animation*> File_Loader::Load_Animation_File(const std::wstring& p_file_name, const bool& p_repeat, const bool& p_linear, const bool& p_engine_dir, std::wstring* p_override_dir) {
 				// File Type
 				FREE_IMAGE_FORMAT v_image_type{ FREE_IMAGE_FORMAT::FIF_UNKNOWN };
 				// File
@@ -252,7 +252,7 @@ PW_NAMESPACE_SRT
 							FreeImage_UnlockPage(v_gif_bitmap, v_bitmap, false);
 						}
 						// Create Texture
-						v_texture = pw::Engine_Memory::Allocate<st::Texture, bool>(v_image_data, v_width * v_frames, v_height, GL_RGBA, GL_BGRA, p_repeat);
+						v_texture = pw::Engine_Memory::Allocate<st::Texture, bool>(v_image_data, v_width * v_frames, v_height, GL_RGBA, GL_BGRA, p_repeat, p_linear);
 						// Create Animation
 						v_animation = pw::Engine_Memory::Allocate<st::Animation, bool>(static_cast<float>(v_frame_time) / static_cast<float>(CLOCKS_PER_SEC), v_frames, v_width);
 
@@ -343,7 +343,7 @@ PW_NAMESPACE_SRT
 			glm::vec4 File_Loader::Default_Color(const Default_Colors& color) {
 				return m_engine_colors[(int32_t)color];
 			}
-			st::Texture* File_Loader::Load_PNG(const std::filesystem::path& p_file_location, const bool& p_repeat) {
+			st::Texture* File_Loader::Load_PNG(const std::filesystem::path& p_file_location, const bool& p_repeat, const bool& p_linear) {
 				// File Type
 				FREE_IMAGE_FORMAT v_image_type{ FREE_IMAGE_FORMAT::FIF_PNG };
 				// File
@@ -370,7 +370,7 @@ PW_NAMESPACE_SRT
 					v_height = FreeImage_GetHeight(v_file);
 
 					// Create Texture
-					v_texture = pw::Engine_Memory::Allocate<st::Texture, bool>(v_image_data, v_width, v_height, GL_RGBA, GL_BGRA, p_repeat);
+					v_texture = pw::Engine_Memory::Allocate<st::Texture, bool>(v_image_data, v_width, v_height, GL_RGBA, GL_BGRA, p_repeat, p_linear);
 
 					FreeImage_Unload(v_file);
 
@@ -380,7 +380,7 @@ PW_NAMESPACE_SRT
 					throw er::Warning_Error(L"File Loader", L"No Pixel Data", EXCEPTION_LINE, __FILEW__, L"FreeImage_HasPixels");
 				}
 			}
-			st::Texture* File_Loader::Load_BMP(const std::filesystem::path& p_file_location, const bool& p_repeat) {
+			st::Texture* File_Loader::Load_BMP(const std::filesystem::path& p_file_location, const bool& p_repeat, const bool& p_linear) {
 				// File Type
 				FREE_IMAGE_FORMAT v_image_type{ FREE_IMAGE_FORMAT::FIF_BMP };
 				// File
@@ -407,7 +407,7 @@ PW_NAMESPACE_SRT
 					v_height = FreeImage_GetHeight(v_file);
 
 					// Create Texture
-					v_texture = pw::Engine_Memory::Allocate<st::Texture, bool>(v_image_data, v_width, v_height, GL_RGB, GL_BGR, p_repeat);
+					v_texture = pw::Engine_Memory::Allocate<st::Texture, bool>(v_image_data, v_width, v_height, GL_RGB, GL_BGR, p_repeat, p_linear);
 
 					FreeImage_Unload(v_file);
 
@@ -417,7 +417,7 @@ PW_NAMESPACE_SRT
 					throw er::Warning_Error(L"File Loader", L"No Pixel Data", EXCEPTION_LINE, __FILEW__, L"FreeImage_HasPixels");
 				}
 			}
-			st::Texture* File_Loader::Load_JPEG(const std::filesystem::path& p_file_location, const bool& p_repeat) {
+			st::Texture* File_Loader::Load_JPEG(const std::filesystem::path& p_file_location, const bool& p_repeat, const bool& p_linear) {
 				// File Type
 				FREE_IMAGE_FORMAT v_image_type{ FREE_IMAGE_FORMAT::FIF_JPEG };
 				// File
@@ -444,7 +444,7 @@ PW_NAMESPACE_SRT
 					v_height = FreeImage_GetHeight(v_file);
 
 					// Create Texture
-					v_texture =pw::Engine_Memory::Allocate<st::Texture, bool>(v_image_data, v_width, v_height, GL_RGB, GL_BGR, p_repeat);
+					v_texture =pw::Engine_Memory::Allocate<st::Texture, bool>(v_image_data, v_width, v_height, GL_RGB, GL_BGR, p_repeat, p_linear);
 
 					FreeImage_Unload(v_file);
 
@@ -580,11 +580,12 @@ PW_NAMESPACE_SRT
 				std::vector<st::Actor*> v_collision_models;
 				std::vector<std::tuple<std::wstring, st::Actor*, int32_t>> v_s_id_holder{};
 				std::map<std::wstring, st::Sub_Scene_Structure*> v_sub_scene_structures{};
+				std::vector<std::tuple<std::wstring, st::Actor*, glm::vec2>> v_model_attachments{};
 				// Create context for the sounds
 				st::Listener::Create_Listener();
 
 				Load_Data_File(v_scene_models, v_collision_models, v_s_id_holder,
-					v_sub_scene_structures, v_location, v_has_physics_factory, v_physics_factory, v_main_scene, v_sub_scenes);
+					v_sub_scene_structures, v_location, v_has_physics_factory, v_physics_factory, v_main_scene, v_sub_scenes, v_model_attachments);
 				// Start loading of standard input
 				std::map<std::wstring, co::Engine_Input*> v_scene_input{};
 				co::Engine_Input* v_temp_input = nullptr;
@@ -1373,6 +1374,15 @@ PW_NAMESPACE_SRT
 					v_scene->Set_Active_Input(TO_WSTRING(v_current_input));
 				}
 
+				for (auto i = v_model_attachments.begin(); i != v_model_attachments.end(); i++) {
+					if (v_scene->Access_Model(std::get<0>(*i)) != nullptr) {
+						if (std::get<1>(*i) != nullptr) {
+							std::get<1>(*i)->Model()->Attach_To(v_scene->Access_Model(std::get<0>(*i))->Model()->Position_Reference());
+							std::get<1>(*i)->Model()->Set_Offset(std::get<2>(*i));
+						}
+					}
+				}
+
 				return v_scene;
 			}
 			void File_Loader::Load_Data_File(std::vector<st::Actor*>& p_scene_models,
@@ -1380,7 +1390,7 @@ PW_NAMESPACE_SRT
 				std::vector<std::tuple<std::wstring, st::Actor*, int32_t>>& p_s_id_holder,
 				std::map<std::wstring, st::Sub_Scene_Structure*>& p_sub_scene_structures,
 				std::filesystem::path& p_location, uint32_t& p_has_physics_factory, st::Physics_Factory* p_physics_factory,
-				std::string& p_main_scene, std::vector<std::string>& p_sub_scenes) {
+				std::string& p_main_scene, std::vector<std::string>& p_sub_scenes, std::vector<std::tuple<std::wstring, st::Actor*, glm::vec2>>& p_model_attachments) {
 
 				int32_t v_layer{ 0 };
 				std::string v_s_id{};
@@ -1413,17 +1423,25 @@ PW_NAMESPACE_SRT
 				float v_density{ 0.0f };
 				std::string v_sound_structure{};
 
+				uint32_t v_is_attached{ 0 };
+				std::wstring v_attachment_id{};
+				float v_offset_x{ 0.0f };
+				float v_offset_y{ 0.0f };
+
+				uint32_t v_is_linear{ 0 };
+
 				p_location = co::File_Finder::Find_File(m_data_location, TO_WSTRING(p_main_scene), L".csv");
 
-				io::CSVReader<30, io::trim_chars<' ', '\t'>, io::no_quote_escape<','>, io::ignore_overflow, io::single_line_comment<'#'>>
+				io::CSVReader<35, io::trim_chars<' ', '\t'>, io::no_quote_escape<','>, io::ignore_overflow, io::single_line_comment<'#'>>
 					v_file_data_reader{ p_location.generic_string().c_str() };
 				v_file_data_reader.read_header(io::ignore_extra_column,
-					"Layer", "S_ID", "Is_Main_ID_Actor", "Is_Text", "Font_Type", "Texture", "Texture_Repeats", "Mesh_Type", "Color_ID",
-					"ColorR", "ColorB", "ColorG", "ColorA",
+					"Layer", "S_ID", "Is_Main_ID_Actor", "Is_Attached", "Attachment_ID", "Offset_X", "Offset_Y", "Is_Text", "Font_Type", "Texture", "Texture_Repeats", "Is_Linear",
+					"Mesh_Type", "Color_ID", "ColorR", "ColorB", "ColorG", "ColorA",
 					"PositionX", "PositionY", "Rotation", "SizeX", "SizeY",
 					"Is_Animated", "Has_Animation_Extention", "Animation_Length", "Animation_Frame_Count", "Animation_Frame_Size_X",
 					"Has_Physics", "Body_Type", "Is_Fixed", "Friction", "Restitution", "Density", "Sound_Structure");
-				while (v_file_data_reader.read_row(v_layer, v_s_id, v_is_main_s_id, v_is_text, v_font_type, v_texture, v_repeats, v_mesh_type, v_color_id, v_color_r, v_color_b, v_color_g, v_color_a,
+				while (v_file_data_reader.read_row(v_layer, v_s_id, v_is_main_s_id, v_is_attached, v_attachment_id, v_offset_x, v_offset_y, v_is_text, v_font_type, v_texture, v_repeats, v_is_linear,
+					v_mesh_type, v_color_id, v_color_r, v_color_b, v_color_g, v_color_a,
 					v_position_x, v_position_y, v_rotation, v_size_x, v_size_y, v_is_animated, v_has_animation_extention,
 					v_animation_length, v_animation_frame_count, v_animation_frame_size_x, v_has_physics, v_body_type, v_is_fixed, v_friction, v_restitution, v_density, v_sound_structure)) {
 
@@ -1494,7 +1512,7 @@ PW_NAMESPACE_SRT
 												else {
 													// It is a gif and needs to be loaded
 													std::wstring v_texture_location{ TO_WSTRING(v_animation_location.c_str()) };
-													std::tuple<st::Texture*, st::Animation*> v_model_animation_structure = co::File_Loader::Load_Animation_File(v_texture_location.c_str(), (bool)v_repeats);
+													std::tuple<st::Texture*, st::Animation*> v_model_animation_structure = co::File_Loader::Load_Animation_File(v_texture_location.c_str(), (bool)v_repeats, (bool)v_is_linear);
 													v_model_texture = v_model_animation_structure._Myfirst._Val;
 													v_model_animation = v_model_animation_structure._Get_rest()._Myfirst._Val;
 													v_model_animation_structure._Get_rest()._Myfirst._Val = nullptr;
@@ -1503,7 +1521,7 @@ PW_NAMESPACE_SRT
 											else {
 												// Is not a gif but a sprite-sheet of some kind
 												std::wstring v_texture_location{ TO_WSTRING(v_animation_location.c_str()) };
-												v_model_texture = co::File_Loader::Load_Texture_File(v_texture_location.c_str(), (bool)v_repeats, false, &m_animation_location);
+												v_model_texture = co::File_Loader::Load_Texture_File(v_texture_location.c_str(), (bool)v_repeats, (bool)v_is_linear, false, &m_animation_location);
 
 												v_model_animation = pw::Engine_Memory::Allocate<st::Animation, bool>(v_animation_length, v_animation_frame_count, v_animation_frame_size_x);
 											}
@@ -1522,7 +1540,7 @@ PW_NAMESPACE_SRT
 								try {
 									// It is a gif and needs to be loaded
 									std::wstring v_texture_location{ TO_WSTRING(v_texture.c_str()) };
-									std::tuple<st::Texture*, st::Animation*> v_model_animation_structure = co::File_Loader::Load_Animation_File(v_texture_location.c_str(), (bool)v_repeats);
+									std::tuple<st::Texture*, st::Animation*> v_model_animation_structure = co::File_Loader::Load_Animation_File(v_texture_location.c_str(), (bool)v_repeats, (bool)v_is_linear);
 									v_model_texture = v_model_animation_structure._Myfirst._Val;
 									v_model_animation = v_model_animation_structure._Get_rest()._Myfirst._Val;
 									v_model_animation_structure._Get_rest()._Myfirst._Val = nullptr;
@@ -1600,6 +1618,9 @@ PW_NAMESPACE_SRT
 
 								p_s_id_holder.push_back(std::make_tuple(vw_s_id, va_model, v_is_main_s_id));
 							}
+							if (v_is_attached == 1) {
+								p_model_attachments.push_back(std::make_tuple(v_attachment_id, va_model, glm::vec2(v_offset_x, v_offset_y)));
+							}
 
 							if (p_has_physics_factory == 1) {
 								if (v_has_physics == 1) {
@@ -1652,6 +1673,10 @@ PW_NAMESPACE_SRT
 									std::wstring vw_s_id{ TO_WSTRING(v_s_id) };
 
 									p_s_id_holder.push_back(std::make_tuple(vw_s_id, va_model, v_is_main_s_id));
+								}
+
+								if (v_is_attached == 1) {
+									p_model_attachments.push_back(std::make_tuple(v_attachment_id, va_model, glm::vec2(v_offset_x, v_offset_y)));
 								}
 
 								if (p_has_physics_factory == 1) {
@@ -1716,6 +1741,10 @@ PW_NAMESPACE_SRT
 									p_s_id_holder.push_back(std::make_tuple(vw_s_id, va_model, v_is_main_s_id));
 								}
 
+								if (v_is_attached == 1) {
+									p_model_attachments.push_back(std::make_tuple(v_attachment_id, va_model, glm::vec2(v_offset_x, v_offset_y)));
+								}
+
 								if (p_has_physics_factory == 1) {
 									if (v_has_physics == 1) {
 										if (v_body_type == "b2_staticBody") {
@@ -1740,7 +1769,7 @@ PW_NAMESPACE_SRT
 							// Does not have animations
 							if (strcmp(v_texture.c_str(), "D16") == 0) {
 								try {
-									v_model_texture = co::File_Loader::Load_Texture_File(L"White.png", (bool)v_repeats, true, nullptr);
+									v_model_texture = co::File_Loader::Load_Texture_File(L"White.png", (bool)v_repeats, (bool)v_is_linear, true, nullptr);
 								}
 								catch (const er::Warning_Error& v_error) {
 									PW_PRINT_ERROR(v_error);
@@ -1753,7 +1782,7 @@ PW_NAMESPACE_SRT
 								if (TRY_LINE strcmp(v_extension.c_str(), ".csv") != 0) {
 									try {
 										std::wstring v_texture_location{ TO_WSTRING(v_texture) };
-										v_model_texture = co::File_Loader::Load_Texture_File(v_texture_location.c_str(), (bool)v_repeats, false, nullptr);
+										v_model_texture = co::File_Loader::Load_Texture_File(v_texture_location.c_str(), (bool)v_repeats, (bool)v_is_linear, false, nullptr);
 									}
 									catch (const er::Warning_Error& v_error) {
 										PW_PRINT_ERROR(v_error);
@@ -1778,7 +1807,7 @@ PW_NAMESPACE_SRT
 
 									while (v_multi_texture_data_reader.read_row(v_texture_id, v_temp_texture_location, v_set_current_texture)) {
 										try {
-											v_textures.push_back(co::File_Loader::Load_Texture_File(TO_WSTRING(v_temp_texture_location).c_str(), (bool)v_repeats));
+											v_textures.push_back(co::File_Loader::Load_Texture_File(TO_WSTRING(v_temp_texture_location).c_str(), (bool)v_repeats, (bool)v_is_linear));
 											v_texture_ids.push_back(TO_WSTRING(v_texture_id));
 											if ((bool)v_set_current_texture == true) {
 												v_model_texture = v_textures.back();
@@ -1796,7 +1825,7 @@ PW_NAMESPACE_SRT
 						}
 						else {
 							try {
-								v_model_texture = co::File_Loader::Load_Texture_File(L"Empty.png", (bool)v_repeats, true, nullptr);
+								v_model_texture = co::File_Loader::Load_Texture_File(L"Empty.png", (bool)v_repeats, (bool)v_is_linear, true, nullptr);
 							}
 							catch (const er::Warning_Error& v_error) {
 								PW_PRINT_ERROR(v_error);
@@ -1848,6 +1877,10 @@ PW_NAMESPACE_SRT
 								p_s_id_holder.push_back(std::make_tuple(vw_s_id, va_model, v_is_main_s_id));
 							}
 
+							if (v_is_attached == 1) {
+								p_model_attachments.push_back(std::make_tuple(v_attachment_id, va_model, glm::vec2(v_offset_x, v_offset_y)));
+							}
+
 							if (p_has_physics_factory == 1) {
 								if (v_has_physics == 1) {
 									if (v_body_type == "b2_staticBody") {
@@ -1894,6 +1927,10 @@ PW_NAMESPACE_SRT
 									std::wstring vw_s_id{ TO_WSTRING(v_s_id) };
 
 									p_s_id_holder.push_back(std::make_tuple(vw_s_id, va_model, v_is_main_s_id));
+								}
+
+								if (v_is_attached == 1) {
+									p_model_attachments.push_back(std::make_tuple(v_attachment_id, va_model, glm::vec2(v_offset_x, v_offset_y)));
 								}
 
 								if (p_has_physics_factory == 1) {
@@ -1952,6 +1989,10 @@ PW_NAMESPACE_SRT
 									p_s_id_holder.push_back(std::make_tuple(vw_s_id, va_model, v_is_main_s_id));
 								}
 
+								if (v_is_attached == 1) {
+									p_model_attachments.push_back(std::make_tuple(v_attachment_id, va_model, glm::vec2(v_offset_x, v_offset_y)));
+								}
+
 								if (p_has_physics_factory == 1) {
 									if (v_has_physics == 1) {
 										if (v_body_type == "b2_staticBody") {
@@ -1987,15 +2028,16 @@ PW_NAMESPACE_SRT
 					// Does not have physics involved
 					// It could but setting all of the things would 
 					// Be tiresome at the moment so for now no
-					// Same loading as the main scene data accept no physics
-					io::CSVReader<24, io::trim_chars<' ', '\t'>, io::no_quote_escape<','>, io::ignore_overflow, io::single_line_comment<'#'>>
+					// Same loading as the main scene data accept no physics 
+					io::CSVReader<29, io::trim_chars<' ', '\t'>, io::no_quote_escape<','>, io::ignore_overflow, io::single_line_comment<'#'>>
 						v_file_sub_data_reader{ p_location.generic_string().c_str() };
 					v_file_sub_data_reader.read_header(io::ignore_extra_column,
-						"Layer", "S_ID", "Is_Main_ID_Actor", "Is_Text", "Font_Type", "Texture", "Texture_Repeats", "Mesh_Type", "Color_ID",
-						"ColorR", "ColorB", "ColorG", "ColorA",
+						"Layer", "S_ID", "Is_Main_ID_Actor", "Is_Attached", "Attachment_ID", "Offset_X", "Offset_Y", "Is_Text", "Font_Type", "Texture", "Texture_Repeats", "Is_Linear",
+						"Mesh_Type", "Color_ID", "ColorR", "ColorB", "ColorG", "ColorA",
 						"PositionX", "PositionY", "Rotation", "SizeX", "SizeY",
 						"Is_Animated", "Has_Animation_Extention", "Animation_Length", "Animation_Frame_Count", "Animation_Frame_Size_X", "Sound_Structure");
-					while (v_file_sub_data_reader.read_row(v_layer, v_s_id, v_is_main_s_id, v_is_text, v_font_type, v_texture, v_repeats, v_mesh_type, v_color_id, v_color_r, v_color_b, v_color_g, v_color_a,
+					while (v_file_sub_data_reader.read_row(v_layer, v_s_id, v_is_main_s_id, v_is_attached, v_attachment_id, v_offset_x, v_offset_y, v_is_text, v_font_type, v_texture, v_repeats, v_is_linear,
+						v_mesh_type, v_color_id, v_color_r, v_color_b, v_color_g, v_color_a,
 						v_position_x, v_position_y, v_rotation, v_size_x, v_size_y, v_is_animated, v_has_animation_extention,
 						v_animation_length, v_animation_frame_count, v_animation_frame_size_x, v_sound_structure)) {
 
@@ -2067,7 +2109,7 @@ PW_NAMESPACE_SRT
 													else {
 														// It is a gif and needs to be loaded
 														std::wstring v_texture_location{ TO_WSTRING(v_animation_location.c_str()) };
-														std::tuple<st::Texture*, st::Animation*> v_model_animation_structure = co::File_Loader::Load_Animation_File(v_texture_location.c_str(), (bool)v_repeats);
+														std::tuple<st::Texture*, st::Animation*> v_model_animation_structure = co::File_Loader::Load_Animation_File(v_texture_location.c_str(), (bool)v_repeats, (bool)v_is_linear);
 														v_model_texture = v_model_animation_structure._Myfirst._Val;
 														v_model_animation = v_model_animation_structure._Get_rest()._Myfirst._Val;
 														v_model_animation_structure._Get_rest()._Myfirst._Val = nullptr;
@@ -2095,7 +2137,7 @@ PW_NAMESPACE_SRT
 									try {
 										// It is a gif and needs to be loaded
 										std::wstring v_texture_location{ TO_WSTRING(v_texture.c_str()) };
-										std::tuple<st::Texture*, st::Animation*> v_model_animation_structure = co::File_Loader::Load_Animation_File(v_texture_location.c_str(), (bool)v_repeats);
+										std::tuple<st::Texture*, st::Animation*> v_model_animation_structure = co::File_Loader::Load_Animation_File(v_texture_location.c_str(), (bool)v_repeats, (bool)v_is_linear);
 										v_model_texture = v_model_animation_structure._Myfirst._Val;
 										v_model_animation = v_model_animation_structure._Get_rest()._Myfirst._Val;
 										v_model_animation_structure._Get_rest()._Myfirst._Val = nullptr;
@@ -2174,6 +2216,10 @@ PW_NAMESPACE_SRT
 									p_s_id_holder.push_back(std::make_tuple(vw_s_id, va_model, v_is_main_s_id));
 								}
 
+								if (v_is_attached == 1) {
+									p_model_attachments.push_back(std::make_tuple(v_attachment_id, va_model, glm::vec2(v_offset_x, v_offset_y)));
+								}
+
 								v_sub_scene_models.push_back(va_model);
 							}
 							else {
@@ -2210,6 +2256,10 @@ PW_NAMESPACE_SRT
 										std::wstring vw_s_id{ TO_WSTRING(v_s_id) };
 
 										p_s_id_holder.push_back(std::make_tuple(vw_s_id, va_model, v_is_main_s_id));
+									}
+
+									if (v_is_attached == 1) {
+										p_model_attachments.push_back(std::make_tuple(v_attachment_id, va_model, glm::vec2(v_offset_x, v_offset_y)));
 									}
 
 									v_sub_scene_models.push_back(va_model);
@@ -2259,6 +2309,10 @@ PW_NAMESPACE_SRT
 										p_s_id_holder.push_back(std::make_tuple(vw_s_id, va_model, v_is_main_s_id));
 									}
 
+									if (v_is_attached == 1) {
+										p_model_attachments.push_back(std::make_tuple(v_attachment_id, va_model, glm::vec2(v_offset_x, v_offset_y)));
+									}
+
 									v_sub_scene_models.push_back(va_model);
 								}
 							}
@@ -2268,7 +2322,7 @@ PW_NAMESPACE_SRT
 								// Does not have animations
 								if (strcmp(v_texture.c_str(), "D16") == 0) {
 									try {
-										v_model_texture = co::File_Loader::Load_Texture_File(L"White.png", (bool)v_repeats, true, nullptr);
+										v_model_texture = co::File_Loader::Load_Texture_File(L"White.png", (bool)v_repeats, (bool)v_is_linear, true, nullptr);
 									}
 									catch (const er::Warning_Error& v_error) {
 										PW_PRINT_ERROR(v_error);
@@ -2281,7 +2335,7 @@ PW_NAMESPACE_SRT
 									if (TRY_LINE strcmp(v_extension.c_str(), ".csv") != 0) {
 										try {
 											std::wstring v_texture_location{ TO_WSTRING(v_texture.c_str()) };
-											v_model_texture = co::File_Loader::Load_Texture_File(v_texture_location.c_str(), (bool)v_repeats, false, nullptr);
+											v_model_texture = co::File_Loader::Load_Texture_File(v_texture_location.c_str(), (bool)v_repeats, (bool)v_is_linear, false, nullptr);
 										}
 										catch (const er::Warning_Error& v_error) {
 											PW_PRINT_ERROR(v_error);
@@ -2307,7 +2361,7 @@ PW_NAMESPACE_SRT
 
 										while (v_multi_texture_data_reader.read_row(v_texture_id, v_temp_texture_location, v_set_current_texture)) {
 											try {
-												v_textures.push_back(co::File_Loader::Load_Texture_File(TO_WSTRING(v_temp_texture_location).c_str(), (bool)v_repeats));
+												v_textures.push_back(co::File_Loader::Load_Texture_File(TO_WSTRING(v_temp_texture_location).c_str(), (bool)v_repeats, (bool)v_is_linear));
 												v_texture_ids.push_back(TO_WSTRING(v_texture_id));
 												if ((bool)v_set_current_texture == true) {
 													v_model_texture = v_textures.back();
@@ -2325,7 +2379,7 @@ PW_NAMESPACE_SRT
 							}
 							else {
 								try {
-									v_model_texture = co::File_Loader::Load_Texture_File(L"Empty.png", (bool)v_repeats, true, nullptr);
+									v_model_texture = co::File_Loader::Load_Texture_File(L"Empty.png", (bool)v_repeats, (bool)v_is_linear, true, nullptr);
 								}
 								catch (const er::Warning_Error& v_error) {
 									PW_PRINT_ERROR(v_error);
@@ -2377,6 +2431,10 @@ PW_NAMESPACE_SRT
 									p_s_id_holder.push_back(std::make_tuple(vw_s_id, va_model, v_is_main_s_id));
 								}
 
+								if (v_is_attached == 1) {
+									p_model_attachments.push_back(std::make_tuple(v_attachment_id, va_model, glm::vec2(v_offset_x, v_offset_y)));
+								}
+
 								v_sub_scene_models.push_back(va_model);
 							}
 							else {
@@ -2407,6 +2465,10 @@ PW_NAMESPACE_SRT
 										std::wstring vw_s_id{ TO_WSTRING(v_s_id) };
 
 										p_s_id_holder.push_back(std::make_tuple(vw_s_id, va_model, v_is_main_s_id));
+									}
+
+									if (v_is_attached == 1) {
+										p_model_attachments.push_back(std::make_tuple(v_attachment_id, va_model, glm::vec2(v_offset_x, v_offset_y)));
 									}
 
 									v_sub_scene_models.push_back(va_model);
@@ -2448,6 +2510,10 @@ PW_NAMESPACE_SRT
 										std::wstring vw_s_id{ TO_WSTRING(v_s_id) };
 
 										p_s_id_holder.push_back(std::make_tuple(vw_s_id, va_model, v_is_main_s_id));
+									}
+
+									if (v_is_attached == 1) {
+										p_model_attachments.push_back(std::make_tuple(v_attachment_id, va_model, glm::vec2(v_offset_x, v_offset_y)));
 									}
 
 									v_sub_scene_models.push_back(va_model);

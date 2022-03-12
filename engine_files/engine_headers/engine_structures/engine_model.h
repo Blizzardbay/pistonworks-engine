@@ -245,7 +245,7 @@ PW_NAMESPACE_SRT
 			void Update_Position(const float& x_pos, const float& y_pos);
 
 			void Set_Position(glm::vec2 p_new_position, bool p_attached = false);
-			void Attach_To(glm::vec2& p_position);
+			void Attach_To(glm::vec2* p_position);
 
 			void Set_Size_X(const float& p_size_x);
 			void Set_Size_Y(const float& p_size_y);
@@ -263,6 +263,7 @@ PW_NAMESPACE_SRT
 			const int32_t& Is_Colored() const;
 
 			glm::vec2 Position();
+			glm::vec2* Position_Reference();
 			const glm::vec2& Last_Postition() const;
 			const glm::vec2& Size() const;
 			const glm::vec2& Offset() const;

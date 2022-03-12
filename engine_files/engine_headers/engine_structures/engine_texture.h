@@ -74,8 +74,8 @@ PW_NAMESPACE_SRT
 		public:			
 			Texture();
 
-			Texture(BYTE* p_tex_data, const uint32_t& p_texture_width, const uint32_t& p_texture_height, const int32_t& p_internal_format, const int32_t& p_format, const bool& p_repeat = false);
-			Texture(BYTE* p_tex_data, const uint32_t& p_target, const uint32_t& p_texture_width, const uint32_t& p_texture_height, const int32_t& p_internal_format, const int32_t& p_format, const bool& p_repeat = false);
+			Texture(BYTE* p_tex_data, const uint32_t& p_texture_width, const uint32_t& p_texture_height, const int32_t& p_internal_format, const int32_t& p_format, const bool& p_repeat = false, const bool& p_linear = true);
+			Texture(BYTE* p_tex_data, const uint32_t& p_target, const uint32_t& p_texture_width, const uint32_t& p_texture_height, const int32_t& p_internal_format, const int32_t& p_format, const bool& p_repeat = false, const bool& p_linear = true);
 
 			Texture(const Texture& p_other);
 			~Texture();
