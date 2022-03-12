@@ -85,9 +85,9 @@ PW_NAMESPACE_SRT
 			
 			static const uint16_t& Indices_Size();
 			
-			static void Handle_Model_Data_NOC(st::Mesh*& p_model_mesh, const glm::vec2& p_size);
+			static void Handle_Model_Data_NOC(st::Mesh*& p_model_mesh, const glm::vec2& p_size, const glm::vec2& p_texture_size);
 			
-			static void Handle_Model_Data_C(st::Mesh*& p_model_mesh, const glm::vec4& p_model_color, const glm::vec2& p_size);
+			static void Handle_Model_Data_C(st::Mesh*& p_model_mesh, const glm::vec4& p_model_color, const glm::vec2& p_size, const glm::vec2& p_texture_size);
 		// Public Variables        
 		public:
 		// Private Functions/Macros 
@@ -113,9 +113,9 @@ PW_NAMESPACE_SRT
 
 			static const uint16_t& Indices_Size();
 
-			static void Handle_Model_Data_NOC(st::Mesh*& p_model_mesh, const glm::vec2& p_size);
+			static void Handle_Model_Data_NOC(st::Mesh*& p_model_mesh, const glm::vec2& p_size, const glm::vec2& p_texture_size);
 
-			static void Handle_Model_Data_C(st::Mesh*& p_model_mesh, const glm::vec4& p_model_color, const glm::vec2& p_size);
+			static void Handle_Model_Data_C(st::Mesh*& p_model_mesh, const glm::vec4& p_model_color, const glm::vec2& p_size, const glm::vec2& p_texture_size);
 		// Public Variables 
 		public:
 		// Private Functions/Macros 
@@ -141,9 +141,9 @@ PW_NAMESPACE_SRT
 
 			static const uint16_t& Indices_Size();
 
-			static void Handle_Model_Data_NOC(st::Mesh*& p_model_mesh, const glm::vec2& p_size);
+			static void Handle_Model_Data_NOC(st::Mesh*& p_model_mesh, const glm::vec2& p_size, const glm::vec2& p_texture_size);
 
-			static void Handle_Model_Data_C(st::Mesh*& p_model_mesh, const glm::vec4& p_model_color, const glm::vec2& p_size);
+			static void Handle_Model_Data_C(st::Mesh*& p_model_mesh, const glm::vec4& p_model_color, const glm::vec2& p_size, const glm::vec2& p_texture_size);
 		// Public Variables         
 		public:
 		// Private Functions/Macros 
@@ -169,9 +169,9 @@ PW_NAMESPACE_SRT
 
 			static const uint16_t& Indices_Size();
 
-			static void Handle_Model_Data_NOC(st::Mesh*& p_model_mesh, const glm::vec2& p_size);
+			static void Handle_Model_Data_NOC(st::Mesh*& p_model_mesh, const glm::vec2& p_size, const glm::vec2& p_texture_size);
 
-			static void Handle_Model_Data_C(st::Mesh*& p_model_mesh, const glm::vec4& p_model_color, const glm::vec2& p_size);
+			static void Handle_Model_Data_C(st::Mesh*& p_model_mesh, const glm::vec4& p_model_color, const glm::vec2& p_size, const glm::vec2& p_texture_size);
 			// Public Variables       
 		public:
 			// Private Functions/Macros 
@@ -197,9 +197,9 @@ PW_NAMESPACE_SRT
 
 			static const uint16_t& Indices_Size();
 
-			static void Handle_Model_Data_NOC(st::Mesh*& p_model_mesh, const glm::vec2& p_size);
+			static void Handle_Model_Data_NOC(st::Mesh*& p_model_mesh, const glm::vec2& p_size, const glm::vec2& p_texture_size);
 
-			static void Handle_Model_Data_C(st::Mesh*& p_model_mesh, const glm::vec4& p_model_color, const glm::vec2& p_size);
+			static void Handle_Model_Data_C(st::Mesh*& p_model_mesh, const glm::vec4& p_model_color, const glm::vec2& p_size, const glm::vec2& p_texture_size);
 		// Public Variables  
 		public:
 		// Private Functions/Macros 
@@ -303,8 +303,8 @@ PW_NAMESPACE_SRT
 
 			uint64_t m_id;
 
-			static void(*model_functions_noc[(int32_t)Geometry_Types::TYPE_COUNT - 1])(st::Mesh*& p_model_mesh, const glm::vec2& p_size);
-			static void(*model_functions_c[(int32_t)Geometry_Types::TYPE_COUNT - 1])(st::Mesh*& p_model_mesh, const glm::vec4& p_model_color, const glm::vec2& p_size);
+			static void(*model_functions_noc[(int32_t)Geometry_Types::TYPE_COUNT - 1])(st::Mesh*& p_model_mesh, const glm::vec2& p_size, const glm::vec2& p_texture_size);
+			static void(*model_functions_c[(int32_t)Geometry_Types::TYPE_COUNT - 1])(st::Mesh*& p_model_mesh, const glm::vec4& p_model_color, const glm::vec2& p_size, const glm::vec2& p_texture_size);
 
 			static const Vertex_Data* model_vertices[(int32_t)Geometry_Types::TYPE_COUNT - 1];
 			static const uint16_t model_vertices_count[(int32_t)Geometry_Types::TYPE_COUNT - 1];

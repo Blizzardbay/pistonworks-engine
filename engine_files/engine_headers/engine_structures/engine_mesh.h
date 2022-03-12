@@ -102,7 +102,7 @@ PW_NAMESPACE_SRT
 		// Default Class Structures 
 		public:
 			Mesh();
-			Mesh(Vertex_Data* p_vertices, const uint16_t& p_vertex_count, const uint32_t* p_indices, const uint16_t& p_indice_count, const glm::vec2& p_size);
+			Mesh(Vertex_Data* p_vertices, const uint16_t& p_vertex_count, const uint32_t* p_indices, const uint16_t& p_indice_count, const glm::vec2& p_size, const glm::vec2& p_texture_size);
 
 			~Mesh();
 		private:

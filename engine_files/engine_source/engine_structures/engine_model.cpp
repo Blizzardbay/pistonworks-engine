@@ -29,28 +29,28 @@ PW_NAMESPACE_SRT
 			const uint16_t& ID_Down_RS_Triangle::Indices_Size() {
 				return m_indices_size;
 			}
-			void ID_Down_RS_Triangle::Handle_Model_Data_NOC(st::Mesh*& p_model_mesh, const glm::vec2& p_size) {
+			void ID_Down_RS_Triangle::Handle_Model_Data_NOC(st::Mesh*& p_model_mesh, const glm::vec2& p_size, const glm::vec2& p_texture_size) {
 				try {
 					if (p_model_mesh == nullptr) {
 						p_model_mesh = pw::Engine_Memory::Allocate<Mesh, bool>(
 							ID_Down_RS_Triangle::Vertices(),
 							ID_Down_RS_Triangle::Vertices_Size(),
 							ID_Down_RS_Triangle::Indices(),
-							ID_Down_RS_Triangle::Indices_Size(), p_size);
+							ID_Down_RS_Triangle::Indices_Size(), p_size, p_texture_size);
 					}
 				}
 				catch (const pw::er::Severe_Error& v_error) {
 					throw v_error;
 				}
 			}
-			void ID_Down_RS_Triangle::Handle_Model_Data_C(st::Mesh*& p_model_mesh, const glm::vec4& p_model_color, const glm::vec2& p_size) {
+			void ID_Down_RS_Triangle::Handle_Model_Data_C(st::Mesh*& p_model_mesh, const glm::vec4& p_model_color, const glm::vec2& p_size, const glm::vec2& p_texture_size) {
 				try {
 					if (p_model_mesh == nullptr) {
 						p_model_mesh = pw::Engine_Memory::Allocate<Mesh, bool>(
 							ID_Down_RS_Triangle::Vertices(),
 							ID_Down_RS_Triangle::Vertices_Size(),
 							ID_Down_RS_Triangle::Indices(),
-							ID_Down_RS_Triangle::Indices_Size(), p_size);
+							ID_Down_RS_Triangle::Indices_Size(), p_size, p_texture_size);
 					}
 					p_model_mesh->Change_Color_Data(p_model_color);
 				}
@@ -82,28 +82,28 @@ PW_NAMESPACE_SRT
 			const uint16_t& ID_Down_LS_Triangle::Indices_Size() {
 				return m_indices_size;
 			}
-			void ID_Down_LS_Triangle::Handle_Model_Data_NOC(st::Mesh*& p_model_mesh, const glm::vec2& p_size) {
+			void ID_Down_LS_Triangle::Handle_Model_Data_NOC(st::Mesh*& p_model_mesh, const glm::vec2& p_size, const glm::vec2& p_texture_size) {
 				try {
 					if (p_model_mesh == nullptr) {
 						p_model_mesh = pw::Engine_Memory::Allocate<Mesh, bool>(
 							ID_Down_LS_Triangle::Vertices(),
 							ID_Down_LS_Triangle::Vertices_Size(),
 							ID_Down_LS_Triangle::Indices(),
-							ID_Down_LS_Triangle::Indices_Size(), p_size);
+							ID_Down_LS_Triangle::Indices_Size(), p_size, p_texture_size);
 					}
 				}
 				catch (const pw::er::Severe_Error& v_error) {
 					throw v_error;
 				}
 			}
-			void ID_Down_LS_Triangle::Handle_Model_Data_C(st::Mesh*& p_model_mesh, const glm::vec4& p_model_color, const glm::vec2& p_size) {
+			void ID_Down_LS_Triangle::Handle_Model_Data_C(st::Mesh*& p_model_mesh, const glm::vec4& p_model_color, const glm::vec2& p_size, const glm::vec2& p_texture_size) {
 				try {
 					if (p_model_mesh == nullptr) {
 						p_model_mesh = pw::Engine_Memory::Allocate<Mesh, bool>(
 							ID_Down_LS_Triangle::Vertices(),
 							ID_Down_LS_Triangle::Vertices_Size(),
 							ID_Down_LS_Triangle::Indices(),
-							ID_Down_LS_Triangle::Indices_Size(), p_size);
+							ID_Down_LS_Triangle::Indices_Size(), p_size, p_texture_size);
 					}
 					p_model_mesh->Change_Color_Data(p_model_color);
 				}
@@ -135,28 +135,28 @@ PW_NAMESPACE_SRT
 			const uint16_t& ID_Up_RS_Triangle::Indices_Size() {
 				return m_indices_size;
 			}
-			void ID_Up_RS_Triangle::Handle_Model_Data_NOC(st::Mesh*& p_model_mesh, const glm::vec2& p_size) {
+			void ID_Up_RS_Triangle::Handle_Model_Data_NOC(st::Mesh*& p_model_mesh, const glm::vec2& p_size, const glm::vec2& p_texture_size) {
 				try {
 					if (p_model_mesh == nullptr) {
 						p_model_mesh = pw::Engine_Memory::Allocate<Mesh, bool>(
 							ID_Up_RS_Triangle::Vertices(),
 							ID_Up_RS_Triangle::Vertices_Size(),
 							ID_Up_RS_Triangle::Indices(),
-							ID_Up_RS_Triangle::Indices_Size(), p_size);
+							ID_Up_RS_Triangle::Indices_Size(), p_size, p_texture_size);
 					}
 				}
 				catch (const pw::er::Severe_Error& v_error) {
 					throw v_error;
 				}
 			}
-			void ID_Up_RS_Triangle::Handle_Model_Data_C(st::Mesh*& p_model_mesh, const glm::vec4& p_model_color, const glm::vec2& p_size) {
+			void ID_Up_RS_Triangle::Handle_Model_Data_C(st::Mesh*& p_model_mesh, const glm::vec4& p_model_color, const glm::vec2& p_size, const glm::vec2& p_texture_size) {
 				try {
 					if (p_model_mesh == nullptr) {
 						p_model_mesh = pw::Engine_Memory::Allocate<Mesh, bool>(
 							ID_Up_RS_Triangle::Vertices(),
 							ID_Up_RS_Triangle::Vertices_Size(),
 							ID_Up_RS_Triangle::Indices(),
-							ID_Up_RS_Triangle::Indices_Size(), p_size);
+							ID_Up_RS_Triangle::Indices_Size(), p_size, p_texture_size);
 					}
 					p_model_mesh->Change_Color_Data(p_model_color);
 				}
@@ -188,28 +188,28 @@ PW_NAMESPACE_SRT
 			const uint16_t& ID_Up_LS_Triangle::Indices_Size() {
 				return m_indices_size;
 			}
-			void ID_Up_LS_Triangle::Handle_Model_Data_NOC(st::Mesh*& p_model_mesh, const glm::vec2& p_size) {
+			void ID_Up_LS_Triangle::Handle_Model_Data_NOC(st::Mesh*& p_model_mesh, const glm::vec2& p_size, const glm::vec2& p_texture_size) {
 				try {
 					if (p_model_mesh == nullptr) {
 						p_model_mesh = pw::Engine_Memory::Allocate<Mesh, bool>(
 							ID_Up_LS_Triangle::Vertices(),
 							ID_Up_LS_Triangle::Vertices_Size(),
 							ID_Up_LS_Triangle::Indices(),
-							ID_Up_LS_Triangle::Indices_Size(), p_size);
+							ID_Up_LS_Triangle::Indices_Size(), p_size, p_texture_size);
 					}
 				}
 				catch (const pw::er::Severe_Error& v_error) {
 					throw v_error;
 				}
 			}
-			void ID_Up_LS_Triangle::Handle_Model_Data_C(st::Mesh*& p_model_mesh, const glm::vec4& p_model_color, const glm::vec2& p_size) {
+			void ID_Up_LS_Triangle::Handle_Model_Data_C(st::Mesh*& p_model_mesh, const glm::vec4& p_model_color, const glm::vec2& p_size, const glm::vec2& p_texture_size) {
 				try {
 					if (p_model_mesh == nullptr) {
 						p_model_mesh = pw::Engine_Memory::Allocate<Mesh, bool>(
 							ID_Up_LS_Triangle::Vertices(),
 							ID_Up_LS_Triangle::Vertices_Size(),
 							ID_Up_LS_Triangle::Indices(),
-							ID_Up_LS_Triangle::Indices_Size(), p_size);
+							ID_Up_LS_Triangle::Indices_Size(), p_size, p_texture_size);
 					}
 					p_model_mesh->Change_Color_Data(p_model_color);
 				}
@@ -243,28 +243,28 @@ PW_NAMESPACE_SRT
 			const uint16_t& ID_Square::Indices_Size() {
 				return m_indices_size;
 			}
-			void ID_Square::Handle_Model_Data_NOC(st::Mesh*& p_model_mesh, const glm::vec2& p_size) {
+			void ID_Square::Handle_Model_Data_NOC(st::Mesh*& p_model_mesh, const glm::vec2& p_size, const glm::vec2& p_texture_size) {
 				try {
 					if (p_model_mesh == nullptr) {
 						p_model_mesh = pw::Engine_Memory::Allocate<Mesh, bool>(
 							ID_Square::Vertices(),
 							ID_Square::Vertices_Size(),
 							ID_Square::Indices(),
-							ID_Square::Indices_Size(), p_size);
+							ID_Square::Indices_Size(), p_size, p_texture_size);
 					}
 				}
 				catch (const pw::er::Severe_Error& v_error) {
 					throw v_error;
 				}
 			}
-			void ID_Square::Handle_Model_Data_C(st::Mesh*& p_model_mesh, const glm::vec4& p_model_color, const glm::vec2& p_size) {
+			void ID_Square::Handle_Model_Data_C(st::Mesh*& p_model_mesh, const glm::vec4& p_model_color, const glm::vec2& p_size, const glm::vec2& p_texture_size) {
 				try {
 					if (p_model_mesh == nullptr) {
 						p_model_mesh = pw::Engine_Memory::Allocate<Mesh, bool>(
 							ID_Square::Vertices(),
 							ID_Square::Vertices_Size(),
 							ID_Square::Indices(),
-							ID_Square::Indices_Size(), p_size);
+							ID_Square::Indices_Size(), p_size, p_texture_size);
 					}
 					p_model_mesh->Change_Color_Data(p_model_color);
 				}
@@ -278,14 +278,14 @@ PW_NAMESPACE_SRT
 			uint64_t st::Model::m_model_counter{ 0 };
 			uint64_t st::Model::m_model_id_assigner{ 0 };
 
-			void(*st::Model::model_functions_noc[(int32_t)Geometry_Types::TYPE_COUNT - 1])(st::Mesh*& p_model_mesh, const glm::vec2& p_size) {
+			void(*st::Model::model_functions_noc[(int32_t)Geometry_Types::TYPE_COUNT - 1])(st::Mesh*& p_model_mesh, const glm::vec2& p_size, const glm::vec2& p_texture_size) {
 				ID_Down_RS_Triangle::Handle_Model_Data_NOC,
 					ID_Down_LS_Triangle::Handle_Model_Data_NOC,
 					ID_Up_RS_Triangle::Handle_Model_Data_NOC,
 					ID_Up_LS_Triangle::Handle_Model_Data_NOC,
 					ID_Square::Handle_Model_Data_NOC
 			};
-			void(*st::Model::model_functions_c[(int32_t)Geometry_Types::TYPE_COUNT - 1])(st::Mesh*& p_model_mesh, const glm::vec4& p_model_color, const glm::vec2& p_size) {
+			void(*st::Model::model_functions_c[(int32_t)Geometry_Types::TYPE_COUNT - 1])(st::Mesh*& p_model_mesh, const glm::vec4& p_model_color, const glm::vec2& p_size, const glm::vec2& p_texture_size) {
 				ID_Down_RS_Triangle::Handle_Model_Data_C,
 					ID_Down_LS_Triangle::Handle_Model_Data_C,
 					ID_Up_RS_Triangle::Handle_Model_Data_C,
@@ -320,10 +320,10 @@ PW_NAMESPACE_SRT
 					m_offset{ NULL }, m_last_rotation{ 0.0f },
 					m_attached(false) {
 				if (p_repeats == true) {
-					model_functions_noc[(int)m_type - 1](m_mesh, m_size);
+					model_functions_noc[(int)m_type - 1](m_mesh, m_size, m_texture->Size());
 				}
 				else {
-					model_functions_noc[(int)m_type - 1](m_mesh, glm::vec2(32.0f, 32.0f));
+					model_functions_noc[(int)m_type - 1](m_mesh, glm::vec2(32.0f, 32.0f), glm::vec2(32.0f, 32.0f));
 				}
 				
 				Model::m_model_counter = Model::m_model_counter + 1;
@@ -334,10 +334,10 @@ PW_NAMESPACE_SRT
 					m_color{ p_color }, m_matrix{ 0.0f }, m_id{ ++Model::m_model_id_assigner }, m_offset{ NULL }, m_last_rotation{ 0.0f },
 					m_attached{ false } {
 				if (p_repeats == true) {
-					model_functions_c[(int)m_type - 1](m_mesh, m_color, m_size);
+					model_functions_c[(int)m_type - 1](m_mesh, m_color, m_size, m_texture->Size());
 				}
 				else {
-					model_functions_c[(int)m_type - 1](m_mesh, m_color, glm::vec2(32.0f, 32.0f));
+					model_functions_c[(int)m_type - 1](m_mesh, m_color, glm::vec2(32.0f, 32.0f), glm::vec2(32.0f, 32.0f));
 				}
 				
 				Model::m_model_counter = Model::m_model_counter + 1;
@@ -417,7 +417,7 @@ PW_NAMESPACE_SRT
 			}
 			void Model::Set_Model_Color(const glm::vec4& p_new_color) {
 				m_color = p_new_color;
-				model_functions_c[(int)m_type - 1](m_mesh, m_color, m_size);
+				model_functions_c[(int)m_type - 1](m_mesh, m_color, m_size, m_texture->Size());
 			}
 			void Model::Update_Position(const glm::vec2& p_position) {
 				m_position->x = p_position.x;

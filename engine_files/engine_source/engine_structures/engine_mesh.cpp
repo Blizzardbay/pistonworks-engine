@@ -45,7 +45,7 @@ PW_NAMESPACE_SRT
 					m_vertices{ nullptr }, m_indice_count{ 0 }, m_vertex_count{ 0 }, m_vertex_array_object{ 0 },
 					m_vertex_buffer_object{ 0 }, m_vertex_texture_object{ 0 }, m_vertex_color_object{ 0 }, m_vertex_element_object{ 0 } {
 			}
-			Mesh::Mesh(Vertex_Data* p_vertices, const uint16_t& p_vertex_count, const uint32_t* p_indices, const uint16_t& p_indice_count, const glm::vec2& p_size) :
+			Mesh::Mesh(Vertex_Data* p_vertices, const uint16_t& p_vertex_count, const uint32_t* p_indices, const uint16_t& p_indice_count, const glm::vec2& p_size, const glm::vec2& p_texture_size) :
 					m_vertices{ nullptr }, m_indice_count{ p_indice_count }, m_vertex_count{ p_vertex_count }, m_vertex_array_object{ 0 },
 					m_vertex_buffer_object{ 0 }, m_vertex_texture_object{ 0 }, m_vertex_color_object{ 0 }, m_vertex_element_object{ 0 } {
 				try {
@@ -68,8 +68,8 @@ PW_NAMESPACE_SRT
 							m_vertices[i].Vertex_Position().y + 0.5f,
 							m_vertices[i].Vertex_Position().z);
 						v_texture_data_arr[i] = glm::vec2(
-							m_vertices[i].Texture_Coord().x * (p_size.x / (float)pw::cm::Engine_Constant::PW_SCALE_FACTOR),
-							m_vertices[i].Texture_Coord().y * (p_size.y / (float)pw::cm::Engine_Constant::PW_SCALE_FACTOR)
+							m_vertices[i].Texture_Coord().x * (p_size.x / p_texture_size.x),
+							m_vertices[i].Texture_Coord().y * (p_size.y / p_texture_size.y)
 						);
 						v_color_data[i] = m_vertices[i].Color_Data();
 					}

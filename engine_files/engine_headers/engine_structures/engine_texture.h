@@ -83,6 +83,7 @@ PW_NAMESPACE_SRT
 		// Public Functions/Macros  
 		public:
 			void Bind(const uint32_t& p_unit);
+			glm::vec2 Size();
 		// Public Variables         
 		public:
 		// Private Functions/Macros 

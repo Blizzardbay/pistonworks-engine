@@ -64,6 +64,9 @@ PW_NAMESPACE_SRT
 				PW_GL_VOID_CALL(glActiveTexture(GL_TEXTURE0 + p_unit), false);
 				PW_GL_VOID_CALL(glBindTexture(GL_TEXTURE_2D, m_texture_id), false);
 			}
+			glm::vec2 Texture::Size() {
+				return glm::vec2(m_texture_width, m_texture_height);
+			}
 		// End of Class Members
 		// Texture_Structure
 		// Static Declarations
