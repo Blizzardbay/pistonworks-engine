@@ -117,10 +117,11 @@ PW_NAMESPACE_SRT
 			uint32_t m_vertex_count;
 			// Fixture holds physics data such as
 			// Friction    (0.0f -> 1.0f)
-			// Restitution (0.0f - > 1.0f)
+			// Restitution (0.0f -> 1.0f)
 			// Density     (dynamic (any) static (inf))
 			// Shape       (&b2PolygonShape)
 			b2Vec2 m_model_size;
+			Object_Type m_body_type;
 
 			float m_friction;
 			float m_restitution;

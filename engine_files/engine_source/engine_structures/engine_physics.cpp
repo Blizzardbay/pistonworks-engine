@@ -14,7 +14,7 @@ PW_NAMESPACE_SRT
 					m_shape_vertices{ pw::Engine_Memory::Allocate<b2Vec2>(b2Vec2(), p_model->Mesh()->Vertex_Count()) },
 					m_model_size{}, m_current_fixture{ nullptr },
 					m_friction{ p_friction }, m_restitution{ p_restitution }, m_density{ p_density },
-					m_vertex_count{ p_model->Mesh()->Vertex_Count() } {
+					m_vertex_count{ p_model->Mesh()->Vertex_Count() }, m_body_type{ p_polygon } {
 				b2BodyDef v_body_def{};
 				// Create m_body def
 				v_body_def.fixedRotation = p_is_fixed;
@@ -73,7 +73,7 @@ PW_NAMESPACE_SRT
 					case Object_Type::CIRCLE: {
 						b2CircleShape v_shape{};
 
-						v_shape.m_radius = ((m_model_size.x + m_model_size.y) / 2) / 32.0f;
+						v_shape.m_radius = ((m_model_size.x + m_model_size.y) / 4) / 32.0f;
 
 						b2FixtureDef v_fixture{};
 						// Check for static type
@@ -124,29 +124,54 @@ PW_NAMESPACE_SRT
 			void Physics_Object::Set_Size_Px(const b2Vec2& p_size_px) {
 				m_model_size = p_size_px;
 
-				b2PolygonShape v_shape{};
+				switch (m_body_type) {
+					case Object_Type::POLYGON: {
+						b2PolygonShape v_shape{};
 
-				// Fill in the shape's vertices
-				for (size_t i = 0; i < m_vertex_count; i++) {
-					m_shape_vertices[i].Set((m_shape_vertices[i].x - 0.5f) * m_model_size.x / 32.0f,
-						(m_shape_vertices[i].y + 0.5f) * m_model_size.y / 32.0f);
+						// Fill in the shape's vertices
+						for (size_t i = 0; i < m_vertex_count; i++) {
+							m_shape_vertices[i].Set((m_shape_vertices[i].x - 0.5f) * m_model_size.x / 32.0f,
+								(m_shape_vertices[i].y + 0.5f) * m_model_size.y / 32.0f);
+						}
+						// Create shape
+						v_shape.Set(m_shape_vertices, m_vertex_count);
+
+						if (TRY_LINE !v_shape.Validate()) {
+							throw pw::er::Warning_Error(L"Physics_Object", L"shape is not valid", EXCEPTION_LINE, __FILEW__, L"Physics_Object");
+						}
+						b2FixtureDef v_fixture{};
+
+						v_fixture.friction = m_current_fixture->GetFriction();
+						v_fixture.restitution = m_current_fixture->GetRestitution();
+						v_fixture.density = m_current_fixture->GetDensity();
+						v_fixture.shape = &v_shape;
+
+						m_body->DestroyFixture(m_current_fixture);
+
+						m_current_fixture = m_body->CreateFixture(&v_fixture);
+						break;
+					}
+					case Object_Type::CIRCLE: {
+						b2CircleShape v_shape{};
+
+						v_shape.m_radius = ((m_model_size.x + m_model_size.y) / 4) / 32.0f;
+						
+						b2FixtureDef v_fixture{};
+
+						v_fixture.friction = m_current_fixture->GetFriction();
+						v_fixture.restitution = m_current_fixture->GetRestitution();
+						v_fixture.density = m_current_fixture->GetDensity();
+						v_fixture.shape = &v_shape;
+
+						m_body->DestroyFixture(m_current_fixture);
+
+						m_current_fixture = m_body->CreateFixture(&v_fixture);
+						break;
+					}
+					default: {
+						break;
+					}
 				}
-				// Create shape
-				v_shape.Set(m_shape_vertices, m_vertex_count);
-
-				if (TRY_LINE !v_shape.Validate()) {
-					throw pw::er::Warning_Error(L"Physics_Object", L"shape is not valid", EXCEPTION_LINE, __FILEW__, L"Physics_Object");
-				}
-				b2FixtureDef v_fixture{};
-
-				v_fixture.friction = m_current_fixture->GetFriction();
-				v_fixture.restitution = m_current_fixture->GetRestitution();
-				v_fixture.density = m_current_fixture->GetDensity();
-				v_fixture.shape = &v_shape;
-
-				m_body->DestroyFixture(m_current_fixture);
-
-				m_current_fixture = m_body->CreateFixture(&v_fixture);
 			}
 			void Physics_Object::Set_Size_M(const b2Vec2& p_size_m) {
 				m_model_size = p_size_m;
@@ -154,83 +179,158 @@ PW_NAMESPACE_SRT
 				m_model_size.x = m_model_size.x * 32.0f;
 				m_model_size.y = m_model_size.y * 32.0f;
 
-				b2PolygonShape v_shape{};
+				switch (m_body_type) {
+					case Object_Type::POLYGON: {
+						b2PolygonShape v_shape{};
 
-				// Fill in the shape's vertices
-				for (size_t i = 0; i < m_vertex_count; i++) {
-					m_shape_vertices[i].Set((m_shape_vertices[i].x - 0.5f) * m_model_size.x / 32.0f,
-						(m_shape_vertices[i].y + 0.5f) * m_model_size.y / 32.0f);
+						// Fill in the shape's vertices
+						for (size_t i = 0; i < m_vertex_count; i++) {
+							m_shape_vertices[i].Set((m_shape_vertices[i].x - 0.5f) * m_model_size.x / 32.0f,
+								(m_shape_vertices[i].y + 0.5f) * m_model_size.y / 32.0f);
+						}
+						// Create shape
+						v_shape.Set(m_shape_vertices, m_vertex_count);
+
+						if (TRY_LINE !v_shape.Validate()) {
+							throw pw::er::Warning_Error(L"Physics_Object", L"shape is not valid", EXCEPTION_LINE, __FILEW__, L"Physics_Object");
+						}
+						b2FixtureDef v_fixture{};
+
+						v_fixture.friction = m_current_fixture->GetFriction();
+						v_fixture.restitution = m_current_fixture->GetRestitution();
+						v_fixture.density = m_current_fixture->GetDensity();
+						v_fixture.shape = &v_shape;
+
+						m_body->DestroyFixture(m_current_fixture);
+
+						m_current_fixture = m_body->CreateFixture(&v_fixture);
+						break;
+					}
+					case Object_Type::CIRCLE: {
+						b2CircleShape v_shape{};
+
+						v_shape.m_radius = ((m_model_size.x + m_model_size.y) / 4) / 32.0f;
+
+						b2FixtureDef v_fixture{};
+
+						v_fixture.friction = m_current_fixture->GetFriction();
+						v_fixture.restitution = m_current_fixture->GetRestitution();
+						v_fixture.density = m_current_fixture->GetDensity();
+						v_fixture.shape = &v_shape;
+
+						m_body->DestroyFixture(m_current_fixture);
+
+						m_current_fixture = m_body->CreateFixture(&v_fixture);
+						break;
+					}
+					default: {
+						break;
+					}
 				}
-				// Create shape
-				v_shape.Set(m_shape_vertices, m_vertex_count);
-
-				if (TRY_LINE !v_shape.Validate()) {
-					throw pw::er::Warning_Error(L"Physics_Object", L"shape is not valid", EXCEPTION_LINE, __FILEW__, L"Physics_Object");
-				}
-				b2FixtureDef v_fixture{};
-
-				v_fixture.friction = m_current_fixture->GetFriction();
-				v_fixture.restitution = m_current_fixture->GetRestitution();
-				v_fixture.density = m_current_fixture->GetDensity();
-				v_fixture.shape = &v_shape;
-
-				m_body->DestroyFixture(m_current_fixture);
-
-				m_current_fixture = m_body->CreateFixture(&v_fixture);
 			}
 			void Physics_Object::Set_Size_Px(const glm::vec2& p_size_px) {
 				m_model_size.Set(p_size_px.x, p_size_px.y);
 
-				b2PolygonShape v_shape{};
+				switch (m_body_type) {
+					case Object_Type::POLYGON: {
+						b2PolygonShape v_shape{};
 
-				// Fill in the shape's vertices
-				for (size_t i = 0; i < m_vertex_count; i++) {
-					m_shape_vertices[i].Set((m_shape_vertices[i].x - 0.5f) * m_model_size.x / 32.0f,
-						(m_shape_vertices[i].y + 0.5f) * m_model_size.y / 32.0f);
+						// Fill in the shape's vertices
+						for (size_t i = 0; i < m_vertex_count; i++) {
+							m_shape_vertices[i].Set((m_shape_vertices[i].x - 0.5f) * m_model_size.x / 32.0f,
+								(m_shape_vertices[i].y + 0.5f) * m_model_size.y / 32.0f);
+						}
+						// Create shape
+						v_shape.Set(m_shape_vertices, m_vertex_count);
+
+						if (TRY_LINE !v_shape.Validate()) {
+							throw pw::er::Warning_Error(L"Physics_Object", L"shape is not valid", EXCEPTION_LINE, __FILEW__, L"Physics_Object");
+						}
+						b2FixtureDef v_fixture{};
+
+						v_fixture.friction = m_current_fixture->GetFriction();
+						v_fixture.restitution = m_current_fixture->GetRestitution();
+						v_fixture.density = m_current_fixture->GetDensity();
+						v_fixture.shape = &v_shape;
+
+						m_body->DestroyFixture(m_current_fixture);
+
+						m_current_fixture = m_body->CreateFixture(&v_fixture);
+						break;
+					}
+					case Object_Type::CIRCLE: {
+						b2CircleShape v_shape{};
+
+						v_shape.m_radius = ((m_model_size.x + m_model_size.y) / 4) / 32.0f;
+
+						b2FixtureDef v_fixture{};
+
+						v_fixture.friction = m_current_fixture->GetFriction();
+						v_fixture.restitution = m_current_fixture->GetRestitution();
+						v_fixture.density = m_current_fixture->GetDensity();
+						v_fixture.shape = &v_shape;
+
+						m_body->DestroyFixture(m_current_fixture);
+
+						m_current_fixture = m_body->CreateFixture(&v_fixture);
+						break;
+					}
+					default: {
+						break;
+					}
 				}
-				// Create shape
-				v_shape.Set(m_shape_vertices, m_vertex_count);
-
-				if (TRY_LINE !v_shape.Validate()) {
-					throw pw::er::Warning_Error(L"Physics_Object", L"shape is not valid", EXCEPTION_LINE, __FILEW__, L"Physics_Object");
-				}
-				b2FixtureDef v_fixture{};
-
-				v_fixture.friction = m_current_fixture->GetFriction();
-				v_fixture.restitution = m_current_fixture->GetRestitution();
-				v_fixture.density = m_current_fixture->GetDensity();
-				v_fixture.shape = &v_shape;
-
-				m_body->DestroyFixture(m_current_fixture);
-
-				m_current_fixture = m_body->CreateFixture(&v_fixture);
 			}
 			void Physics_Object::Set_Size_M(const glm::vec2& p_size_m) {
 				m_model_size.Set(p_size_m.x * 32.0f, p_size_m.y * 32.0f);
 
-				b2PolygonShape v_shape{};
+				switch (m_body_type) {
+					case Object_Type::POLYGON: {
+						b2PolygonShape v_shape{};
 
-				// Fill in the shape's vertices
-				for (size_t i = 0; i < m_vertex_count; i++) {
-					m_shape_vertices[i].Set((m_shape_vertices[i].x - 0.5f) * m_model_size.x / 32.0f,
-						(m_shape_vertices[i].y + 0.5f) * m_model_size.y / 32.0f);
+						// Fill in the shape's vertices
+						for (size_t i = 0; i < m_vertex_count; i++) {
+							m_shape_vertices[i].Set((m_shape_vertices[i].x - 0.5f) * m_model_size.x / 32.0f,
+								(m_shape_vertices[i].y + 0.5f) * m_model_size.y / 32.0f);
+						}
+						// Create shape
+						v_shape.Set(m_shape_vertices, m_vertex_count);
+
+						if (TRY_LINE !v_shape.Validate()) {
+							throw pw::er::Warning_Error(L"Physics_Object", L"shape is not valid", EXCEPTION_LINE, __FILEW__, L"Physics_Object");
+						}
+						b2FixtureDef v_fixture{};
+
+						v_fixture.friction = m_current_fixture->GetFriction();
+						v_fixture.restitution = m_current_fixture->GetRestitution();
+						v_fixture.density = m_current_fixture->GetDensity();
+						v_fixture.shape = &v_shape;
+
+						m_body->DestroyFixture(m_current_fixture);
+
+						m_current_fixture = m_body->CreateFixture(&v_fixture);
+						break;
+					}
+					case Object_Type::CIRCLE: {
+						b2CircleShape v_shape{};
+
+						v_shape.m_radius = ((m_model_size.x + m_model_size.y) / 4) / 32.0f;
+
+						b2FixtureDef v_fixture{};
+
+						v_fixture.friction = m_current_fixture->GetFriction();
+						v_fixture.restitution = m_current_fixture->GetRestitution();
+						v_fixture.density = m_current_fixture->GetDensity();
+						v_fixture.shape = &v_shape;
+
+						m_body->DestroyFixture(m_current_fixture);
+
+						m_current_fixture = m_body->CreateFixture(&v_fixture);
+						break;
+					}
+					default: {
+						break;
+					}
 				}
-				// Create shape
-				v_shape.Set(m_shape_vertices, m_vertex_count);
-
-				if (TRY_LINE !v_shape.Validate()) {
-					throw pw::er::Warning_Error(L"Physics_Object", L"shape is not valid", EXCEPTION_LINE, __FILEW__, L"Physics_Object");
-				}
-				b2FixtureDef v_fixture{};
-
-				v_fixture.friction = m_current_fixture->GetFriction();
-				v_fixture.restitution = m_current_fixture->GetRestitution();
-				v_fixture.density = m_current_fixture->GetDensity();
-				v_fixture.shape = &v_shape;
-
-				m_body->DestroyFixture(m_current_fixture);
-
-				m_current_fixture = m_body->CreateFixture(&v_fixture);
 			}
 			void Physics_Object::Set_Body(b2Body* p_body) {
 				m_body = p_body;
