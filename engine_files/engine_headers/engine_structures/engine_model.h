@@ -225,9 +225,9 @@ PW_NAMESPACE_SRT
 		public:
 			Model();
 
-			Model(const Geometry_Types& p_type, st::Texture* p_texture, const glm::vec2& p_position, const float& p_rotation, const glm::vec2& p_size, const bool& p_repeats = false);
+			Model(const Geometry_Types& p_type, st::Texture* p_texture, const glm::vec2& p_position, const float& p_rotation, const glm::vec2& p_size, const bool& p_repeats = false, const bool& p_fixed_rotation = false);
 			
-			Model(const Geometry_Types& p_type, st::Texture* p_texture, const glm::vec2& p_position, const float& p_rotation, const glm::vec2& p_size, const glm::vec4& p_color, const bool& p_repeats = false);
+			Model(const Geometry_Types& p_type, st::Texture* p_texture, const glm::vec2& p_position, const float& p_rotation, const glm::vec2& p_size, const glm::vec4& p_color, const bool& p_repeats = false, const bool& p_fixed_rotation = false);
 			
 			Model operator=(const Model& p_other);
 
@@ -300,6 +300,7 @@ PW_NAMESPACE_SRT
 			glm::mat4 m_matrix;
 
 			bool m_attached;
+			bool m_fixed_rotation;
 
 			uint64_t m_id;
 

@@ -9,7 +9,7 @@ PW_NAMESPACE_SRT
 		// Physics_Object          
 		// Static Declarations     
 		// Class Members
-			Physics_Object::Physics_Object(st::Model* p_model, const b2BodyType& p_type, b2World* p_world, const bool& p_is_fixed, const float& p_friction, const float& p_restitution, const float& p_density) :
+			Physics_Object::Physics_Object(st::Model* p_model, const b2BodyType& p_type, b2World* p_world, const bool& p_is_fixed, const float& p_friction, const float& p_restitution, const float& p_density, const Object_Type& p_polygon) :
 					m_body{},
 					m_shape_vertices{ pw::Engine_Memory::Allocate<b2Vec2>(b2Vec2(), p_model->Mesh()->Vertex_Count()) },
 					m_model_size{}, m_current_fixture{ nullptr },
@@ -27,44 +27,84 @@ PW_NAMESPACE_SRT
 				// Add m_body def to m_world
 				m_body = p_world->CreateBody(&v_body_def);
 
-				b2PolygonShape v_shape{};
+				switch (p_polygon) {
+					case Object_Type::POLYGON: {
+						b2PolygonShape v_shape{};
 
-				// Fill in the shape's vertices
-				for (size_t i = 0; i < p_model->Mesh()->Vertex_Count(); i++) {
-					m_shape_vertices[i].Set((p_model->Mesh()->Vertices()[i].Vertex_Position().x - 0.5f) * m_model_size.x / 32.0f,
-						(p_model->Mesh()->Vertices()[i].Vertex_Position().y + 0.5f) * m_model_size.y / 32.0f);
-				}
-				// Create shape
-				v_shape.Set(m_shape_vertices, p_model->Mesh()->Vertex_Count());
+						// Fill in the shape's vertices
+						for (size_t i = 0; i < p_model->Mesh()->Vertex_Count(); i++) {
+							m_shape_vertices[i].Set((p_model->Mesh()->Vertices()[i].Vertex_Position().x - 0.5f) * m_model_size.x / 32.0f,
+								(p_model->Mesh()->Vertices()[i].Vertex_Position().y + 0.5f) * m_model_size.y / 32.0f);
+						}
+						// Create shape
+						v_shape.Set(m_shape_vertices, p_model->Mesh()->Vertex_Count());
 
-				if (TRY_LINE !v_shape.Validate()) {
-					throw pw::er::Warning_Error(L"Physics_Object", L"shape is not valid", EXCEPTION_LINE, __FILEW__, L"Physics_Object");
-				}
+						if (TRY_LINE !v_shape.Validate()) {
+							throw pw::er::Warning_Error(L"Physics_Object", L"shape is not valid", EXCEPTION_LINE, __FILEW__, L"Physics_Object");
+						}
 
-				b2FixtureDef v_fixture{};
-				// Check for static type
-				if (p_type == b2BodyType::b2_staticBody) {
-					if (p_friction != -1.0f) {
-						v_fixture.friction = p_friction;
+						b2FixtureDef v_fixture{};
+						// Check for static type
+						if (p_type == b2BodyType::b2_staticBody) {
+							if (p_friction != -1.0f) {
+								v_fixture.friction = p_friction;
+							}
+							if (p_friction != -1.0f) {
+								v_fixture.restitution = p_restitution;
+							}
+							if (p_friction != -1.0f) {
+								v_fixture.density = p_density;
+							}
+							// Create the fixture for the m_body
+							v_fixture.shape = &v_shape;
+							m_current_fixture = m_body->CreateFixture(&v_fixture);
+						}
+						else {
+							// Create the fixture for the m_body
+							// Dynamic / Kinematic
+							v_fixture.friction = p_friction;
+							v_fixture.restitution = p_restitution;
+							v_fixture.density = p_density;
+							v_fixture.shape = &v_shape;
+							m_current_fixture = m_body->CreateFixture(&v_fixture);
+						}
+						break;
 					}
-					if (p_friction != -1.0f) {
-						v_fixture.restitution = p_restitution;
+					case Object_Type::CIRCLE: {
+						b2CircleShape v_shape{};
+
+						v_shape.m_radius = ((m_model_size.x + m_model_size.y) / 2) / 32.0f;
+
+						b2FixtureDef v_fixture{};
+						// Check for static type
+						if (p_type == b2BodyType::b2_staticBody) {
+							if (p_friction != -1.0f) {
+								v_fixture.friction = p_friction;
+							}
+							if (p_friction != -1.0f) {
+								v_fixture.restitution = p_restitution;
+							}
+							if (p_friction != -1.0f) {
+								v_fixture.density = p_density;
+							}
+							// Create the fixture for the m_body
+							v_fixture.shape = &v_shape;
+							m_current_fixture = m_body->CreateFixture(&v_fixture);
+						}
+						else {
+							// Create the fixture for the m_body
+							// Dynamic / Kinematic
+							v_fixture.friction = p_friction;
+							v_fixture.restitution = p_restitution;
+							v_fixture.density = p_density;
+							v_fixture.shape = &v_shape;
+							m_current_fixture = m_body->CreateFixture(&v_fixture);
+						}
+						break;
 					}
-					if (p_friction != -1.0f) {
-						v_fixture.density = p_density;
+					default: {
+						break;
 					}
-					// Create the fixture for the m_body
-					v_fixture.shape = &v_shape;
-					m_current_fixture = m_body->CreateFixture(&v_fixture);
-				}
-				else {
-					// Create the fixture for the m_body
-					// Dynamic / Kinematic
-					v_fixture.friction = p_friction;
-					v_fixture.restitution = p_restitution;
-					v_fixture.density = p_density;
-					v_fixture.shape = &v_shape;
-					m_current_fixture = m_body->CreateFixture(&v_fixture);
 				}
 			}
 			Physics_Object::~Physics_Object() {
@@ -219,9 +259,9 @@ PW_NAMESPACE_SRT
 			void Physics_Factory::Run() {
 				m_world->Step(m_time_step, m_velocity_it, m_position_it);
 			}
-			void Physics_Factory::Add_Object(st::Model* p_model, const b2BodyType& p_type, const PW_ID& p_object_id, const bool& p_is_fixed, const float& p_friction, const float& p_restitution, const float& p_density) {
+			void Physics_Factory::Add_Object(st::Model* p_model, const b2BodyType& p_type, const st::Physics_Object::Object_Type& p_polygon, const PW_ID& p_object_id, const bool& p_is_fixed, const float& p_friction, const float& p_restitution, const float& p_density) {
 				try {
-					st::Physics_Object* v_object = pw::Engine_Memory::Allocate<Physics_Object, bool>(p_model, p_type, m_world, p_is_fixed, p_friction, p_restitution, p_density);
+					st::Physics_Object* v_object = pw::Engine_Memory::Allocate<Physics_Object, bool>(p_model, p_type, m_world, p_is_fixed, p_friction, p_restitution, p_density, p_polygon);
 					m_last_added_body = v_object->Body();
 					m_factory_dynamic.insert(std::make_pair(p_object_id, v_object));
 				}

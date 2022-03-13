@@ -1430,20 +1430,23 @@ PW_NAMESPACE_SRT
 
 				uint32_t v_is_linear{ 0 };
 
+				std::string v_body_shape{};
+				uint32_t v_fixed_rotation{ 0 };
+
 				p_location = co::File_Finder::Find_File(m_data_location, TO_WSTRING(p_main_scene), L".csv");
 
-				io::CSVReader<35, io::trim_chars<' ', '\t'>, io::no_quote_escape<','>, io::ignore_overflow, io::single_line_comment<'#'>>
+				io::CSVReader<37, io::trim_chars<' ', '\t'>, io::no_quote_escape<','>, io::ignore_overflow, io::single_line_comment<'#'>>
 					v_file_data_reader{ p_location.generic_string().c_str() };
 				v_file_data_reader.read_header(io::ignore_extra_column,
 					"Layer", "S_ID", "Is_Main_ID_Actor", "Is_Attached", "Attachment_ID", "Offset_X", "Offset_Y", "Is_Text", "Font_Type", "Texture", "Texture_Repeats", "Is_Linear",
 					"Mesh_Type", "Color_ID", "ColorR", "ColorB", "ColorG", "ColorA",
 					"PositionX", "PositionY", "Rotation", "SizeX", "SizeY",
 					"Is_Animated", "Has_Animation_Extention", "Animation_Length", "Animation_Frame_Count", "Animation_Frame_Size_X",
-					"Has_Physics", "Body_Type", "Is_Fixed", "Friction", "Restitution", "Density", "Sound_Structure");
+					"Has_Physics", "Body_Type", "Shape", "Fixed_Rot", "Is_Fixed", "Friction", "Restitution", "Density", "Sound_Structure");
 				while (v_file_data_reader.read_row(v_layer, v_s_id, v_is_main_s_id, v_is_attached, v_attachment_id, v_offset_x, v_offset_y, v_is_text, v_font_type, v_texture, v_repeats, v_is_linear,
 					v_mesh_type, v_color_id, v_color_r, v_color_b, v_color_g, v_color_a,
 					v_position_x, v_position_y, v_rotation, v_size_x, v_size_y, v_is_animated, v_has_animation_extention,
-					v_animation_length, v_animation_frame_count, v_animation_frame_size_x, v_has_physics, v_body_type, v_is_fixed, v_friction, v_restitution, v_density, v_sound_structure)) {
+					v_animation_length, v_animation_frame_count, v_animation_frame_size_x, v_has_physics, v_body_type, v_body_shape, v_fixed_rotation, v_is_fixed, v_friction, v_restitution, v_density, v_sound_structure)) {
 
 					// Possible Animation cache
 					std::vector<std::tuple<st::Animation*, st::Texture*>> v_animations{};
@@ -1588,7 +1591,7 @@ PW_NAMESPACE_SRT
 
 							st::Model* vd_model{ pw::Engine_Memory::Allocate<st::Model, bool>((
 								st::Geometry_Types)v_mesh_type, v_model_texture, glm::vec2((float)v_position_x, (float)v_position_y), (float)v_rotation,
-								glm::vec2((float)v_size_x, (float)v_size_y), v_color, (bool)v_repeats) };
+								glm::vec2((float)v_size_x, (float)v_size_y), v_color, (bool)v_repeats, (bool)v_fixed_rotation) };
 							st::Actor* va_model {};
 							if (v_animation_cache == true) {
 								for (auto i = v_animations.begin(); i != v_animations.end(); i++) {
@@ -1625,11 +1628,25 @@ PW_NAMESPACE_SRT
 							if (p_has_physics_factory == 1) {
 								if (v_has_physics == 1) {
 									if (v_body_type == "b2_staticBody") {
-										p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+										if (v_body_shape == "POLYGON") {
+											p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::POLYGON, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+										}
+										else {
+											if (v_body_shape == "CIRCLE") {
+												p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::CIRCLE, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+											}
+										}
 									}
 									else {
 										if (v_body_type == "b2_dynamicBody") {
-											p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+											if (v_body_shape == "POLYGON") {
+												p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, st::Physics_Object::Object_Type::POLYGON, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+											}
+											else {
+												if (v_body_shape == "CIRCLE") {
+													p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, st::Physics_Object::Object_Type::CIRCLE, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+												}
+											}
 											va_model->Set_Physics_Object(p_physics_factory->Access_Memeber(vd_model->Id()));
 										}
 									}
@@ -1644,7 +1661,7 @@ PW_NAMESPACE_SRT
 								// It is textured and has no color
 								st::Model* vd_model { pw::Engine_Memory::Allocate<st::Model, bool>(
 									(st::Geometry_Types)v_mesh_type, v_model_texture, glm::vec2((float)v_position_x, (float)v_position_y),
-									(float)v_rotation, glm::vec2((float)v_size_x, (float)v_size_y), (bool)v_repeats) };
+									(float)v_rotation, glm::vec2((float)v_size_x, (float)v_size_y), (bool)v_repeats, (bool)v_fixed_rotation) };
 								st::Actor* va_model {};
 								if (v_animation_cache == true) {
 									for (auto i = v_animations.begin(); i != v_animations.end(); i++) {
@@ -1679,14 +1696,29 @@ PW_NAMESPACE_SRT
 									p_model_attachments.push_back(std::make_tuple(TO_WSTRING(v_attachment_id), va_model, glm::vec2(v_offset_x, v_offset_y)));
 								}
 
+
 								if (p_has_physics_factory == 1) {
 									if (v_has_physics == 1) {
 										if (v_body_type == "b2_staticBody") {
-											p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+											if (v_body_shape == "POLYGON") {
+												p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::POLYGON, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+											}
+											else {
+												if (v_body_shape == "CIRCLE") {
+													p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::CIRCLE, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+												}
+											}
 										}
 										else {
 											if (v_body_type == "b2_dynamicBody") {
-												p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+												if (v_body_shape == "POLYGON") {
+													p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, st::Physics_Object::Object_Type::POLYGON, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+												}
+												else {
+													if (v_body_shape == "CIRCLE") {
+														p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, st::Physics_Object::Object_Type::CIRCLE, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+													}
+												}
 												va_model->Set_Physics_Object(p_physics_factory->Access_Memeber(vd_model->Id()));
 											}
 										}
@@ -1710,7 +1742,7 @@ PW_NAMESPACE_SRT
 
 								st::Model* vd_model { pw::Engine_Memory::Allocate<st::Model, bool>(
 									(st::Geometry_Types)v_mesh_type, v_model_texture, glm::vec2((float)v_position_x, (float)v_position_y),
-									(float)v_rotation, glm::vec2((float)v_size_x, (float)v_size_y), v_color, (bool)v_repeats) };
+									(float)v_rotation, glm::vec2((float)v_size_x, (float)v_size_y), v_color, (bool)v_repeats, (bool)v_fixed_rotation) };
 								st::Actor* va_model {};
 								if (v_animation_cache == true) {
 									for (auto i = v_animations.begin(); i != v_animations.end(); i++) {
@@ -1745,14 +1777,29 @@ PW_NAMESPACE_SRT
 									p_model_attachments.push_back(std::make_tuple(TO_WSTRING(v_attachment_id), va_model, glm::vec2(v_offset_x, v_offset_y)));
 								}
 
+
 								if (p_has_physics_factory == 1) {
 									if (v_has_physics == 1) {
 										if (v_body_type == "b2_staticBody") {
-											p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+											if (v_body_shape == "POLYGON") {
+												p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::POLYGON, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+											}
+											else {
+												if (v_body_shape == "CIRCLE") {
+													p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::CIRCLE, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+												}
+											}
 										}
 										else {
 											if (v_body_type == "b2_dynamicBody") {
-												p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+												if (v_body_shape == "POLYGON") {
+													p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, st::Physics_Object::Object_Type::POLYGON, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+												}
+												else {
+													if (v_body_shape == "CIRCLE") {
+														p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, st::Physics_Object::Object_Type::CIRCLE, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+													}
+												}
 												va_model->Set_Physics_Object(p_physics_factory->Access_Memeber(vd_model->Id()));
 											}
 										}
@@ -1851,7 +1898,7 @@ PW_NAMESPACE_SRT
 
 							st::Model* vd_model{ pw::Engine_Memory::Allocate<st::Model, bool>(
 								(st::Geometry_Types)v_mesh_type, v_model_texture, glm::vec2((float)v_position_x, (float)v_position_y),
-								(float)v_rotation, glm::vec2((float)v_size_x, (float)v_size_y), v_color, (bool)v_repeats) };
+								(float)v_rotation, glm::vec2((float)v_size_x, (float)v_size_y), v_color, (bool)v_repeats, (bool)v_fixed_rotation) };
 							st::Actor* va_model {};
 
 							if (v_sound_structure_container != nullptr) {
@@ -1881,14 +1928,29 @@ PW_NAMESPACE_SRT
 								p_model_attachments.push_back(std::make_tuple(TO_WSTRING(v_attachment_id), va_model, glm::vec2(v_offset_x, v_offset_y)));
 							}
 
+
 							if (p_has_physics_factory == 1) {
 								if (v_has_physics == 1) {
 									if (v_body_type == "b2_staticBody") {
-										p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+										if (v_body_shape == "POLYGON") {
+											p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::POLYGON, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+										}
+										else {
+											if (v_body_shape == "CIRCLE") {
+												p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::CIRCLE, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+											}
+										}
 									}
 									else {
 										if (v_body_type == "b2_dynamicBody") {
-											p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+											if (v_body_shape == "POLYGON") {
+												p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, st::Physics_Object::Object_Type::POLYGON, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+											}
+											else {
+												if (v_body_shape == "CIRCLE") {
+													p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, st::Physics_Object::Object_Type::CIRCLE, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+												}
+											}
 											va_model->Set_Physics_Object(p_physics_factory->Access_Memeber(vd_model->Id()));
 										}
 									}
@@ -1902,7 +1964,7 @@ PW_NAMESPACE_SRT
 							if (v_color_id == -2) { // No color or texture is > -2
 								st::Model* vd_model { pw::Engine_Memory::Allocate<st::Model, bool>(
 									(st::Geometry_Types)v_mesh_type, v_model_texture, glm::vec2((float)v_position_x, (float)v_position_y),
-									(float)v_rotation, glm::vec2((float)v_size_x, (float)v_size_y), (bool)v_repeats) };
+									(float)v_rotation, glm::vec2((float)v_size_x, (float)v_size_y), (bool)v_repeats, (bool)v_fixed_rotation) };
 								st::Actor* va_model {};
 
 								if (v_sound_structure_container != nullptr) {
@@ -1933,14 +1995,29 @@ PW_NAMESPACE_SRT
 									p_model_attachments.push_back(std::make_tuple(TO_WSTRING(v_attachment_id), va_model, glm::vec2(v_offset_x, v_offset_y)));
 								}
 
+
 								if (p_has_physics_factory == 1) {
 									if (v_has_physics == 1) {
 										if (v_body_type == "b2_staticBody") {
-											p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+											if (v_body_shape == "POLYGON") {
+												p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::POLYGON, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+											}
+											else {
+												if (v_body_shape == "CIRCLE") {
+													p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::CIRCLE, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+												}
+											}
 										}
 										else {
 											if (v_body_type == "b2_dynamicBody") {
-												p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+												if (v_body_shape == "POLYGON") {
+													p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, st::Physics_Object::Object_Type::POLYGON, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+												}
+												else {
+													if (v_body_shape == "CIRCLE") {
+														p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, st::Physics_Object::Object_Type::CIRCLE, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+													}
+												}
 												va_model->Set_Physics_Object(p_physics_factory->Access_Memeber(vd_model->Id()));
 											}
 										}
@@ -1963,7 +2040,7 @@ PW_NAMESPACE_SRT
 
 								st::Model* vd_model { pw::Engine_Memory::Allocate<st::Model, bool>(
 									(st::Geometry_Types)v_mesh_type, v_model_texture, glm::vec2((float)v_position_x, (float)v_position_y),
-									(float)v_rotation, glm::vec2((float)v_size_x, (float)v_size_y), v_color, (bool)v_repeats) };
+									(float)v_rotation, glm::vec2((float)v_size_x, (float)v_size_y), v_color, (bool)v_repeats, (bool)v_fixed_rotation) };
 								st::Actor* va_model {};
 
 								if (v_sound_structure_container != nullptr) {
@@ -1993,14 +2070,29 @@ PW_NAMESPACE_SRT
 									p_model_attachments.push_back(std::make_tuple(TO_WSTRING(v_attachment_id), va_model, glm::vec2(v_offset_x, v_offset_y)));
 								}
 
+
 								if (p_has_physics_factory == 1) {
 									if (v_has_physics == 1) {
 										if (v_body_type == "b2_staticBody") {
-											p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+											if (v_body_shape == "POLYGON") {
+												p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::POLYGON, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+											}
+											else {
+												if (v_body_shape == "CIRCLE") {
+													p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::CIRCLE, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+												}
+											}
 										}
 										else {
 											if (v_body_type == "b2_dynamicBody") {
-												p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+												if (v_body_shape == "POLYGON") {
+													p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, st::Physics_Object::Object_Type::POLYGON, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+												}
+												else {
+													if (v_body_shape == "CIRCLE") {
+														p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, st::Physics_Object::Object_Type::CIRCLE, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+													}
+												}
 												va_model->Set_Physics_Object(p_physics_factory->Access_Memeber(vd_model->Id()));
 											}
 										}
