@@ -74,7 +74,7 @@ PW_NAMESPACE_SRT
 		public:
 			static void Pre_Queue();
 			static void Run_Queue();
-			static void Clear_Queue();
+			static void Release_Queue();
 
 			static void Print_Debug_Stats();
 

@@ -33,7 +33,7 @@ PW_NAMESPACE_SRT
 					m_scene_directory.at(*m_current_scene)->Render();
 				}
 			}
-			void Engine_Queue::Clear_Queue() {
+			void Engine_Queue::Release_Queue() {
 				for (auto i = m_scene_directory.begin(); i != m_scene_directory.end(); i++) {
 					Remove_Scene(i->first);
 					i = m_scene_directory.begin();

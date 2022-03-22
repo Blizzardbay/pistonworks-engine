@@ -167,7 +167,7 @@ PW_NAMESPACE_SRT
 				static void Draw_Rectangle_Vertical(const COORD& p_top_left, const COORD& p_size, const wchar_t& p_character, const Console_Color& p_color);
 				static void Draw_Rectangle_Horizontal(const COORD& p_top_left, const COORD& p_size, const wchar_t& p_character, const Console_Color& p_color);
 				
-				static void Delete_Console();
+				static void Release_Console();
 
 				#define CLEAR_MSG pw::co::cn::Console_Manip::Msg_Types::E_CLEAR
 				#define DEFAULT_MSG pw::co::cn::Console_Manip::Msg_Types::E_DEFAULT

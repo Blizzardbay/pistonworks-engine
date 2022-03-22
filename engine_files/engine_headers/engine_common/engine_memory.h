@@ -289,7 +289,7 @@ PW_NAMESPACE_SRT
 		static void Deallocate_All() {
 			// Iterate though all members and delete them all accordingly
 			for (auto i = m_memory_pointers.begin(); i != m_memory_pointers.end(); i++) {
-				if (i->m_stored_memory == nullptr) {
+				if (i->m_stored_memory != nullptr) {
 					if (i->Blocks() == 1) {
 						delete i->m_stored_memory;
 						m_allocations = m_allocations - 1;
@@ -303,7 +303,7 @@ PW_NAMESPACE_SRT
 				}
 			}
 			// Erase all of the members from the program
-			m_memory_pointers.erase(m_memory_pointers.begin(), m_memory_pointers.end());
+			m_memory_pointers.~set();
 		}
 		static std::wstring Memory_String(const uint64_t& p_bytes) {
 			if (p_bytes != 0) {

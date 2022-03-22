@@ -285,6 +285,9 @@ PW_NAMESPACE_SRT
 						std::move(TO_WSTRING(alGetString(p_result))), p_line, p_file, p_function);
 				}
 			}
+			static void Release_Error() {
+				PW_FILE_.~basic_string();
+			}
 			#define PW_GLFW_VOID_CALL(p_funct) {			\
 				p_funct;									\
 				pw::er::Engine_Error::PW_LINE_ = __LINE__;	\

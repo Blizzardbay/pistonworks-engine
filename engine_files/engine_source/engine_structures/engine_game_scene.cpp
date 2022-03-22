@@ -90,15 +90,8 @@ PW_NAMESPACE_SRT
 				pw::Engine_Memory::Deallocate<st::Sound_Structure>(m_sound_deposit);
 				pw::Engine_Memory::Deallocate<st::Text>(m_text);
 
-				if (m_animations == nullptr) {
-					pw::Engine_Memory::Deallocate<st::Animation>(m_current_animation);
-					m_current_animation = nullptr;
-				}
-				else {
-					m_current_animation = nullptr;
-
-					pw::Engine_Memory::Deallocate<st::Animation_Structure>(m_animations);
-				}
+				pw::Engine_Memory::Deallocate<st::Animation>(m_current_animation);
+				pw::Engine_Memory::Deallocate<st::Animation_Structure>(m_animations);
 			}
 			void Actor::Render() {
 				if (m_current_animation != nullptr) {

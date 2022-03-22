@@ -8,6 +8,9 @@ PW_NAMESPACE_SRT
 	//////////////////////////////////
 		// Engine_Control
 		// Static Declarations
+		#ifdef PW_DEBUG_MODE
+			std::chrono::system_clock::time_point Engine_Control::m_debug_load_time{};
+		#endif // PW_DEBUG_MODE
 		// Class Members
 			Engine_Control::Engine_Control():
 					m_require_game_path{ false },
@@ -16,7 +19,11 @@ PW_NAMESPACE_SRT
 					m_font_complete{ false }, m_queue_complete{ false }, 
 					m_alut_complete{ false }, m_main_window{} {
 			}
-			void Engine_Control::Init_Engine(int argc, char* argv[], const std::wstring& p_window_name, const int32_t& p_window_width, const int32_t& p_window_height, const bool& p_require_game_path) {
+			void Engine_Control::Initialize_Engine(int argc, char* argv[], const std::wstring& p_window_name, const int32_t& p_window_width, const int32_t& p_window_height, const bool& p_require_game_path) {
+				#ifdef PW_DEBUG_MODE
+					m_debug_load_time = std::chrono::system_clock::now();
+				#endif // PW_DEBUG_MODE
+				
 				if (pw::cm::Engine_Constant::Pistonworks_Path() == std::filesystem::path()) {
 					m_no_error = false;
 					FreeConsole();
@@ -249,7 +256,34 @@ PW_NAMESPACE_SRT
 							PRINT_BLOCK(L"Engine Queue", L"Project Load ( Completed )", ENGINE_MSG);
 						#endif // PW_DEBUG_MODE
 
-						Init_Game();
+						Initialize_Game();
+
+						#ifdef PW_DEBUG_MODE
+							std::chrono::system_clock::time_point v_end_load = std::chrono::system_clock::now();
+
+							std::wstring v_load_seconds{ std::to_wstring(std::chrono::duration<double, std::milli>(v_end_load - m_debug_load_time).count() / 1000.0f) };
+							std::wstring v_load_milli{ std::to_wstring(std::chrono::duration<double, std::milli>(v_end_load - m_debug_load_time).count()) };
+
+							size_t v_period = v_load_seconds.find(L".");
+							if (v_period != std::string::npos) {
+								size_t v_decimal_count = v_load_seconds.size() - OFF64(v_period);
+								if (v_decimal_count > 2) {
+									v_decimal_count = v_decimal_count - 2;
+									v_load_seconds.erase(OFF64(v_period) + 2, v_decimal_count);
+								}
+							}
+							v_period = v_load_milli.find(L".");
+							if (v_period != std::string::npos) {
+								size_t v_decimal_count = v_load_milli.size() - OFF64(v_period);
+								if (v_decimal_count > 2) {
+									v_decimal_count = v_decimal_count - 2;
+									v_load_milli.erase(OFF64(v_period) + 2, v_decimal_count);
+								}
+							}
+
+							PRINT_MSG(L"Engine", L"Load Time: " + v_load_seconds + L" s.", ENGINE_MSG);
+							PRINT_MSG(L"Engine", L"Load Time: " + v_load_milli + L" ms.", ENGINE_MSG);
+						#endif // PW_DEBUG_MODE
 					}
 					catch (const er::Warning_Error& v_error) {
 						er::Error_Log::Dump_Log(pw::cm::Engine_Constant::Pistonworks_Path(), v_error);
@@ -315,7 +349,7 @@ PW_NAMESPACE_SRT
 					}
 				}
 			}
-			void Engine_Control::Terminate_Engine() {
+			void Engine_Control::Release_Engine() {
 				//////////////////////////////////
 				// Engine Clean Up
 				//////////////////////////////////
@@ -325,10 +359,10 @@ PW_NAMESPACE_SRT
 							PW_GLFW_VOID_CALL(glfwTerminate());
 						}
 						if (m_font_complete == true) {
-							st::Text_Renderer::Delete_Engine_Fonts();
+							st::Text_Renderer::Release_Engine_Fonts();
 						}
 						if (m_queue_complete == true) {
-							Engine_Queue::Clear_Queue();
+							Engine_Queue::Release_Queue();
 						}
 						m_has_terminated = true;
 
@@ -340,19 +374,24 @@ PW_NAMESPACE_SRT
 							er::Error_Log::Close_Log(pw::cm::Engine_Constant::Pistonworks_Path());
 						}
 
-						st::Dynamic_Shader::Delete_Shader();
+						st::Dynamic_Shader::Release_Shader();
 
-						Terminate_Game();
+						Release_Game();
 
 						pw::Engine_Memory::Deallocate_All();
 
 						if (m_alut_complete == true) {
-							st::Listener::Delete_Listener();
+							st::Listener::Release_Listener();
 							alutExit();
 						}
+						pw::cm::Engine_Constant::Release_Constants();
+						pw::er::Engine_Error::Release_Error();
+						pw::co::File_Loader::Release_Loader();
+						pw::co::Engine_Input::Release_Input();
+
 						#ifdef PW_DEBUG_MODE
 							if (m_console_complete == true) {
-								cn::Console_Manip::Delete_Console();
+								cn::Console_Manip::Release_Console();
 							}
 						#endif // PW_DEBUG_MODE
 					}

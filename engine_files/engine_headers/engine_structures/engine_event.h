@@ -76,6 +76,8 @@ PW_NAMESPACE_SRT
 		// Default Class Structures
 		public:
 			Event_Base(const PW_BUTTON_CODE& p_button, const bool& p_play_once, const PW_INPUT_TYPE& p_trigger, const PW_INPUT_TYPE& p_resolution);
+
+			virtual ~Event_Base();
 		private:
 		// Public Functions/Macros 
 		public:

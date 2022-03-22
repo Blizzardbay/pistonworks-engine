@@ -167,7 +167,7 @@ PW_NAMESPACE_SRT
 		public:
 			static void Load_Engine_Fonts(const std::wstring& p_font_location, const std::vector<std::wstring>& p_font_ids, const std::vector<std::wstring>& p_font_names);
 			
-			static void Delete_Engine_Fonts();
+			static void Release_Engine_Fonts();
 			
 			static Character* Create_Character(const wchar_t& p_letter_type, const std::wstring& p_font_type);
 		// Public Variables   

@@ -55,6 +55,11 @@ PW_NAMESPACE_SRT
 				}
 				m_scroll_events.clear();
 			}
+			void Engine_Input::Release_Input() {
+				m_function_register.~map();
+
+				m_scene_event_function.~function();
+			}
 			void Engine_Input::Poll_Active_Events() {
 				cm::Engine_Constant::Set_Mouse_Coord((int32_t)cm::Engine_Constant::Mouse_X_Coord_Raw() + TO_INT64(st::Camera::Camera_Position().x),
 					(int32_t)(TO_INT64(st::Camera::Camera_Position().y) - (int32_t)cm::Engine_Constant::Mouse_Y_Coord_Raw()));

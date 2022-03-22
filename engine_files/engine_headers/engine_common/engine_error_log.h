@@ -240,6 +240,8 @@ PW_NAMESPACE_SRT
 							v_error_handle = TO_INT16(std::rename(v_console_log.generic_string().c_str(), v_file_console_new.c_str()));
 						}
 					}
+					m_console_log_name.~basic_string();
+					m_error_log_name.~basic_string();
 				#endif // PW_DEBUG_MODE
 			}
 		// Public Variables

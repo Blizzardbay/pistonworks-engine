@@ -815,6 +815,21 @@ PW_NAMESPACE_SRT
 					m_debug_info = p_new_function;
 				}
 			#endif // PW_DEBUG_MODE
+			//////////////////////////////////
+			// Release
+			//////////////////////////////////
+			static inline void Release_Constants() {
+				m_window_name.~basic_string();
+
+				m_fps_averager.~vector();
+
+				m_pistonworks_path.~path();
+				m_game_path.~path();
+
+				#ifdef PW_DEBUG_MODE
+					m_debug_info.~function();
+				#endif // PW_DEBUG_MODE
+			}
 		// Public Variables
 		public:
 			static constexpr uint32_t PW_SCALE_FACTOR = 32;

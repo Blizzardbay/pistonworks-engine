@@ -158,6 +158,7 @@ PW_NAMESPACE_SRT
 			static void Initialize_Loader(const std::function<void(const std::wstring&, const bool&)>& p_add_scene_function,
 											const std::function<void(const std::wstring&)>& p_change_scene_function,
 											const std::function<void(const std::wstring&)>& p_remove_scene_function);
+			static void Release_Loader();
 
 			static st::Texture* Load_Texture_File(const std::wstring& p_file_name,
 				const bool& p_repeat, const bool& p_linear, const bool& p_engine_dir = false, std::wstring* p_override_dir = nullptr);
@@ -212,6 +213,8 @@ PW_NAMESPACE_SRT
 			static std::function<void(const std::wstring&, const bool&)> m_add_scene_function;
 			static std::function<void(const std::wstring&)> m_change_scene_function;
 			static std::function<void(const std::wstring&)> m_remove_scene_function;
+
+			static std::map<std::wstring, st::Texture*> m_texture_repository;
 
 			static glm::vec4 m_engine_colors[(uint32_t)Default_Colors::Color_Count];
 		};

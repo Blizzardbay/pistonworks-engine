@@ -12,6 +12,8 @@ PW_NAMESPACE_SRT
 		Event_Base::Event_Base(const PW_BUTTON_CODE& p_button, const bool& p_play_once, const PW_INPUT_TYPE& p_trigger, const PW_INPUT_TYPE& p_resolution) :
 				m_play_once{ p_play_once }, m_trigger{ p_trigger }, m_resolution{ p_resolution }, m_button{ p_button } {
 		}
+		Event_Base::~Event_Base() {
+		}
 		void Event_Base::Trigger_Event() {
 		}
 		PW_INPUT_TYPE Event_Base::Find_Resolution(const PW_INPUT_TYPE& p_trigger) const {

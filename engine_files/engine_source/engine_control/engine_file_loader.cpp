@@ -28,6 +28,8 @@ PW_NAMESPACE_SRT
 			std::function<void(const std::wstring&)> File_Loader::m_change_scene_function{};
 			std::function<void(const std::wstring&)> File_Loader::m_remove_scene_function{};
 
+			std::map<std::wstring, st::Texture*> File_Loader::m_texture_repository{};
+
 			glm::vec4 File_Loader::m_engine_colors[(uint32_t)Default_Colors::Color_Count]{
 				//LIT_RED				#ff 80 80 
 				//RED					#ff 00 00 
@@ -118,6 +120,21 @@ PW_NAMESPACE_SRT
 				m_add_scene_function = p_add_scene_function;
 				m_change_scene_function = p_change_scene_function;
 				m_remove_scene_function = p_remove_scene_function;
+			}
+			void File_Loader::Release_Loader() {
+				m_animation_location.~basic_string();
+				m_data_location.~basic_string();
+				m_font_location.~basic_string();
+				m_icon_location.~basic_string();
+				m_linker_location.~basic_string();
+				m_texture_location.~basic_string();
+				m_sound_location.~basic_string();
+
+				m_engine_texture_dir.~basic_string();
+				m_engine_icon_dir.~basic_string();
+				m_engine_animation_dir.~basic_string();
+
+				m_texture_repository.~map();
 			}
 			st::Texture* File_Loader::Load_Texture_File(const std::wstring& p_file_name, const bool& p_repeat, const bool& p_linear, const bool& p_engine_dir, std::wstring* p_override_dir) {
 				// File Type

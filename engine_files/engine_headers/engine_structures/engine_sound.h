@@ -86,7 +86,7 @@ PW_NAMESPACE_SRT
 
 			static void Update();
 			// Once the listener is deleted it cannot be re-created
-			static void Delete_Listener();
+			static void Release_Listener();
 
 			static void Set_Volume(const float& p_new_gain, const bool& p_windows_style);
 			// Sets the current device for audio outputting

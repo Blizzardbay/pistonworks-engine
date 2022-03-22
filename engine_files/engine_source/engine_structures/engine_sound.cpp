@@ -108,7 +108,7 @@ PW_NAMESPACE_SRT
 				}
 			}
 		}
-		void Listener::Delete_Listener() {
+		void Listener::Release_Listener() {
 			if (m_created_listener == true) {
 				m_context = alcGetCurrentContext();
 				m_current_device = alcGetContextsDevice(m_context);

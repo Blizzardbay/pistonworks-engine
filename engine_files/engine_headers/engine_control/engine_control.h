@@ -96,20 +96,20 @@ PW_NAMESPACE_SRT
 		private:
 		// Public Functions/Macros
 		public:
-			void Init_Engine(int argc, char* argv[], const std::wstring& p_window_name, const int32_t& p_window_width, const int32_t& p_window_height, const bool& p_require_game_path);
+			void Initialize_Engine(int argc, char* argv[], const std::wstring& p_window_name, const int32_t& p_window_width, const int32_t& p_window_height, const bool& p_require_game_path);
 
 			void Run_Engine();
-			void Terminate_Engine();
+			void Release_Engine();
 			
 			void Create_Callbacks() const;
 			void Update_Engine_State();
 			bool Should_Close() const;
 
 			void Pre_Load();
-			void Init_Game();
+			void Initialize_Game();
 			void Before_Queue();
 			void After_Queue();
-			void Terminate_Game();
+			void Release_Game();
 
 			void Pre_Scene_Load(const std::wstring& p_scene);
 			void Pre_Scene_Change(const std::wstring& p_scene);
@@ -142,6 +142,10 @@ PW_NAMESPACE_SRT
 			bool m_alut_complete;
 
 			std::unique_ptr<GLFWwindow, cm::Destroy_GLFW> m_main_window;
+
+			#ifdef PW_DEBUG_MODE
+				static std::chrono::system_clock::time_point m_debug_load_time;
+			#endif // PW_DEBUG_MODE
 		};
 	//////////////////////////////////
 	CO_NAMESPACE_END
@@ -153,13 +157,13 @@ PW_NAMESPACE_END
 #define USE_DEFAULT_ENGINE_CONTROL													\
 	void pw::co::Engine_Control::Pre_Load() {										\
 	}																				\
-	void pw::co::Engine_Control::Init_Game() {										\
+	void pw::co::Engine_Control::Initialize_Game() {										\
 	}																				\
 	void pw::co::Engine_Control::Before_Queue() {									\
 	}																				\
 	void pw::co::Engine_Control::After_Queue() {									\
 	}																				\
-	void pw::co::Engine_Control::Terminate_Game() {									\
+	void pw::co::Engine_Control::Release_Game() {									\
 	}																				\
 	void pw::co::Engine_Control::Pre_Scene_Load(const std::wstring& p_scene) {		\
 	}																				\
@@ -176,16 +180,16 @@ PW_NAMESPACE_END
 #define USE_PISTONWORKS_ENGINE(p_window_size_x, p_window_size_y, p_require_game_path)		\
 	int main(int argc, char* argv[]) {														\
 		pw::co::Engine_Control engine{};													\
-		engine.Init_Engine(argc, argv, L"Pistonworks Window",								\
+		engine.Initialize_Engine(argc, argv, L"Pistonworks Window",								\
 			TO_UINT32(p_window_size_x), TO_UINT32(p_window_size_y),							\
 			TO_BOOL(p_require_game_path));													\
 		if (engine.No_Error() == false) {													\
-			engine.Terminate_Engine();														\
+			engine.Release_Engine();														\
 			return 1;																		\
 		}																					\
 		else {																				\
 			engine.Run_Engine();															\
-			engine.Terminate_Engine();														\
+			engine.Release_Engine();														\
 			return 0;																		\
 		}																					\
 		return 0;																			\

@@ -713,8 +713,10 @@ PW_NAMESPACE_SRT
 				const std::map<Console_Manip::Msg_Types, Console_Color>& Console_Manip::Msg_Colors() {
 					return m_msg_colors;
 				}
-				void Console_Manip::Delete_Console() {
+				void Console_Manip::Release_Console() {
 					FreeConsole();
+				
+					m_msg_colors.~map();
 				}
 			// End of Class Members
 		//////////////////////////////////

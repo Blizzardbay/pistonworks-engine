@@ -124,7 +124,7 @@ PW_NAMESPACE_SRT
 					throw v_error;
 				}
 			}
-			void Dynamic_Shader::Delete_Shader() {
+			void Dynamic_Shader::Release_Shader() {
 				if (m_vertex_shader != NULL) {
 					if (glIsShader(m_vertex_shader) == GL_TRUE) {
 						PW_GL_VOID_CALL(glDetachShader(m_program_id, m_vertex_shader), false);

@@ -349,7 +349,7 @@ PW_NAMESPACE_SRT
 					throw v_error;
 				}
 			}
-			void Text_Renderer::Delete_Engine_Fonts() {
+			void Text_Renderer::Release_Engine_Fonts() {
 				for (auto i = m_font_library.begin(); i != m_font_library.end(); i++) {
 					for (auto j = i->second.begin(); j != i->second.end(); j++) {
 						pw::Engine_Memory::Deallocate<Character>(j->second);

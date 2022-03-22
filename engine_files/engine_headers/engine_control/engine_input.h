@@ -89,6 +89,8 @@ PW_NAMESPACE_SRT
 				std::map<PW_INPUT_TYPE, std::map<PW_BUTTON_CODE, std::map<PW_ID, st::Event_Base*>>> p_mouse_events,
 				std::map<PW_SCROLL_ACTION, std::map<PW_ID, st::Event_Base*>> p_scroll_events);
 			~Engine_Input();
+
+			static void Release_Input();
 		private:
 		// Public Functions/Macros
 		public:

@@ -97,7 +97,7 @@ PW_NAMESPACE_SRT
 		public:
 			static void Create_Shader(const std::wstring& p_vertex_location, const std::wstring& p_fragment_location);
 			
-			static void Delete_Shader();
+			static void Release_Shader();
 			static void Use();
 			
 			static void Update_Matrices(const glm::mat4& p_model_matrix, const int32_t& p_model_is_colored, const int32_t& p_model_is_text);
