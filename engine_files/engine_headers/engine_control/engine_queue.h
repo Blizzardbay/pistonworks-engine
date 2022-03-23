@@ -105,7 +105,7 @@ PW_NAMESPACE_SRT
 			// Data to be loaded from the game
 			static std::wstring m_project_name;
 
-			static std::wstring* m_current_scene;
+			static std::wstring m_current_scene;
 
 			static std::map<std::wstring, st::Game_Scene*> m_scene_directory;
 

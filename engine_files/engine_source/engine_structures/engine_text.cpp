@@ -353,8 +353,10 @@ PW_NAMESPACE_SRT
 				for (auto i = m_font_library.begin(); i != m_font_library.end(); i++) {
 					for (auto j = i->second.begin(); j != i->second.end(); j++) {
 						pw::Engine_Memory::Deallocate<Character>(j->second);
+						j->second = nullptr;
 					}
 				}
+				m_font_library.~map();
 			}
 			Character* Text_Renderer::Create_Character(const wchar_t& p_letter_type, const std::wstring& p_font_type) {
 				auto v_found = m_font_library.find(p_font_type);

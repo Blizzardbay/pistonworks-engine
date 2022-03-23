@@ -10,7 +10,7 @@ PW_NAMESPACE_SRT
 		// Static Declarations
 		std::wstring co::Engine_Queue::m_project_name{};
 
-		std::wstring* co::Engine_Queue::m_current_scene{ nullptr };
+		std::wstring co::Engine_Queue::m_current_scene{};
 		std::map<std::wstring, st::Game_Scene*> co::Engine_Queue::m_scene_directory{};
 
 		std::function<void(const std::wstring&)> co::Engine_Queue::m_pre_scene_add{ nullptr };
@@ -24,24 +24,26 @@ PW_NAMESPACE_SRT
 		std::function<void()> co::Engine_Queue::m_user_debug_function{ nullptr };
 		// Class Members
 			void Engine_Queue::Pre_Queue() {
-				if (m_current_scene != nullptr) {
-					m_scene_directory.at(*m_current_scene)->Pre_Render();
+				if (m_current_scene.empty() != true) {
+					m_scene_directory.at(m_current_scene)->Pre_Render();
 				}
 			}
 			void Engine_Queue::Run_Queue() {
-				if (m_current_scene != nullptr) {
-					m_scene_directory.at(*m_current_scene)->Render();
+				if (m_current_scene.empty() != true) {
+					m_scene_directory.at(m_current_scene)->Render();
 				}
 			}
 			void Engine_Queue::Release_Queue() {
-				for (auto i = m_scene_directory.begin(); i != m_scene_directory.end(); i++) {
+				auto i = m_scene_directory.begin();
+				while (i != m_scene_directory.end()) {
 					Remove_Scene(i->first);
 					i = m_scene_directory.begin();
-					if (i == m_scene_directory.end()) {
-						break;
-					}
 				}
-				m_scene_directory.clear();
+				m_scene_directory.~map();
+
+				m_current_scene.~basic_string();
+
+				m_project_name.~basic_string();
 			}
 			void Engine_Queue::Print_Debug_Stats() {
 				PRINT_INFO(L"HM    ", pw::Engine_Memory::Memory_String(pw::Engine_Memory::Heap_Memory()), TO_UINT16(0));
@@ -65,8 +67,8 @@ PW_NAMESPACE_SRT
 				PRINT_INFO(L"FPSAVG", v_fps_average, TO_UINT16(6));
 				PRINT_INFO(L"MODELS", std::to_wstring(st::Model::m_model_counter), TO_UINT16(7));
 				size_t v_render_count = 0;
-				if (m_current_scene != nullptr) {
-					v_render_count = m_scene_directory.at(*m_current_scene)->Last_Render_Count();
+				if (m_current_scene.empty() != true) {
+					v_render_count = m_scene_directory.at(m_current_scene)->Last_Render_Count();
 				}
 				PRINT_INFO(L"RNDCNT", std::to_wstring(v_render_count), TO_UINT16(8));
 
@@ -320,22 +322,21 @@ PW_NAMESPACE_SRT
 						m_pre_scene_change(p_scene_name);
 					}
 
-					if (m_current_scene == nullptr) {
-						m_current_scene = pw::Engine_Memory::Allocate<std::wstring>(p_scene_name.c_str());
-						co::Engine_Input::Set_Current_Input(m_scene_directory.at(*m_current_scene)->Input());
-						co::Engine_Input::Set_Scene_Event_Function(m_scene_directory.at(*m_current_scene)->Event_Callback());
-						m_scene_directory.at(*m_current_scene)->Re_Render();
+					if (m_current_scene.empty() == true) {
+						m_current_scene = p_scene_name;
+						co::Engine_Input::Set_Current_Input(m_scene_directory.at(m_current_scene)->Input());
+						co::Engine_Input::Set_Scene_Event_Function(m_scene_directory.at(m_current_scene)->Event_Callback());
+						m_scene_directory.at(m_current_scene)->Re_Render();
 					}
 					else {
-						m_scene_directory.at(*m_current_scene)->Capture_Instance(st::Camera::Camera_Position());
+						m_scene_directory.at(m_current_scene)->Capture_Instance(st::Camera::Camera_Position());
 
-						m_scene_directory.at(*m_current_scene)->Stop_All_Sounds();
+						m_scene_directory.at(m_current_scene)->Stop_All_Sounds();
 
-						pw::Engine_Memory::Deallocate<std::wstring>(m_current_scene);
-						m_current_scene = pw::Engine_Memory::Allocate<std::wstring>(p_scene_name.c_str());
-						co::Engine_Input::Set_Current_Input(m_scene_directory.at(*m_current_scene)->Input());
-						co::Engine_Input::Set_Scene_Event_Function(m_scene_directory.at(*m_current_scene)->Event_Callback());
-						m_scene_directory.at(*m_current_scene)->Re_Render();
+						m_current_scene = p_scene_name;
+						co::Engine_Input::Set_Current_Input(m_scene_directory.at(m_current_scene)->Input());
+						co::Engine_Input::Set_Scene_Event_Function(m_scene_directory.at(m_current_scene)->Event_Callback());
+						m_scene_directory.at(m_current_scene)->Re_Render();
 					}
 
 					if (m_post_scene_change != nullptr) {
@@ -351,9 +352,9 @@ PW_NAMESPACE_SRT
 						m_pre_scene_remove(p_scene_name);
 					}
 
-					if (m_current_scene != nullptr) {
-						if (v_found->first == *m_current_scene) {
-							m_current_scene = nullptr;
+					if (m_current_scene.empty() != true) {
+						if (v_found->first == m_current_scene) {
+							m_current_scene = std::wstring();
 						}
 					}
 
@@ -394,7 +395,7 @@ PW_NAMESPACE_SRT
 				}
 			}
 			st::Game_Scene* Engine_Queue::Current_Scene() {
-				auto v_found = m_scene_directory.find(*m_current_scene);
+				auto v_found = m_scene_directory.find(m_current_scene);
 				if (v_found != m_scene_directory.end()) {
 					return v_found->second;
 				}

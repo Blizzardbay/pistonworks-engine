@@ -108,6 +108,7 @@ PW_NAMESPACE_SRT
 				}
 			}
 			Physics_Object::~Physics_Object() {
+				pw::Engine_Memory::Deallocate<b2Vec2>(m_shape_vertices);
 			}
 			int32_t Physics_Object::X_Pixels_Position(const int32_t& p_scale_factor) {
 				return static_cast<int32_t>(m_body->GetPosition().x * p_scale_factor);
@@ -355,6 +356,7 @@ PW_NAMESPACE_SRT
 				for (auto i = m_factory_dynamic.begin(); i != m_factory_dynamic.end(); i++) {
 					pw::Engine_Memory::Deallocate<st::Physics_Object>(i->second);
 				}
+				pw::Engine_Memory::Deallocate<b2World>(m_world);
 			}
 			void Physics_Factory::Run() {
 				m_world->Step(m_time_step, m_velocity_it, m_position_it);

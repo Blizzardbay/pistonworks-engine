@@ -49,4 +49,6 @@
   #define B2_API
 #endif
 
+#define _ITERATOR_DEBUG_LEVEL 0
+
 #endif

@@ -540,12 +540,14 @@ PW_NAMESPACE_SRT
 						}
 					}
 				}
-				for (auto i = m_screen_models.begin(); i != m_screen_models.end(); i++) {
+				for (auto i = m_main_scene_models.begin(); i != m_main_scene_models.end(); i++) {
 					pw::Engine_Memory::Deallocate<st::Actor>(*i);
 				}
 				for (auto i = m_sub_scene_deposit.begin(); i != m_sub_scene_deposit.end(); i++) {
 					pw::Engine_Memory::Deallocate<st::Sub_Scene_Structure>(i->second);
 				}
+
+				pw::Engine_Memory::Deallocate<st::Physics_Factory>(m_scene_physics);
 			}
 			void Game_Scene::Pre_Render() {
 				m_new_input = false;

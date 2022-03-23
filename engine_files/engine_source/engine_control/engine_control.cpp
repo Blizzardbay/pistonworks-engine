@@ -26,7 +26,7 @@ PW_NAMESPACE_SRT
 				
 				if (pw::cm::Engine_Constant::Pistonworks_Path() == std::filesystem::path()) {
 					m_no_error = false;
-					FreeConsole();
+					co::cn::Console_Manip::Release_Console();
 					return;
 				}
 
@@ -35,7 +35,7 @@ PW_NAMESPACE_SRT
 				if (m_require_game_path == true) {
 					if (pw::cm::Engine_Constant::Game_Path() == std::filesystem::path()) {
 						m_no_error = false;
-						FreeConsole();
+						co::cn::Console_Manip::Release_Console();
 						return;
 					}
 				}
