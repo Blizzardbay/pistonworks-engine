@@ -153,6 +153,7 @@ PW_NAMESPACE_SRT
 				// Public Functions/Macros
 			public:
 				static void Set_Up_Console();
+				static void Initialize_Console();
 				
 				static void Resize(const uint32_t& p_size_x, const uint32_t& p_size_y);
 				static void Draw_Screen();
@@ -220,7 +221,7 @@ PW_NAMESPACE_SRT
 				static COORD m_write_coord;
 				static uint16_t m_msg_line;
 
-				static std::map<Msg_Types, Console_Color> m_msg_colors;
+				static std::map<Msg_Types, Console_Color>* m_msg_colors;
 			};
 		//////////////////////////////////
 		CN_NAMESPACE_END

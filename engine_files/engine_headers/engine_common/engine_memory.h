@@ -71,9 +71,9 @@ PW_NAMESPACE_SRT
 			if (p_memory != nullptr) {
 				// For quick time allocations and deletions
 				// Find the memory
-				auto v_store = m_memory_pointers.find(Memory(p_memory));
+				auto v_store = m_memory_pointers->find(Memory(p_memory));
 				// If we find it then delete it
-				if (v_store != m_memory_pointers.end()) {
+				if (v_store != m_memory_pointers->end()) {
 					if (v_store->Blocks() == 1) {
 						// Subtract memory from the total engine count
 						m_heap_memory = m_heap_memory - v_store->Bytes();
@@ -81,7 +81,7 @@ PW_NAMESPACE_SRT
 
 						delete p_memory;
 
-						m_memory_pointers.erase(v_store);
+						m_memory_pointers->erase(v_store);
 						p_memory = nullptr;
 					}
 					else {
@@ -91,7 +91,7 @@ PW_NAMESPACE_SRT
 
 						delete[] p_memory;
 
-						m_memory_pointers.erase(v_store);
+						m_memory_pointers->erase(v_store);
 						p_memory = nullptr;
 					}
 				}
@@ -166,6 +166,10 @@ PW_NAMESPACE_SRT
 	private:
 	// Public Functions/Macros
 	public:
+		static void Initialize_Memory() {
+			// Not tracked by engine, guaranteed memory deallocation
+			m_memory_pointers = new std::set<pw::Engine_Memory::Memory>();
+		}
 		template<class type>
 		static type* Allocate(size_t p_count = 1) {
 			// If we are only allocating one of a structure then there is different syntax 
@@ -180,13 +184,12 @@ PW_NAMESPACE_SRT
 					}
 					m_allocations = m_allocations + 1;
 					// Keep a copy of the address in memory so we can check if it was properly destroyed later
-					m_memory_pointers.insert(Memory(v_memory, std::move(p_count), std::move(sizeof(type) * p_count), typeid(type).name()));
+					m_memory_pointers->insert(Memory(v_memory, std::move(p_count), std::move(sizeof(type) * p_count), typeid(type).name()));
 					// Return the allocated memory
 					return v_memory;
 				}
 				catch (const std::bad_alloc& v_error) {
 					// If we can't allocate the memory throw a fatal error and exit the engine immediately
-					// Since this is used by engine constant we cannot have access to the TO_WSTRING macro so we need to do some string magic
 					v_error;
 					throw pw::er::Severe_Error(L"Engine Memory", L"Bad Alloc", EXCEPTION_LINE, __FILEW__, L"No Function");
 				}
@@ -202,13 +205,12 @@ PW_NAMESPACE_SRT
 					}
 					m_allocations = m_allocations + 1;
 					// Keep a copy of the address in memory so we can check if it was properly destroyed later
-					m_memory_pointers.insert(Memory(v_memory, std::move(p_count), std::move(sizeof(type) * p_count), typeid(type).name()));
+					m_memory_pointers->insert(Memory(v_memory, std::move(p_count), std::move(sizeof(type) * p_count), typeid(type).name()));
 					// Return the allocated memory
 					return v_memory;
 				}
 				catch (const std::bad_alloc& v_error) {
 					// If we can't allocate the memory throw a fatal error and exit the engine immediately
-					// Since this is used by engine constant we cannot have access to the TO_WSTRING macro so we need to do some string magic
 					v_error;
 					throw pw::er::Severe_Error(L"Engine Memory", L"Bad Alloc", EXCEPTION_LINE, __FILEW__, L"No Function");
 				}
@@ -227,13 +229,12 @@ PW_NAMESPACE_SRT
 				}
 				m_allocations = m_allocations + 1;
 				// Keep a copy of the address in memory so we can check if it was properly destroyed later
-				m_memory_pointers.insert(Memory(v_memory, std::move(1), std::move(sizeof(type) * 1), typeid(type).name()));;
+				m_memory_pointers->insert(Memory(v_memory, std::move(1), std::move(sizeof(type) * 1), typeid(type).name()));;
 				// Return the allocated memory
 				return v_memory;
 			}
 			catch (const std::bad_alloc& v_error) {
 				// If we can't allocate the memory throw a fatal error and exit the engine immediately
-				// Since this is used by engine constant we cannot have access to the TO_WSTRING macro so we need to do some string magic
 				v_error;
 				throw pw::er::Severe_Error(L"Engine Memory", L"Bad Alloc", EXCEPTION_LINE, __FILEW__, L"No Function");
 			}
@@ -252,13 +253,12 @@ PW_NAMESPACE_SRT
 					}
 					m_allocations = m_allocations + 1;
 					// Keep a copy of the address in memory so we can check if it was properly destroyed later
-					m_memory_pointers.insert(Memory(v_memory, std::move(p_count), std::move(sizeof(type) * p_count), typeid(type).name()));
+					m_memory_pointers->insert(Memory(v_memory, std::move(p_count), std::move(sizeof(type) * p_count), typeid(type).name()));
 					// Return the allocated memory
 					return v_memory;
 				}
 				catch (const std::bad_alloc& v_error) {
 					// If we can't allocate the memory throw a fatal error and exit the engine immediately
-					// Since this is used by engine constant we cannot have access to the TO_WSTRING macro so we need to do some string magic
 					v_error;
 					throw pw::er::Severe_Error(L"Engine Memory", L"Bad Alloc", EXCEPTION_LINE, __FILEW__, L"No Function");
 				}
@@ -274,13 +274,12 @@ PW_NAMESPACE_SRT
 					}
 					m_allocations = m_allocations + 1;
 					// Keep a copy of the address in memory so we can check if it was properly destroyed later
-					m_memory_pointers.insert(Memory(v_memory, std::move(p_count), std::move(sizeof(type) * p_count), typeid(type).name()));
+					m_memory_pointers->insert(Memory(v_memory, std::move(p_count), std::move(sizeof(type) * p_count), typeid(type).name()));
 					// Return the allocated memory
 					return v_memory;
 				}
 				catch (const std::bad_alloc& v_error) {
 					// If we can't allocate the memory throw a fatal error and exit the engine immediately
-					// Since this is used by engine constant we cannot have access to the TO_WSTRING macro so we need to do some string magic
 					v_error;
 					throw pw::er::Severe_Error(L"Engine Memory", L"Bad Alloc", EXCEPTION_LINE, __FILEW__, L"No Function");
 				}
@@ -288,7 +287,7 @@ PW_NAMESPACE_SRT
 		}
 		static void Deallocate_All() {
 			// Iterate though all members and delete them all accordingly
-			for (auto i = m_memory_pointers.begin(); i != m_memory_pointers.end(); i++) {
+			for (auto i = m_memory_pointers->begin(); i != m_memory_pointers->end(); i++) {
 				if (i->m_stored_memory != nullptr) {
 					if (i->Blocks() == 1) {
 						delete i->m_stored_memory;
@@ -303,7 +302,7 @@ PW_NAMESPACE_SRT
 				}
 			}
 			// Erase all of the members from the program
-			m_memory_pointers.~set();
+			delete m_memory_pointers;
 		}
 		static std::wstring Memory_String(const uint64_t& p_bytes) {
 			if (p_bytes != 0) {
@@ -423,7 +422,7 @@ PW_NAMESPACE_SRT
 		static uint64_t m_heap_memory;
 		static uint64_t m_high_heap_memory;
 		static uint64_t m_allocations;
-		static std::set<pw::Engine_Memory::Memory> m_memory_pointers;
+		static std::set<pw::Engine_Memory::Memory>* m_memory_pointers;
 	};
 	inline bool operator==(const pw::Engine_Memory::Memory& lhs, const pw::Engine_Memory::Memory& rhs) {
 		if (lhs.m_stored_memory == rhs.m_stored_memory) {

@@ -20,26 +20,43 @@ PW_NAMESPACE_SRT
 					m_alut_complete{ false }, m_main_window{} {
 			}
 			void Engine_Control::Initialize_Engine(int argc, char* argv[], const std::wstring& p_window_name, const int32_t& p_window_width, const int32_t& p_window_height, const bool& p_require_game_path) {
-				#ifdef PW_DEBUG_MODE
-					m_debug_load_time = std::chrono::system_clock::now();
-				#endif // PW_DEBUG_MODE
-				
-				if (pw::cm::Engine_Constant::Pistonworks_Path() == std::filesystem::path()) {
-					m_no_error = false;
-					co::cn::Console_Manip::Release_Console();
-					return;
-				}
-
-				m_require_game_path = p_require_game_path;
-
-				if (m_require_game_path == true) {
-					if (pw::cm::Engine_Constant::Game_Path() == std::filesystem::path()) {
-						m_no_error = false;
-						co::cn::Console_Manip::Release_Console();
-						return;
-					}
-				}
 				try {
+					//////////////////////////////////
+					// Engine Initialization
+					//////////////////////////////////
+					{
+						// Static variables that contain trees need to be 
+						// allocated manually so we can get rid of their 
+						// memory early. This is so we can track when all 
+						// memory ( except _Fac_Node ) is deleted.
+						pw::Engine_Memory::Initialize_Memory();
+						pw::co::cn::Console_Manip::Initialize_Console();
+
+						#ifdef PW_DEBUG_MODE
+							m_debug_load_time = std::chrono::system_clock::now();
+						#endif // PW_DEBUG_MODE
+
+						if (pw::cm::Engine_Constant::Pistonworks_Path() == std::filesystem::path()) {
+							m_no_error = false;
+							co::cn::Console_Manip::Release_Console();
+							return;
+						}
+
+						m_require_game_path = p_require_game_path;
+
+						if (m_require_game_path == true) {
+							if (pw::cm::Engine_Constant::Game_Path() == std::filesystem::path()) {
+								m_no_error = false;
+								co::cn::Console_Manip::Release_Console();
+								return;
+							}
+						}
+
+						pw::st::Text_Renderer::Initialize_Text_Renderer();
+						pw::co::Engine_Queue::Initialize_Queue();
+						pw::co::Engine_Input::Initialize_Input();
+						pw::co::File_Loader::Initialize_Loader();
+					}
 					//////////////////////////////////
 					// Settings
 					//////////////////////////////////
@@ -168,8 +185,6 @@ PW_NAMESPACE_SRT
 						#ifdef FREEIMAGE_LIB
 							PW_FI_VOID_CALL(FreeImage_Initialise());
 						#endif
-
-						pw::co::File_Loader::Initialize_Loader();
 					}
 					//////////////////////////////////
 					// Icon Setting

@@ -9,7 +9,7 @@ PW_NAMESPACE_SRT
 		// Engine_Input
 		// Static Declarations
 		co::Engine_Input* Engine_Input::m_current_input{ nullptr };
-		std::map<std::wstring, std::shared_ptr<PW_FUNCTION>> Engine_Input::m_function_register{};
+		std::map<std::wstring, std::shared_ptr<PW_FUNCTION>>* Engine_Input::m_function_register{ nullptr };
 		COMPLEX_FUNCTION_3(PW_EVENT_ID, PW_BUTTON_CODE, PW_STATE) Engine_Input::m_scene_event_function{};
 		// Class Members
 			Engine_Input::Engine_Input() :
@@ -55,8 +55,11 @@ PW_NAMESPACE_SRT
 				}
 				m_scroll_events.clear();
 			}
+			void Engine_Input::Initialize_Input() {
+				m_function_register = pw::Engine_Memory::Allocate<std::map<std::wstring, std::shared_ptr<PW_FUNCTION>>>();
+			}
 			void Engine_Input::Release_Input() {
-				m_function_register.~map();
+				pw::Engine_Memory::Deallocate<std::map<std::wstring, std::shared_ptr<PW_FUNCTION>>>(m_function_register);
 
 				m_scene_event_function.~function();
 			}
@@ -284,7 +287,7 @@ PW_NAMESPACE_SRT
 			}
 			void Engine_Input::Register_Function(const std::wstring& p_function_name, std::shared_ptr<PW_FUNCTION> p_function) {
 				if (p_function != nullptr) {
-					m_function_register.insert(std::make_pair(p_function_name, p_function));
+					m_function_register->insert(std::make_pair(p_function_name, p_function));
 				}
 			}
 			void Engine_Input::Set_Current_Input(co::Engine_Input* p_new_input) {
@@ -301,8 +304,8 @@ PW_NAMESPACE_SRT
 				return m_current_input;
 			}
 			std::shared_ptr<PW_FUNCTION> Engine_Input::Access_Function(const std::wstring& p_function_name) {
-				if (m_function_register.find(p_function_name) != m_function_register.end()) {
-					return m_function_register.at(p_function_name);
+				if (m_function_register->find(p_function_name) != m_function_register->end()) {
+					return m_function_register->at(p_function_name);
 				}
 				else {
 					return nullptr;

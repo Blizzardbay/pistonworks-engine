@@ -11,7 +11,7 @@ PW_NAMESPACE_SRT
 		std::wstring co::Engine_Queue::m_project_name{};
 
 		std::wstring co::Engine_Queue::m_current_scene{};
-		std::map<std::wstring, st::Game_Scene*> co::Engine_Queue::m_scene_directory{};
+		std::map<std::wstring, st::Game_Scene*>* co::Engine_Queue::m_scene_directory{ nullptr };
 
 		std::function<void(const std::wstring&)> co::Engine_Queue::m_pre_scene_add{ nullptr };
 		std::function<void(const std::wstring&)> co::Engine_Queue::m_post_scene_add{ nullptr };
@@ -25,21 +25,24 @@ PW_NAMESPACE_SRT
 		// Class Members
 			void Engine_Queue::Pre_Queue() {
 				if (m_current_scene.empty() != true) {
-					m_scene_directory.at(m_current_scene)->Pre_Render();
+					m_scene_directory->at(m_current_scene)->Pre_Render();
 				}
 			}
 			void Engine_Queue::Run_Queue() {
 				if (m_current_scene.empty() != true) {
-					m_scene_directory.at(m_current_scene)->Render();
+					m_scene_directory->at(m_current_scene)->Render();
 				}
 			}
+			void Engine_Queue::Initialize_Queue() {
+				m_scene_directory = pw::Engine_Memory::Allocate<std::map<std::wstring, st::Game_Scene*>>();
+			}
 			void Engine_Queue::Release_Queue() {
-				auto i = m_scene_directory.begin();
-				while (i != m_scene_directory.end()) {
+				auto i = m_scene_directory->begin();
+				while (i != m_scene_directory->end()) {
 					Remove_Scene(i->first);
-					i = m_scene_directory.begin();
+					i = m_scene_directory->begin();
 				}
-				m_scene_directory.~map();
+				pw::Engine_Memory::Deallocate<std::map<std::wstring, st::Game_Scene*>>(m_scene_directory);
 
 				m_current_scene.~basic_string();
 
@@ -68,7 +71,7 @@ PW_NAMESPACE_SRT
 				PRINT_INFO(L"MODELS", std::to_wstring(st::Model::m_model_counter), TO_UINT16(7));
 				size_t v_render_count = 0;
 				if (m_current_scene.empty() != true) {
-					v_render_count = m_scene_directory.at(m_current_scene)->Last_Render_Count();
+					v_render_count = m_scene_directory->at(m_current_scene)->Last_Render_Count();
 				}
 				PRINT_INFO(L"RNDCNT", std::to_wstring(v_render_count), TO_UINT16(8));
 
@@ -295,9 +298,9 @@ PW_NAMESPACE_SRT
 				}
 			}
 			void Engine_Queue::Add_Scene(const std::wstring& p_scene_name, const bool& p_set_current) {
-				auto v_found = m_scene_directory.find(p_scene_name);
+				auto v_found = m_scene_directory->find(p_scene_name);
 				// Can't load the same scene twice in once instance
-				if (v_found == m_scene_directory.end()) {
+				if (v_found == m_scene_directory->end()) {
 					if (m_pre_scene_add != nullptr) {
 						m_pre_scene_add(p_scene_name);
 					}
@@ -305,7 +308,7 @@ PW_NAMESPACE_SRT
 					// Load scene
 					st::Game_Scene* v_scene = co::File_Loader::Load_Scene_File(p_scene_name.c_str());
 
-					m_scene_directory.insert(std::make_pair(p_scene_name, v_scene));
+					m_scene_directory->insert(std::make_pair(p_scene_name, v_scene));
 					if (p_set_current == true) {
 						Set_Current_Scene(p_scene_name.c_str());
 					}
@@ -315,28 +318,28 @@ PW_NAMESPACE_SRT
 				}
 			}
 			void Engine_Queue::Set_Current_Scene(const std::wstring& p_scene_name) {
-				auto v_found = m_scene_directory.find(p_scene_name);
+				auto v_found = m_scene_directory->find(p_scene_name);
 				// Check if the scene exists first
-				if (v_found != m_scene_directory.end()) {
+				if (v_found != m_scene_directory->end()) {
 					if (m_pre_scene_change != nullptr) {
 						m_pre_scene_change(p_scene_name);
 					}
 
 					if (m_current_scene.empty() == true) {
 						m_current_scene = p_scene_name;
-						co::Engine_Input::Set_Current_Input(m_scene_directory.at(m_current_scene)->Input());
-						co::Engine_Input::Set_Scene_Event_Function(m_scene_directory.at(m_current_scene)->Event_Callback());
-						m_scene_directory.at(m_current_scene)->Re_Render();
+						co::Engine_Input::Set_Current_Input(m_scene_directory->at(m_current_scene)->Input());
+						co::Engine_Input::Set_Scene_Event_Function(m_scene_directory->at(m_current_scene)->Event_Callback());
+						m_scene_directory->at(m_current_scene)->Re_Render();
 					}
 					else {
-						m_scene_directory.at(m_current_scene)->Capture_Instance(st::Camera::Camera_Position());
+						m_scene_directory->at(m_current_scene)->Capture_Instance(st::Camera::Camera_Position());
 
-						m_scene_directory.at(m_current_scene)->Stop_All_Sounds();
+						m_scene_directory->at(m_current_scene)->Stop_All_Sounds();
 
 						m_current_scene = p_scene_name;
-						co::Engine_Input::Set_Current_Input(m_scene_directory.at(m_current_scene)->Input());
-						co::Engine_Input::Set_Scene_Event_Function(m_scene_directory.at(m_current_scene)->Event_Callback());
-						m_scene_directory.at(m_current_scene)->Re_Render();
+						co::Engine_Input::Set_Current_Input(m_scene_directory->at(m_current_scene)->Input());
+						co::Engine_Input::Set_Scene_Event_Function(m_scene_directory->at(m_current_scene)->Event_Callback());
+						m_scene_directory->at(m_current_scene)->Re_Render();
 					}
 
 					if (m_post_scene_change != nullptr) {
@@ -345,9 +348,9 @@ PW_NAMESPACE_SRT
 				}
 			}
 			void Engine_Queue::Remove_Scene(std::wstring p_scene_name) {
-				auto v_found = m_scene_directory.find(p_scene_name);
+				auto v_found = m_scene_directory->find(p_scene_name);
 				// Can't load the same scene twice in once instance
-				if (v_found != m_scene_directory.end()) {
+				if (v_found != m_scene_directory->end()) {
 					if (m_pre_scene_remove != nullptr) {
 						m_pre_scene_remove(p_scene_name);
 					}
@@ -360,7 +363,7 @@ PW_NAMESPACE_SRT
 
 					pw::Engine_Memory::Deallocate<pw::st::Game_Scene>(v_found->second);
 
-					m_scene_directory.erase(v_found->first);
+					m_scene_directory->erase(v_found->first);
 
 
 					if (m_post_scene_remove != nullptr) {
@@ -386,8 +389,8 @@ PW_NAMESPACE_SRT
 				m_user_debug_function = p_debug_function;
 			}
 			st::Game_Scene* Engine_Queue::Get_Scene(const std::wstring& p_scene_name) {
-				auto v_found = m_scene_directory.find(p_scene_name);
-				if (v_found != m_scene_directory.end()) {
+				auto v_found = m_scene_directory->find(p_scene_name);
+				if (v_found != m_scene_directory->end()) {
 					return v_found->second;
 				}
 				else {
@@ -395,8 +398,8 @@ PW_NAMESPACE_SRT
 				}
 			}
 			st::Game_Scene* Engine_Queue::Current_Scene() {
-				auto v_found = m_scene_directory.find(m_current_scene);
-				if (v_found != m_scene_directory.end()) {
+				auto v_found = m_scene_directory->find(m_current_scene);
+				if (v_found != m_scene_directory->end()) {
 					return v_found->second;
 				}
 				else {

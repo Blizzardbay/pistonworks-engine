@@ -214,7 +214,7 @@ PW_NAMESPACE_SRT
 			static std::function<void(const std::wstring&)> m_change_scene_function;
 			static std::function<void(const std::wstring&)> m_remove_scene_function;
 
-			static std::map<std::wstring, st::Texture*> m_texture_repository;
+			static std::map<std::wstring, st::Texture*>* m_texture_repository;
 
 			static glm::vec4 m_engine_colors[(uint32_t)Default_Colors::Color_Count];
 		};

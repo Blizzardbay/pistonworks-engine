@@ -74,6 +74,8 @@ PW_NAMESPACE_SRT
 		public:
 			static void Pre_Queue();
 			static void Run_Queue();
+
+			static void Initialize_Queue();
 			static void Release_Queue();
 
 			static void Print_Debug_Stats();
@@ -107,7 +109,7 @@ PW_NAMESPACE_SRT
 
 			static std::wstring m_current_scene;
 
-			static std::map<std::wstring, st::Game_Scene*> m_scene_directory;
+			static std::map<std::wstring, st::Game_Scene*>* m_scene_directory;
 
 			static std::function<void(const std::wstring&)> m_pre_scene_add;
 			static std::function<void(const std::wstring&)> m_post_scene_add;

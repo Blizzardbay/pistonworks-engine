@@ -165,6 +165,8 @@ PW_NAMESPACE_SRT
 		private:
 		// Public Functions/Macros
 		public:
+			static void Initialize_Text_Renderer();
+
 			static void Load_Engine_Fonts(const std::wstring& p_font_location, const std::vector<std::wstring>& p_font_ids, const std::vector<std::wstring>& p_font_names);
 			
 			static void Release_Engine_Fonts();
@@ -176,7 +178,7 @@ PW_NAMESPACE_SRT
 		private:
 		// Private Variables  
 		private:
-			static std::map<std::wstring, std::map<wchar_t, Character*>> m_font_library;
+			static std::map<std::wstring, std::map<wchar_t, Character*>>* m_font_library;
 		};
 	//////////////////////////////////
 	ST_NAMESPACE_END

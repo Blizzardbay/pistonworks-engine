@@ -278,8 +278,11 @@ PW_NAMESPACE_SRT
 		// End of Class Members
 		// Text_Renderer  
 		// Static Declarations
-			std::map<std::wstring, std::map<wchar_t, Character*>> Text_Renderer::m_font_library{};
+			std::map<std::wstring, std::map<wchar_t, Character*>>* Text_Renderer::m_font_library{ nullptr };
 		// Class Members  
+			void Text_Renderer::Initialize_Text_Renderer() {
+				m_font_library = pw::Engine_Memory::Allocate<std::map<std::wstring, std::map<wchar_t, Character*>>>();
+			}
 			void Text_Renderer::Load_Engine_Fonts(const std::wstring& p_font_location, const std::vector<std::wstring>& p_font_ids, const std::vector<std::wstring>& p_font_names) {
 				try {
 					FT_Library v_ft_library;
@@ -325,15 +328,15 @@ PW_NAMESPACE_SRT
 								glm::vec2(v_face->glyph->bitmap.width, v_face->glyph->bitmap.rows),
 								glm::vec2(v_face->glyph->bitmap_left, v_face->glyph->bitmap_top), v_face->glyph->advance.x);
 
-							if (m_font_library.count(p_font_ids.at(i)) < 1) {
+							if (m_font_library->count(p_font_ids.at(i)) < 1) {
 								std::map<wchar_t, Character*> v_map = std::map<wchar_t, Character*>();
 								v_map.insert(std::make_pair((wchar_t)j, v_symbol));
-								m_font_library.insert(std::make_pair(p_font_ids.at(i), v_map));
+								m_font_library->insert(std::make_pair(p_font_ids.at(i), v_map));
 							}
 							else {
-								auto v_found_character = m_font_library.at(p_font_ids.at(i)).find((wchar_t)j);
-								if (v_found_character == m_font_library.at(p_font_ids.at(i)).end()) {
-									m_font_library.at(p_font_ids.at(i)).insert(std::make_pair((wchar_t)j, v_symbol));
+								auto v_found_character = m_font_library->at(p_font_ids.at(i)).find((wchar_t)j);
+								if (v_found_character == m_font_library->at(p_font_ids.at(i)).end()) {
+									m_font_library->at(p_font_ids.at(i)).insert(std::make_pair((wchar_t)j, v_symbol));
 								}
 							}
 							v_symbol = nullptr;
@@ -350,17 +353,17 @@ PW_NAMESPACE_SRT
 				}
 			}
 			void Text_Renderer::Release_Engine_Fonts() {
-				for (auto i = m_font_library.begin(); i != m_font_library.end(); i++) {
+				for (auto i = m_font_library->begin(); i != m_font_library->end(); i++) {
 					for (auto j = i->second.begin(); j != i->second.end(); j++) {
 						pw::Engine_Memory::Deallocate<Character>(j->second);
 						j->second = nullptr;
 					}
 				}
-				m_font_library.~map();
+				pw::Engine_Memory::Deallocate<std::map<std::wstring, std::map<wchar_t, Character*>>>(m_font_library);
 			}
 			Character* Text_Renderer::Create_Character(const wchar_t& p_letter_type, const std::wstring& p_font_type) {
-				auto v_found = m_font_library.find(p_font_type);
-				if (v_found != m_font_library.end()) {
+				auto v_found = m_font_library->find(p_font_type);
+				if (v_found != m_font_library->end()) {
 					auto v_found_character = v_found->second.find(p_letter_type);
 					if (v_found_character != v_found->second.end()) {
 						return v_found_character->second;

@@ -28,7 +28,7 @@ PW_NAMESPACE_SRT
 			std::function<void(const std::wstring&)> File_Loader::m_change_scene_function{};
 			std::function<void(const std::wstring&)> File_Loader::m_remove_scene_function{};
 
-			std::map<std::wstring, st::Texture*> File_Loader::m_texture_repository{};
+			std::map<std::wstring, st::Texture*>* File_Loader::m_texture_repository{ nullptr };
 
 			glm::vec4 File_Loader::m_engine_colors[(uint32_t)Default_Colors::Color_Count]{
 				//LIT_RED				#ff 80 80 
@@ -113,6 +113,8 @@ PW_NAMESPACE_SRT
 				m_engine_texture_dir = pw::cm::Engine_Constant::Pistonworks_Path().generic_wstring() + m_engine_texture_dir;
 				m_engine_icon_dir = pw::cm::Engine_Constant::Pistonworks_Path().generic_wstring() + m_engine_icon_dir;
 				m_engine_animation_dir = pw::cm::Engine_Constant::Pistonworks_Path().generic_wstring() + m_engine_animation_dir;
+
+				m_texture_repository = pw::Engine_Memory::Allocate<std::map<std::wstring, st::Texture*>>();
 			}
 			void File_Loader::Initialize_Loader(const std::function<void(const std::wstring&, const bool&)>& p_add_scene_function,
 					const std::function<void(const std::wstring&)>& p_change_scene_function,
@@ -134,7 +136,7 @@ PW_NAMESPACE_SRT
 				m_engine_icon_dir.~basic_string();
 				m_engine_animation_dir.~basic_string();
 
-				m_texture_repository.~map();
+				pw::Engine_Memory::Deallocate<std::map<std::wstring, st::Texture*>>(m_texture_repository);
 			}
 			st::Texture* File_Loader::Load_Texture_File(const std::wstring& p_file_name, const bool& p_repeat, const bool& p_linear, const bool& p_engine_dir, std::wstring* p_override_dir) {
 				// File Type
@@ -373,28 +375,37 @@ PW_NAMESPACE_SRT
 				// Result
 				st::Texture* v_texture{ nullptr };
 
-				// Load File
-				PW_FI_VOID_CALL(TRY_LINE v_file = FreeImage_Load(v_image_type, p_file_location.generic_string().c_str(), PNG_DEFAULT));
+				auto v_found = m_texture_repository->find(p_file_location.filename().wstring());
+				if (v_found != m_texture_repository->end()) {
+					// Load File
+					PW_FI_VOID_CALL(TRY_LINE v_file = FreeImage_Load(v_image_type, p_file_location.generic_string().c_str(), PNG_DEFAULT));
 
-				if (!v_file == true) {
-					throw er::Warning_Error(L"File Loader", L"Unable to load", EXCEPTION_LINE, __FILEW__, L"FreeImage_Load");
-				}
-				if (TRY_LINE FreeImage_HasPixels(v_file) == (BOOL)true) {
-					// If successful get data
-					v_image_data = FreeImage_GetBits(v_file);
+					if (!v_file == true) {
+						throw er::Warning_Error(L"File Loader", L"Unable to load", EXCEPTION_LINE, __FILEW__, L"FreeImage_Load");
+					}
 
-					v_width = FreeImage_GetWidth(v_file);
-					v_height = FreeImage_GetHeight(v_file);
+					if (TRY_LINE FreeImage_HasPixels(v_file) == (BOOL)true) {
+						// If successful get data
+						v_image_data = FreeImage_GetBits(v_file);
 
-					// Create Texture
-					v_texture = pw::Engine_Memory::Allocate<st::Texture, bool>(v_image_data, v_width, v_height, GL_RGBA, GL_BGRA, p_repeat, p_linear);
+						v_width = FreeImage_GetWidth(v_file);
+						v_height = FreeImage_GetHeight(v_file);
 
-					FreeImage_Unload(v_file);
+						// Create Texture
+						v_texture = pw::Engine_Memory::Allocate<st::Texture, bool>(v_image_data, v_width, v_height, GL_RGBA, GL_BGRA, p_repeat, p_linear);
 
-					return v_texture;
+						m_texture_repository->insert(std::make_pair(p_file_location.filename().wstring(), v_texture));
+
+						FreeImage_Unload(v_file);
+
+						return v_texture;
+					}
+					else {
+						throw er::Warning_Error(L"File Loader", L"No Pixel Data", EXCEPTION_LINE, __FILEW__, L"FreeImage_HasPixels");
+					}
 				}
 				else {
-					throw er::Warning_Error(L"File Loader", L"No Pixel Data", EXCEPTION_LINE, __FILEW__, L"FreeImage_HasPixels");
+					return pw::Engine_Memory::Allocate<st::Texture, bool>(*v_found->second);
 				}
 			}
 			st::Texture* File_Loader::Load_BMP(const std::filesystem::path& p_file_location, const bool& p_repeat, const bool& p_linear) {

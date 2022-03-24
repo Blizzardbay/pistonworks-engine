@@ -68,16 +68,7 @@ PW_NAMESPACE_SRT
 				HANDLE Console_Manip::m_console_output{ NULL };
 				COORD Console_Manip::m_write_coord{ 0,0 };
 				uint16_t Console_Manip::m_msg_line{ 0 };
-				std::map<Console_Manip::Msg_Types, Console_Color> Console_Manip::m_msg_colors{
-					std::make_pair(Console_Manip::Msg_Types::E_CLEAR, Console_Color{Win_Text_Color::BLACK, Win_Backaround_Color::BLACK}),
-					std::make_pair(Console_Manip::Msg_Types::E_DEFAULT, Console_Color{Win_Text_Color::BRIGHT_WHITE, Win_Backaround_Color::BLACK}),
-					std::make_pair(Console_Manip::Msg_Types::E_ENGINE, Console_Color{Win_Text_Color::GREEN, Win_Backaround_Color::BLACK}),
-					std::make_pair(Console_Manip::Msg_Types::E_GAME, Console_Color{Win_Text_Color::YELLOW, Win_Backaround_Color::BLACK}),
-					std::make_pair(Console_Manip::Msg_Types::E_INFO, Console_Color{Win_Text_Color::PINK, Win_Backaround_Color::BLACK}),
-					std::make_pair(Console_Manip::Msg_Types::E_ERROR, Console_Color{ Win_Text_Color::RED, Win_Backaround_Color::BLACK}),
-					std::make_pair(Console_Manip::Msg_Types::E_SUCCESS, Console_Color{ Win_Text_Color::BLUE, Win_Backaround_Color::BLACK}),
-					std::make_pair(Console_Manip::Msg_Types::E_CONSOLE_OUT, Console_Color{ Win_Text_Color::WHITE, Win_Backaround_Color::BLACK})
-				};
+				std::map<Console_Manip::Msg_Types, Console_Color>* Console_Manip::m_msg_colors{ nullptr };
 			// Static Declarations
 			// Class Members
 				void Console_Manip::Set_Up_Console() {
@@ -223,6 +214,18 @@ PW_NAMESPACE_SRT
 						throw v_error;
 					}
 				}
+				void Console_Manip::Initialize_Console() {
+					m_msg_colors = pw::Engine_Memory::Allocate<std::map<Console_Manip::Msg_Types, Console_Color>, bool>(
+						std::make_pair(Console_Manip::Msg_Types::E_CLEAR, Console_Color{ Win_Text_Color::BLACK, Win_Backaround_Color::BLACK }),
+						std::make_pair(Console_Manip::Msg_Types::E_DEFAULT, Console_Color{ Win_Text_Color::BRIGHT_WHITE, Win_Backaround_Color::BLACK }),
+						std::make_pair(Console_Manip::Msg_Types::E_ENGINE, Console_Color{ Win_Text_Color::GREEN, Win_Backaround_Color::BLACK }),
+						std::make_pair(Console_Manip::Msg_Types::E_GAME, Console_Color{ Win_Text_Color::YELLOW, Win_Backaround_Color::BLACK }),
+						std::make_pair(Console_Manip::Msg_Types::E_INFO, Console_Color{ Win_Text_Color::PINK, Win_Backaround_Color::BLACK }),
+						std::make_pair(Console_Manip::Msg_Types::E_ERROR, Console_Color{ Win_Text_Color::RED, Win_Backaround_Color::BLACK }),
+						std::make_pair(Console_Manip::Msg_Types::E_SUCCESS, Console_Color{ Win_Text_Color::BLUE, Win_Backaround_Color::BLACK }),
+						std::make_pair(Console_Manip::Msg_Types::E_CONSOLE_OUT, Console_Color{ Win_Text_Color::WHITE, Win_Backaround_Color::BLACK })
+					);
+				}
 				void Console_Manip::Resize(const uint32_t& p_size_x, const uint32_t& p_size_y) {
 					try {
 						TRY_LINE COORD v_size;
@@ -342,20 +345,20 @@ PW_NAMESPACE_SRT
 						if (v_wstr.size() > 18) {
 							for (size_t i = 0; i < 18; i++) {
 								int16_t x_pos = TO_INT16(v_x_off + (int16_t)i);
-								Console_Manip::Draw_WChar(COORD{ x_pos, TO_INT16(p_line + 2) }, v_wstr.at(i), m_msg_colors.at(Console_Manip::Msg_Types::E_DEFAULT));
+								Console_Manip::Draw_WChar(COORD{ x_pos, TO_INT16(p_line + 2) }, v_wstr.at(i), m_msg_colors->at(Console_Manip::Msg_Types::E_DEFAULT));
 							}
-							Console_Manip::Draw_WChar(COORD{ TO_INT16(v_x_off + 17), TO_INT16(p_line + 2) }, L'|', m_msg_colors.at(Console_Manip::Msg_Types::E_DEFAULT));
+							Console_Manip::Draw_WChar(COORD{ TO_INT16(v_x_off + 17), TO_INT16(p_line + 2) }, L'|', m_msg_colors->at(Console_Manip::Msg_Types::E_DEFAULT));
 						}
 						else {
 							for (size_t i = 0; i < v_wstr.size(); i++) {
 								int16_t x_pos = TO_INT16(v_x_off + (int16_t)i);
-								Console_Manip::Draw_WChar(COORD{ x_pos, TO_INT16(p_line + 2) }, v_wstr.at(i), m_msg_colors.at(Console_Manip::Msg_Types::E_DEFAULT));
+								Console_Manip::Draw_WChar(COORD{ x_pos, TO_INT16(p_line + 2) }, v_wstr.at(i), m_msg_colors->at(Console_Manip::Msg_Types::E_DEFAULT));
 							}
 							for (size_t i = 0; i < (18 - v_wstr.size()); i++) {
 								int16_t x_pos = TO_INT16(v_x_off + (int16_t)i + v_wstr.size());
-								Console_Manip::Draw_WChar(COORD{ x_pos, TO_INT16(p_line + 2) }, L' ', m_msg_colors.at(Console_Manip::Msg_Types::E_DEFAULT));
+								Console_Manip::Draw_WChar(COORD{ x_pos, TO_INT16(p_line + 2) }, L' ', m_msg_colors->at(Console_Manip::Msg_Types::E_DEFAULT));
 							}
-							Console_Manip::Draw_WChar(COORD{ TO_INT16(v_x_off + 17), TO_INT16(p_line + 2) }, L'|', m_msg_colors.at(Console_Manip::Msg_Types::E_DEFAULT));
+							Console_Manip::Draw_WChar(COORD{ TO_INT16(v_x_off + 17), TO_INT16(p_line + 2) }, L'|', m_msg_colors->at(Console_Manip::Msg_Types::E_DEFAULT));
 						}
 					}
 					catch (const std::invalid_argument& v_error) {
@@ -437,22 +440,22 @@ PW_NAMESPACE_SRT
 						if (v_wstr.size() > 75) {
 							for (size_t i = 0; i < 76; i++) {
 								int16_t x_pos = v_x_off + (int16_t)i;
-								Console_Manip::Draw_WChar(COORD{ x_pos, TO_INT16(m_msg_line + 2) }, v_wstr.at(i), m_msg_colors.at(Console_Manip::Msg_Types::E_DEFAULT));
+								Console_Manip::Draw_WChar(COORD{ x_pos, TO_INT16(m_msg_line + 2) }, v_wstr.at(i), m_msg_colors->at(Console_Manip::Msg_Types::E_DEFAULT));
 							}
-							Console_Manip::Draw_WChar(COORD{ 77, TO_INT16(m_msg_line + 2) }, L'|', m_msg_colors.at(Console_Manip::Msg_Types::E_DEFAULT));
+							Console_Manip::Draw_WChar(COORD{ 77, TO_INT16(m_msg_line + 2) }, L'|', m_msg_colors->at(Console_Manip::Msg_Types::E_DEFAULT));
 						}
 						else {
 							for (size_t i = 0; i < v_wstr.size(); i++) {
 								int16_t x_pos = v_x_off + (int16_t)i;
-								Console_Manip::Draw_WChar(COORD{ x_pos, TO_INT16(m_msg_line + 2) }, v_wstr.at(i), m_msg_colors.at(Console_Manip::Msg_Types::E_DEFAULT));
+								Console_Manip::Draw_WChar(COORD{ x_pos, TO_INT16(m_msg_line + 2) }, v_wstr.at(i), m_msg_colors->at(Console_Manip::Msg_Types::E_DEFAULT));
 							}
-							Console_Manip::Draw_WChar(COORD{ 77, TO_INT16(m_msg_line + 2) }, L'|', m_msg_colors.at(Console_Manip::Msg_Types::E_DEFAULT));
+							Console_Manip::Draw_WChar(COORD{ 77, TO_INT16(m_msg_line + 2) }, L'|', m_msg_colors->at(Console_Manip::Msg_Types::E_DEFAULT));
 						}
 
 						for (size_t i = 0; i < 7; i++) {
 							int16_t x_pos = v_x_off + (int16_t)i + 10;
 
-							if (TRY_LINE WriteConsoleOutputAttribute(m_console_output, &m_msg_colors.at(p_msg_type).Return_Color(), 1, { x_pos, TO_INT16(m_msg_line + 2) }, &v_bytes_written) == FALSE) {
+							if (TRY_LINE WriteConsoleOutputAttribute(m_console_output, &m_msg_colors->at(p_msg_type).Return_Color(), 1, { x_pos, TO_INT16(m_msg_line + 2) }, &v_bytes_written) == FALSE) {
 								throw er::Warning_Error(L"Console", Console_Error::Windows_Last_Error(), EXCEPTION_LINE, __FILEW__, L"WriteConsoleOutputAttribute");
 							}
 						}
@@ -479,7 +482,7 @@ PW_NAMESPACE_SRT
 
 						for (int16_t i = 0; i < 76; i++) {
 							for (int16_t j = 0; j < 36; j++) {
-								Console_Manip::Draw_WChar(COORD{ TO_INT16(i + v_x_off),  TO_INT16(j + 2) }, L' ', m_msg_colors.at(Console_Manip::Msg_Types::E_CLEAR));
+								Console_Manip::Draw_WChar(COORD{ TO_INT16(i + v_x_off),  TO_INT16(j + 2) }, L' ', m_msg_colors->at(Console_Manip::Msg_Types::E_CLEAR));
 							}
 						}
 					}
@@ -711,12 +714,12 @@ PW_NAMESPACE_SRT
 					}
 				}
 				const std::map<Console_Manip::Msg_Types, Console_Color>& Console_Manip::Msg_Colors() {
-					return m_msg_colors;
+					return *m_msg_colors;
 				}
 				void Console_Manip::Release_Console() {
 					FreeConsole();
 				
-					m_msg_colors.~map();
+					pw::Engine_Memory::Deallocate<std::map<Console_Manip::Msg_Types, Console_Color>>(m_msg_colors);
 				}
 			// End of Class Members
 		//////////////////////////////////

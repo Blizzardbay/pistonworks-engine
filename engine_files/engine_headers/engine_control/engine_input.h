@@ -90,6 +90,7 @@ PW_NAMESPACE_SRT
 				std::map<PW_SCROLL_ACTION, std::map<PW_ID, st::Event_Base*>> p_scroll_events);
 			~Engine_Input();
 
+			static void Initialize_Input();
 			static void Release_Input();
 		private:
 		// Public Functions/Macros
@@ -130,7 +131,7 @@ PW_NAMESPACE_SRT
 
 			// This is a pointer to the current input that we are using.
 			static co::Engine_Input* m_current_input;
-			static std::map<std::wstring, std::shared_ptr<PW_FUNCTION>> m_function_register;
+			static std::map<std::wstring, std::shared_ptr<PW_FUNCTION>>* m_function_register;
 			static COMPLEX_FUNCTION_3(PW_EVENT_ID, PW_BUTTON_CODE, PW_STATE) m_scene_event_function;
 		};
 	//////////////////////////////////
