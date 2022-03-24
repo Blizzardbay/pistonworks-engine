@@ -151,4 +151,4 @@ uint64_t pw::er::Engine_Exception::m_exception_line{ 0 };
 uint64_t pw::Engine_Memory::m_heap_memory{ 0 };
 uint64_t pw::Engine_Memory::m_high_heap_memory{ 0 };
 uint64_t pw::Engine_Memory::m_allocations{ 0 };
-std::set<pw::Engine_Memory::Memory> pw::Engine_Memory::m_memory_pointers{};
+std::set<pw::Engine_Memory::Memory>* pw::Engine_Memory::m_memory_pointers{};

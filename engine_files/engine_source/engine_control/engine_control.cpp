@@ -393,8 +393,6 @@ PW_NAMESPACE_SRT
 
 						Release_Game();
 
-						pw::Engine_Memory::Deallocate_All();
-
 						if (m_alut_complete == true) {
 							st::Listener::Release_Listener();
 							alutExit();
@@ -409,6 +407,8 @@ PW_NAMESPACE_SRT
 								cn::Console_Manip::Release_Console();
 							}
 						#endif // PW_DEBUG_MODE
+
+						pw::Engine_Memory::Deallocate_All();
 					}
 				}
 			}

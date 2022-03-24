@@ -376,7 +376,7 @@ PW_NAMESPACE_SRT
 				st::Texture* v_texture{ nullptr };
 
 				auto v_found = m_texture_repository->find(p_file_location.filename().wstring());
-				if (v_found != m_texture_repository->end()) {
+				if (v_found == m_texture_repository->end()) {
 					// Load File
 					PW_FI_VOID_CALL(TRY_LINE v_file = FreeImage_Load(v_image_type, p_file_location.generic_string().c_str(), PNG_DEFAULT));
 
