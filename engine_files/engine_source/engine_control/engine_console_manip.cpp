@@ -215,7 +215,7 @@ PW_NAMESPACE_SRT
 					}
 				}
 				void Console_Manip::Initialize_Console() {
-					m_msg_colors = pw::Engine_Memory::Allocate<std::map<Console_Manip::Msg_Types, Console_Color>, bool>(
+					std::map<Console_Manip::Msg_Types, Console_Color> v_temp{
 						std::make_pair(Console_Manip::Msg_Types::E_CLEAR, Console_Color{ Win_Text_Color::BLACK, Win_Backaround_Color::BLACK }),
 						std::make_pair(Console_Manip::Msg_Types::E_DEFAULT, Console_Color{ Win_Text_Color::BRIGHT_WHITE, Win_Backaround_Color::BLACK }),
 						std::make_pair(Console_Manip::Msg_Types::E_ENGINE, Console_Color{ Win_Text_Color::GREEN, Win_Backaround_Color::BLACK }),
@@ -224,7 +224,9 @@ PW_NAMESPACE_SRT
 						std::make_pair(Console_Manip::Msg_Types::E_ERROR, Console_Color{ Win_Text_Color::RED, Win_Backaround_Color::BLACK }),
 						std::make_pair(Console_Manip::Msg_Types::E_SUCCESS, Console_Color{ Win_Text_Color::BLUE, Win_Backaround_Color::BLACK }),
 						std::make_pair(Console_Manip::Msg_Types::E_CONSOLE_OUT, Console_Color{ Win_Text_Color::WHITE, Win_Backaround_Color::BLACK })
-					);
+					};
+
+					m_msg_colors = pw::Engine_Memory::Allocate<std::map<Console_Manip::Msg_Types, Console_Color>, bool>(v_temp);
 				}
 				void Console_Manip::Resize(const uint32_t& p_size_x, const uint32_t& p_size_y) {
 					try {
