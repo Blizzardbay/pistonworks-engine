@@ -1714,6 +1714,7 @@ PW_NAMESPACE_SRT
 												p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::CIRCLE, v_is_sensor, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
 											}
 										}
+										va_model->Set_Physics_Object(p_physics_factory->Access_Memeber(vd_model->Id()));
 									}
 									else {
 										if (v_body_type == "b2_dynamicBody") {
@@ -1728,8 +1729,8 @@ PW_NAMESPACE_SRT
 											va_model->Set_Physics_Object(p_physics_factory->Access_Memeber(vd_model->Id()));
 										}
 									}
+									p_collision_models.push_back(va_model);
 								}
-								p_collision_models.push_back(va_model);
 							}
 
 							p_scene_models.push_back(va_model);
@@ -1774,7 +1775,6 @@ PW_NAMESPACE_SRT
 									p_model_attachments.push_back(std::make_tuple(TO_WSTRING(v_attachment_id), va_model, glm::vec2(v_offset_x, v_offset_y)));
 								}
 
-
 								if (p_has_physics_factory == 1) {
 									if (v_has_physics == 1) {
 										if (v_body_type == "b2_staticBody") {
@@ -1786,6 +1786,7 @@ PW_NAMESPACE_SRT
 													p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::CIRCLE, v_is_sensor, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
 												}
 											}
+											va_model->Set_Physics_Object(p_physics_factory->Access_Memeber(vd_model->Id()));
 										}
 										else {
 											if (v_body_type == "b2_dynamicBody") {
@@ -1800,8 +1801,8 @@ PW_NAMESPACE_SRT
 												va_model->Set_Physics_Object(p_physics_factory->Access_Memeber(vd_model->Id()));
 											}
 										}
+										p_collision_models.push_back(va_model);
 									}
-									p_collision_models.push_back(va_model);
 								}
 
 								p_scene_models.push_back(va_model);
@@ -1855,7 +1856,6 @@ PW_NAMESPACE_SRT
 									p_model_attachments.push_back(std::make_tuple(TO_WSTRING(v_attachment_id), va_model, glm::vec2(v_offset_x, v_offset_y)));
 								}
 
-
 								if (p_has_physics_factory == 1) {
 									if (v_has_physics == 1) {
 										if (v_body_type == "b2_staticBody") {
@@ -1867,6 +1867,7 @@ PW_NAMESPACE_SRT
 													p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::CIRCLE, v_is_sensor, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
 												}
 											}
+											va_model->Set_Physics_Object(p_physics_factory->Access_Memeber(vd_model->Id()));
 										}
 										else {
 											if (v_body_type == "b2_dynamicBody") {
@@ -1881,8 +1882,8 @@ PW_NAMESPACE_SRT
 												va_model->Set_Physics_Object(p_physics_factory->Access_Memeber(vd_model->Id()));
 											}
 										}
+										p_collision_models.push_back(va_model);
 									}
-									p_collision_models.push_back(va_model);
 								}
 
 								p_scene_models.push_back(va_model);
@@ -2006,7 +2007,6 @@ PW_NAMESPACE_SRT
 								p_model_attachments.push_back(std::make_tuple(TO_WSTRING(v_attachment_id), va_model, glm::vec2(v_offset_x, v_offset_y)));
 							}
 
-
 							if (p_has_physics_factory == 1) {
 								if (v_has_physics == 1) {
 									if (v_body_type == "b2_staticBody") {
@@ -2018,6 +2018,7 @@ PW_NAMESPACE_SRT
 												p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::CIRCLE, v_is_sensor, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
 											}
 										}
+										va_model->Set_Physics_Object(p_physics_factory->Access_Memeber(vd_model->Id()));
 									}
 									else {
 										if (v_body_type == "b2_dynamicBody") {
@@ -2032,8 +2033,8 @@ PW_NAMESPACE_SRT
 											va_model->Set_Physics_Object(p_physics_factory->Access_Memeber(vd_model->Id()));
 										}
 									}
+									p_collision_models.push_back(va_model);
 								}
-								p_collision_models.push_back(va_model);
 							}
 
 							p_scene_models.push_back(va_model);
@@ -2073,7 +2074,6 @@ PW_NAMESPACE_SRT
 									p_model_attachments.push_back(std::make_tuple(TO_WSTRING(v_attachment_id), va_model, glm::vec2(v_offset_x, v_offset_y)));
 								}
 
-
 								if (p_has_physics_factory == 1) {
 									if (v_has_physics == 1) {
 										if (v_body_type == "b2_staticBody") {
@@ -2085,6 +2085,7 @@ PW_NAMESPACE_SRT
 													p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::CIRCLE, v_is_sensor, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
 												}
 											}
+											va_model->Set_Physics_Object(p_physics_factory->Access_Memeber(vd_model->Id()));
 										}
 										else {
 											if (v_body_type == "b2_dynamicBody") {
@@ -2099,8 +2100,8 @@ PW_NAMESPACE_SRT
 												va_model->Set_Physics_Object(p_physics_factory->Access_Memeber(vd_model->Id()));
 											}
 										}
+										p_collision_models.push_back(va_model);
 									}
-									p_collision_models.push_back(va_model);
 								}
 
 								p_scene_models.push_back(va_model);
@@ -2148,7 +2149,6 @@ PW_NAMESPACE_SRT
 									p_model_attachments.push_back(std::make_tuple(TO_WSTRING(v_attachment_id), va_model, glm::vec2(v_offset_x, v_offset_y)));
 								}
 
-
 								if (p_has_physics_factory == 1) {
 									if (v_has_physics == 1) {
 										if (v_body_type == "b2_staticBody") {
@@ -2160,6 +2160,7 @@ PW_NAMESPACE_SRT
 													p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::CIRCLE, v_is_sensor, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
 												}
 											}
+											va_model->Set_Physics_Object(p_physics_factory->Access_Memeber(vd_model->Id()));
 										}
 										else {
 											if (v_body_type == "b2_dynamicBody") {
@@ -2174,8 +2175,8 @@ PW_NAMESPACE_SRT
 												va_model->Set_Physics_Object(p_physics_factory->Access_Memeber(vd_model->Id()));
 											}
 										}
+										p_collision_models.push_back(va_model);
 									}
-									p_collision_models.push_back(va_model);
 								}
 
 								p_scene_models.push_back(va_model);

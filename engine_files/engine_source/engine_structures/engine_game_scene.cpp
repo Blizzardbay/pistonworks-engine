@@ -219,10 +219,12 @@ PW_NAMESPACE_SRT
 				if (m_body != nullptr) {
 					if (m_body->Body() != nullptr) {
 						if (p_other_model != nullptr) {
-							if (p_other_model->Physics_Object()->Body() != nullptr) {
-								return b2TestOverlap(m_body->Body()->GetFixtureList()->GetShape(), 0,
-									p_other_model->Physics_Object()->Body()->GetFixtureList()->GetShape(), 0,
-									m_body->Body()->GetTransform(), p_other_model->Physics_Object()->Body()->GetTransform());
+							if (p_other_model->Physics_Object() != nullptr) {
+								if (p_other_model->Physics_Object()->Body() != nullptr) {
+									return b2TestOverlap(m_body->Body()->GetFixtureList()->GetShape(), 0,
+										p_other_model->Physics_Object()->Body()->GetFixtureList()->GetShape(), 0,
+										m_body->Body()->GetTransform(), p_other_model->Physics_Object()->Body()->GetTransform());
+								}
 							}
 						}
 					}
