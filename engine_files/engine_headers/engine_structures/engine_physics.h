@@ -84,7 +84,7 @@ PW_NAMESPACE_SRT
 				CIRCLE
 			};
 
-			Physics_Object(st::Model* p_model, const b2BodyType& p_type, b2World* p_world, const bool& p_is_fixed, const float& p_friction, const float& p_restitution, const float& p_density, const Object_Type& p_polygon);
+			Physics_Object(st::Model* p_model, const b2BodyType& p_type, b2World* p_world, const bool& p_is_fixed, const float& p_friction, const float& p_restitution, const float& p_density, const Object_Type& p_polygon, const bool& p_is_sensor);
 			~Physics_Object();
 		private:
 			// Public Functions/Macros  
@@ -142,7 +142,7 @@ PW_NAMESPACE_SRT
 			void Run();
 		// Public Variables         
 		public:
-			void Add_Object(st::Model* p_model, const b2BodyType& p_type, const st::Physics_Object::Object_Type& p_polygon, const PW_ID& p_object_id = NULL, const bool& p_is_fixed = false, const float& p_friction = 0.0f, const float& p_restitution = 0.0f, const float& p_density = 0.0f);
+			void Add_Object(st::Model* p_model, const b2BodyType& p_type, const st::Physics_Object::Object_Type& p_polygon, const bool& p_is_sensor, const PW_ID& p_object_id = NULL, const bool& p_is_fixed = false, const float& p_friction = 0.0f, const float& p_restitution = 0.0f, const float& p_density = 0.0f);
 			
 			st::Physics_Object* Access_Memeber(const PW_ID& p_id);
 			

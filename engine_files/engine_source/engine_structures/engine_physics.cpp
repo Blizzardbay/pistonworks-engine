@@ -9,7 +9,7 @@ PW_NAMESPACE_SRT
 		// Physics_Object          
 		// Static Declarations     
 		// Class Members
-			Physics_Object::Physics_Object(st::Model* p_model, const b2BodyType& p_type, b2World* p_world, const bool& p_is_fixed, const float& p_friction, const float& p_restitution, const float& p_density, const Object_Type& p_polygon) :
+			Physics_Object::Physics_Object(st::Model* p_model, const b2BodyType& p_type, b2World* p_world, const bool& p_is_fixed, const float& p_friction, const float& p_restitution, const float& p_density, const Object_Type& p_polygon, const bool& p_is_sensor) :
 					m_body{},
 					m_shape_vertices{ pw::Engine_Memory::Allocate<b2Vec2>(b2Vec2(), p_model->Mesh()->Vertex_Count()) },
 					m_model_size{}, m_current_fixture{ nullptr },
@@ -44,6 +44,8 @@ PW_NAMESPACE_SRT
 						}
 
 						b2FixtureDef v_fixture{};
+
+						v_fixture.isSensor = p_is_sensor;
 						// Check for static type
 						if (p_type == b2BodyType::b2_staticBody) {
 							if (p_friction != -1.0f) {
@@ -76,6 +78,8 @@ PW_NAMESPACE_SRT
 						v_shape.m_radius = ((m_model_size.x + m_model_size.y) / 4) / 32.0f;
 
 						b2FixtureDef v_fixture{};
+
+						v_fixture.isSensor = p_is_sensor;
 						// Check for static type
 						if (p_type == b2BodyType::b2_staticBody) {
 							if (p_friction != -1.0f) {
@@ -145,6 +149,7 @@ PW_NAMESPACE_SRT
 						v_fixture.friction = m_current_fixture->GetFriction();
 						v_fixture.restitution = m_current_fixture->GetRestitution();
 						v_fixture.density = m_current_fixture->GetDensity();
+						v_fixture.isSensor = m_current_fixture->IsSensor();
 						v_fixture.shape = &v_shape;
 
 						m_body->DestroyFixture(m_current_fixture);
@@ -162,6 +167,7 @@ PW_NAMESPACE_SRT
 						v_fixture.friction = m_current_fixture->GetFriction();
 						v_fixture.restitution = m_current_fixture->GetRestitution();
 						v_fixture.density = m_current_fixture->GetDensity();
+						v_fixture.isSensor = m_current_fixture->IsSensor();
 						v_fixture.shape = &v_shape;
 
 						m_body->DestroyFixture(m_current_fixture);
@@ -200,6 +206,7 @@ PW_NAMESPACE_SRT
 						v_fixture.friction = m_current_fixture->GetFriction();
 						v_fixture.restitution = m_current_fixture->GetRestitution();
 						v_fixture.density = m_current_fixture->GetDensity();
+						v_fixture.isSensor = m_current_fixture->IsSensor();
 						v_fixture.shape = &v_shape;
 
 						m_body->DestroyFixture(m_current_fixture);
@@ -217,6 +224,7 @@ PW_NAMESPACE_SRT
 						v_fixture.friction = m_current_fixture->GetFriction();
 						v_fixture.restitution = m_current_fixture->GetRestitution();
 						v_fixture.density = m_current_fixture->GetDensity();
+						v_fixture.isSensor = m_current_fixture->IsSensor();
 						v_fixture.shape = &v_shape;
 
 						m_body->DestroyFixture(m_current_fixture);
@@ -252,6 +260,7 @@ PW_NAMESPACE_SRT
 						v_fixture.friction = m_current_fixture->GetFriction();
 						v_fixture.restitution = m_current_fixture->GetRestitution();
 						v_fixture.density = m_current_fixture->GetDensity();
+						v_fixture.isSensor = m_current_fixture->IsSensor();
 						v_fixture.shape = &v_shape;
 
 						m_body->DestroyFixture(m_current_fixture);
@@ -269,6 +278,7 @@ PW_NAMESPACE_SRT
 						v_fixture.friction = m_current_fixture->GetFriction();
 						v_fixture.restitution = m_current_fixture->GetRestitution();
 						v_fixture.density = m_current_fixture->GetDensity();
+						v_fixture.isSensor = m_current_fixture->IsSensor();
 						v_fixture.shape = &v_shape;
 
 						m_body->DestroyFixture(m_current_fixture);
@@ -304,6 +314,7 @@ PW_NAMESPACE_SRT
 						v_fixture.friction = m_current_fixture->GetFriction();
 						v_fixture.restitution = m_current_fixture->GetRestitution();
 						v_fixture.density = m_current_fixture->GetDensity();
+						v_fixture.isSensor = m_current_fixture->IsSensor();
 						v_fixture.shape = &v_shape;
 
 						m_body->DestroyFixture(m_current_fixture);
@@ -321,6 +332,7 @@ PW_NAMESPACE_SRT
 						v_fixture.friction = m_current_fixture->GetFriction();
 						v_fixture.restitution = m_current_fixture->GetRestitution();
 						v_fixture.density = m_current_fixture->GetDensity();
+						v_fixture.isSensor = m_current_fixture->IsSensor();
 						v_fixture.shape = &v_shape;
 
 						m_body->DestroyFixture(m_current_fixture);
@@ -361,9 +373,9 @@ PW_NAMESPACE_SRT
 			void Physics_Factory::Run() {
 				m_world->Step(m_time_step, m_velocity_it, m_position_it);
 			}
-			void Physics_Factory::Add_Object(st::Model* p_model, const b2BodyType& p_type, const st::Physics_Object::Object_Type& p_polygon, const PW_ID& p_object_id, const bool& p_is_fixed, const float& p_friction, const float& p_restitution, const float& p_density) {
+			void Physics_Factory::Add_Object(st::Model* p_model, const b2BodyType& p_type, const st::Physics_Object::Object_Type& p_polygon, const bool& p_is_sensor, const PW_ID& p_object_id, const bool& p_is_fixed, const float& p_friction, const float& p_restitution, const float& p_density) {
 				try {
-					st::Physics_Object* v_object = pw::Engine_Memory::Allocate<Physics_Object, bool>(p_model, p_type, m_world, p_is_fixed, p_friction, p_restitution, p_density, p_polygon);
+					st::Physics_Object* v_object = pw::Engine_Memory::Allocate<Physics_Object, bool>(p_model, p_type, m_world, p_is_fixed, p_friction, p_restitution, p_density, p_polygon, p_is_sensor);
 					m_last_added_body = v_object->Body();
 					m_factory_dynamic.insert(std::make_pair(p_object_id, v_object));
 				}

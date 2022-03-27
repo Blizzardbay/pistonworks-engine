@@ -155,6 +155,7 @@ PW_NAMESPACE_SRT
 					}
 					if (p_action == GLFW_PRESS) {
 						if (m_scene_event_function != nullptr) {
+							m_scene_event_function(cm::Engine_Constant::PW_MOUSE_EVENT, p_button, p_action);
 							m_scene_event_function(cm::Engine_Constant::PW_CLICK_EVENT, p_button, p_action);
 						}
 					}

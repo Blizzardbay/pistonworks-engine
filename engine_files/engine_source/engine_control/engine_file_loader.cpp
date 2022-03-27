@@ -472,7 +472,7 @@ PW_NAMESPACE_SRT
 					v_height = FreeImage_GetHeight(v_file);
 
 					// Create Texture
-					v_texture =pw::Engine_Memory::Allocate<st::Texture, bool>(v_image_data, v_width, v_height, GL_RGB, GL_BGR, p_repeat, p_linear);
+					v_texture = pw::Engine_Memory::Allocate<st::Texture, bool>(v_image_data, v_width, v_height, GL_RGB, GL_BGR, p_repeat, p_linear);
 
 					FreeImage_Unload(v_file);
 
@@ -1125,184 +1125,232 @@ PW_NAMESPACE_SRT
 
 						}
 
-						for (auto i = v_actor_list.begin(); i != v_actor_list.end(); i++) {
-							if (v_event_type == "CLICK") {
+						if (v_actor_list.size() == 0) {
+							if (v_event_type == "KEYBOARD") {
 								if (v_input_event == "PRESS") {
-									function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_CLICK_EVENT, TO_WSTRING(v_function_name), v_button_code, GLFW_PRESS, v_main_actor, *i, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
+									function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_KEYBOARD_EVENT, TO_WSTRING(v_function_name), v_button_code, GLFW_PRESS, v_main_actor, nullptr, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
 								}
 								else {
 									if (v_input_event == "RELEASE") {
-										function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_CLICK_EVENT, TO_WSTRING(v_function_name), v_button_code, GLFW_RELEASE, v_main_actor, *i, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
+										function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_KEYBOARD_EVENT, TO_WSTRING(v_function_name), v_button_code, GLFW_RELEASE, v_main_actor, nullptr, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
 									}
 									else {
 										if (v_input_event == "REPEAT") {
-											function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_CLICK_EVENT, TO_WSTRING(v_function_name), v_button_code, GLFW_REPEAT, v_main_actor, *i, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
+											function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_KEYBOARD_EVENT, TO_WSTRING(v_function_name), v_button_code, GLFW_REPEAT, v_main_actor, nullptr, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
 										}
 									}
 								}
 							}
 							else {
-								if (v_event_type == "HOVER") {
+								if (v_event_type == "MOUSE") {
 									if (v_input_event == "PRESS") {
-										function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_HOVER_EVENT, TO_WSTRING(v_function_name), v_button_code, GLFW_PRESS, v_main_actor, *i, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
+										function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_MOUSE_EVENT, TO_WSTRING(v_function_name), v_button_code, GLFW_PRESS, v_main_actor, nullptr, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
 									}
 									else {
 										if (v_input_event == "RELEASE") {
-											function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_HOVER_EVENT, TO_WSTRING(v_function_name), v_button_code, GLFW_RELEASE, v_main_actor, *i, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
+											function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_MOUSE_EVENT, TO_WSTRING(v_function_name), v_button_code, GLFW_RELEASE, v_main_actor, nullptr, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
+										}
+										else {
+											if (v_input_event == "REPEAT") {
+												function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_MOUSE_EVENT, TO_WSTRING(v_function_name), v_button_code, GLFW_REPEAT, v_main_actor, nullptr, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
+											}
 										}
 									}
 								}
 								else {
-									if (v_event_type == "COLLISION") {
-										if (co::Engine_Input::Access_Function(TO_WSTRING(v_function_name)) != nullptr) {
-											v_scene->Create_Event<void>(TO_WSTRING(v_input_id), v_ws_id, TO_WSTRING(v_object_id),
-												co::Engine_Input::Access_Function(TO_WSTRING(v_function_name)), (bool)v_play_once);
+									if (v_event_type == "SCROLL") {
+										if (v_input_event == "FORWARD") {
+											function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_SCROLL_EVENT, TO_WSTRING(v_function_name), cm::Engine_Constant::PW_SCROLL_WHEEL_FORWARD, GLFW_PRESS, v_main_actor, nullptr, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
 										}
 										else {
-											if (v_function_name == "CHANGE_ANIMATION") {
-												v_scene->Create_Event<void, std::wstring, bool>(
-													TO_WSTRING(v_input_id), v_ws_id, TO_WSTRING(v_object_id),
-													std::make_shared<COMPLEX_FUNCTION_2(std::wstring, bool)>(COMPLEX_FUNCTION_2(std::wstring, bool)(
-														std::bind(static_cast<void(st::Actor::*)(std::wstring, bool)>(&st::Actor::Change_Animation), v_scene->Access_Model(v_ws_id), std::placeholders::_1, std::placeholders::_2))),
-													(bool)v_play_once, TO_WSTRING(v_arg_1), (bool)std::stoi(v_arg_2));
+											if (v_input_event == "BACKWARDS") {
+												function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_SCROLL_EVENT, TO_WSTRING(v_function_name), cm::Engine_Constant::PW_SCROLL_WHEEL_BACKWARD, GLFW_PRESS, v_main_actor, nullptr, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
+											}
+										}
+									}
+								}
+							}
+						}
+						else {
+							for (auto i = v_actor_list.begin(); i != v_actor_list.end(); i++) {
+								if (v_event_type == "CLICK") {
+									if (v_input_event == "PRESS") {
+										function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_CLICK_EVENT, TO_WSTRING(v_function_name), v_button_code, GLFW_PRESS, v_main_actor, *i, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
+									}
+									else {
+										if (v_input_event == "RELEASE") {
+											function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_CLICK_EVENT, TO_WSTRING(v_function_name), v_button_code, GLFW_RELEASE, v_main_actor, *i, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
+										}
+										else {
+											if (v_input_event == "REPEAT") {
+												function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_CLICK_EVENT, TO_WSTRING(v_function_name), v_button_code, GLFW_REPEAT, v_main_actor, *i, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
+											}
+										}
+									}
+								}
+								else {
+									if (v_event_type == "HOVER") {
+										if (v_input_event == "PRESS") {
+											function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_HOVER_EVENT, TO_WSTRING(v_function_name), v_button_code, GLFW_PRESS, v_main_actor, *i, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
+										}
+										else {
+											if (v_input_event == "RELEASE") {
+												function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_HOVER_EVENT, TO_WSTRING(v_function_name), v_button_code, GLFW_RELEASE, v_main_actor, *i, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
+											}
+										}
+									}
+									else {
+										if (v_event_type == "COLLISION") {
+											if (co::Engine_Input::Access_Function(TO_WSTRING(v_function_name)) != nullptr) {
+												v_scene->Create_Event<void>(TO_WSTRING(v_input_id), v_ws_id, TO_WSTRING(v_object_id),
+													co::Engine_Input::Access_Function(TO_WSTRING(v_function_name)), (bool)v_play_once);
 											}
 											else {
-												if (v_function_name == "START_ANIMATION") {
-													v_scene->Create_Event<void>(
+												if (v_function_name == "CHANGE_ANIMATION") {
+													v_scene->Create_Event<void, std::wstring, bool>(
 														TO_WSTRING(v_input_id), v_ws_id, TO_WSTRING(v_object_id),
-														std::make_shared<COMPLEX_FUNCTION_0>(COMPLEX_FUNCTION_0(
-															std::bind(static_cast<void(st::Actor::*)()>(&st::Actor::Start_Animation), v_scene->Access_Model(v_ws_id)))),
-														(bool)v_play_once);
+														std::make_shared<COMPLEX_FUNCTION_2(std::wstring, bool)>(COMPLEX_FUNCTION_2(std::wstring, bool)(
+															std::bind(static_cast<void(st::Actor::*)(std::wstring, bool)>(&st::Actor::Change_Animation), v_scene->Access_Model(v_ws_id), std::placeholders::_1, std::placeholders::_2))),
+														(bool)v_play_once, TO_WSTRING(v_arg_1), (bool)std::stoi(v_arg_2));
 												}
 												else {
-													if (v_function_name == "STOP_ANIMATION") {
+													if (v_function_name == "START_ANIMATION") {
 														v_scene->Create_Event<void>(
 															TO_WSTRING(v_input_id), v_ws_id, TO_WSTRING(v_object_id),
 															std::make_shared<COMPLEX_FUNCTION_0>(COMPLEX_FUNCTION_0(
-																std::bind(static_cast<void(st::Actor::*)()>(&st::Actor::Stop_Animation), v_scene->Access_Model(v_ws_id)))),
+																std::bind(static_cast<void(st::Actor::*)()>(&st::Actor::Start_Animation), v_scene->Access_Model(v_ws_id)))),
 															(bool)v_play_once);
 													}
 													else {
-														if (v_function_name == "ADVANCE_ANIMATION") {
+														if (v_function_name == "STOP_ANIMATION") {
 															v_scene->Create_Event<void>(
 																TO_WSTRING(v_input_id), v_ws_id, TO_WSTRING(v_object_id),
 																std::make_shared<COMPLEX_FUNCTION_0>(COMPLEX_FUNCTION_0(
-																	std::bind(static_cast<void(st::Actor::*)()>(&st::Actor::Advance_Animation), v_scene->Access_Model(v_ws_id)))),
+																	std::bind(static_cast<void(st::Actor::*)()>(&st::Actor::Stop_Animation), v_scene->Access_Model(v_ws_id)))),
 																(bool)v_play_once);
 														}
 														else {
-															if (v_function_name == "ADD_SCENE") {
-																v_scene->Create_Event<void, std::wstring, bool>(
+															if (v_function_name == "ADVANCE_ANIMATION") {
+																v_scene->Create_Event<void>(
 																	TO_WSTRING(v_input_id), v_ws_id, TO_WSTRING(v_object_id),
-																	std::make_shared<COMPLEX_FUNCTION_2(std::wstring, bool)>(COMPLEX_FUNCTION_2(std::wstring, bool)(
-																		m_add_scene_function)),
-																	(bool)v_play_once, TO_WSTRING(v_arg_1), (bool)std::stoi(v_arg_2));
+																	std::make_shared<COMPLEX_FUNCTION_0>(COMPLEX_FUNCTION_0(
+																		std::bind(static_cast<void(st::Actor::*)()>(&st::Actor::Advance_Animation), v_scene->Access_Model(v_ws_id)))),
+																	(bool)v_play_once);
 															}
 															else {
-																if (v_function_name == "CHANGE_SCENE") {
-																	v_scene->Create_Event<void, std::wstring>(
+																if (v_function_name == "ADD_SCENE") {
+																	v_scene->Create_Event<void, std::wstring, bool>(
 																		TO_WSTRING(v_input_id), v_ws_id, TO_WSTRING(v_object_id),
-																		std::make_shared<COMPLEX_FUNCTION_1(std::wstring)>(COMPLEX_FUNCTION_1(std::wstring)(
-																			m_change_scene_function)),
-																		(bool)v_play_once, TO_WSTRING(v_arg_1));
+																		std::make_shared<COMPLEX_FUNCTION_2(std::wstring, bool)>(COMPLEX_FUNCTION_2(std::wstring, bool)(
+																			m_add_scene_function)),
+																		(bool)v_play_once, TO_WSTRING(v_arg_1), (bool)std::stoi(v_arg_2));
 																}
 																else {
-																	if (v_function_name == "REMOVE_SCENE") {
+																	if (v_function_name == "CHANGE_SCENE") {
 																		v_scene->Create_Event<void, std::wstring>(
 																			TO_WSTRING(v_input_id), v_ws_id, TO_WSTRING(v_object_id),
 																			std::make_shared<COMPLEX_FUNCTION_1(std::wstring)>(COMPLEX_FUNCTION_1(std::wstring)(
-																				m_remove_scene_function)),
+																				m_change_scene_function)),
 																			(bool)v_play_once, TO_WSTRING(v_arg_1));
 																	}
 																	else {
-																		if (v_function_name == "SET_TEXTURE") {
+																		if (v_function_name == "REMOVE_SCENE") {
 																			v_scene->Create_Event<void, std::wstring>(
 																				TO_WSTRING(v_input_id), v_ws_id, TO_WSTRING(v_object_id),
 																				std::make_shared<COMPLEX_FUNCTION_1(std::wstring)>(COMPLEX_FUNCTION_1(std::wstring)(
-																					std::bind(static_cast<void(st::Actor::*)(std::wstring)>(&st::Actor::Set_Texture), v_scene->Access_Model(v_ws_id), std::placeholders::_1))),
+																					m_remove_scene_function)),
 																				(bool)v_play_once, TO_WSTRING(v_arg_1));
 																		}
 																		else {
-																			auto vv_found_sub_structure = v_sub_scene_structures.find(TO_WSTRING(v_arg_1));
-																			if (v_function_name == "SET_SRENDER") {
-																				v_scene->Create_Event<void, bool>(
+																			if (v_function_name == "SET_TEXTURE") {
+																				v_scene->Create_Event<void, std::wstring>(
 																					TO_WSTRING(v_input_id), v_ws_id, TO_WSTRING(v_object_id),
-																					std::make_shared<COMPLEX_FUNCTION_1(bool)>(COMPLEX_FUNCTION_1(bool)(
-																						std::bind(static_cast<void(st::Sub_Scene_Structure::*)(bool)>(&st::Sub_Scene_Structure::Set_Render_Toggle), vv_found_sub_structure->second, std::placeholders::_1))),
-																					v_play_once, (bool)std::stoi(v_arg_2));
+																					std::make_shared<COMPLEX_FUNCTION_1(std::wstring)>(COMPLEX_FUNCTION_1(std::wstring)(
+																						std::bind(static_cast<void(st::Actor::*)(std::wstring)>(&st::Actor::Set_Texture), v_scene->Access_Model(v_ws_id), std::placeholders::_1))),
+																					(bool)v_play_once, TO_WSTRING(v_arg_1));
 																			}
 																			else {
-																				if (v_function_name == "PLAY_SOUND") {
-																					v_scene->Create_Event<void, std::wstring>(
+																				auto vv_found_sub_structure = v_sub_scene_structures.find(TO_WSTRING(v_arg_1));
+																				if (v_function_name == "SET_SRENDER") {
+																					v_scene->Create_Event<void, bool>(
 																						TO_WSTRING(v_input_id), v_ws_id, TO_WSTRING(v_object_id),
-																						std::make_shared<COMPLEX_FUNCTION_2(std::wstring, bool)>(COMPLEX_FUNCTION_2(std::wstring, bool)(
-																							std::bind(static_cast<void(st::Actor::*)(std::wstring, bool)>(&st::Actor::Play_Sound), v_scene->Access_Model(TO_WSTRING(v_sound_id)), std::placeholders::_1, std::placeholders::_2))),
-																						(bool)v_play_once, std::move(TO_WSTRING(v_arg_1)), (bool)std::stoi(v_arg_2));
+																						std::make_shared<COMPLEX_FUNCTION_1(bool)>(COMPLEX_FUNCTION_1(bool)(
+																							std::bind(static_cast<void(st::Sub_Scene_Structure::*)(bool)>(&st::Sub_Scene_Structure::Set_Render_Toggle), vv_found_sub_structure->second, std::placeholders::_1))),
+																						v_play_once, (bool)std::stoi(v_arg_2));
 																				}
 																				else {
-																					if (v_function_name == "PAUSE_SOUND") {
+																					if (v_function_name == "PLAY_SOUND") {
 																						v_scene->Create_Event<void, std::wstring>(
 																							TO_WSTRING(v_input_id), v_ws_id, TO_WSTRING(v_object_id),
-																							std::make_shared<COMPLEX_FUNCTION_1(std::wstring)>(COMPLEX_FUNCTION_1(std::wstring)(
-																								std::bind(static_cast<void(st::Actor::*)(std::wstring)>(&st::Actor::Pause_Sound), v_scene->Access_Model(TO_WSTRING(v_sound_id)), std::placeholders::_1))),
-																							(bool)v_play_once, std::move(TO_WSTRING(v_arg_1)));
+																							std::make_shared<COMPLEX_FUNCTION_2(std::wstring, bool)>(COMPLEX_FUNCTION_2(std::wstring, bool)(
+																								std::bind(static_cast<void(st::Actor::*)(std::wstring, bool)>(&st::Actor::Play_Sound), v_scene->Access_Model(TO_WSTRING(v_sound_id)), std::placeholders::_1, std::placeholders::_2))),
+																							(bool)v_play_once, std::move(TO_WSTRING(v_arg_1)), (bool)std::stoi(v_arg_2));
 																					}
 																					else {
-																						if (v_function_name == "STOP_SOUND") {
+																						if (v_function_name == "PAUSE_SOUND") {
 																							v_scene->Create_Event<void, std::wstring>(
 																								TO_WSTRING(v_input_id), v_ws_id, TO_WSTRING(v_object_id),
 																								std::make_shared<COMPLEX_FUNCTION_1(std::wstring)>(COMPLEX_FUNCTION_1(std::wstring)(
-																									std::bind(static_cast<void(st::Actor::*)(std::wstring)>(&st::Actor::Stop_Sound), v_scene->Access_Model(TO_WSTRING(v_sound_id)), std::placeholders::_1))),
+																									std::bind(static_cast<void(st::Actor::*)(std::wstring)>(&st::Actor::Pause_Sound), v_scene->Access_Model(TO_WSTRING(v_sound_id)), std::placeholders::_1))),
 																								(bool)v_play_once, std::move(TO_WSTRING(v_arg_1)));
 																						}
 																						else {
-																							if (v_function_name == "RESET_SOUND") {
+																							if (v_function_name == "STOP_SOUND") {
 																								v_scene->Create_Event<void, std::wstring>(
 																									TO_WSTRING(v_input_id), v_ws_id, TO_WSTRING(v_object_id),
 																									std::make_shared<COMPLEX_FUNCTION_1(std::wstring)>(COMPLEX_FUNCTION_1(std::wstring)(
-																										std::bind(static_cast<void(st::Actor::*)(std::wstring)>(&st::Actor::Reset_Sound), v_scene->Access_Model(TO_WSTRING(v_sound_id)), std::placeholders::_1))),
+																										std::bind(static_cast<void(st::Actor::*)(std::wstring)>(&st::Actor::Stop_Sound), v_scene->Access_Model(TO_WSTRING(v_sound_id)), std::placeholders::_1))),
 																									(bool)v_play_once, std::move(TO_WSTRING(v_arg_1)));
 																							}
 																							else {
-																								if (v_function_name == "CHANGE_VOLUME") {
-																									v_scene->Create_Event<void, std::wstring, float, bool>(
+																								if (v_function_name == "RESET_SOUND") {
+																									v_scene->Create_Event<void, std::wstring>(
 																										TO_WSTRING(v_input_id), v_ws_id, TO_WSTRING(v_object_id),
-																										std::make_shared<COMPLEX_FUNCTION_3(std::wstring, float, bool)>(COMPLEX_FUNCTION_3(std::wstring, float, bool)(
-																											std::bind(static_cast<void(st::Actor::*)(std::wstring, float, bool)>(&st::Actor::Change_Volume), v_scene->Access_Model(TO_WSTRING(v_sound_id)),
-																												std::placeholders::_1, std::placeholders::_2, std::placeholders::_3))),
-																										(bool)v_play_once, TO_WSTRING(v_arg_1), std::stof(v_arg_2), (bool)std::stoi(v_arg_3));
+																										std::make_shared<COMPLEX_FUNCTION_1(std::wstring)>(COMPLEX_FUNCTION_1(std::wstring)(
+																											std::bind(static_cast<void(st::Actor::*)(std::wstring)>(&st::Actor::Reset_Sound), v_scene->Access_Model(TO_WSTRING(v_sound_id)), std::placeholders::_1))),
+																										(bool)v_play_once, std::move(TO_WSTRING(v_arg_1)));
 																								}
 																								else {
-																									if (v_function_name == "SET_ACTIVE_INPUT") {
-																										v_scene->Create_Event<void, std::wstring>(
+																									if (v_function_name == "CHANGE_VOLUME") {
+																										v_scene->Create_Event<void, std::wstring, float, bool>(
 																											TO_WSTRING(v_input_id), v_ws_id, TO_WSTRING(v_object_id),
-																											std::make_shared<COMPLEX_FUNCTION_1(std::wstring)>(COMPLEX_FUNCTION_1(std::wstring)(
-																												std::bind(static_cast<void(st::Game_Scene::*)(std::wstring)>(&st::Game_Scene::Set_Active_Input), v_scene, std::placeholders::_1))),
-																											(bool)v_play_once, TO_WSTRING(v_arg_1));
+																											std::make_shared<COMPLEX_FUNCTION_3(std::wstring, float, bool)>(COMPLEX_FUNCTION_3(std::wstring, float, bool)(
+																												std::bind(static_cast<void(st::Actor::*)(std::wstring, float, bool)>(&st::Actor::Change_Volume), v_scene->Access_Model(TO_WSTRING(v_sound_id)),
+																													std::placeholders::_1, std::placeholders::_2, std::placeholders::_3))),
+																											(bool)v_play_once, TO_WSTRING(v_arg_1), std::stof(v_arg_2), (bool)std::stoi(v_arg_3));
 																									}
 																									else {
-																										if (v_function_name == "TOGGLE_RENDER") {
+																										if (v_function_name == "SET_ACTIVE_INPUT") {
 																											v_scene->Create_Event<void, std::wstring>(
 																												TO_WSTRING(v_input_id), v_ws_id, TO_WSTRING(v_object_id),
 																												std::make_shared<COMPLEX_FUNCTION_1(std::wstring)>(COMPLEX_FUNCTION_1(std::wstring)(
-																													std::bind(static_cast<void(st::Game_Scene::*)(std::wstring)>(&st::Game_Scene::Toggle_Render), v_scene, std::placeholders::_1))),
+																													std::bind(static_cast<void(st::Game_Scene::*)(std::wstring)>(&st::Game_Scene::Set_Active_Input), v_scene, std::placeholders::_1))),
 																												(bool)v_play_once, TO_WSTRING(v_arg_1));
 																										}
 																										else {
-																											if (v_function_name == "SET_TEXT") {
+																											if (v_function_name == "TOGGLE_RENDER") {
 																												v_scene->Create_Event<void, std::wstring>(
 																													TO_WSTRING(v_input_id), v_ws_id, TO_WSTRING(v_object_id),
 																													std::make_shared<COMPLEX_FUNCTION_1(std::wstring)>(COMPLEX_FUNCTION_1(std::wstring)(
-																														std::bind(static_cast<void(st::Actor::*)(std::wstring)>(&st::Actor::Set_Text), v_scene->Access_Model(v_ws_id), std::placeholders::_1))),
+																														std::bind(static_cast<void(st::Game_Scene::*)(std::wstring)>(&st::Game_Scene::Toggle_Render), v_scene, std::placeholders::_1))),
 																													(bool)v_play_once, TO_WSTRING(v_arg_1));
 																											}
 																											else {
-																												if (v_function_name == "SET_TEXT_COLOR") {
-																													v_scene->Create_Event<void, glm::vec4>(
+																												if (v_function_name == "SET_TEXT") {
+																													v_scene->Create_Event<void, std::wstring>(
 																														TO_WSTRING(v_input_id), v_ws_id, TO_WSTRING(v_object_id),
-																														std::make_shared<COMPLEX_FUNCTION_1(glm::vec4)>(COMPLEX_FUNCTION_1(glm::vec4)(
-																															std::bind(static_cast<void(st::Actor::*)(glm::vec4)>(&st::Actor::Set_Text_Color), v_scene->Access_Model(v_ws_id), std::placeholders::_1))),
-																														(bool)v_play_once, glm::vec4(std::stof(v_arg_1) / 255.0f, std::stof(v_arg_2) / 255.0f, std::stof(v_arg_3) / 255.0f, std::stof(v_arg_4) / 255.0f));
+																														std::make_shared<COMPLEX_FUNCTION_1(std::wstring)>(COMPLEX_FUNCTION_1(std::wstring)(
+																															std::bind(static_cast<void(st::Actor::*)(std::wstring)>(&st::Actor::Set_Text), v_scene->Access_Model(v_ws_id), std::placeholders::_1))),
+																														(bool)v_play_once, TO_WSTRING(v_arg_1));
+																												}
+																												else {
+																													if (v_function_name == "SET_TEXT_COLOR") {
+																														v_scene->Create_Event<void, glm::vec4>(
+																															TO_WSTRING(v_input_id), v_ws_id, TO_WSTRING(v_object_id),
+																															std::make_shared<COMPLEX_FUNCTION_1(glm::vec4)>(COMPLEX_FUNCTION_1(glm::vec4)(
+																																std::bind(static_cast<void(st::Actor::*)(glm::vec4)>(&st::Actor::Set_Text_Color), v_scene->Access_Model(v_ws_id), std::placeholders::_1))),
+																															(bool)v_play_once, glm::vec4(std::stof(v_arg_1) / 255.0f, std::stof(v_arg_2) / 255.0f, std::stof(v_arg_3) / 255.0f, std::stof(v_arg_4) / 255.0f));
+																													}
 																												}
 																											}
 																										}
@@ -1322,67 +1370,67 @@ PW_NAMESPACE_SRT
 												}
 											}
 										}
-									}
-									else {
-										if (v_event_type == "KEYBOARD") {
-											if (v_input_event == "PRESS") {
-												function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_KEYBOARD_EVENT, TO_WSTRING(v_function_name), v_button_code, GLFW_PRESS, v_main_actor, *i, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
-											}
-											else {
-												if (v_input_event == "RELEASE") {
-													function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_KEYBOARD_EVENT, TO_WSTRING(v_function_name), v_button_code, GLFW_RELEASE, v_main_actor, *i, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
-												}
-												else {
-													if (v_input_event == "REPEAT") {
-														function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_KEYBOARD_EVENT, TO_WSTRING(v_function_name), v_button_code, GLFW_REPEAT, v_main_actor, *i, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
-													}
-												}
-											}
-										}
 										else {
-											if (v_event_type == "MOUSE") {
+											if (v_event_type == "KEYBOARD") {
 												if (v_input_event == "PRESS") {
-													function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_MOUSE_EVENT, TO_WSTRING(v_function_name), v_button_code, GLFW_PRESS, v_main_actor, *i, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
+													function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_KEYBOARD_EVENT, TO_WSTRING(v_function_name), v_button_code, GLFW_PRESS, v_main_actor, *i, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
 												}
 												else {
 													if (v_input_event == "RELEASE") {
-														function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_MOUSE_EVENT, TO_WSTRING(v_function_name), v_button_code, GLFW_RELEASE, v_main_actor, *i, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
+														function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_KEYBOARD_EVENT, TO_WSTRING(v_function_name), v_button_code, GLFW_RELEASE, v_main_actor, *i, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
 													}
 													else {
 														if (v_input_event == "REPEAT") {
-															function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_MOUSE_EVENT, TO_WSTRING(v_function_name), v_button_code, GLFW_REPEAT, v_main_actor, *i, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
+															function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_KEYBOARD_EVENT, TO_WSTRING(v_function_name), v_button_code, GLFW_REPEAT, v_main_actor, *i, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
 														}
 													}
 												}
 											}
 											else {
-												if (v_event_type == "SCROLL") {
-													if (v_input_event == "FORWARD") {
-														function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_SCROLL_EVENT, TO_WSTRING(v_function_name), cm::Engine_Constant::PW_SCROLL_WHEEL_FORWARD, GLFW_PRESS, v_main_actor, *i, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
+												if (v_event_type == "MOUSE") {
+													if (v_input_event == "PRESS") {
+														function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_MOUSE_EVENT, TO_WSTRING(v_function_name), v_button_code, GLFW_PRESS, v_main_actor, *i, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
 													}
 													else {
-														if (v_input_event == "BACKWARDS") {
-															function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_SCROLL_EVENT, TO_WSTRING(v_function_name), cm::Engine_Constant::PW_SCROLL_WHEEL_BACKWARD, GLFW_PRESS, v_main_actor, *i, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
+														if (v_input_event == "RELEASE") {
+															function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_MOUSE_EVENT, TO_WSTRING(v_function_name), v_button_code, GLFW_RELEASE, v_main_actor, *i, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
+														}
+														else {
+															if (v_input_event == "REPEAT") {
+																function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_MOUSE_EVENT, TO_WSTRING(v_function_name), v_button_code, GLFW_REPEAT, v_main_actor, *i, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
+															}
 														}
 													}
 												}
 												else {
-													if (v_event_type == "ANIM_START") {
-														function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_ANIMATION_START_EVENT, TO_WSTRING(v_function_name), NULL, NULL, v_main_actor, *i, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
-													}
-													else {
-														if (v_event_type == "ANIM_END") {
-															function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_ANIMATION_END_EVENT, TO_WSTRING(v_function_name), NULL, NULL, v_main_actor, *i, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
+													if (v_event_type == "SCROLL") {
+														if (v_input_event == "FORWARD") {
+															function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_SCROLL_EVENT, TO_WSTRING(v_function_name), cm::Engine_Constant::PW_SCROLL_WHEEL_FORWARD, GLFW_PRESS, v_main_actor, *i, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
 														}
 														else {
-															v_ws_id = TO_WSTRING(v_sound_id);
-
-															if (v_event_type == "SOUND_START") {
-																function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_SOUND_START_EVENT, TO_WSTRING(v_function_name), NULL, NULL, v_main_actor, *i, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
+															if (v_input_event == "BACKWARDS") {
+																function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_SCROLL_EVENT, TO_WSTRING(v_function_name), cm::Engine_Constant::PW_SCROLL_WHEEL_BACKWARD, GLFW_PRESS, v_main_actor, *i, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
+															}
+														}
+													}
+													else {
+														if (v_event_type == "ANIM_START") {
+															function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_ANIMATION_START_EVENT, TO_WSTRING(v_function_name), NULL, NULL, v_main_actor, *i, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
+														}
+														else {
+															if (v_event_type == "ANIM_END") {
+																function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_ANIMATION_END_EVENT, TO_WSTRING(v_function_name), NULL, NULL, v_main_actor, *i, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
 															}
 															else {
-																if (v_event_type == "SOUND_END") {
-																	function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_SOUND_END_EVENT, TO_WSTRING(v_function_name), NULL, NULL, v_main_actor, *i, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
+																v_ws_id = TO_WSTRING(v_sound_id);
+
+																if (v_event_type == "SOUND_START") {
+																	function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_SOUND_START_EVENT, TO_WSTRING(v_function_name), NULL, NULL, v_main_actor, *i, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
+																}
+																else {
+																	if (v_event_type == "SOUND_END") {
+																		function_picker(TO_WSTRING(v_input_id), TO_WSTRING(v_sound_id), v_scene, v_sub_scene_structures, cm::Engine_Constant::PW_SOUND_END_EVENT, TO_WSTRING(v_function_name), NULL, NULL, v_main_actor, *i, (bool)v_play_once, v_arg_1, v_arg_2, v_arg_3, v_arg_4, v_arg_5);
+																	}
 																}
 															}
 														}
@@ -1461,20 +1509,22 @@ PW_NAMESPACE_SRT
 				std::string v_body_shape{};
 				uint32_t v_fixed_rotation{ 0 };
 
+				uint32_t v_is_sensor{ 0 };
+
 				p_location = co::File_Finder::Find_File(m_data_location, TO_WSTRING(p_main_scene), L".csv");
 
-				io::CSVReader<37, io::trim_chars<' ', '\t'>, io::no_quote_escape<','>, io::ignore_overflow, io::single_line_comment<'#'>>
+				io::CSVReader<38, io::trim_chars<' ', '\t'>, io::no_quote_escape<','>, io::ignore_overflow, io::single_line_comment<'#'>>
 					v_file_data_reader{ p_location.generic_string().c_str() };
 				v_file_data_reader.read_header(io::ignore_extra_column,
 					"Layer", "S_ID", "Is_Main_ID_Actor", "Is_Attached", "Attachment_ID", "Offset_X", "Offset_Y", "Is_Text", "Font_Type", "Texture", "Texture_Repeats", "Is_Linear",
 					"Mesh_Type", "Color_ID", "ColorR", "ColorB", "ColorG", "ColorA",
 					"PositionX", "PositionY", "Rotation", "SizeX", "SizeY",
 					"Is_Animated", "Has_Animation_Extention", "Animation_Length", "Animation_Frame_Count", "Animation_Frame_Size_X",
-					"Has_Physics", "Body_Type", "Shape", "Fixed_Rot", "Is_Fixed", "Friction", "Restitution", "Density", "Sound_Structure");
+					"Has_Physics", "Is_Sensor", "Body_Type", "Shape", "Fixed_Rot", "Is_Fixed", "Friction", "Restitution", "Density", "Sound_Structure");
 				while (v_file_data_reader.read_row(v_layer, v_s_id, v_is_main_s_id, v_is_attached, v_attachment_id, v_offset_x, v_offset_y, v_is_text, v_font_type, v_texture, v_repeats, v_is_linear,
 					v_mesh_type, v_color_id, v_color_r, v_color_b, v_color_g, v_color_a,
 					v_position_x, v_position_y, v_rotation, v_size_x, v_size_y, v_is_animated, v_has_animation_extention,
-					v_animation_length, v_animation_frame_count, v_animation_frame_size_x, v_has_physics, v_body_type, v_body_shape, v_fixed_rotation, v_is_fixed, v_friction, v_restitution, v_density, v_sound_structure)) {
+					v_animation_length, v_animation_frame_count, v_animation_frame_size_x, v_has_physics, v_is_sensor, v_body_type, v_body_shape, v_fixed_rotation, v_is_fixed, v_friction, v_restitution, v_density, v_sound_structure)) {
 
 					// Possible Animation cache
 					std::vector<std::tuple<st::Animation*, st::Texture*>> v_animations{};
@@ -1657,22 +1707,22 @@ PW_NAMESPACE_SRT
 								if (v_has_physics == 1) {
 									if (v_body_type == "b2_staticBody") {
 										if (v_body_shape == "POLYGON") {
-											p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::POLYGON, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+											p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::POLYGON, v_is_sensor, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
 										}
 										else {
 											if (v_body_shape == "CIRCLE") {
-												p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::CIRCLE, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+												p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::CIRCLE, v_is_sensor, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
 											}
 										}
 									}
 									else {
 										if (v_body_type == "b2_dynamicBody") {
 											if (v_body_shape == "POLYGON") {
-												p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, st::Physics_Object::Object_Type::POLYGON, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+												p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, st::Physics_Object::Object_Type::POLYGON, v_is_sensor, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
 											}
 											else {
 												if (v_body_shape == "CIRCLE") {
-													p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, st::Physics_Object::Object_Type::CIRCLE, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+													p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, st::Physics_Object::Object_Type::CIRCLE, v_is_sensor, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
 												}
 											}
 											va_model->Set_Physics_Object(p_physics_factory->Access_Memeber(vd_model->Id()));
@@ -1729,22 +1779,22 @@ PW_NAMESPACE_SRT
 									if (v_has_physics == 1) {
 										if (v_body_type == "b2_staticBody") {
 											if (v_body_shape == "POLYGON") {
-												p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::POLYGON, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+												p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::POLYGON, v_is_sensor, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
 											}
 											else {
 												if (v_body_shape == "CIRCLE") {
-													p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::CIRCLE, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+													p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::CIRCLE, v_is_sensor, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
 												}
 											}
 										}
 										else {
 											if (v_body_type == "b2_dynamicBody") {
 												if (v_body_shape == "POLYGON") {
-													p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, st::Physics_Object::Object_Type::POLYGON, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+													p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, st::Physics_Object::Object_Type::POLYGON, v_is_sensor, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
 												}
 												else {
 													if (v_body_shape == "CIRCLE") {
-														p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, st::Physics_Object::Object_Type::CIRCLE, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+														p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, st::Physics_Object::Object_Type::CIRCLE, v_is_sensor, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
 													}
 												}
 												va_model->Set_Physics_Object(p_physics_factory->Access_Memeber(vd_model->Id()));
@@ -1758,7 +1808,7 @@ PW_NAMESPACE_SRT
 							}
 							else {
 								// It has a custom color
-								glm::vec4 v_color = glm::vec4((float)v_color_r / 255.0f, (float)v_color_b / 255.0f, (float)v_color_g / 255.0f, (float)v_color_a / 255.0f);
+								glm::vec4 v_color = glm::vec4((float)v_color_r / 255.0f, (float)v_color_g / 255.0f, (float)v_color_b / 255.0f, (float)v_color_a / 255.0f);
 
 								if ((bool)v_is_text == true) {
 									v_model_text = pw::Engine_Memory::Allocate<st::Text, bool>(TO_WSTRING(v_texture), glm::ivec2(v_position_x, v_position_y), glm::ivec2(v_size_x, v_size_y), v_color, v_font_id);
@@ -1810,22 +1860,22 @@ PW_NAMESPACE_SRT
 									if (v_has_physics == 1) {
 										if (v_body_type == "b2_staticBody") {
 											if (v_body_shape == "POLYGON") {
-												p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::POLYGON, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+												p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::POLYGON, v_is_sensor, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
 											}
 											else {
 												if (v_body_shape == "CIRCLE") {
-													p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::CIRCLE, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+													p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::CIRCLE, v_is_sensor, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
 												}
 											}
 										}
 										else {
 											if (v_body_type == "b2_dynamicBody") {
 												if (v_body_shape == "POLYGON") {
-													p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, st::Physics_Object::Object_Type::POLYGON, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+													p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, st::Physics_Object::Object_Type::POLYGON, v_is_sensor, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
 												}
 												else {
 													if (v_body_shape == "CIRCLE") {
-														p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, st::Physics_Object::Object_Type::CIRCLE, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+														p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, st::Physics_Object::Object_Type::CIRCLE, v_is_sensor, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
 													}
 												}
 												va_model->Set_Physics_Object(p_physics_factory->Access_Memeber(vd_model->Id()));
@@ -1961,22 +2011,22 @@ PW_NAMESPACE_SRT
 								if (v_has_physics == 1) {
 									if (v_body_type == "b2_staticBody") {
 										if (v_body_shape == "POLYGON") {
-											p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::POLYGON, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+											p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::POLYGON, v_is_sensor, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
 										}
 										else {
 											if (v_body_shape == "CIRCLE") {
-												p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::CIRCLE, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+												p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::CIRCLE, v_is_sensor, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
 											}
 										}
 									}
 									else {
 										if (v_body_type == "b2_dynamicBody") {
 											if (v_body_shape == "POLYGON") {
-												p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, st::Physics_Object::Object_Type::POLYGON, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+												p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, st::Physics_Object::Object_Type::POLYGON, v_is_sensor, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
 											}
 											else {
 												if (v_body_shape == "CIRCLE") {
-													p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, st::Physics_Object::Object_Type::CIRCLE, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+													p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, st::Physics_Object::Object_Type::CIRCLE, v_is_sensor, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
 												}
 											}
 											va_model->Set_Physics_Object(p_physics_factory->Access_Memeber(vd_model->Id()));
@@ -2028,22 +2078,22 @@ PW_NAMESPACE_SRT
 									if (v_has_physics == 1) {
 										if (v_body_type == "b2_staticBody") {
 											if (v_body_shape == "POLYGON") {
-												p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::POLYGON, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+												p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::POLYGON, v_is_sensor, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
 											}
 											else {
 												if (v_body_shape == "CIRCLE") {
-													p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::CIRCLE, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+													p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::CIRCLE, v_is_sensor, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
 												}
 											}
 										}
 										else {
 											if (v_body_type == "b2_dynamicBody") {
 												if (v_body_shape == "POLYGON") {
-													p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, st::Physics_Object::Object_Type::POLYGON, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+													p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, st::Physics_Object::Object_Type::POLYGON, v_is_sensor, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
 												}
 												else {
 													if (v_body_shape == "CIRCLE") {
-														p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, st::Physics_Object::Object_Type::CIRCLE, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+														p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, st::Physics_Object::Object_Type::CIRCLE, v_is_sensor, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
 													}
 												}
 												va_model->Set_Physics_Object(p_physics_factory->Access_Memeber(vd_model->Id()));
@@ -2056,7 +2106,7 @@ PW_NAMESPACE_SRT
 								p_scene_models.push_back(va_model);
 							}
 							else { // -3 or any other number is for a custom color
-								glm::vec4 v_color = glm::vec4((float)v_color_r / 255.0f, (float)v_color_b / 255.0f, (float)v_color_g / 255.0f, (float)v_color_a / 255.0f);
+								glm::vec4 v_color = glm::vec4((float)v_color_r / 255.0f, (float)v_color_g / 255.0f, (float)v_color_b / 255.0f, (float)v_color_a / 255.0f);
 
 								if ((bool)v_is_text == true) {
 									v_model_text = pw::Engine_Memory::Allocate<st::Text, bool>(TO_WSTRING(v_texture), glm::ivec2(v_position_x, v_position_y), glm::ivec2(v_size_x, v_size_y), v_color, v_font_id);
@@ -2103,22 +2153,22 @@ PW_NAMESPACE_SRT
 									if (v_has_physics == 1) {
 										if (v_body_type == "b2_staticBody") {
 											if (v_body_shape == "POLYGON") {
-												p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::POLYGON, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+												p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::POLYGON, v_is_sensor, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
 											}
 											else {
 												if (v_body_shape == "CIRCLE") {
-													p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::CIRCLE, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+													p_physics_factory->Add_Object(vd_model, b2BodyType::b2_staticBody, st::Physics_Object::Object_Type::CIRCLE, v_is_sensor, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
 												}
 											}
 										}
 										else {
 											if (v_body_type == "b2_dynamicBody") {
 												if (v_body_shape == "POLYGON") {
-													p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, st::Physics_Object::Object_Type::POLYGON, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+													p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, st::Physics_Object::Object_Type::POLYGON, v_is_sensor, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
 												}
 												else {
 													if (v_body_shape == "CIRCLE") {
-														p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, st::Physics_Object::Object_Type::CIRCLE, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
+														p_physics_factory->Add_Object(vd_model, b2BodyType::b2_dynamicBody, st::Physics_Object::Object_Type::CIRCLE, v_is_sensor, vd_model->Id(), v_is_fixed, v_friction, v_restitution, v_density);
 													}
 												}
 												va_model->Set_Physics_Object(p_physics_factory->Access_Memeber(vd_model->Id()));
@@ -2386,7 +2436,7 @@ PW_NAMESPACE_SRT
 								}
 								else {
 									// It has a custom color
-									glm::vec4 v_color = glm::vec4((float)v_color_r / 255.0f, (float)v_color_b / 255.0f, (float)v_color_g / 255.0f, (float)v_color_a / 255.0f);
+									glm::vec4 v_color = glm::vec4((float)v_color_r / 255.0f, (float)v_color_g / 255.0f, (float)v_color_b / 255.0f, (float)v_color_a / 255.0f);
 
 									if ((bool)v_is_text == true) {
 										v_model_text = pw::Engine_Memory::Allocate<st::Text, bool>(TO_WSTRING(v_texture), glm::ivec2(v_position_x, v_position_y), glm::ivec2(v_size_x, v_size_y), v_color, v_font_id);
@@ -2594,7 +2644,7 @@ PW_NAMESPACE_SRT
 									v_sub_scene_models.push_back(va_model);
 								}
 								else { // -3 or any other number is for a custom color
-									glm::vec4 v_color = glm::vec4((float)v_color_r / 255.0f, (float)v_color_b / 255.0f, (float)v_color_g / 255.0f, (float)v_color_a / 255.0f);
+									glm::vec4 v_color = glm::vec4((float)v_color_r / 255.0f, (float)v_color_g / 255.0f, (float)v_color_b / 255.0f, (float)v_color_a / 255.0f);
 
 									if ((bool)v_is_text == true) {
 										v_model_text = pw::Engine_Memory::Allocate<st::Text, bool>(TO_WSTRING(v_texture), glm::ivec2(v_position_x, v_position_y), glm::ivec2(v_size_x, v_size_y), v_color, v_font_id);

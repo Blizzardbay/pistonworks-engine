@@ -852,14 +852,14 @@ PW_NAMESPACE_SRT
 								}
 								break;
 							}
-							case cm::Engine_Constant::PW_KEYBOARD_EVENT: {
+							default: {
 								auto v_found_button = m_current_scene_events->at(p_event_type).find(p_button);
 								if (v_found_button != m_current_scene_events->at(p_event_type).end()) {
 									auto v_found_state = m_current_scene_events->at(p_event_type).at(p_button).find(p_state);
 									if (v_found_state != m_current_scene_events->at(p_event_type).at(p_button).end()) {
 										for (auto i = m_current_scene_events->at(p_event_type).at(p_button).at(p_state).begin(); i != m_current_scene_events->at(p_event_type).at(p_button).at(p_state).end(); i++) {
 											for (auto j = i->second.begin(); j != i->second.end(); j++) {
-												if (i->first->Is_Rendered() == true) {
+												if (i->first == nullptr) {
 													j->second->Run_Event();
 													if (m_new_input != true) {
 														if (!(j->second->Event()->Play_State())) {
@@ -869,6 +869,20 @@ PW_NAMESPACE_SRT
 													}
 													else {
 														return;
+													}
+												}
+												else {
+													if (i->first->Is_Rendered() == true) {
+														j->second->Run_Event();
+														if (m_new_input != true) {
+															if (!(j->second->Event()->Play_State())) {
+																m_active_scene_events.push_back(j->second);
+															}
+															continue;
+														}
+														else {
+															return;
+														}
 													}
 												}
 											}
@@ -890,9 +904,6 @@ PW_NAMESPACE_SRT
 										}
 									}
 								}
-								break;
-							}
-							default: {
 								break;
 							}
 						}
