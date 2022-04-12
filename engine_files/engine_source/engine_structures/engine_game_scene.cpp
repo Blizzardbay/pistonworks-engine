@@ -1053,6 +1053,12 @@ PW_NAMESPACE_SRT
 					return nullptr;
 				}
 			}
+			void Game_Scene::Set_Sub_Scene_State(const std::wstring& p_sub_scene, const bool& p_state) {
+				auto v_found = m_sub_scene_deposit.find(p_sub_scene);
+				if (v_found != m_sub_scene_deposit.end()) {
+					v_found->second->Set_Render_Toggle(p_state);
+				}
+			}
 			COMPLEX_FUNCTION_3(const PW_EVENT_ID&, const PW_BUTTON_CODE&, const PW_STATE&) Game_Scene::Event_Callback() {
 				return std::bind(static_cast<void(st::Game_Scene::*)(const PW_EVENT_ID&, const PW_BUTTON_CODE&, const PW_STATE&)>(&st::Game_Scene::Activate_Event), this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 			}

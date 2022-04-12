@@ -27,6 +27,7 @@ PW_NAMESPACE_SRT
 			std::function<void(const std::wstring&, const bool&)> File_Loader::m_add_scene_function{};
 			std::function<void(const std::wstring&)> File_Loader::m_change_scene_function{};
 			std::function<void(const std::wstring&)> File_Loader::m_remove_scene_function{};
+			std::function<void(const std::wstring&, const std::wstring&, const bool&)> File_Loader::m_sub_scene_render{};
 
 			std::map<std::wstring, st::Texture*>* File_Loader::m_texture_repository{ nullptr };
 
@@ -118,10 +119,12 @@ PW_NAMESPACE_SRT
 			}
 			void File_Loader::Initialize_Loader(const std::function<void(const std::wstring&, const bool&)>& p_add_scene_function,
 					const std::function<void(const std::wstring&)>& p_change_scene_function,
-					const std::function<void(const std::wstring&)>& p_remove_scene_function) {
+					const std::function<void(const std::wstring&)>& p_remove_scene_function,
+					const std::function<void(const std::wstring&, const std::wstring&, const bool&)>& p_sub_scene_render) {
 				m_add_scene_function = p_add_scene_function;
 				m_change_scene_function = p_change_scene_function;
 				m_remove_scene_function = p_remove_scene_function;
+				m_sub_scene_render = p_sub_scene_render;
 			}
 			void File_Loader::Release_Loader() {
 				m_animation_location.~basic_string();
@@ -798,79 +801,88 @@ PW_NAMESPACE_SRT
 																		}
 																	}
 																	else {
-																		if (p_function_name == L"PLAY_SOUND") {
+																		if (p_function_name == L"SET_OSRENDER") {
 																			p_scene->Create_Event<void>(
 																				p_event_id, TO_WSTRING(p_arg_1), p_event_type, p_press_type, p_main_actor,
-																				std::make_shared<COMPLEX_FUNCTION_2(std::wstring, bool)>(COMPLEX_FUNCTION_2(std::wstring, bool)(
-																					std::bind(static_cast<void(st::Actor::*)(std::wstring, bool)>(&st::Actor::Play_Sound), p_scene->Access_Model(p_sound_id), std::placeholders::_1, std::placeholders::_2))),
-																				p_play_once, TO_WSTRING(p_arg_2), (bool)std::stoi(p_arg_3));
+																				std::make_shared<COMPLEX_FUNCTION_3(std::wstring, std::wstring, bool)>(COMPLEX_FUNCTION_3(std::wstring, std::wstring, bool)(
+																					m_sub_scene_render)),
+																				p_play_once, TO_WSTRING(p_arg_2), TO_WSTRING(p_arg_3), (bool)std::stoi(p_arg_4));
 																		}
 																		else {
-																			if (p_function_name == L"PAUSE_SOUND") {
+																			if (p_function_name == L"PLAY_SOUND") {
 																				p_scene->Create_Event<void>(
 																					p_event_id, TO_WSTRING(p_arg_1), p_event_type, p_press_type, p_main_actor,
-																					std::make_shared<COMPLEX_FUNCTION_1(std::wstring)>(COMPLEX_FUNCTION_1(std::wstring)(
-																						std::bind(static_cast<void(st::Actor::*)(std::wstring)>(&st::Actor::Pause_Sound), p_scene->Access_Model(p_sound_id), std::placeholders::_1))),
-																					p_play_once, TO_WSTRING(p_arg_2));
+																					std::make_shared<COMPLEX_FUNCTION_2(std::wstring, bool)>(COMPLEX_FUNCTION_2(std::wstring, bool)(
+																						std::bind(static_cast<void(st::Actor::*)(std::wstring, bool)>(&st::Actor::Play_Sound), p_scene->Access_Model(p_sound_id), std::placeholders::_1, std::placeholders::_2))),
+																					p_play_once, TO_WSTRING(p_arg_2), (bool)std::stoi(p_arg_3));
 																			}
 																			else {
-																				if (p_function_name == L"STOP_SOUND") {
+																				if (p_function_name == L"PAUSE_SOUND") {
 																					p_scene->Create_Event<void>(
 																						p_event_id, TO_WSTRING(p_arg_1), p_event_type, p_press_type, p_main_actor,
 																						std::make_shared<COMPLEX_FUNCTION_1(std::wstring)>(COMPLEX_FUNCTION_1(std::wstring)(
-																							std::bind(static_cast<void(st::Actor::*)(std::wstring)>(&st::Actor::Stop_Sound), p_scene->Access_Model(p_sound_id), std::placeholders::_1))),
+																							std::bind(static_cast<void(st::Actor::*)(std::wstring)>(&st::Actor::Pause_Sound), p_scene->Access_Model(p_sound_id), std::placeholders::_1))),
 																						p_play_once, TO_WSTRING(p_arg_2));
 																				}
 																				else {
-																					if (p_function_name == L"RESET_SOUND") {
+																					if (p_function_name == L"STOP_SOUND") {
 																						p_scene->Create_Event<void>(
 																							p_event_id, TO_WSTRING(p_arg_1), p_event_type, p_press_type, p_main_actor,
 																							std::make_shared<COMPLEX_FUNCTION_1(std::wstring)>(COMPLEX_FUNCTION_1(std::wstring)(
-																								std::bind(static_cast<void(st::Actor::*)(std::wstring)>(&st::Actor::Reset_Sound), p_scene->Access_Model(p_sound_id), std::placeholders::_1))),
+																								std::bind(static_cast<void(st::Actor::*)(std::wstring)>(&st::Actor::Stop_Sound), p_scene->Access_Model(p_sound_id), std::placeholders::_1))),
 																							p_play_once, TO_WSTRING(p_arg_2));
 																					}
 																					else {
-																						if (p_function_name == L"CHANGE_VOLUME") {
+																						if (p_function_name == L"RESET_SOUND") {
 																							p_scene->Create_Event<void>(
 																								p_event_id, TO_WSTRING(p_arg_1), p_event_type, p_press_type, p_main_actor,
-																								std::make_shared<COMPLEX_FUNCTION_3(std::wstring, float, bool)>(COMPLEX_FUNCTION_3(std::wstring, float, bool)(
-																									std::bind(static_cast<void(st::Actor::*)(std::wstring, float, bool)>(&st::Actor::Change_Volume), p_scene->Access_Model(p_sound_id),
-																										std::placeholders::_1, std::placeholders::_2, std::placeholders::_3))),
-																								p_play_once, TO_WSTRING(p_arg_2), std::stof(p_arg_3), (bool)std::stoi(p_arg_4));
+																								std::make_shared<COMPLEX_FUNCTION_1(std::wstring)>(COMPLEX_FUNCTION_1(std::wstring)(
+																									std::bind(static_cast<void(st::Actor::*)(std::wstring)>(&st::Actor::Reset_Sound), p_scene->Access_Model(p_sound_id), std::placeholders::_1))),
+																								p_play_once, TO_WSTRING(p_arg_2));
 																						}
 																						else {
-																							if (p_function_name == L"SET_ACTIVE_INPUT") {
+																							if (p_function_name == L"CHANGE_VOLUME") {
 																								p_scene->Create_Event<void>(
 																									p_event_id, TO_WSTRING(p_arg_1), p_event_type, p_press_type, p_main_actor,
-																									std::make_shared<COMPLEX_FUNCTION_1(std::wstring)>(COMPLEX_FUNCTION_1(std::wstring)(
-																										std::bind(static_cast<void(st::Game_Scene::*)(std::wstring)>(&st::Game_Scene::Set_Active_Input), p_scene, std::placeholders::_1))),
-																									p_play_once, TO_WSTRING(p_arg_2));
+																									std::make_shared<COMPLEX_FUNCTION_3(std::wstring, float, bool)>(COMPLEX_FUNCTION_3(std::wstring, float, bool)(
+																										std::bind(static_cast<void(st::Actor::*)(std::wstring, float, bool)>(&st::Actor::Change_Volume), p_scene->Access_Model(p_sound_id),
+																											std::placeholders::_1, std::placeholders::_2, std::placeholders::_3))),
+																									p_play_once, TO_WSTRING(p_arg_2), std::stof(p_arg_3), (bool)std::stoi(p_arg_4));
 																							}
 																							else {
-																								if (p_function_name == L"TOGGLE_RENDER") {
+																								if (p_function_name == L"SET_ACTIVE_INPUT") {
 																									p_scene->Create_Event<void>(
 																										p_event_id, TO_WSTRING(p_arg_1), p_event_type, p_press_type, p_main_actor,
 																										std::make_shared<COMPLEX_FUNCTION_1(std::wstring)>(COMPLEX_FUNCTION_1(std::wstring)(
-																											std::bind(static_cast<void(st::Game_Scene::*)(std::wstring)>(&st::Game_Scene::Toggle_Render), p_scene, std::placeholders::_1))),
+																											std::bind(static_cast<void(st::Game_Scene::*)(std::wstring)>(&st::Game_Scene::Set_Active_Input), p_scene, std::placeholders::_1))),
 																										p_play_once, TO_WSTRING(p_arg_2));
 																								}
 																								else {
-																									if (p_function_name == L"SET_TEXT") {
+																									if (p_function_name == L"TOGGLE_RENDER") {
 																										p_scene->Create_Event<void>(
 																											p_event_id, TO_WSTRING(p_arg_1), p_event_type, p_press_type, p_main_actor,
 																											std::make_shared<COMPLEX_FUNCTION_1(std::wstring)>(COMPLEX_FUNCTION_1(std::wstring)(
-																												std::bind(static_cast<void(st::Actor::*)(std::wstring)>(&st::Actor::Set_Text), p_main_actor,
-																													std::placeholders::_1))),
+																												std::bind(static_cast<void(st::Game_Scene::*)(std::wstring)>(&st::Game_Scene::Toggle_Render), p_scene, std::placeholders::_1))),
 																											p_play_once, TO_WSTRING(p_arg_2));
 																									}
 																									else {
-																										if (p_function_name == L"SET_TEXT_COLOR") {
+																										if (p_function_name == L"SET_TEXT") {
 																											p_scene->Create_Event<void>(
 																												p_event_id, TO_WSTRING(p_arg_1), p_event_type, p_press_type, p_main_actor,
-																												std::make_shared<COMPLEX_FUNCTION_1(glm::vec4)>(COMPLEX_FUNCTION_1(glm::vec4)(
-																													std::bind(static_cast<void(st::Actor::*)(glm::vec4)>(&st::Actor::Set_Text_Color), p_main_actor, std::placeholders::_1))),
-																												p_play_once, glm::vec4(std::stof(p_arg_2) / 255.0f, std::stof(p_arg_3) / 255.0f, std::stof(p_arg_4) / 255.0f, std::stof(p_arg_5) / 255.0f));
-																										}	
+																												std::make_shared<COMPLEX_FUNCTION_1(std::wstring)>(COMPLEX_FUNCTION_1(std::wstring)(
+																													std::bind(static_cast<void(st::Actor::*)(std::wstring)>(&st::Actor::Set_Text), p_main_actor,
+																														std::placeholders::_1))),
+																												p_play_once, TO_WSTRING(p_arg_2));
+																										}
+																										else {
+																											if (p_function_name == L"SET_TEXT_COLOR") {
+																												p_scene->Create_Event<void>(
+																													p_event_id, TO_WSTRING(p_arg_1), p_event_type, p_press_type, p_main_actor,
+																													std::make_shared<COMPLEX_FUNCTION_1(glm::vec4)>(COMPLEX_FUNCTION_1(glm::vec4)(
+																														std::bind(static_cast<void(st::Actor::*)(glm::vec4)>(&st::Actor::Set_Text_Color), p_main_actor, std::placeholders::_1))),
+																													p_play_once, glm::vec4(std::stof(p_arg_2) / 255.0f, std::stof(p_arg_3) / 255.0f, std::stof(p_arg_4) / 255.0f, std::stof(p_arg_5) / 255.0f));
+																											}
+																										}
 																									}
 																								}
 																							}
@@ -974,79 +986,88 @@ PW_NAMESPACE_SRT
 																		}
 																	}
 																	else {
-																		if (p_function_name == L"PLAY_SOUND") {
+																		if (p_function_name == L"SET_OSRENDER") {
 																			p_scene->Create_Event<void>(
 																				p_event_id, p_event_type, p_button_code, p_press_type, p_test_actor, p_main_actor,
-																				std::make_shared<COMPLEX_FUNCTION_2(std::wstring, bool)>(COMPLEX_FUNCTION_2(std::wstring, bool)(
-																					std::bind(static_cast<void(st::Actor::*)(std::wstring, bool)>(&st::Actor::Play_Sound), p_scene->Access_Model(p_sound_id), std::placeholders::_1, std::placeholders::_2))),
-																				p_play_once, TO_WSTRING(p_arg_1), (bool)std::stoi(p_arg_2));
+																				std::make_shared<COMPLEX_FUNCTION_3(std::wstring, std::wstring, bool)>(COMPLEX_FUNCTION_3(std::wstring, std::wstring, bool)(
+																					m_sub_scene_render)),
+																				p_play_once, TO_WSTRING(p_arg_1), TO_WSTRING(p_arg_2), (bool)std::stoi(p_arg_3));
 																		}
 																		else {
-																			if (p_function_name == L"PAUSE_SOUND") {
+																			if (p_function_name == L"PLAY_SOUND") {
 																				p_scene->Create_Event<void>(
 																					p_event_id, p_event_type, p_button_code, p_press_type, p_test_actor, p_main_actor,
-																					std::make_shared<COMPLEX_FUNCTION_1(std::wstring)>(COMPLEX_FUNCTION_1(std::wstring)(
-																						std::bind(static_cast<void(st::Actor::*)(std::wstring)>(&st::Actor::Pause_Sound), p_scene->Access_Model(p_sound_id), std::placeholders::_1))),
-																					p_play_once, TO_WSTRING(p_arg_1));
+																					std::make_shared<COMPLEX_FUNCTION_2(std::wstring, bool)>(COMPLEX_FUNCTION_2(std::wstring, bool)(
+																						std::bind(static_cast<void(st::Actor::*)(std::wstring, bool)>(&st::Actor::Play_Sound), p_scene->Access_Model(p_sound_id), std::placeholders::_1, std::placeholders::_2))),
+																					p_play_once, TO_WSTRING(p_arg_1), (bool)std::stoi(p_arg_2));
 																			}
 																			else {
-																				if (p_function_name == L"STOP_SOUND") {
+																				if (p_function_name == L"PAUSE_SOUND") {
 																					p_scene->Create_Event<void>(
 																						p_event_id, p_event_type, p_button_code, p_press_type, p_test_actor, p_main_actor,
 																						std::make_shared<COMPLEX_FUNCTION_1(std::wstring)>(COMPLEX_FUNCTION_1(std::wstring)(
-																							std::bind(static_cast<void(st::Actor::*)(std::wstring)>(&st::Actor::Stop_Sound), p_scene->Access_Model(p_sound_id), std::placeholders::_1))),
+																							std::bind(static_cast<void(st::Actor::*)(std::wstring)>(&st::Actor::Pause_Sound), p_scene->Access_Model(p_sound_id), std::placeholders::_1))),
 																						p_play_once, TO_WSTRING(p_arg_1));
 																				}
 																				else {
-																					if (p_function_name == L"RESET_SOUND") {
+																					if (p_function_name == L"STOP_SOUND") {
 																						p_scene->Create_Event<void>(
 																							p_event_id, p_event_type, p_button_code, p_press_type, p_test_actor, p_main_actor,
 																							std::make_shared<COMPLEX_FUNCTION_1(std::wstring)>(COMPLEX_FUNCTION_1(std::wstring)(
-																								std::bind(static_cast<void(st::Actor::*)(std::wstring)>(&st::Actor::Reset_Sound), p_scene->Access_Model(p_sound_id), std::placeholders::_1))),
+																								std::bind(static_cast<void(st::Actor::*)(std::wstring)>(&st::Actor::Stop_Sound), p_scene->Access_Model(p_sound_id), std::placeholders::_1))),
 																							p_play_once, TO_WSTRING(p_arg_1));
 																					}
 																					else {
-																						if (p_function_name == L"CHANGE_VOLUME") {
+																						if (p_function_name == L"RESET_SOUND") {
 																							p_scene->Create_Event<void>(
 																								p_event_id, p_event_type, p_button_code, p_press_type, p_test_actor, p_main_actor,
-																								std::make_shared<COMPLEX_FUNCTION_3(std::wstring, float, bool)>(COMPLEX_FUNCTION_3(std::wstring, float, bool)(
-																									std::bind(static_cast<void(st::Actor::*)(std::wstring, float, bool)>(&st::Actor::Change_Volume), p_scene->Access_Model(p_sound_id),
-																										std::placeholders::_1, std::placeholders::_2, std::placeholders::_3))),
-																								p_play_once, TO_WSTRING(p_arg_1), std::move(std::stof(p_arg_2)), (bool)std::stoi(p_arg_3));
+																								std::make_shared<COMPLEX_FUNCTION_1(std::wstring)>(COMPLEX_FUNCTION_1(std::wstring)(
+																									std::bind(static_cast<void(st::Actor::*)(std::wstring)>(&st::Actor::Reset_Sound), p_scene->Access_Model(p_sound_id), std::placeholders::_1))),
+																								p_play_once, TO_WSTRING(p_arg_1));
 																						}
 																						else {
-																							if (p_function_name == L"SET_ACTIVE_INPUT") {
+																							if (p_function_name == L"CHANGE_VOLUME") {
 																								p_scene->Create_Event<void>(
 																									p_event_id, p_event_type, p_button_code, p_press_type, p_test_actor, p_main_actor,
-																									std::make_shared<COMPLEX_FUNCTION_1(std::wstring)>(COMPLEX_FUNCTION_1(std::wstring)(
-																										std::bind(static_cast<void(st::Game_Scene::*)(std::wstring)>(&st::Game_Scene::Set_Active_Input), p_scene, std::placeholders::_1))),
-																									p_play_once, TO_WSTRING(p_arg_1));
+																									std::make_shared<COMPLEX_FUNCTION_3(std::wstring, float, bool)>(COMPLEX_FUNCTION_3(std::wstring, float, bool)(
+																										std::bind(static_cast<void(st::Actor::*)(std::wstring, float, bool)>(&st::Actor::Change_Volume), p_scene->Access_Model(p_sound_id),
+																											std::placeholders::_1, std::placeholders::_2, std::placeholders::_3))),
+																									p_play_once, TO_WSTRING(p_arg_1), std::move(std::stof(p_arg_2)), (bool)std::stoi(p_arg_3));
 																							}
 																							else {
-																								if (p_function_name == L"TOGGLE_RENDER") {
+																								if (p_function_name == L"SET_ACTIVE_INPUT") {
 																									p_scene->Create_Event<void>(
 																										p_event_id, p_event_type, p_button_code, p_press_type, p_test_actor, p_main_actor,
 																										std::make_shared<COMPLEX_FUNCTION_1(std::wstring)>(COMPLEX_FUNCTION_1(std::wstring)(
-																											std::bind(static_cast<void(st::Game_Scene::*)(std::wstring)>(&st::Game_Scene::Toggle_Render), p_scene, std::placeholders::_1))),
+																											std::bind(static_cast<void(st::Game_Scene::*)(std::wstring)>(&st::Game_Scene::Set_Active_Input), p_scene, std::placeholders::_1))),
 																										p_play_once, TO_WSTRING(p_arg_1));
 																								}
 																								else {
-																									if (p_function_name == L"SET_TEXT") {
+																									if (p_function_name == L"TOGGLE_RENDER") {
 																										p_scene->Create_Event<void>(
-																											p_event_id, p_event_type, p_button_code, p_press_type,
-																											p_test_actor, p_main_actor,
+																											p_event_id, p_event_type, p_button_code, p_press_type, p_test_actor, p_main_actor,
 																											std::make_shared<COMPLEX_FUNCTION_1(std::wstring)>(COMPLEX_FUNCTION_1(std::wstring)(
-																												std::bind(static_cast<void(st::Actor::*)(std::wstring)>(&st::Actor::Set_Text), p_main_actor, std::placeholders::_1))),
+																												std::bind(static_cast<void(st::Game_Scene::*)(std::wstring)>(&st::Game_Scene::Toggle_Render), p_scene, std::placeholders::_1))),
 																											p_play_once, TO_WSTRING(p_arg_1));
 																									}
 																									else {
-																										if (p_function_name == L"SET_TEXT_COLOR") {
+																										if (p_function_name == L"SET_TEXT") {
 																											p_scene->Create_Event<void>(
 																												p_event_id, p_event_type, p_button_code, p_press_type,
 																												p_test_actor, p_main_actor,
-																												std::make_shared<COMPLEX_FUNCTION_1(glm::vec4)>(COMPLEX_FUNCTION_1(glm::vec4)(
-																													std::bind(static_cast<void(st::Actor::*)(glm::vec4)>(&st::Actor::Set_Text_Color), p_main_actor, std::placeholders::_1))),
-																												p_play_once, glm::vec4(std::stof(p_arg_1) / 255.0f, std::stof(p_arg_2) / 255.0f, std::stof(p_arg_3) / 255.0f, std::stof(p_arg_4) / 255.0f));
+																												std::make_shared<COMPLEX_FUNCTION_1(std::wstring)>(COMPLEX_FUNCTION_1(std::wstring)(
+																													std::bind(static_cast<void(st::Actor::*)(std::wstring)>(&st::Actor::Set_Text), p_main_actor, std::placeholders::_1))),
+																												p_play_once, TO_WSTRING(p_arg_1));
+																										}
+																										else {
+																											if (p_function_name == L"SET_TEXT_COLOR") {
+																												p_scene->Create_Event<void>(
+																													p_event_id, p_event_type, p_button_code, p_press_type,
+																													p_test_actor, p_main_actor,
+																													std::make_shared<COMPLEX_FUNCTION_1(glm::vec4)>(COMPLEX_FUNCTION_1(glm::vec4)(
+																														std::bind(static_cast<void(st::Actor::*)(glm::vec4)>(&st::Actor::Set_Text_Color), p_main_actor, std::placeholders::_1))),
+																													p_play_once, glm::vec4(std::stof(p_arg_1) / 255.0f, std::stof(p_arg_2) / 255.0f, std::stof(p_arg_3) / 255.0f, std::stof(p_arg_4) / 255.0f));
+																											}
 																										}
 																									}
 																								}
@@ -1279,77 +1300,86 @@ PW_NAMESPACE_SRT
 																						v_play_once, (bool)std::stoi(v_arg_2));
 																				}
 																				else {
-																					if (v_function_name == "PLAY_SOUND") {
-																						v_scene->Create_Event<void, std::wstring>(
+																					if (v_function_name == "SET_OSRENDER") {
+																						v_scene->Create_Event<void>(
 																							TO_WSTRING(v_input_id), v_ws_id, TO_WSTRING(v_object_id),
-																							std::make_shared<COMPLEX_FUNCTION_2(std::wstring, bool)>(COMPLEX_FUNCTION_2(std::wstring, bool)(
-																								std::bind(static_cast<void(st::Actor::*)(std::wstring, bool)>(&st::Actor::Play_Sound), v_scene->Access_Model(TO_WSTRING(v_sound_id)), std::placeholders::_1, std::placeholders::_2))),
-																							(bool)v_play_once, std::move(TO_WSTRING(v_arg_1)), (bool)std::stoi(v_arg_2));
+																							std::make_shared<COMPLEX_FUNCTION_3(std::wstring, std::wstring, bool)>(COMPLEX_FUNCTION_3(std::wstring, std::wstring, bool)(
+																								m_sub_scene_render)),
+																							(bool)v_play_once, TO_WSTRING(v_arg_1), TO_WSTRING(v_arg_2), (bool)std::stoi(v_arg_3));
 																					}
 																					else {
-																						if (v_function_name == "PAUSE_SOUND") {
+																						if (v_function_name == "PLAY_SOUND") {
 																							v_scene->Create_Event<void, std::wstring>(
 																								TO_WSTRING(v_input_id), v_ws_id, TO_WSTRING(v_object_id),
-																								std::make_shared<COMPLEX_FUNCTION_1(std::wstring)>(COMPLEX_FUNCTION_1(std::wstring)(
-																									std::bind(static_cast<void(st::Actor::*)(std::wstring)>(&st::Actor::Pause_Sound), v_scene->Access_Model(TO_WSTRING(v_sound_id)), std::placeholders::_1))),
-																								(bool)v_play_once, std::move(TO_WSTRING(v_arg_1)));
+																								std::make_shared<COMPLEX_FUNCTION_2(std::wstring, bool)>(COMPLEX_FUNCTION_2(std::wstring, bool)(
+																									std::bind(static_cast<void(st::Actor::*)(std::wstring, bool)>(&st::Actor::Play_Sound), v_scene->Access_Model(TO_WSTRING(v_sound_id)), std::placeholders::_1, std::placeholders::_2))),
+																								(bool)v_play_once, std::move(TO_WSTRING(v_arg_1)), (bool)std::stoi(v_arg_2));
 																						}
 																						else {
-																							if (v_function_name == "STOP_SOUND") {
+																							if (v_function_name == "PAUSE_SOUND") {
 																								v_scene->Create_Event<void, std::wstring>(
 																									TO_WSTRING(v_input_id), v_ws_id, TO_WSTRING(v_object_id),
 																									std::make_shared<COMPLEX_FUNCTION_1(std::wstring)>(COMPLEX_FUNCTION_1(std::wstring)(
-																										std::bind(static_cast<void(st::Actor::*)(std::wstring)>(&st::Actor::Stop_Sound), v_scene->Access_Model(TO_WSTRING(v_sound_id)), std::placeholders::_1))),
+																										std::bind(static_cast<void(st::Actor::*)(std::wstring)>(&st::Actor::Pause_Sound), v_scene->Access_Model(TO_WSTRING(v_sound_id)), std::placeholders::_1))),
 																									(bool)v_play_once, std::move(TO_WSTRING(v_arg_1)));
 																							}
 																							else {
-																								if (v_function_name == "RESET_SOUND") {
+																								if (v_function_name == "STOP_SOUND") {
 																									v_scene->Create_Event<void, std::wstring>(
 																										TO_WSTRING(v_input_id), v_ws_id, TO_WSTRING(v_object_id),
 																										std::make_shared<COMPLEX_FUNCTION_1(std::wstring)>(COMPLEX_FUNCTION_1(std::wstring)(
-																											std::bind(static_cast<void(st::Actor::*)(std::wstring)>(&st::Actor::Reset_Sound), v_scene->Access_Model(TO_WSTRING(v_sound_id)), std::placeholders::_1))),
+																											std::bind(static_cast<void(st::Actor::*)(std::wstring)>(&st::Actor::Stop_Sound), v_scene->Access_Model(TO_WSTRING(v_sound_id)), std::placeholders::_1))),
 																										(bool)v_play_once, std::move(TO_WSTRING(v_arg_1)));
 																								}
 																								else {
-																									if (v_function_name == "CHANGE_VOLUME") {
-																										v_scene->Create_Event<void, std::wstring, float, bool>(
+																									if (v_function_name == "RESET_SOUND") {
+																										v_scene->Create_Event<void, std::wstring>(
 																											TO_WSTRING(v_input_id), v_ws_id, TO_WSTRING(v_object_id),
-																											std::make_shared<COMPLEX_FUNCTION_3(std::wstring, float, bool)>(COMPLEX_FUNCTION_3(std::wstring, float, bool)(
-																												std::bind(static_cast<void(st::Actor::*)(std::wstring, float, bool)>(&st::Actor::Change_Volume), v_scene->Access_Model(TO_WSTRING(v_sound_id)),
-																													std::placeholders::_1, std::placeholders::_2, std::placeholders::_3))),
-																											(bool)v_play_once, TO_WSTRING(v_arg_1), std::stof(v_arg_2), (bool)std::stoi(v_arg_3));
+																											std::make_shared<COMPLEX_FUNCTION_1(std::wstring)>(COMPLEX_FUNCTION_1(std::wstring)(
+																												std::bind(static_cast<void(st::Actor::*)(std::wstring)>(&st::Actor::Reset_Sound), v_scene->Access_Model(TO_WSTRING(v_sound_id)), std::placeholders::_1))),
+																											(bool)v_play_once, std::move(TO_WSTRING(v_arg_1)));
 																									}
 																									else {
-																										if (v_function_name == "SET_ACTIVE_INPUT") {
-																											v_scene->Create_Event<void, std::wstring>(
+																										if (v_function_name == "CHANGE_VOLUME") {
+																											v_scene->Create_Event<void, std::wstring, float, bool>(
 																												TO_WSTRING(v_input_id), v_ws_id, TO_WSTRING(v_object_id),
-																												std::make_shared<COMPLEX_FUNCTION_1(std::wstring)>(COMPLEX_FUNCTION_1(std::wstring)(
-																													std::bind(static_cast<void(st::Game_Scene::*)(std::wstring)>(&st::Game_Scene::Set_Active_Input), v_scene, std::placeholders::_1))),
-																												(bool)v_play_once, TO_WSTRING(v_arg_1));
+																												std::make_shared<COMPLEX_FUNCTION_3(std::wstring, float, bool)>(COMPLEX_FUNCTION_3(std::wstring, float, bool)(
+																													std::bind(static_cast<void(st::Actor::*)(std::wstring, float, bool)>(&st::Actor::Change_Volume), v_scene->Access_Model(TO_WSTRING(v_sound_id)),
+																														std::placeholders::_1, std::placeholders::_2, std::placeholders::_3))),
+																												(bool)v_play_once, TO_WSTRING(v_arg_1), std::stof(v_arg_2), (bool)std::stoi(v_arg_3));
 																										}
 																										else {
-																											if (v_function_name == "TOGGLE_RENDER") {
+																											if (v_function_name == "SET_ACTIVE_INPUT") {
 																												v_scene->Create_Event<void, std::wstring>(
 																													TO_WSTRING(v_input_id), v_ws_id, TO_WSTRING(v_object_id),
 																													std::make_shared<COMPLEX_FUNCTION_1(std::wstring)>(COMPLEX_FUNCTION_1(std::wstring)(
-																														std::bind(static_cast<void(st::Game_Scene::*)(std::wstring)>(&st::Game_Scene::Toggle_Render), v_scene, std::placeholders::_1))),
+																														std::bind(static_cast<void(st::Game_Scene::*)(std::wstring)>(&st::Game_Scene::Set_Active_Input), v_scene, std::placeholders::_1))),
 																													(bool)v_play_once, TO_WSTRING(v_arg_1));
 																											}
 																											else {
-																												if (v_function_name == "SET_TEXT") {
+																												if (v_function_name == "TOGGLE_RENDER") {
 																													v_scene->Create_Event<void, std::wstring>(
 																														TO_WSTRING(v_input_id), v_ws_id, TO_WSTRING(v_object_id),
 																														std::make_shared<COMPLEX_FUNCTION_1(std::wstring)>(COMPLEX_FUNCTION_1(std::wstring)(
-																															std::bind(static_cast<void(st::Actor::*)(std::wstring)>(&st::Actor::Set_Text), v_scene->Access_Model(v_ws_id), std::placeholders::_1))),
+																															std::bind(static_cast<void(st::Game_Scene::*)(std::wstring)>(&st::Game_Scene::Toggle_Render), v_scene, std::placeholders::_1))),
 																														(bool)v_play_once, TO_WSTRING(v_arg_1));
 																												}
 																												else {
-																													if (v_function_name == "SET_TEXT_COLOR") {
-																														v_scene->Create_Event<void, glm::vec4>(
+																													if (v_function_name == "SET_TEXT") {
+																														v_scene->Create_Event<void, std::wstring>(
 																															TO_WSTRING(v_input_id), v_ws_id, TO_WSTRING(v_object_id),
-																															std::make_shared<COMPLEX_FUNCTION_1(glm::vec4)>(COMPLEX_FUNCTION_1(glm::vec4)(
-																																std::bind(static_cast<void(st::Actor::*)(glm::vec4)>(&st::Actor::Set_Text_Color), v_scene->Access_Model(v_ws_id), std::placeholders::_1))),
-																															(bool)v_play_once, glm::vec4(std::stof(v_arg_1) / 255.0f, std::stof(v_arg_2) / 255.0f, std::stof(v_arg_3) / 255.0f, std::stof(v_arg_4) / 255.0f));
+																															std::make_shared<COMPLEX_FUNCTION_1(std::wstring)>(COMPLEX_FUNCTION_1(std::wstring)(
+																																std::bind(static_cast<void(st::Actor::*)(std::wstring)>(&st::Actor::Set_Text), v_scene->Access_Model(v_ws_id), std::placeholders::_1))),
+																															(bool)v_play_once, TO_WSTRING(v_arg_1));
+																													}
+																													else {
+																														if (v_function_name == "SET_TEXT_COLOR") {
+																															v_scene->Create_Event<void, glm::vec4>(
+																																TO_WSTRING(v_input_id), v_ws_id, TO_WSTRING(v_object_id),
+																																std::make_shared<COMPLEX_FUNCTION_1(glm::vec4)>(COMPLEX_FUNCTION_1(glm::vec4)(
+																																	std::bind(static_cast<void(st::Actor::*)(glm::vec4)>(&st::Actor::Set_Text_Color), v_scene->Access_Model(v_ws_id), std::placeholders::_1))),
+																																(bool)v_play_once, glm::vec4(std::stof(v_arg_1) / 255.0f, std::stof(v_arg_2) / 255.0f, std::stof(v_arg_3) / 255.0f, std::stof(v_arg_4) / 255.0f));
+																														}
 																													}
 																												}
 																											}

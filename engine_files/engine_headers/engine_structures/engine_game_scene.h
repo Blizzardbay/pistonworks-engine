@@ -623,6 +623,8 @@ PW_NAMESPACE_SRT
 			
 			st::Actor* Access_Model(const std::wstring& p_s_id);
 
+			void Set_Sub_Scene_State(const std::wstring& p_sub_scene, const bool& p_state);
+
 			COMPLEX_FUNCTION_3(const PW_EVENT_ID&, const PW_BUTTON_CODE&, const PW_STATE&) Event_Callback();
 		    
 			const std::vector<st::Actor*>& Main_Scene_Models() const;

@@ -106,7 +106,7 @@ PW_NAMESPACE_SRT
 				}
 			}
 			void Engine_Queue::Load_From_Dir(std::unique_ptr<GLFWwindow, cm::Destroy_GLFW>& p_main_window, std::shared_ptr<PW_FUNCTION> p_state_function) {
-				co::File_Loader::Initialize_Loader(&Engine_Queue::Add_Scene, &Engine_Queue::Set_Current_Scene, &Engine_Queue::Remove_Scene);
+				co::File_Loader::Initialize_Loader(&Engine_Queue::Add_Scene, &Engine_Queue::Set_Current_Scene, &Engine_Queue::Remove_Scene, &Engine_Queue::Set_Sub_Scene_Render);
 
 				// Find if the directory exist
 				std::wstring v_wstr_directory = pw::cm::Engine_Constant::Game_Path().generic_wstring();
@@ -387,6 +387,12 @@ PW_NAMESPACE_SRT
 			}
 			void Engine_Queue::Set_User_Debug_Function(const std::function<void()>& p_debug_function) {
 				m_user_debug_function = p_debug_function;
+			}
+			void Engine_Queue::Set_Sub_Scene_Render(const std::wstring& p_base_scene, const std::wstring& p_sub_scene, const bool& p_state) {
+				auto v_found = m_scene_directory->find(p_base_scene);
+				if (v_found != m_scene_directory->end()) {
+					v_found->second->Set_Sub_Scene_State(p_sub_scene, p_state);
+				}
 			}
 			st::Game_Scene* Engine_Queue::Get_Scene(const std::wstring& p_scene_name) {
 				auto v_found = m_scene_directory->find(p_scene_name);

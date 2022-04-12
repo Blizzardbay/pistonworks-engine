@@ -94,6 +94,8 @@ PW_NAMESPACE_SRT
 				const std::function<void(const std::wstring&)>& p_post_remove);
 			static void Set_User_Debug_Function(const std::function<void()>& p_debug_function);
 
+			static void Set_Sub_Scene_Render(const std::wstring& p_base_scene, const std::wstring& p_sub_scene, const bool& p_state);
+
 			static st::Game_Scene* Get_Scene(const std::wstring& p_scene_name);
 			static st::Game_Scene* Current_Scene();
 		// Public Variables      
