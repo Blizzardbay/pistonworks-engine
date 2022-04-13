@@ -138,6 +138,7 @@ PW_NAMESPACE_SRT
 			void Set_Text(std::wstring p_new_text);
 
 			void Set_Text_Color(glm::vec4 p_color);
+			void Set_Color(glm::vec4 p_color);
 
 			void Toggle_Render();
 			void Set_Render_Toggle(const bool& p_state);
@@ -210,7 +211,7 @@ PW_NAMESPACE_SRT
 		// Private Variables        
 		private:
 			st::Actor* m_model;
-			st::Event_Base* m_model_event;
+			pw::st::Event_Base* m_model_event;
 		};
 		struct Sub_Scene_Structure {
 			// Default Class Structures

@@ -882,6 +882,15 @@ PW_NAMESPACE_SRT
 																														std::bind(static_cast<void(st::Actor::*)(glm::vec4)>(&st::Actor::Set_Text_Color), p_main_actor, std::placeholders::_1))),
 																													p_play_once, glm::vec4(std::stof(p_arg_2) / 255.0f, std::stof(p_arg_3) / 255.0f, std::stof(p_arg_4) / 255.0f, std::stof(p_arg_5) / 255.0f));
 																											}
+																											else {
+																												if (p_function_name == L"SET_COLOR") {
+																													p_scene->Create_Event<void>(
+																														p_event_id, TO_WSTRING(p_arg_1), p_event_type, p_press_type, p_main_actor,
+																														std::make_shared<COMPLEX_FUNCTION_1(glm::vec4)>(COMPLEX_FUNCTION_1(glm::vec4)(
+																															std::bind(static_cast<void(st::Actor::*)(glm::vec4)>(&st::Actor::Set_Color), p_main_actor, std::placeholders::_1))),
+																														p_play_once, glm::vec4(std::stof(p_arg_2) / 255.0f, std::stof(p_arg_3) / 255.0f, std::stof(p_arg_4) / 255.0f, std::stof(p_arg_5) / 255.0f));
+																												}
+																											}
 																										}
 																									}
 																								}
@@ -1067,6 +1076,16 @@ PW_NAMESPACE_SRT
 																													std::make_shared<COMPLEX_FUNCTION_1(glm::vec4)>(COMPLEX_FUNCTION_1(glm::vec4)(
 																														std::bind(static_cast<void(st::Actor::*)(glm::vec4)>(&st::Actor::Set_Text_Color), p_main_actor, std::placeholders::_1))),
 																													p_play_once, glm::vec4(std::stof(p_arg_1) / 255.0f, std::stof(p_arg_2) / 255.0f, std::stof(p_arg_3) / 255.0f, std::stof(p_arg_4) / 255.0f));
+																											}
+																											else {
+																												if (p_function_name == L"SET_COLOR") {
+																													p_scene->Create_Event<void>(
+																														p_event_id, p_event_type, p_button_code, p_press_type,
+																														p_test_actor, p_main_actor,
+																														std::make_shared<COMPLEX_FUNCTION_1(glm::vec4)>(COMPLEX_FUNCTION_1(glm::vec4)(
+																															std::bind(static_cast<void(st::Actor::*)(glm::vec4)>(&st::Actor::Set_Color), p_main_actor, std::placeholders::_1))),
+																														p_play_once, glm::vec4(std::stof(p_arg_1) / 255.0f, std::stof(p_arg_2) / 255.0f, std::stof(p_arg_3) / 255.0f, std::stof(p_arg_4) / 255.0f));
+																												}
 																											}
 																										}
 																									}
@@ -1379,6 +1398,15 @@ PW_NAMESPACE_SRT
 																																std::make_shared<COMPLEX_FUNCTION_1(glm::vec4)>(COMPLEX_FUNCTION_1(glm::vec4)(
 																																	std::bind(static_cast<void(st::Actor::*)(glm::vec4)>(&st::Actor::Set_Text_Color), v_scene->Access_Model(v_ws_id), std::placeholders::_1))),
 																																(bool)v_play_once, glm::vec4(std::stof(v_arg_1) / 255.0f, std::stof(v_arg_2) / 255.0f, std::stof(v_arg_3) / 255.0f, std::stof(v_arg_4) / 255.0f));
+																														}
+																														else {
+																															if (v_function_name == "SET_COLOR") {
+																																v_scene->Create_Event<void, glm::vec4>(
+																																	TO_WSTRING(v_input_id), v_ws_id, TO_WSTRING(v_object_id),
+																																	std::make_shared<COMPLEX_FUNCTION_1(glm::vec4)>(COMPLEX_FUNCTION_1(glm::vec4)(
+																																		std::bind(static_cast<void(st::Actor::*)(glm::vec4)>(&st::Actor::Set_Color), v_scene->Access_Model(v_ws_id), std::placeholders::_1))),
+																																	(bool)v_play_once, glm::vec4(std::stof(v_arg_1) / 255.0f, std::stof(v_arg_2) / 255.0f, std::stof(v_arg_3) / 255.0f, std::stof(v_arg_4) / 255.0f));
+																															}
 																														}
 																													}
 																												}

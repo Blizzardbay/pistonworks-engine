@@ -280,6 +280,11 @@ PW_NAMESPACE_SRT
 					m_text->Set_Text_Color(p_color);
 				}
 			}
+			void Actor::Set_Color(glm::vec4 p_color) {
+				if (m_model != nullptr) {
+					m_model->Set_Model_Color(p_color);
+				}
+			}
 			void Actor::Toggle_Render() {
 				m_render_toggle = !m_render_toggle;
 			}

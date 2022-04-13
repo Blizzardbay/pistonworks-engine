@@ -301,6 +301,7 @@ PW_NAMESPACE_SRT
 
 			bool m_attached;
 			bool m_fixed_rotation;
+			bool m_repeats;
 
 			uint64_t m_id;
 
