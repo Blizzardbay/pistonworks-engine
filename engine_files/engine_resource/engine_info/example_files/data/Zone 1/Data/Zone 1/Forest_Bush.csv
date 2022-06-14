@@ -1,0 +1,3 @@
+Texture_ID, 	Texture_Name, 	Set_Current
+FULL_BUSH,	Bush_Covered.png,	1
+EMPTY_BUSH,	Bush_Empty.png,	0

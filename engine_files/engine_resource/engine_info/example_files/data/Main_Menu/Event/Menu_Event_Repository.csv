@@ -1,0 +1,3 @@
+Input_ID,		Event,		Is_Current
+Main_Menu,	Menu_Event,	1
+Settings,		Settings_Event,	0

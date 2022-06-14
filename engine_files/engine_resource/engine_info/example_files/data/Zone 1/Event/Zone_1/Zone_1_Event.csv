@@ -1,0 +1,17 @@
+Event_Type,	Model_S_ID,	Sound_S_ID,	Input_Event,	Button_Code,	Function_Name,	Play_Once,	Other_S_ID,	Args_1,	Args_2,	Args_3,	Args_4,	Args_5
+# Player Movement
+KEYBOARD,	Player,		NULL,		PRESS,		65,		Move_Left,	0,		NULL,		NULL,	NULL,	NULL,	NULL,	NULL
+KEYBOARD,	Player,		NULL,		PRESS,		68,		Move_Right,	0,		NULL,		NULL,	NULL,	NULL,	NULL,	NULL
+KEYBOARD,	Player,		NULL,		PRESS,		87,		Move_Up,		0,		NULL,		NULL,	NULL,	NULL,	NULL,	NULL
+KEYBOARD,	Player,		NULL,		PRESS,		83,		Move_Down,	0,		NULL,		NULL,	NULL,	NULL,	NULL,	NULL
+KEYBOARD,	Player,		NULL,		RELEASE,		65,		End_Move_Left,	1,		NULL,		NULL,	NULL,	NULL,	NULL,	NULL
+KEYBOARD,	Player,		NULL,		RELEASE,		68,		End_Move_Right,	1,		NULL,		NULL,	NULL,	NULL,	NULL,	NULL
+KEYBOARD,	Player,		NULL,		RELEASE,		87,		End_Move_Up,	1,		NULL,		NULL,	NULL,	NULL,	NULL,	NULL
+KEYBOARD,	Player,		NULL,		RELEASE,		83,		End_Move_Down,	1,		NULL,		NULL,	NULL,	NULL,	NULL,	NULL
+# Actions
+KEYBOARD,	Player,		NULL,		PRESS,		69,		Interact,		1,		NULL,		NULL,	NULL,	NULL,	NULL,	NULL
+MOUSE,		NULL,		NULL,		PRESS,		0,		Print,		1,		NULL,		NULL,	NULL,	NULL,	NULL,	NULL
+# Inventory
+KEYBOARD,	NULL,		NULL,		PRESS,		258,		SET_SRENDER,	1,		NULL,		Inventory_Main_Data,	1,	NULL,	NULL,	NULL
+KEYBOARD,	NULL,		NULL,		PRESS,		258,		SET_SRENDER,	1,		NULL,		Inventory_Equipment_Data,	1,	NULL,	NULL,	NULL
+KEYBOARD,	NULL,		NULL,		PRESS,		258,		SET_ACTIVE_INPUT,	1,		NULL,		Inventory,		NULL,	NULL,	NULL,	NULL

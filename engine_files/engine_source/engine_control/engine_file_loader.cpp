@@ -22,7 +22,7 @@ PW_NAMESPACE_SRT
 
 			std::wstring File_Loader::m_engine_texture_dir{ L"/engine_files/engine_resource/engine_essential/engine_textures" };
 			std::wstring File_Loader::m_engine_icon_dir{ L"/engine_files/engine_resource/engine_essential/engine_icon" };
-			std::wstring  File_Loader::m_engine_animation_dir{ L"/engine_files/engine_resource/engine_essential/engine_animations" };
+			std::wstring File_Loader::m_engine_animation_dir{ L"/engine_files/engine_resource/engine_essential/engine_animations" };
 
 			std::function<void(const std::wstring&, const bool&)> File_Loader::m_add_scene_function{};
 			std::function<void(const std::wstring&)> File_Loader::m_change_scene_function{};

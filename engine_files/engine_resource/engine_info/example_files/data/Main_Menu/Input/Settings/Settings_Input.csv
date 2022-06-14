@@ -1,0 +1,2 @@
+Input_Type,	Input_Event,	Button_Code,	Function_Name,	Play_Once
+MOUSE,		PRESS,		0,		Move_Slider,	0

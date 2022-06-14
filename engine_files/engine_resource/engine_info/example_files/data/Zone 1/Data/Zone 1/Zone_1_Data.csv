@@ -1,0 +1,23 @@
+Layer,	S_ID,	Is_Main_ID_Actor,	Is_Attached,	Attachment_ID,	Offset_X,	Offset_Y,	Is_Text,	Font_Type,	Texture,			Texture_Repeats,	Is_Linear,	Mesh_Type,	Color_ID,	ColorR, 	ColorB, 	ColorG, 	ColorA,	PositionX,	PositionY,	Rotation,	SizeX,	SizeY,	Is_Animated,	Has_Animation_Extention,	Animation_Length,	Animation_Frame_Count,	Animation_Frame_Size_X,	Has_Physics,	Is_Sensor,	Body_Type,	Shape,	Fixed_Rot,	Is_Fixed,	Friction,	Restitution,	Density,	Sound_Structure
+# Player
+1,	Player,	1,		0,		NULL,		0.0,	0.0,	0,	NULL,		stolen.png,		0,		0,	5,		-2,	0,	0,	0,	0,	4000,	4000,	0,	64,	128,	0,		0,			0.0,		0,			0,			1,		0,	b2_dynamicBody,	CIRCLE,	1,		0,	0.0,	0.0,		1.0,	NULL
+# River Left Side
+-20,	NULL,	1,		0,		NULL,		0.0,	0.0,	0,	NULL,		River_Grass_1.png,		1,		0,	5,		-2,	0,	0,	0,	0,	2976,	8000,	0,	1024,	6400,	0,		0,			0.0,		0,			0,			0,		0,	NULL,		NULL,	0,		0,	0.0,	0.0,		0.0,	NULL
+-20,	NULL,	1,		0,		NULL,		0.0,	0.0,	0,	NULL,		River_L_Bank_1.png,		1,		0,	5,		-2,	0,	0,	0,	0,	4000,	8000,	0,	128,	6400,	0,		0,			0.0,		0,			0,			0,		0,	NULL,		NULL,	0,		0,	0.0,	0.0,		0.0,	NULL
+-20,	NULL,	1,		0,		NULL,		0.0,	0.0,	0,	NULL,		River_L_Out_1.png,		1,		0,	5,		-2,	0,	0,	0,	0,	4128,	8000,	0,	128,	6400,	0,		0,			0.0,		0,			0,			0,		0,	NULL,		NULL,	0,		0,	0.0,	0.0,		0.0,	NULL
+-20,	NULL,	1,		0,		NULL,		0.0,	0.0,	0,	NULL,		River_Middle_2.png,	1,		0,	5,		-2,	0,	0,	0,	0,	4256,	8000,	0,	128,	6400,	0,		0,			0.0,		0,			0,			0,		0,	NULL,		NULL,	0,		0,	0.0,	0.0,		0.0,	NULL
+-20,	NULL,	1,		0,		NULL,		0.0,	0.0,	0,	NULL,		River_Middle_2.png,	1,		0,	5,		-2,	0,	0,	0,	0,	4384,	8000,	0,	128,	6400,	0,		0,			0.0,		0,			0,			0,		0,	NULL,		NULL,	0,		0,	0.0,	0.0,		0.0,	NULL
+-20,	NULL,	1,		0,		NULL,		0.0,	0.0,	0,	NULL,		River_Middle_2.png,	1,		0,	5,		-2,	0,	0,	0,	0,	4512,	8000,	0,	128,	6400,	0,		0,			0.0,		0,			0,			0,		0,	NULL,		NULL,	0,		0,	0.0,	0.0,		0.0,	NULL
+-20,	NULL,	1,		0,		NULL,		0.0,	0.0,	0,	NULL,		River_Middle_2.png,	1,		0,	5,		-2,	0,	0,	0,	0,	4640,	8000,	0,	128,	6400,	0,		0,			0.0,		0,			0,			0,		0,	NULL,		NULL,	0,		0,	0.0,	0.0,		0.0,	NULL
+-20,	NULL,	1,		0,		NULL,		0.0,	0.0,	0,	NULL,		River_Middle_2.png,	1,		0,	5,		-2,	0,	0,	0,	0,	4768,	8000,	0,	128,	6400,	0,		0,			0.0,		0,			0,			0,		0,	NULL,		NULL,	0,		0,	0.0,	0.0,		0.0,	NULL
+-20,	NULL,	1,		0,		NULL,		0.0,	0.0,	0,	NULL,		River_Middle_2.png,	1,		0,	5,		-2,	0,	0,	0,	0,	4896,	8000,	0,	128,	6400,	0,		0,			0.0,		0,			0,			0,		0,	NULL,		NULL,	0,		0,	0.0,	0.0,		0.0,	NULL
+-20,	NULL,	1,		0,		NULL,		0.0,	0.0,	0,	NULL,		River_Middle_2.png,	1,		0,	5,		-2,	0,	0,	0,	0,	5024,	8000,	0,	128,	6400,	0,		0,			0.0,		0,			0,			0,		0,	NULL,		NULL,	0,		0,	0.0,	0.0,		0.0,	NULL
+# Forest
+-19,	NULL,	1,		0,		NULL,		0.0,	0.0,	0,	NULL,		Forest_Tree_1.png,		0,		0,	5,		-2,	0,	0,	0,	0,	4256,	4256,	0,	256,	384,	0,		0,			0.0,		0,			0,			0,		0,	NULL,		NULL,	0,		0,	0.0,	0.0,		0.0,	NULL
+-19,	NULL,	1,		0,		NULL,		0.0,	0.0,	0,	NULL,		Forest_Tree_1.png,		0,		0,	5,		-2,	0,	0,	0,	0,	4128,	4256,	0,	256,	384,	0,		0,			0.0,		0,			0,			0,		0,	NULL,		NULL,	0,		0,	0.0,	0.0,		0.0,	NULL
+-19,	NULL,	1,		0,		NULL,		0.0,	0.0,	0,	NULL,		Forest_Tree_1.png,		0,		0,	5,		-2,	0,	0,	0,	0,	4000,	4256,	0,	256,	384,	0,		0,			0.0,		0,			0,			0,		0,	NULL,		NULL,	0,		0,	0.0,	0.0,		0.0,	NULL
+-19,	NULL,	1,		0,		NULL,		0.0,	0.0,	0,	NULL,		Forest_Tree_1.png,		0,		0,	5,		-2,	0,	0,	0,	0,	4256,	4256,	0,	256,	384,	0,		0,			0.0,		0,			0,			0,		0,	NULL,		NULL,	0,		0,	0.0,	0.0,		0.0,	NULL
+# Bush
+-19,	Bush,	1,		0,		NULL,		0.0,	0.0,	0,	NULL,		Forest_Bush.csv,		0,		0,	5,		-2,	0,	0,	0,	0,	3800,	4256,	0,	64,	64,	0,		0,			0.0,		0,			0,			1,		1,	b2_staticBody,	POLYGON,	0,		1,	0.0,	0.0,		1.0,	NULL
+# Screen Affect
+#4,	NULL,	1,		0,		NULL,		0.0,	0.0,	0,	NULL,		White.png,		0,		0,	5,		-1,	0,	0,	0,	127,	0,	720,	0,	1080,	720,	0,		0,			0.0,		0,			0,			0,		0,	NULL,		NULL,	0,		0,	0.0,	0.0,		0.0,	NULL

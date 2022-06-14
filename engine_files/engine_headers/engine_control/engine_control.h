@@ -180,7 +180,7 @@ PW_NAMESPACE_END
 #define USE_PISTONWORKS_ENGINE(p_window_size_x, p_window_size_y, p_require_game_path)		\
 	int main(int argc, char* argv[]) {														\
 		pw::co::Engine_Control engine{};													\
-		engine.Initialize_Engine(argc, argv, L"Pistonworks Window",								\
+		engine.Initialize_Engine(argc, argv, L"Pistonworks Window",							\
 			TO_UINT32(p_window_size_x), TO_UINT32(p_window_size_y),							\
 			TO_BOOL(p_require_game_path));													\
 		if (engine.No_Error() == false) {													\
