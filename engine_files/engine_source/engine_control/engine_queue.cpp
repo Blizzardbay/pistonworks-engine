@@ -42,7 +42,11 @@ PW_NAMESPACE_SRT
 					Remove_Scene(i->first);
 					i = m_scene_directory->begin();
 				}
-				pw::Engine_Memory::Deallocate<std::map<std::wstring, st::Game_Scene*>>(m_scene_directory);
+				if (pw::Engine_Memory::Deallocate<std::map<std::wstring, st::Game_Scene*>>(m_scene_directory) == false) {
+					if (m_scene_directory != nullptr) {
+						delete m_scene_directory;
+					}
+				}
 
 				m_current_scene.~basic_string();
 
@@ -164,15 +168,17 @@ PW_NAMESPACE_SRT
 													v_path_to_textures.generic_wstring(), v_path_to_sounds.generic_wstring()).get();
 											// Create loading animation
 											std::tuple<st::Texture*, st::Animation*> v_animation = co::File_Loader::Load_Animation_File(L"Loading_Bar.gif", false, true, true);
-											st::Model v_model = st::Model(st::Geometry_Types::SQUARE, v_animation._Myfirst._Val, glm::vec2(0.0f, cm::Engine_Constant::Window_Height()), 0.0f, glm::vec2(cm::Engine_Constant::Window_Width(), cm::Engine_Constant::Window_Height()));
-											v_animation._Get_rest()._Myfirst._Val->Finish_Init(v_model.Mesh()->Vertices(), v_model.Mesh()->Vertex_Count());
-											st::Actor v_loading_bar = st::Actor(&v_model, v_animation._Get_rest()._Myfirst._Val);
-											
+											st::Model* v_model = pw::Engine_Memory::Allocate<st::Model, bool>(st::Geometry_Types::SQUARE, v_animation._Myfirst._Val, glm::vec2(0.0f, cm::Engine_Constant::Window_Height()), 0.0f, glm::vec2(cm::Engine_Constant::Window_Width(), cm::Engine_Constant::Window_Height()));
+											v_animation._Get_rest()._Myfirst._Val->Finish_Init(v_model->Mesh()->Vertices(), v_model->Mesh()->Vertex_Count());
+											st::Actor v_loading_bar = st::Actor(v_model, v_animation._Get_rest()._Myfirst._Val);
+
 											v_animation = co::File_Loader::Load_Animation_File(L"Loading_PW_Logo.gif", false, true, true);
-											v_model = st::Model(st::Geometry_Types::SQUARE, v_animation._Myfirst._Val, glm::vec2(cm::Engine_Constant::Window_Width() - 163.0f, 163.0f), 0.0f, glm::vec2(163.0f, 163.0f));
-											v_animation._Get_rest()._Myfirst._Val->Finish_Init(v_model.Mesh()->Vertices(), v_model.Mesh()->Vertex_Count());
-											st::Actor v_loading_icon = st::Actor(&v_model, v_animation._Get_rest()._Myfirst._Val);
-											
+											v_model = pw::Engine_Memory::Allocate<st::Model, bool>(st::Geometry_Types::SQUARE, v_animation._Myfirst._Val, glm::vec2(cm::Engine_Constant::Window_Width() - 163.0f, 163.0f), 0.0f, glm::vec2(163.0f, 163.0f));
+											v_animation._Get_rest()._Myfirst._Val->Finish_Init(v_model->Mesh()->Vertices(), v_model->Mesh()->Vertex_Count());
+											st::Actor v_loading_icon = st::Actor(v_model, v_animation._Get_rest()._Myfirst._Val);
+
+											v_model = nullptr;
+
 											v_loading_bar.Stop_Animation();
 											v_loading_bar.Advance_Animation();
 											while (true) {
@@ -222,13 +228,17 @@ PW_NAMESPACE_SRT
 											st::Text_Renderer::Load_Engine_Fonts(v_path_to_fonts.generic_wstring(), v_font_ids, v_font_names);
 
 											// Load Icon
-											GLFWimage* icon = pw::co::File_Loader::Load_Icon(TO_WSTRING(std::get<4>(v_project)), false);
+											GLFWimage* v_icon = pw::co::File_Loader::Load_Icon(TO_WSTRING(std::get<4>(v_project)), false);
 
-											PW_GLFW_VOID_CALL(glfwSetWindowIcon(&*p_main_window, 1, icon));
+											PW_GLFW_VOID_CALL(glfwSetWindowIcon(&*p_main_window, 1, v_icon));
 
 											pw::co::File_Loader::Unload_Icon();
 
-											pw::Engine_Memory::Deallocate<GLFWimage>(icon);
+											if (pw::Engine_Memory::Deallocate<GLFWimage>(v_icon) == false) {
+												if (v_icon != nullptr) {
+													delete v_icon;
+												}
+											}
 											// Lock Window
 
 											pw::cm::Engine_Constant::Set_Window_Lock((bool)std::get<5>(v_project));
@@ -361,7 +371,11 @@ PW_NAMESPACE_SRT
 						}
 					}
 
-					pw::Engine_Memory::Deallocate<pw::st::Game_Scene>(v_found->second);
+					if (pw::Engine_Memory::Deallocate<pw::st::Game_Scene>(v_found->second) == false) {
+						if (v_found->second != nullptr) {
+							delete v_found->second;
+						}
+					}
 
 					m_scene_directory->erase(v_found->first);
 

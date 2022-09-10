@@ -125,9 +125,21 @@ PW_NAMESPACE_SRT
 
 					glBindVertexArray(0);
 
-					pw::Engine_Memory::Deallocate<glm::vec3>(v_vertex_position_arr);
-					pw::Engine_Memory::Deallocate<glm::vec2>(v_texture_data_arr);
-					pw::Engine_Memory::Deallocate<glm::vec4>(v_color_data);
+					if (pw::Engine_Memory::Deallocate<glm::vec3>(v_vertex_position_arr) == false) {
+						if (v_vertex_position_arr != nullptr) {
+							delete[] v_vertex_position_arr;
+						}
+					}
+					if(pw::Engine_Memory::Deallocate<glm::vec2>(v_texture_data_arr) == false) {
+						if (v_texture_data_arr != nullptr) {
+							delete[] v_texture_data_arr;
+						}
+					}
+					if (pw::Engine_Memory::Deallocate<glm::vec4>(v_color_data) == false) {
+						if (v_color_data != nullptr) {
+							delete[] v_color_data;
+						}
+					}
 				}
 				catch (const er::Warning_Error& v_error) {
 					throw v_error;
@@ -181,7 +193,11 @@ PW_NAMESPACE_SRT
 					glBindBuffer(GL_ARRAY_BUFFER, m_vertex_color_object);
 					glBufferData(GL_ARRAY_BUFFER, m_vertex_count *
 						sizeof(v_color_data[0]), &v_color_data[0], GL_STATIC_DRAW);
-					pw::Engine_Memory::Deallocate<glm::vec4>(v_color_data);
+					if (pw::Engine_Memory::Deallocate<glm::vec4>(v_color_data) == false) {
+						if (v_color_data != nullptr) {
+							delete[] v_color_data;
+						}
+					}
 
 					glBindBuffer(GL_ARRAY_BUFFER, 0);
 				}
@@ -203,7 +219,11 @@ PW_NAMESPACE_SRT
 					glBindBuffer(GL_ARRAY_BUFFER, m_vertex_texture_object);
 					glBufferData(GL_ARRAY_BUFFER, m_vertex_count *
 						sizeof(v_texture_data_arr[0]), &v_texture_data_arr[0], GL_STATIC_DRAW);
-					pw::Engine_Memory::Deallocate<glm::vec2>(v_texture_data_arr);
+					if (pw::Engine_Memory::Deallocate<glm::vec2>(v_texture_data_arr) == false) {
+						if (v_texture_data_arr != nullptr) {
+							delete[] v_texture_data_arr;
+						}
+					}
 
 					glBindBuffer(GL_ARRAY_BUFFER, 0);
 				}

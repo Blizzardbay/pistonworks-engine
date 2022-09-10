@@ -100,23 +100,6 @@ PW_NAMESPACE_SRT
 			PW_INPUT_TYPE m_trigger;
 			PW_INPUT_TYPE m_resolution;
 		};
-		class Helper {
-			// Default Class Structures
-		public:
-		private:
-			// Public Functions/Macros 
-		public:
-			template<class type>
-			static type& Format(const type& p_type) {
-				return p_type;
-			}
-			// Public Variables         
-		public:
-			// Private Functions/Macros 
-		private:
-			// Private Variables    
-		public:
-		};
 		template<class type, class ...args>
 		class Event : public Event_Base {
 			// Default Class Structures

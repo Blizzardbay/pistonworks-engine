@@ -66,7 +66,7 @@ PW_NAMESPACE_SRT
 		struct Memory;
 
 		template<class type>
-		static void Deallocate(type* p_memory) {
+		static bool Deallocate(type* p_memory) {
 			// If the memory does not exist then do not delete it
 			if (p_memory != nullptr) {
 				// For quick time allocations and deletions
@@ -83,6 +83,8 @@ PW_NAMESPACE_SRT
 
 						m_memory_pointers->erase(v_store);
 						p_memory = nullptr;
+
+						return true;
 					}
 					else {
 						// Subtract memory from the total engine count
@@ -93,10 +95,19 @@ PW_NAMESPACE_SRT
 
 						m_memory_pointers->erase(v_store);
 						p_memory = nullptr;
+
+						return true;
 					}
 				}
 				// If we do not find the address to delete just let the function go out of scope
+				return false;
 			}
+			// If the memory is nullptr then make sure fall backs don't try to delete it
+			// The memory could have been allocated and set to nullptr thus losing the memory
+			// But that would not be at the fault of the engine
+			// I might add two sets of pointers in the future to prevent this
+			// So the memory is handled regardless, but there are other draw backs...
+			return true;
 		}
 		struct Memory {
 		// Default Class Structures
@@ -105,7 +116,7 @@ PW_NAMESPACE_SRT
 				m_stored_memory{ p_memory }, m_blocks{ 0 }, m_bytes{ 0 }, m_type_name{ "" } {
 			}
 			Memory(void* p_memory, const size_t& p_blocks, const size_t& p_byte_size, const std::string& p_type_name) :
-					m_stored_memory{ p_memory }, m_blocks{ p_blocks }, m_bytes{ p_byte_size }, m_type_name{ p_type_name } {
+				m_stored_memory{ p_memory }, m_blocks{ p_blocks }, m_bytes{ p_byte_size }, m_type_name{ p_type_name } {
 			}
 			Memory(const Memory& rhs) :
 				m_stored_memory{ rhs.m_stored_memory }, m_blocks{ rhs.m_blocks }, m_bytes{ rhs.m_bytes }, m_type_name{ rhs.m_type_name } {
@@ -113,9 +124,9 @@ PW_NAMESPACE_SRT
 			Memory operator=(const Memory& rhs) {
 				m_stored_memory = rhs.m_stored_memory;
 				m_blocks = rhs.m_blocks;
-				m_bytes = rhs.m_bytes;																	   
+				m_bytes = rhs.m_bytes;
 				m_type_name = rhs.m_type_name;
-				
+
 				return *this;
 			}
 		private:
@@ -130,9 +141,9 @@ PW_NAMESPACE_SRT
 			const std::string& Type() const {
 				return m_type_name;
 			}
-		// Public Variables
+			// Public Variables
 		public:
-			// A pointer to the data stored
+		// A pointer to the data stored
 			void* m_stored_memory;
 		// Private Functions/Macros 
 		private:
@@ -144,24 +155,6 @@ PW_NAMESPACE_SRT
 			size_t m_bytes;
 			// The type of memory
 			std::string m_type_name;
-		};
-		template<class type>
-		class Memory_Deleter {
-			// Default Class Structures
-		public:
-			void operator()(type* p_memory) {
-				Deallocate<type>(p_memory);
-			}
-		private:
-			// Public Functions/Macros
-		public:
-			// Public Variables
-		public:
-			// A pointer to the data stored
-			// Private Functions/Macros 
-		private:
-			// Private Variables
-		private:
 		};
 	private:
 	// Public Functions/Macros
@@ -177,14 +170,14 @@ PW_NAMESPACE_SRT
 				try {
 					TRY_LINE type* v_memory = new type;
 					// Add memory to the total engine count
-					m_heap_memory = m_heap_memory + (sizeof(type) * p_count);
+					m_heap_memory = m_heap_memory + ((size_t)sizeof(type) * p_count);
 					// Store the highest about of memory the engine had
 					if (m_high_heap_memory < m_heap_memory) {
 						m_high_heap_memory = m_heap_memory;
 					}
 					m_allocations = m_allocations + 1;
 					// Keep a copy of the address in memory so we can check if it was properly destroyed later
-					m_memory_pointers->insert(Memory(v_memory, std::move(p_count), std::move(sizeof(type) * p_count), typeid(type).name()));
+					m_memory_pointers->insert(Memory(v_memory, std::move(p_count), std::move((size_t)sizeof(type) * p_count), typeid(type).name()));
 					// Return the allocated memory
 					return v_memory;
 				}
@@ -198,14 +191,14 @@ PW_NAMESPACE_SRT
 				try {
 					TRY_LINE type* v_memory = new type[p_count];
 					// Add memory to the total engine count
-					m_heap_memory = m_heap_memory + (sizeof(type) * p_count);
+					m_heap_memory = m_heap_memory + ((size_t)sizeof(type) * p_count);
 					// Store the highest about of memory the engine had
 					if (m_high_heap_memory < m_heap_memory) {
 						m_high_heap_memory = m_heap_memory;
 					}
 					m_allocations = m_allocations + 1;
 					// Keep a copy of the address in memory so we can check if it was properly destroyed later
-					m_memory_pointers->insert(Memory(v_memory, std::move(p_count), std::move(sizeof(type) * p_count), typeid(type).name()));
+					m_memory_pointers->insert(Memory(v_memory, std::move(p_count), std::move((size_t)sizeof(type) * p_count), typeid(type).name()));
 					// Return the allocated memory
 					return v_memory;
 				}
@@ -222,14 +215,14 @@ PW_NAMESPACE_SRT
 			try {
 				TRY_LINE type* v_memory = new type(constructor_arguments...);
 				// Add memory to the total engine count
-				m_heap_memory = m_heap_memory + (sizeof(type));
+				m_heap_memory = m_heap_memory + ((size_t)sizeof(type));
 				// Store the highest about of memory the engine had
 				if (m_high_heap_memory < m_heap_memory) {
 					m_high_heap_memory = m_heap_memory;
 				}
 				m_allocations = m_allocations + 1;
 				// Keep a copy of the address in memory so we can check if it was properly destroyed later
-				m_memory_pointers->insert(Memory(v_memory, std::move(1), std::move(sizeof(type) * 1), typeid(type).name()));;
+				m_memory_pointers->insert(Memory(v_memory, std::move(1), std::move((size_t)sizeof(type) * 1), typeid(type).name()));;
 				// Return the allocated memory
 				return v_memory;
 			}
@@ -246,14 +239,14 @@ PW_NAMESPACE_SRT
 				try {
 					TRY_LINE type* v_memory = new type(copy);
 					// Add memory to the total engine count
-					m_heap_memory = m_heap_memory + (sizeof(type) * p_count);
+					m_heap_memory = m_heap_memory + ((size_t)sizeof(type) * p_count);
 					// Store the highest about of memory the engine had
 					if (m_high_heap_memory < m_heap_memory) {
 						m_high_heap_memory = m_heap_memory;
 					}
 					m_allocations = m_allocations + 1;
 					// Keep a copy of the address in memory so we can check if it was properly destroyed later
-					m_memory_pointers->insert(Memory(v_memory, std::move(p_count), std::move(sizeof(type) * p_count), typeid(type).name()));
+					m_memory_pointers->insert(Memory(v_memory, std::move(p_count), std::move((size_t)sizeof(type) * p_count), typeid(type).name()));
 					// Return the allocated memory
 					return v_memory;
 				}
@@ -267,14 +260,14 @@ PW_NAMESPACE_SRT
 				try {
 					TRY_LINE type* v_memory = new type[p_count](copy);
 					// Add memory to the total engine count
-					m_heap_memory = m_heap_memory + (sizeof(type) * p_count);
+					m_heap_memory = m_heap_memory + ((size_t)sizeof(type) * p_count);
 					// Store the highest about of memory the engine had
 					if (m_high_heap_memory < m_heap_memory) {
 						m_high_heap_memory = m_heap_memory;
 					}
 					m_allocations = m_allocations + 1;
 					// Keep a copy of the address in memory so we can check if it was properly destroyed later
-					m_memory_pointers->insert(Memory(v_memory, std::move(p_count), std::move(sizeof(type) * p_count), typeid(type).name()));
+					m_memory_pointers->insert(Memory(v_memory, std::move(p_count), std::move((size_t)sizeof(type) * p_count), typeid(type).name()));
 					// Return the allocated memory
 					return v_memory;
 				}
@@ -312,15 +305,15 @@ PW_NAMESPACE_SRT
 				// 3 -> mb
 				// 4 -> gb
 				// Conversion units
-				// 1024b -> 1kb
-				// 1024kb -> 1mb
-				// 1024mb -> 1gb
+				// 1000b -> 1kb
+				// 1000kb -> 1mb
+				// 1000mb -> 1gb
 				size_t v_level = 1;
 				float v_factors = (float)p_bytes;
 				while (true) {
 					// Test the factor of the units
-					v_factors = v_factors / 1024.0f;
-					if (v_factors < 1024) {
+					v_factors = v_factors / 1000.0f;
+					if (v_factors < 1000.0f) {
 						v_level = v_level + 1;
 						break;
 					}
@@ -330,73 +323,73 @@ PW_NAMESPACE_SRT
 				}
 				std::wstring v_memory_str{ std::to_wstring(v_factors) };
 				switch (v_level) {
-					case 1: { // Bytes, B
-						size_t v_period = v_memory_str.find(L".");
-						if (v_period != std::string::npos) {
-							size_t v_decimal_count = v_memory_str.size() - OFF64(v_period);
-							if (v_decimal_count > 2) {
-								v_decimal_count = v_decimal_count - 2;
-								v_memory_str.erase(OFF64(v_period) + 2, v_decimal_count);
+				case 1: { // Bytes, B
+					size_t v_period = v_memory_str.find(L".");
+					if (v_period != std::string::npos) {
+						size_t v_decimal_count = v_memory_str.size() - OFF64(v_period);
+						if (v_decimal_count > 2) {
+							v_decimal_count = v_decimal_count - 2;
+							v_memory_str.erase(OFF64(v_period) + 2, v_decimal_count);
 
-								v_memory_str.append(L"  B");
-							}
-							else {
-								v_memory_str.append(L"  B");
-							}
+							v_memory_str.append(L"  B");
 						}
-						return v_memory_str;
+						else {
+							v_memory_str.append(L"  B");
+						}
 					}
-					case 2: { // Kilobytes, KB
-						size_t v_period = v_memory_str.find(L".");
-						if (v_period != std::string::npos) {
-							size_t v_decimal_count = v_memory_str.size() - OFF64(v_period);
-							if (v_decimal_count > 2) {
-								v_decimal_count = v_decimal_count - 2;
-								v_memory_str.erase(OFF64(v_period) + 2, v_decimal_count);
+					return v_memory_str;
+				}
+				case 2: { // Kilobytes, KB
+					size_t v_period = v_memory_str.find(L".");
+					if (v_period != std::string::npos) {
+						size_t v_decimal_count = v_memory_str.size() - OFF64(v_period);
+						if (v_decimal_count > 2) {
+							v_decimal_count = v_decimal_count - 2;
+							v_memory_str.erase(OFF64(v_period) + 2, v_decimal_count);
 
-								v_memory_str.append(L" KB");
-							}
-							else {
-								v_memory_str.append(L" KB");
-							}
+							v_memory_str.append(L" KB");
 						}
-						return v_memory_str;
+						else {
+							v_memory_str.append(L" KB");
+						}
 					}
-					case 3: { // Megabytes, MB 
-						size_t v_period = v_memory_str.find(L".");
-						if (v_period != std::string::npos) {
-							size_t v_decimal_count = v_memory_str.size() - OFF64(v_period);
-							if (v_decimal_count > 2) {
-								v_decimal_count = v_decimal_count - 2;
-								v_memory_str.erase(OFF64(v_period) + 2, v_decimal_count);
+					return v_memory_str;
+				}
+				case 3: { // Megabytes, MB 
+					size_t v_period = v_memory_str.find(L".");
+					if (v_period != std::string::npos) {
+						size_t v_decimal_count = v_memory_str.size() - OFF64(v_period);
+						if (v_decimal_count > 2) {
+							v_decimal_count = v_decimal_count - 2;
+							v_memory_str.erase(OFF64(v_period) + 2, v_decimal_count);
 
-								v_memory_str.append(L" MB");
-							}
-							else {
-								v_memory_str.append(L" MB");
-							}
+							v_memory_str.append(L" MB");
 						}
-						return v_memory_str;
+						else {
+							v_memory_str.append(L" MB");
+						}
 					}
-					case 4: { // Gigabytes, GB
-						size_t v_period = v_memory_str.find(L".");
-						if (v_period != std::string::npos) {
-							size_t v_decimal_count = v_memory_str.size() - OFF64(v_period);
-							if (v_decimal_count > 2) {
-								v_decimal_count = v_decimal_count - 2;
-								v_memory_str.erase(OFF64(v_period) + 2, v_decimal_count);
+					return v_memory_str;
+				}
+				case 4: { // Gigabytes, GB
+					size_t v_period = v_memory_str.find(L".");
+					if (v_period != std::string::npos) {
+						size_t v_decimal_count = v_memory_str.size() - OFF64(v_period);
+						if (v_decimal_count > 2) {
+							v_decimal_count = v_decimal_count - 2;
+							v_memory_str.erase(OFF64(v_period) + 2, v_decimal_count);
 
-								v_memory_str.append(L" GB");
-							}
-							else {
-								v_memory_str.append(L" GB");
-							}
+							v_memory_str.append(L" GB");
 						}
-						return v_memory_str;
+						else {
+							v_memory_str.append(L" GB");
+						}
 					}
-					default: {
-						return std::to_wstring(p_bytes);
-					}
+					return v_memory_str;
+				}
+				default: {
+					return std::to_wstring(p_bytes);
+				}
 				}
 			}
 			else {

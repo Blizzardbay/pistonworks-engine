@@ -84,14 +84,37 @@ PW_NAMESPACE_SRT
 				}
 			}
 			Actor::~Actor() {
-				pw::Engine_Memory::Deallocate<st::Model>(m_model);
+				if (pw::Engine_Memory::Deallocate<st::Model>(m_model) == false) {
+					if (m_model != nullptr) {
+						delete m_model;
+					}
+				}
 				m_body = nullptr;
-				pw::Engine_Memory::Deallocate<st::Texture_Structure>(m_multi_texture);
-				pw::Engine_Memory::Deallocate<st::Sound_Structure>(m_sound_deposit);
-				pw::Engine_Memory::Deallocate<st::Text>(m_text);
-
-				pw::Engine_Memory::Deallocate<st::Animation>(m_current_animation);
-				pw::Engine_Memory::Deallocate<st::Animation_Structure>(m_animations);
+				if (pw::Engine_Memory::Deallocate<st::Texture_Structure>(m_multi_texture) == false) {
+					if (m_multi_texture != nullptr) {
+						delete m_multi_texture;
+					}
+				}
+				if (pw::Engine_Memory::Deallocate<st::Sound_Structure>(m_sound_deposit) == false) {
+					if (m_sound_deposit != nullptr) {
+						delete m_sound_deposit;
+					}
+				}
+				if (pw::Engine_Memory::Deallocate<st::Text>(m_text) == false) {
+					if (m_text != nullptr) {
+						delete m_text;
+					}
+				}
+				if (pw::Engine_Memory::Deallocate<st::Animation>(m_current_animation) == false) {
+					if (m_current_animation != nullptr) {
+						delete m_current_animation;
+					}
+				}
+				if (pw::Engine_Memory::Deallocate<st::Animation_Structure>(m_animations) == false) {
+					if (m_animations != nullptr) {
+						delete m_animations;
+					}
+				}
 			}
 			void Actor::Render() {
 				if (m_current_animation != nullptr) {
@@ -340,7 +363,11 @@ PW_NAMESPACE_SRT
 			}
 			Scene_Event::~Scene_Event() {
 				m_model = nullptr;
-				pw::Engine_Memory::Deallocate<st::Event_Base>(m_model_event);
+				if (pw::Engine_Memory::Deallocate<st::Event_Base>(m_model_event) == false) {
+					if (m_model_event != nullptr) {
+						delete m_model_event;
+					}
+				}
 			}
 			void Scene_Event::Run_Event() {
 				m_model_event->Trigger_Event();
@@ -380,7 +407,11 @@ PW_NAMESPACE_SRT
 			}
 			Sub_Scene_Structure::~Sub_Scene_Structure() {
 				for (auto i = m_scene_repository.begin(); i != m_scene_repository.end(); i++) {
-					pw::Engine_Memory::Deallocate<st::Actor>(*i);
+					if (pw::Engine_Memory::Deallocate<st::Actor>(*i) == false) {
+						if (*i != nullptr) {
+							delete *i;
+						}
+					}
 				}
 			}
 			void Sub_Scene_Structure::Pre_Render(quadtree::Quadtree<st::Actor*, std::function<quadtree::Box<float>(st::Actor*)>>& p_quadtree_renderer) {
@@ -514,13 +545,21 @@ PW_NAMESPACE_SRT
 			}
 			Game_Scene::~Game_Scene() {
 				for (auto i = m_scene_input.begin(); i != m_scene_input.end(); i++) {
-					pw::Engine_Memory::Deallocate<pw::co::Engine_Input>(i->second);
+					if (pw::Engine_Memory::Deallocate<pw::co::Engine_Input>(i->second) == false) {
+						if (i->second != nullptr) {
+							delete i->second;
+						}
+					}
 				}
 				for (auto i = m_scene_collision_events.begin(); i != m_scene_collision_events.end(); i++) {
 					for (auto j = i->second.begin(); j != i->second.end(); j++) {
 						for (auto k = j->second.begin(); k != j->second.end(); k++) {
 							for (auto l = k->second.begin(); l != k->second.end(); l++) {
-								pw::Engine_Memory::Deallocate<st::Scene_Event>(l->second);
+								if (pw::Engine_Memory::Deallocate<st::Scene_Event>(l->second) == false) {
+									if (l->second != nullptr) {
+										delete l->second;
+									}
+								}
 							}
 						}
 					}
@@ -531,7 +570,11 @@ PW_NAMESPACE_SRT
 							for (auto l = k->second.begin(); l != k->second.end(); l++) {
 								for (auto h = l->second.begin(); h != l->second.end(); h++) {
 									for (auto g = h->second.begin(); g != h->second.end(); g++) {
-										pw::Engine_Memory::Deallocate<st::Scene_Event>(g->second);
+										if (pw::Engine_Memory::Deallocate<st::Scene_Event>(g->second) == false) {
+											if (g->second != nullptr) {
+												delete g->second;
+											}
+										}
 									}
 								}
 							}
@@ -542,19 +585,35 @@ PW_NAMESPACE_SRT
 					for (auto j = i->second.begin(); j != i->second.end(); j++) {
 						for (auto k = j->second.begin(); k != j->second.end(); k++) {
 							for (auto l = k->second.begin(); l != k->second.end(); l++) {
-								pw::Engine_Memory::Deallocate<st::Scene_Event>(l->second);
+								if (pw::Engine_Memory::Deallocate<st::Scene_Event>(l->second) == false) {
+									if (l->second != nullptr) {
+										delete l->second;
+									}
+								}
 							}
 						}
 					}
 				}
 				for (auto i = m_main_scene_models.begin(); i != m_main_scene_models.end(); i++) {
-					pw::Engine_Memory::Deallocate<st::Actor>(*i);
+					if (pw::Engine_Memory::Deallocate<st::Actor>(*i) == false) {
+						if (*i != nullptr) {
+							delete *i;
+						}
+					}
 				}
 				for (auto i = m_sub_scene_deposit.begin(); i != m_sub_scene_deposit.end(); i++) {
-					pw::Engine_Memory::Deallocate<st::Sub_Scene_Structure>(i->second);
+					if (pw::Engine_Memory::Deallocate<st::Sub_Scene_Structure>(i->second) == false) {
+						if (i->second != nullptr) {
+							delete i->second;
+						}
+					}
 				}
 
-				pw::Engine_Memory::Deallocate<st::Physics_Factory>(m_scene_physics);
+				if (pw::Engine_Memory::Deallocate<st::Physics_Factory>(m_scene_physics) == false) {
+					if (m_scene_physics != nullptr) {
+						delete m_scene_physics;
+					}
+				}
 			}
 			void Game_Scene::Pre_Render() {
 				m_new_input = false;
@@ -574,7 +633,7 @@ PW_NAMESPACE_SRT
 									Activate_Event((*i)->S_Id(), v_temp->S_Id());
 								}
 								else {
-									// We could just have a event where we collide with
+									// We could just have a event were we collide with
 									// anything.
 									Activate_Event((*i)->S_Id(), L"NULL");
 								}

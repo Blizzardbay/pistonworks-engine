@@ -719,9 +719,14 @@ PW_NAMESPACE_SRT
 					return *m_msg_colors;
 				}
 				void Console_Manip::Release_Console() {
-					FreeConsole();
-				
-					pw::Engine_Memory::Deallocate<std::map<Console_Manip::Msg_Types, Console_Color>>(m_msg_colors);
+					if (pw::Engine_Memory::Deallocate<std::map<Console_Manip::Msg_Types, Console_Color>>(m_msg_colors) == false) {
+						if (m_msg_colors != nullptr) {
+							delete m_msg_colors;
+						}
+					}
+					if (TRY_LINE FreeConsole() == FALSE) {
+						throw er::Severe_Error(L"Console", Console_Error::Windows_Last_Error(), EXCEPTION_LINE, __FILEW__, L"FreeConsole");
+					}
 				}
 			// End of Class Members
 		//////////////////////////////////

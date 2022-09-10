@@ -32,7 +32,11 @@ PW_NAMESPACE_SRT
 				for (auto i = m_key_events.begin(); i != m_key_events.end(); i++) {
 					for (auto j = i->second.begin(); j != i->second.end(); j++) {
 						for (auto k = j->second.begin(); k != j->second.end(); k++) {
-							pw::Engine_Memory::Deallocate<pw::st::Event_Base>(k->second);
+							if (pw::Engine_Memory::Deallocate<pw::st::Event_Base>(k->second) == false) {
+								if (k->second != nullptr) {
+									delete k->second;
+								}
+							}
 						}
 					}
 				}
@@ -43,14 +47,22 @@ PW_NAMESPACE_SRT
 				for (auto i = m_mouse_events.begin(); i != m_mouse_events.end(); i++) {
 					for (auto j = i->second.begin(); j != i->second.end(); j++) {
 						for (auto k = j->second.begin(); k != j->second.end(); k++) {
-							pw::Engine_Memory::Deallocate<pw::st::Event_Base>(k->second);
+							if (pw::Engine_Memory::Deallocate<pw::st::Event_Base>(k->second) == false) {
+								if (k->second != nullptr) {
+									delete k->second;
+								}
+							}
 						}
 					}
 				}
 				m_mouse_events.clear();
 				for (auto i = m_scroll_events.begin(); i != m_scroll_events.end(); i++) {
 					for (auto j = i->second.begin(); j != i->second.end(); j++) {
-						pw::Engine_Memory::Deallocate<pw::st::Event_Base>(j->second);
+						if (pw::Engine_Memory::Deallocate<pw::st::Event_Base>(j->second) == false) {
+							if (j->second != nullptr) {
+								delete j->second;
+							}
+						}
 					}
 				}
 				m_scroll_events.clear();
@@ -59,7 +71,11 @@ PW_NAMESPACE_SRT
 				m_function_register = pw::Engine_Memory::Allocate<std::map<std::wstring, std::shared_ptr<PW_FUNCTION>>>();
 			}
 			void Engine_Input::Release_Input() {
-				pw::Engine_Memory::Deallocate<std::map<std::wstring, std::shared_ptr<PW_FUNCTION>>>(m_function_register);
+				if (pw::Engine_Memory::Deallocate<std::map<std::wstring, std::shared_ptr<PW_FUNCTION>>>(m_function_register) == false) {
+					if (m_function_register != nullptr) {
+						delete m_function_register;
+					}
+				}
 
 				m_scene_event_function.~function();
 			}

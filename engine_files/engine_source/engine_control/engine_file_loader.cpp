@@ -139,7 +139,11 @@ PW_NAMESPACE_SRT
 				m_engine_icon_dir.~basic_string();
 				m_engine_animation_dir.~basic_string();
 
-				pw::Engine_Memory::Deallocate<std::map<std::wstring, st::Texture*>>(m_texture_repository);
+				if (pw::Engine_Memory::Deallocate<std::map<std::wstring, st::Texture*>>(m_texture_repository) == false) {
+					if (m_texture_repository != nullptr) {
+						delete m_texture_repository;
+					}
+				}
 			}
 			st::Texture* File_Loader::Load_Texture_File(const std::wstring& p_file_name, const bool& p_repeat, const bool& p_linear, const bool& p_engine_dir, std::wstring* p_override_dir) {
 				// File Type
@@ -516,7 +520,7 @@ PW_NAMESPACE_SRT
 				cm::Engine_Constant::Set_Hafe_Window_Height(TO_UINT32(v_window_y));
 
 				if (v_fps_cap == -1) {
-					v_fps_cap = cm::Engine_Constant::Refresh_Rate();
+					v_fps_cap = INT32_MAX;
 				}
 				cm::Engine_Constant::Set_FPS_Info(v_fps_cap, TO_BOOL(v_has_vsync));
 
@@ -582,7 +586,7 @@ PW_NAMESPACE_SRT
 				std::wstring v_wscene_name{ TO_WSTRING(v_cscene_name) };
 				st::Physics_Factory* v_physics_factory = nullptr;
 				if (v_has_physics_factory == 1) {
-					v_physics_factory =pw::Engine_Memory::Allocate<st::Physics_Factory, bool>(b2Vec2(v_gravity_x, v_gravity_y), v_velocity_it, v_position_it, 1.0f / cm::Engine_Constant::FPS_Cap());
+					v_physics_factory = pw::Engine_Memory::Allocate<st::Physics_Factory, bool>(b2Vec2(v_gravity_x, v_gravity_y), v_velocity_it, v_position_it, 1.0f / cm::Engine_Constant::FPS_Cap());
 				}
 				// End of scene loading
 				// Next load the scene / sub-scene locations

@@ -112,7 +112,11 @@ PW_NAMESPACE_SRT
 				}
 			}
 			Physics_Object::~Physics_Object() {
-				pw::Engine_Memory::Deallocate<b2Vec2>(m_shape_vertices);
+				if (pw::Engine_Memory::Deallocate<b2Vec2>(m_shape_vertices) == false) {
+					if (m_shape_vertices != nullptr) {
+						delete m_shape_vertices;
+					}
+				}
 			}
 			int32_t Physics_Object::X_Pixels_Position(const int32_t& p_scale_factor) {
 				return static_cast<int32_t>(m_body->GetPosition().x * p_scale_factor);
@@ -363,12 +367,24 @@ PW_NAMESPACE_SRT
 			}
 			Physics_Factory::~Physics_Factory() {
 				for (auto i = m_factory_static.begin(); i != m_factory_static.end(); i++) {
-					pw::Engine_Memory::Deallocate<st::Physics_Object>(*i);
+					if (pw::Engine_Memory::Deallocate<st::Physics_Object>(*i) == false) {
+						if (*i != nullptr) {
+							delete *i;
+						}
+					}
 				}
 				for (auto i = m_factory_dynamic.begin(); i != m_factory_dynamic.end(); i++) {
-					pw::Engine_Memory::Deallocate<st::Physics_Object>(i->second);
+					if (pw::Engine_Memory::Deallocate<st::Physics_Object>(i->second) == false) {
+						if (i->second != nullptr) {
+							delete i->second;
+						}
+					}
 				}
-				pw::Engine_Memory::Deallocate<b2World>(m_world);
+				if (pw::Engine_Memory::Deallocate<b2World>(m_world) == false) {
+					if (m_world != nullptr) {
+						delete m_world;
+					}
+				}
 			}
 			void Physics_Factory::Run() {
 				m_world->Step(m_time_step, m_velocity_it, m_position_it);

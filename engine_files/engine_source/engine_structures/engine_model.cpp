@@ -362,9 +362,21 @@ PW_NAMESPACE_SRT
 				return v_copy;
 			}
 			Model::~Model() {
-				pw::Engine_Memory::Deallocate<st::Texture>(m_texture);
-				pw::Engine_Memory::Deallocate<glm::vec2>(m_position);
-				pw::Engine_Memory::Deallocate<st::Mesh>(m_mesh);
+				if (pw::Engine_Memory::Deallocate<st::Texture>(m_texture) == false) {
+					if (m_texture != nullptr) {
+						delete m_texture;
+					}
+				}
+				if (pw::Engine_Memory::Deallocate<glm::vec2>(m_position) == false) {
+					if (m_position != nullptr) {
+						delete m_position;
+					}
+				}
+				if (pw::Engine_Memory::Deallocate<st::Mesh>(m_mesh) == false) {
+					if (m_mesh != nullptr) {
+						delete m_mesh;
+					}
+				}
 
 				Model::m_model_counter = Model::m_model_counter - 1;
 			}

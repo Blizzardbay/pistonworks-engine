@@ -190,13 +190,17 @@ PW_NAMESPACE_SRT
 					// Icon Setting
 					//////////////////////////////////
 					{
-						GLFWimage* icon = pw::co::File_Loader::Load_Icon(L"Icon.png", true);
+						GLFWimage* v_icon = pw::co::File_Loader::Load_Icon(L"Icon.png", true);
 
-						PW_GLFW_VOID_CALL(glfwSetWindowIcon(&*m_main_window, 1, icon));
+						PW_GLFW_VOID_CALL(glfwSetWindowIcon(&*m_main_window, 1, v_icon));
 
 						pw::co::File_Loader::Unload_Icon();
 
-						pw::Engine_Memory::Deallocate<GLFWimage>(icon);
+						if (pw::Engine_Memory::Deallocate<GLFWimage>(v_icon) == false) {
+							if (v_icon != nullptr) {
+								delete v_icon;
+							}
+						}
 					}
 					//////////////////////////////////
 					// Finish Up Program Things

@@ -94,6 +94,6 @@
 #define COMPLEX_FUNCTION_2(x_args, y_args)					std::function<void(x_args, y_args)>
 #define COMPLEX_FUNCTION_3(x_args, y_args, z_args)			std::function<void(x_args, y_args, z_args)>
 #define COMPLEX_FUNCTION_4(x_args, y_args, z_args, a_args)	std::function<void(x_args, y_args, z_args, a_args)>
-#define UNUSED(x)												x;
+#define UNUSED(x)											x;
 
 #endif // !H_ENGINE_MACRO

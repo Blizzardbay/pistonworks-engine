@@ -63,7 +63,7 @@ namespace io{
                                 return error_message_buffer;
                         }
 
-                        mutable char error_message_buffer[512];
+                        mutable char error_message_buffer[512]{};
                 };
 
                 const int max_file_name_length = 255;
@@ -280,11 +280,11 @@ namespace io{
 
                         std::thread worker;
 
-                        bool termination_requested;
+                        bool termination_requested{};
                         std::exception_ptr read_error;
-                        char*buffer;
-                        int desired_byte_count;
-                        int read_byte_count;
+                        char* buffer{};
+                        int desired_byte_count{};
+                        int read_byte_count{};
 
                         std::mutex lock;
                         std::condition_variable read_finished_condition;
@@ -486,8 +486,8 @@ namespace io{
                         }
 
                         // handle windows \r\n-line breaks
-                        if(line_end != data_begin && buffer[line_end-1] == '\r')
-                                buffer[line_end-1] = '\0';
+                        if(line_end != data_begin && buffer[(size_t)line_end-(size_t)1] == '\r')
+                                buffer[(size_t)line_end-(size_t)1] = '\0';
 
                         char*ret = buffer.get() + data_begin;
                         data_begin = line_end+1;

@@ -330,7 +330,11 @@ PW_NAMESPACE_SRT
 		}
 		Sound_Structure::~Sound_Structure() {
 			for (auto i = m_sounds.begin(); i != m_sounds.end(); i++) {
-				pw::Engine_Memory::Deallocate<st::Sound>(i->second);
+				if (pw::Engine_Memory::Deallocate<st::Sound>(i->second) == false) {
+					if (i->second != nullptr) {
+						delete i->second;
+					}
+				}
 			}
 		}
 		st::Sound* Sound_Structure::Sound() const {

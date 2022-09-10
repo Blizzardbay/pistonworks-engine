@@ -29,7 +29,11 @@ PW_NAMESPACE_SRT
 				}
 			}
 			Character::~Character() {
-				pw::Engine_Memory::Deallocate<st::Texture>(m_character_data);
+				if (pw::Engine_Memory::Deallocate<st::Texture>(m_character_data) == false) {
+					if (m_character_data != nullptr) {
+						delete m_character_data;
+					}
+				}
 			}
 			const wchar_t& Character::Type() const {
 				return m_type;
@@ -122,7 +126,11 @@ PW_NAMESPACE_SRT
 			}
 			Text::~Text() {
 				for (auto i = m_text_string.begin(); i != m_text_string.end(); i++) {
-					pw::Engine_Memory::Deallocate<st::Model>(*i);
+					if (pw::Engine_Memory::Deallocate<st::Model>(*i) == false) {
+						if (*i != nullptr) {
+							delete *i;
+						}
+					}
 				}
 			}
 			void Text::Render() {
@@ -161,7 +169,11 @@ PW_NAMESPACE_SRT
 				try {
 					if (m_text != p_new_text) {
 						for (auto i = m_text_string.begin(); i != m_text_string.end(); i++) {
-							pw::Engine_Memory::Deallocate<st::Model>(*i);
+							if (pw::Engine_Memory::Deallocate<st::Model>(*i) == false) {
+								if (*i != nullptr) {
+									delete *i;
+								}
+							}
 						}
 						m_text_string.clear();
 
@@ -355,11 +367,19 @@ PW_NAMESPACE_SRT
 			void Text_Renderer::Release_Engine_Fonts() {
 				for (auto i = m_font_library->begin(); i != m_font_library->end(); i++) {
 					for (auto j = i->second.begin(); j != i->second.end(); j++) {
-						pw::Engine_Memory::Deallocate<Character>(j->second);
+						if (pw::Engine_Memory::Deallocate<Character>(j->second) == false) {
+							if (j->second != nullptr) {
+								delete j->second;
+							}
+						}
 						j->second = nullptr;
 					}
 				}
-				pw::Engine_Memory::Deallocate<std::map<std::wstring, std::map<wchar_t, Character*>>>(m_font_library);
+				if (pw::Engine_Memory::Deallocate<std::map<std::wstring, std::map<wchar_t, Character*>>>(m_font_library) == false) {
+					if (m_font_library != nullptr) {
+						delete m_font_library;
+					}
+				}
 			}
 			Character* Text_Renderer::Create_Character(const wchar_t& p_letter_type, const std::wstring& p_font_type) {
 				auto v_found = m_font_library->find(p_font_type);

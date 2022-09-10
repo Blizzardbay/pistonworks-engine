@@ -44,7 +44,11 @@ PW_NAMESPACE_SRT
 
 				glShaderSource(v_shader, 1, v_shader_str_source, v_shader_str_source_length);
 
-				pw::Engine_Memory::Deallocate<char>(v_shader_code);
+				if (pw::Engine_Memory::Deallocate<char>(v_shader_code) == false) {
+					if (v_shader_code != nullptr) {
+						delete[] v_shader_code;
+					}
+				}
 
 				glCompileShader(v_shader);
 

@@ -80,41 +80,6 @@ PW_NAMESPACE_SRT
 	//////////////////////////////////
 	CM_NAMESPACE_SRT
 	//////////////////////////////////
-		class Type_Wrapper : public std::less<Type_Wrapper> {
-		// Default Class Structures
-		public:
-			Type_Wrapper(const type_info& p_type) :
-					m_type{nullptr} {
-				// De-consting a variable but we will never change the value guaranteed
-				m_type = (type_info*)&p_type;
-			}
-			Type_Wrapper(const Type_Wrapper& p_other_type) {
-				m_type = (type_info*)p_other_type.m_type;
-			}
-			bool operator==(const Type_Wrapper& p_other_type) {
-				return *m_type == *p_other_type.m_type;
-			}
-			bool operator<(const Type_Wrapper& p_other_type) const {
-				return m_type->hash_code() < p_other_type.m_type->hash_code();
-			}
-			bool operator()(const Type_Wrapper& p_left, const Type_Wrapper& p_right) const {
-				return p_left.m_type->hash_code() < p_right.m_type->hash_code();
-			}
-		private:
-		// Public Functions/Macros
-		public:
-			const type_info* Type_Info() {
-				return m_type;
-			}
-		// Public Variables
-		public:
-		// Private Functions/Macros 
-		private:
-		// Private Variables
-		private:
-			// The data stored in the class
-			type_info* m_type;
-		};
 		struct Destroy_GLFW {
 			// Default Class Structures
 		public:
@@ -415,7 +380,11 @@ PW_NAMESPACE_SRT
 						// If we converted all of the memory correctly then return the result
 						if (v_chars_converted == v_msg_size) {
 							v_formated_msg.append(v_msg);
-							pw::Engine_Memory::Deallocate<wchar_t>(v_msg);
+							if (pw::Engine_Memory::Deallocate<wchar_t>(v_msg) == false) {
+								if (v_msg != nullptr) {
+									delete[] v_msg;
+								}
+							}
 
 							return v_formated_msg;
 						}
@@ -454,7 +423,11 @@ PW_NAMESPACE_SRT
 						// If we converted all of the memory correctly then return the result
 						if (v_chars_converted == v_msg_size) {
 							v_formated_msg.append(v_msg);
-							pw::Engine_Memory::Deallocate<wchar_t>(v_msg);
+							if (pw::Engine_Memory::Deallocate<wchar_t>(v_msg) == false) {
+								if (v_msg != nullptr) {
+									delete[] v_msg;
+								}
+							}
 
 							return v_formated_msg;
 						}
@@ -508,7 +481,11 @@ PW_NAMESPACE_SRT
 						// If we converted all of the memory correctly then return the result
 						if (v_chars_converted == v_msg_size) {
 							v_formated_msg.append(v_msg);
-							pw::Engine_Memory::Deallocate<char>(v_msg);
+							if (pw::Engine_Memory::Deallocate<char>(v_msg) == false) {
+								if (v_msg != nullptr) {
+									delete[] v_msg;
+								}
+							}
 
 							return v_formated_msg;
 						}
@@ -547,7 +524,11 @@ PW_NAMESPACE_SRT
 						// If we converted all of the memory correctly then return the result
 						if (v_chars_converted == v_msg_size) {
 							v_formated_msg.append(v_msg);
-							pw::Engine_Memory::Deallocate<char>(v_msg);
+							if (pw::Engine_Memory::Deallocate<char>(v_msg) == false) {
+								if (v_msg != nullptr) {
+									delete[] v_msg;
+								}
+							}
 
 							return v_formated_msg;
 						}
@@ -847,10 +828,6 @@ PW_NAMESPACE_SRT
 			static constexpr uint32_t PW_MOUSE_EVENT			= 0xaa;
 			static constexpr uint32_t PW_KEYBOARD_EVENT			= 0xab;
 			static constexpr uint32_t PW_SCROLL_EVENT			= 0xac;
-
-			static constexpr uint32_t PW_STATIC					= 0xf1;
-			static constexpr uint32_t PW_DYNAMIC				= 0xf2;
-
 		// Private Functions/Macros
 		private:
 		// Private Variables

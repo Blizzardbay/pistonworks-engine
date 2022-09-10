@@ -157,7 +157,7 @@ PW_NAMESPACE_END
 #define USE_DEFAULT_ENGINE_CONTROL													\
 	void pw::co::Engine_Control::Pre_Load() {										\
 	}																				\
-	void pw::co::Engine_Control::Initialize_Game() {										\
+	void pw::co::Engine_Control::Initialize_Game() {								\
 	}																				\
 	void pw::co::Engine_Control::Before_Queue() {									\
 	}																				\

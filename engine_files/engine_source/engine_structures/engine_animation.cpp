@@ -39,8 +39,16 @@ PW_NAMESPACE_SRT
 				m_animation_step = (float)(p_frame_size_x) / (float)(p_frame_count * (p_frame_size_x));
 			}
 			Animation::~Animation() {
-				pw::Engine_Memory::Deallocate<st::Vertex_Data>(m_vertices_default);
-				pw::Engine_Memory::Deallocate<st::Vertex_Data>(m_animation_vertices);
+				if (pw::Engine_Memory::Deallocate<st::Vertex_Data>(m_vertices_default) == false) {
+					if (m_vertices_default != nullptr) {
+						delete[] m_vertices_default;
+					}
+				}
+				if (pw::Engine_Memory::Deallocate<st::Vertex_Data>(m_animation_vertices) == false) {
+					if (m_animation_vertices != nullptr) {
+						delete[] m_animation_vertices;
+					}
+				}
 			}
 			Animation::Animation(const Animation& p_copy) :
 					m_keep_animating{ p_copy.m_keep_animating }, m_start{ p_copy.m_start }, m_end{ p_copy.m_end },
