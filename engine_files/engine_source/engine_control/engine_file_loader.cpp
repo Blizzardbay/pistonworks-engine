@@ -586,7 +586,7 @@ PW_NAMESPACE_SRT
 				std::wstring v_wscene_name{ TO_WSTRING(v_cscene_name) };
 				st::Physics_Factory* v_physics_factory = nullptr;
 				if (v_has_physics_factory == 1) {
-					v_physics_factory = pw::Engine_Memory::Allocate<st::Physics_Factory, bool>(b2Vec2(v_gravity_x, v_gravity_y), v_velocity_it, v_position_it, 1.0f / cm::Engine_Constant::FPS_Cap());
+					v_physics_factory = pw::Engine_Memory::Allocate<st::Physics_Factory, bool>(b2Vec2(v_gravity_x, v_gravity_y), v_velocity_it, v_position_it, 1.0f / 144.0f);
 				}
 				// End of scene loading
 				// Next load the scene / sub-scene locations

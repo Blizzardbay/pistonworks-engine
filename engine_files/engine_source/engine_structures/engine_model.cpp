@@ -367,9 +367,11 @@ PW_NAMESPACE_SRT
 						delete m_texture;
 					}
 				}
-				if (pw::Engine_Memory::Deallocate<glm::vec2>(m_position) == false) {
-					if (m_position != nullptr) {
-						delete m_position;
+				if (m_attached != true) {
+					if (pw::Engine_Memory::Deallocate<glm::vec2>(m_position) == false) {
+						if (m_position != nullptr) {
+							delete m_position;
+						}
 					}
 				}
 				if (pw::Engine_Memory::Deallocate<st::Mesh>(m_mesh) == false) {
@@ -452,6 +454,13 @@ PW_NAMESPACE_SRT
 			}
 			void Model::Attach_To(glm::vec2* p_position) {
 				m_attached = true;
+
+				if (pw::Engine_Memory::Deallocate<glm::vec2>(m_position) == false) {
+					if (m_position != nullptr) {
+						delete m_position;
+					}
+				}
+
 				m_position = p_position;
 			}
 			void Model::Set_Size_X(const float& p_size_x) {
