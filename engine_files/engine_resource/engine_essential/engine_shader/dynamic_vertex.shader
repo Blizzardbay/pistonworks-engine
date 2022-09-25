@@ -15,7 +15,6 @@ uniform mat4 object_model;
 
 uniform int object_is_colored;
 uniform int object_is_text;
-uniform int object_is_static;
 
 void main() {
     gl_Position = object_projection * object_view * object_model * vec4(object_position, 1.0);

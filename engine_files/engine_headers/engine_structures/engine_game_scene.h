@@ -657,6 +657,8 @@ PW_NAMESPACE_SRT
 			size_t m_last_render_count;
 			std::vector<st::Actor*> m_collision_models;
 			std::map<st::Physics_Object*, st::Actor*> m_body_models;
+			// Instant look up time is practical for the cost of doubled memory usage
+			std::map<st::Animation*, st::Animation*> m_async_animations;
 			// We need to keep track of the models that have special id's
 			std::map<std::wstring, st::Actor*> s_id_models;
 			// Input / Event Information

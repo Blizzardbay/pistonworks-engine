@@ -791,6 +791,9 @@ PW_NAMESPACE_SRT
 			static inline void Set_Window_Lock(const bool& p_state) {
 				m_window_lock = p_state;
 			}
+			static void Close_Engine() {
+				glfwSetWindowShouldClose(&**cm::Engine_Constant::Window(), GLFW_TRUE);
+			}
 			#ifdef PW_DEBUG_MODE
 				static inline void Set_Debug_Function(const PW_FUNCTION& p_new_function) {
 					m_debug_info = p_new_function;

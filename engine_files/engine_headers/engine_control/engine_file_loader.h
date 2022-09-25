@@ -165,7 +165,7 @@ PW_NAMESPACE_SRT
 				const bool& p_repeat, const bool& p_linear, const bool& p_engine_dir = false, std::wstring* p_override_dir = nullptr);
 
 			static std::tuple<st::Texture*, st::Animation*> Load_Animation_File(const std::wstring& p_file_name,
-				const bool& p_repeat, const bool& p_linear, const bool& p_engine_dir = false, std::wstring* p_override_dir = nullptr);
+				const bool& p_repeat, const bool& p_linear, const bool& p_is_async, const bool& p_engine_dir = false, std::wstring* p_override_dir = nullptr);
 
 			static GLFWimage* Load_Icon(const std::wstring& p_file_name, const bool& p_engine_dir);
 			static void Unload_Icon();

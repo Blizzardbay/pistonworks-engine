@@ -1,7 +1,0 @@
-Animation_ID,	Animation,	Has_Animation_Extention,	Animation_Length,	Animation_Frame_Count,	Animation_Frame_Size_X
-Idle_R,		Idle_R.gif,		1,			2,		8,			32
-Idle_L,		Idle_L.gif,		1,			2,		8,			32
-Moving_Down,	Moving_Down.gif,	1,			2,		8,			32
-Moving_Left,	Moving_Left.gif,	1,			2,		8,			32
-Moving_Right,	Moving_Right.gif,	1,			2,		8,			32
-Moving_Up,	Moving_Up.gif,	1,			2,		8,			32

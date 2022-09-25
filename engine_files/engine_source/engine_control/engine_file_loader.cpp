@@ -183,7 +183,7 @@ PW_NAMESPACE_SRT
 					throw er::Warning_Error(L"File Loader", L"Unsupported Type", EXCEPTION_LINE, __FILEW__, L"FreeImage_FIFSupportsReading");
 				}
 			}
-			std::tuple<st::Texture*, st::Animation*> File_Loader::Load_Animation_File(const std::wstring& p_file_name, const bool& p_repeat, const bool& p_linear, const bool& p_engine_dir, std::wstring* p_override_dir) {
+			std::tuple<st::Texture*, st::Animation*> File_Loader::Load_Animation_File(const std::wstring& p_file_name, const bool& p_repeat, const bool& p_linear, const bool& p_is_async, const bool& p_engine_dir, std::wstring* p_override_dir) {
 				// File Type
 				FREE_IMAGE_FORMAT v_image_type{ FREE_IMAGE_FORMAT::FIF_UNKNOWN };
 				// File
@@ -280,7 +280,7 @@ PW_NAMESPACE_SRT
 						// Create Texture
 						v_texture = pw::Engine_Memory::Allocate<st::Texture, bool>(v_image_data, v_width * v_frames, v_height, GL_RGBA, GL_BGRA, p_repeat, p_linear);
 						// Create Animation
-						v_animation = pw::Engine_Memory::Allocate<st::Animation, bool>(static_cast<float>(v_frame_time) / static_cast<float>(CLOCKS_PER_SEC), v_frames, v_width);
+						v_animation = pw::Engine_Memory::Allocate<st::Animation, bool>(static_cast<float>(v_frame_time) / static_cast<float>(CLOCKS_PER_SEC), v_frames, v_width, p_is_async);
 
 						FreeImage_Unload(v_file);
 
@@ -894,6 +894,14 @@ PW_NAMESPACE_SRT
 																															std::bind(static_cast<void(st::Actor::*)(glm::vec4)>(&st::Actor::Set_Color), p_main_actor, std::placeholders::_1))),
 																														p_play_once, glm::vec4(std::stof(p_arg_2) / 255.0f, std::stof(p_arg_3) / 255.0f, std::stof(p_arg_4) / 255.0f, std::stof(p_arg_5) / 255.0f));
 																												}
+																												else {
+																													if (p_function_name == L"CLOSE_ENGINE") {
+																														p_scene->Create_Event<void>(
+																															p_event_id, TO_WSTRING(p_arg_1), p_event_type, p_press_type, p_main_actor,
+																															std::make_shared<COMPLEX_FUNCTION_0>(COMPLEX_FUNCTION_0(&cm::Engine_Constant::Close_Engine)),
+																															p_play_once);
+																													}
+																												}
 																											}
 																										}
 																									}
@@ -1089,6 +1097,15 @@ PW_NAMESPACE_SRT
 																														std::make_shared<COMPLEX_FUNCTION_1(glm::vec4)>(COMPLEX_FUNCTION_1(glm::vec4)(
 																															std::bind(static_cast<void(st::Actor::*)(glm::vec4)>(&st::Actor::Set_Color), p_main_actor, std::placeholders::_1))),
 																														p_play_once, glm::vec4(std::stof(p_arg_1) / 255.0f, std::stof(p_arg_2) / 255.0f, std::stof(p_arg_3) / 255.0f, std::stof(p_arg_4) / 255.0f));
+																												}
+																												else {
+																													if (p_function_name == L"CLOSE_ENGINE") {
+																														p_scene->Create_Event<void>(
+																															p_event_id, p_event_type, p_button_code, p_press_type,
+																															p_test_actor, p_main_actor,
+																															std::make_shared<COMPLEX_FUNCTION_0>(COMPLEX_FUNCTION_0(&cm::Engine_Constant::Close_Engine)),
+																															p_play_once);
+																													}
 																												}
 																											}
 																										}
@@ -1441,6 +1458,14 @@ PW_NAMESPACE_SRT
 																																			std::bind(static_cast<void(st::Actor::*)(glm::vec4)>(&st::Actor::Set_Color), v_scene->Access_Model(v_ws_id), std::placeholders::_1))),
 																																		(bool)v_play_once, glm::vec4(std::stof(v_arg_1) / 255.0f, std::stof(v_arg_2) / 255.0f, std::stof(v_arg_3) / 255.0f, std::stof(v_arg_4) / 255.0f));
 																																}
+																																else {
+																																	if (v_function_name == "CLOSE_ENGINE") {
+																																		v_scene->Create_Event<void>(
+																																			TO_WSTRING(v_input_id), v_ws_id, TO_WSTRING(v_object_id),
+																																			std::make_shared<COMPLEX_FUNCTION_0>(COMPLEX_FUNCTION_0(&cm::Engine_Constant::Close_Engine)),
+																																			(bool)v_play_once);
+																																	}
+																																}
 																															}
 																														}
 																													}
@@ -1584,6 +1609,7 @@ PW_NAMESPACE_SRT
 				float v_animation_length{ 0.0f };
 				uint32_t v_animation_frame_count{ 0 };
 				uint32_t v_animation_frame_size_x{ 0 };
+				uint32_t v_is_async_animation{ 0 };
 				uint32_t v_has_physics{ 0 };
 				std::string v_body_type{};
 				uint32_t v_is_fixed{ 0 };
@@ -1606,18 +1632,20 @@ PW_NAMESPACE_SRT
 
 				p_location = co::File_Finder::Find_File(m_data_location, TO_WSTRING(p_main_scene), L".csv");
 
-				io::CSVReader<38, io::trim_chars<' ', '\t'>, io::no_quote_escape<','>, io::ignore_overflow, io::single_line_comment<'#'>>
+				io::CSVReader<39, io::trim_chars<' ', '\t'>, io::no_quote_escape<','>, io::ignore_overflow, io::single_line_comment<'#'>>
 					v_file_data_reader{ p_location.generic_string().c_str() };
 				v_file_data_reader.read_header(io::ignore_extra_column,
 					"Layer", "S_ID", "Is_Main_ID_Actor", "Is_Attached", "Attachment_ID", "Offset_X", "Offset_Y", "Is_Text", "Font_Type", "Texture", "Texture_Repeats", "Is_Linear",
-					"Mesh_Type", "Color_ID", "ColorR", "ColorB", "ColorG", "ColorA",
+					"Mesh_Type", "Color_ID", "ColorR", "ColorG", "ColorB", "ColorA",
 					"PositionX", "PositionY", "Rotation", "SizeX", "SizeY",
-					"Is_Animated", "Has_Animation_Extention", "Animation_Length", "Animation_Frame_Count", "Animation_Frame_Size_X",
+					"Is_Animated", "Has_Animation_Extention", "Animation_Length", "Animation_Frame_Count", "Animation_Frame_Size_X", "Is_Async_Animation",
 					"Has_Physics", "Is_Sensor", "Body_Type", "Shape", "Fixed_Rot", "Is_Fixed", "Friction", "Restitution", "Density", "Sound_Structure");
 				while (v_file_data_reader.read_row(v_layer, v_s_id, v_is_main_s_id, v_is_attached, v_attachment_id, v_offset_x, v_offset_y, v_is_text, v_font_type, v_texture, v_repeats, v_is_linear,
-					v_mesh_type, v_color_id, v_color_r, v_color_b, v_color_g, v_color_a,
+					v_mesh_type, v_color_id, v_color_r, v_color_g, v_color_b, v_color_a,
 					v_position_x, v_position_y, v_rotation, v_size_x, v_size_y, v_is_animated, v_has_animation_extention,
-					v_animation_length, v_animation_frame_count, v_animation_frame_size_x, v_has_physics, v_is_sensor, v_body_type, v_body_shape, v_fixed_rotation, v_is_fixed, v_friction, v_restitution, v_density, v_sound_structure)) {
+					v_animation_length, v_animation_frame_count, v_animation_frame_size_x, v_is_async_animation,
+					v_has_physics, v_is_sensor, v_body_type, v_body_shape, v_fixed_rotation, v_is_fixed, v_friction,
+					v_restitution, v_density, v_sound_structure)) {
 
 					// Possible Animation cache
 					std::vector<std::tuple<st::Animation*, st::Texture*>> v_animations{};
@@ -1671,12 +1699,13 @@ PW_NAMESPACE_SRT
 									std::string v_animation_id{};
 									std::string v_animation_location{};
 
-									io::CSVReader<6, io::trim_chars<' ', '\t'>, io::no_quote_escape<','>, io::ignore_overflow, io::single_line_comment<'#'>>
+									io::CSVReader<7, io::trim_chars<' ', '\t'>, io::no_quote_escape<','>, io::ignore_overflow, io::single_line_comment<'#'>>
 										v_animation_data_reader{ p_location.generic_string().c_str() };
 									v_animation_data_reader.read_header(io::ignore_extra_column,
 										"Animation_ID", "Animation", "Has_Animation_Extention", "Animation_Length",
-										"Animation_Frame_Count", "Animation_Frame_Size_X");
-									while (v_animation_data_reader.read_row(v_animation_id, v_animation_location, v_has_animation_extention, v_animation_length, v_animation_frame_count, v_animation_frame_size_x)) {
+										"Animation_Frame_Count", "Animation_Frame_Size_X", "Is_Async_Animation");
+									while (v_animation_data_reader.read_row(v_animation_id, v_animation_location, v_has_animation_extention,
+										v_animation_length, v_animation_frame_count, v_animation_frame_size_x, v_is_async_animation)) {
 										try {
 											if (v_has_animation_extention == 1) {
 												v_extension = v_animation_location.substr(v_animation_location.find_last_of("."), v_animation_location.size() - 1);
@@ -1686,7 +1715,7 @@ PW_NAMESPACE_SRT
 												else {
 													// It is a gif and needs to be loaded
 													std::wstring v_texture_location{ TO_WSTRING(v_animation_location.c_str()) };
-													std::tuple<st::Texture*, st::Animation*> v_model_animation_structure = co::File_Loader::Load_Animation_File(v_texture_location.c_str(), (bool)v_repeats, (bool)v_is_linear);
+													std::tuple<st::Texture*, st::Animation*> v_model_animation_structure = co::File_Loader::Load_Animation_File(v_texture_location.c_str(), (bool)v_repeats, (bool)v_is_linear, (bool) v_is_async_animation);
 													v_model_texture = v_model_animation_structure._Myfirst._Val;
 													v_model_animation = v_model_animation_structure._Get_rest()._Myfirst._Val;
 													v_model_animation_structure._Get_rest()._Myfirst._Val = nullptr;
@@ -1697,7 +1726,7 @@ PW_NAMESPACE_SRT
 												std::wstring v_texture_location{ TO_WSTRING(v_animation_location.c_str()) };
 												v_model_texture = co::File_Loader::Load_Texture_File(v_texture_location.c_str(), (bool)v_repeats, (bool)v_is_linear, false, &m_animation_location);
 
-												v_model_animation = pw::Engine_Memory::Allocate<st::Animation, bool>(v_animation_length, v_animation_frame_count, v_animation_frame_size_x);
+												v_model_animation = pw::Engine_Memory::Allocate<st::Animation, bool>(v_animation_length, v_animation_frame_count, v_animation_frame_size_x, (bool)v_is_async_animation);
 											}
 											v_animations.push_back(std::make_tuple(v_model_animation, v_model_texture));
 											v_animation_ids.push_back(TO_WSTRING(v_animation_id));
@@ -1714,7 +1743,7 @@ PW_NAMESPACE_SRT
 								try {
 									// It is a gif and needs to be loaded
 									std::wstring v_texture_location{ TO_WSTRING(v_texture.c_str()) };
-									std::tuple<st::Texture*, st::Animation*> v_model_animation_structure = co::File_Loader::Load_Animation_File(v_texture_location.c_str(), (bool)v_repeats, (bool)v_is_linear);
+									std::tuple<st::Texture*, st::Animation*> v_model_animation_structure = co::File_Loader::Load_Animation_File(v_texture_location.c_str(), (bool)v_repeats, (bool)v_is_linear, (bool)v_is_async_animation);
 									v_model_texture = v_model_animation_structure._Myfirst._Val;
 									v_model_animation = v_model_animation_structure._Get_rest()._Myfirst._Val;
 									v_model_animation_structure._Get_rest()._Myfirst._Val = nullptr;
@@ -1732,7 +1761,7 @@ PW_NAMESPACE_SRT
 								std::wstring v_texture_location{ TO_WSTRING(v_texture.c_str()) };
 								v_model_texture = co::File_Loader::Load_Texture_File(v_texture_location.c_str(), (bool)v_repeats, false, &m_animation_location);
 
-								v_model_animation = pw::Engine_Memory::Allocate<st::Animation, bool>(v_animation_length, v_animation_frame_count, v_animation_frame_size_x);
+								v_model_animation = pw::Engine_Memory::Allocate<st::Animation, bool>(v_animation_length, v_animation_frame_count, v_animation_frame_size_x, (bool)v_is_async_animation);
 							}
 							catch (const er::Warning_Error& v_error) {
 								PW_PRINT_ERROR(v_error);
@@ -2293,17 +2322,17 @@ PW_NAMESPACE_SRT
 					// It could but setting all of the things would 
 					// Be tiresome at the moment so for now no
 					// Same loading as the main scene data accept no physics 
-					io::CSVReader<29, io::trim_chars<' ', '\t'>, io::no_quote_escape<','>, io::ignore_overflow, io::single_line_comment<'#'>>
+					io::CSVReader<30, io::trim_chars<' ', '\t'>, io::no_quote_escape<','>, io::ignore_overflow, io::single_line_comment<'#'>>
 						v_file_sub_data_reader{ p_location.generic_string().c_str() };
 					v_file_sub_data_reader.read_header(io::ignore_extra_column,
 						"Layer", "S_ID", "Is_Main_ID_Actor", "Is_Attached", "Attachment_ID", "Offset_X", "Offset_Y", "Is_Text", "Font_Type", "Texture", "Texture_Repeats", "Is_Linear",
-						"Mesh_Type", "Color_ID", "ColorR", "ColorB", "ColorG", "ColorA",
+						"Mesh_Type", "Color_ID", "ColorR", "ColorG", "ColorB", "ColorA",
 						"PositionX", "PositionY", "Rotation", "SizeX", "SizeY",
-						"Is_Animated", "Has_Animation_Extention", "Animation_Length", "Animation_Frame_Count", "Animation_Frame_Size_X", "Sound_Structure");
+						"Is_Animated", "Has_Animation_Extention", "Animation_Length", "Animation_Frame_Count", "Animation_Frame_Size_X", "Is_Async_Animation", "Sound_Structure");
 					while (v_file_sub_data_reader.read_row(v_layer, v_s_id, v_is_main_s_id, v_is_attached, v_attachment_id, v_offset_x, v_offset_y, v_is_text, v_font_type, v_texture, v_repeats, v_is_linear,
-						v_mesh_type, v_color_id, v_color_r, v_color_b, v_color_g, v_color_a,
+						v_mesh_type, v_color_id, v_color_r, v_color_g, v_color_b, v_color_a,
 						v_position_x, v_position_y, v_rotation, v_size_x, v_size_y, v_is_animated, v_has_animation_extention,
-						v_animation_length, v_animation_frame_count, v_animation_frame_size_x, v_sound_structure)) {
+						v_animation_length, v_animation_frame_count, v_animation_frame_size_x, v_is_async_animation, v_sound_structure)) {
 
 						// Possible Animation cache
 						std::vector<std::tuple<st::Animation*, st::Texture*>> v_animations{};
@@ -2373,7 +2402,7 @@ PW_NAMESPACE_SRT
 													else {
 														// It is a gif and needs to be loaded
 														std::wstring v_texture_location{ TO_WSTRING(v_animation_location.c_str()) };
-														std::tuple<st::Texture*, st::Animation*> v_model_animation_structure = co::File_Loader::Load_Animation_File(v_texture_location.c_str(), (bool)v_repeats, (bool)v_is_linear);
+														std::tuple<st::Texture*, st::Animation*> v_model_animation_structure = co::File_Loader::Load_Animation_File(v_texture_location.c_str(), (bool)v_repeats, (bool)v_is_linear, (bool)v_is_async_animation);
 														v_model_texture = v_model_animation_structure._Myfirst._Val;
 														v_model_animation = v_model_animation_structure._Get_rest()._Myfirst._Val;
 														v_model_animation_structure._Get_rest()._Myfirst._Val = nullptr;
@@ -2384,7 +2413,7 @@ PW_NAMESPACE_SRT
 													std::wstring v_texture_location{ TO_WSTRING(v_animation_location.c_str()) };
 													v_model_texture = co::File_Loader::Load_Texture_File(v_texture_location.c_str(), (bool)v_repeats, false, &m_animation_location);
 
-													v_model_animation = pw::Engine_Memory::Allocate<st::Animation, bool>(v_animation_length, v_animation_frame_count, v_animation_frame_size_x);
+													v_model_animation = pw::Engine_Memory::Allocate<st::Animation, bool>(v_animation_length, v_animation_frame_count, v_animation_frame_size_x, (bool)v_is_async_animation);
 												}
 												v_animations.push_back(std::make_tuple(v_model_animation, v_model_texture));
 												v_animation_ids.push_back(TO_WSTRING(v_animation_id));
@@ -2401,7 +2430,7 @@ PW_NAMESPACE_SRT
 									try {
 										// It is a gif and needs to be loaded
 										std::wstring v_texture_location{ TO_WSTRING(v_texture.c_str()) };
-										std::tuple<st::Texture*, st::Animation*> v_model_animation_structure = co::File_Loader::Load_Animation_File(v_texture_location.c_str(), (bool)v_repeats, (bool)v_is_linear);
+										std::tuple<st::Texture*, st::Animation*> v_model_animation_structure = co::File_Loader::Load_Animation_File(v_texture_location.c_str(), (bool)v_repeats, (bool)v_is_linear, (bool)v_is_async_animation);
 										v_model_texture = v_model_animation_structure._Myfirst._Val;
 										v_model_animation = v_model_animation_structure._Get_rest()._Myfirst._Val;
 										v_model_animation_structure._Get_rest()._Myfirst._Val = nullptr;
@@ -2419,7 +2448,7 @@ PW_NAMESPACE_SRT
 									std::wstring v_texture_location{ TO_WSTRING(v_texture.c_str()) };
 									v_model_texture = co::File_Loader::Load_Texture_File(v_texture_location.c_str(), (bool)v_repeats, false, &m_animation_location);
 
-									v_model_animation = pw::Engine_Memory::Allocate<st::Animation, bool>(v_animation_length, v_animation_frame_count, v_animation_frame_size_x);
+									v_model_animation = pw::Engine_Memory::Allocate<st::Animation, bool>(v_animation_length, v_animation_frame_count, v_animation_frame_size_x, (bool)v_is_async_animation);
 								}
 								catch (const er::Warning_Error& v_error) {
 									PW_PRINT_ERROR(v_error);

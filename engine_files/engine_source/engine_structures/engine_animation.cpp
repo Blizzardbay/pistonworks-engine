@@ -10,13 +10,13 @@ PW_NAMESPACE_SRT
 		// Static Declarations
 		// Class Members
 			Animation::Animation() :
-					m_keep_animating{ true }, m_start{ false }, m_end{ false },
+					m_keep_animating{ true }, m_is_async{ false}, m_start{ false }, m_end{ false },
 					m_frame_timer{ 0, true, false }, m_frame_count{ 0 }, m_animation_step{ 0.0f },
 					m_current_frame{ 0 }, m_vertices_default{ nullptr },
 					m_animation_vertices{ nullptr }, m_vertices_count{} {
 			}
-			Animation::Animation(const float& p_animation_length, const uint32_t& p_frame_count, const uint32_t& p_frame_size_x, Vertex_Data* p_vertices, const size_t& p_vertices_count) :
-					m_keep_animating{ true }, m_start{ false }, m_end{ false }, m_frame_timer{ (p_animation_length / p_frame_count) * 1000, true, false }, m_frame_count{ p_frame_count },
+			Animation::Animation(const float& p_animation_length, const uint32_t& p_frame_count, const uint32_t& p_frame_size_x, Vertex_Data* p_vertices, const size_t& p_vertices_count, const bool& p_is_async) :
+					m_keep_animating{ true }, m_is_async{ p_is_async }, m_start{ false }, m_end{ false }, m_frame_timer{ (p_animation_length / p_frame_count) * 1000, true, false }, m_frame_count{ p_frame_count },
 					m_animation_step{ 0.0f }, m_current_frame{ 0 }, m_vertices_default{ nullptr },
 					m_animation_vertices{ nullptr }, m_vertices_count{ p_vertices_count } {
 
@@ -30,8 +30,8 @@ PW_NAMESPACE_SRT
 					m_vertices_default[i].Set_Texture_Coord(p_vertices[i].Texture_Coord());
 				}
 			}
-			Animation::Animation(const float& p_animation_length, const uint32_t& p_frame_count, const uint32_t& p_frame_size_x) :
-					m_keep_animating{ true }, m_start{ false }, m_end{ false }, m_frame_timer{ (p_animation_length / p_frame_count) * 1000, true, false },
+			Animation::Animation(const float& p_animation_length, const uint32_t& p_frame_count, const uint32_t& p_frame_size_x, const bool& p_is_async) :
+					m_keep_animating{ true }, m_is_async{ p_is_async }, m_start{ false }, m_end{ false }, m_frame_timer{ (p_animation_length / p_frame_count) * 1000, true, false },
 					m_frame_count{ p_frame_count }, m_animation_step{ 0.0f },
 					m_current_frame{ 0 }, m_vertices_default{ NULL },
 					m_animation_vertices{ NULL }, m_vertices_count{ NULL } {
@@ -51,7 +51,7 @@ PW_NAMESPACE_SRT
 				}
 			}
 			Animation::Animation(const Animation& p_copy) :
-					m_keep_animating{ p_copy.m_keep_animating }, m_start{ p_copy.m_start }, m_end{ p_copy.m_end },
+					m_keep_animating{ p_copy.m_keep_animating }, m_is_async{ p_copy.m_is_async }, m_start{ p_copy.m_start }, m_end{ p_copy.m_end },
 					m_frame_timer{ p_copy.m_frame_timer }, m_frame_count{ p_copy.m_frame_count }, m_animation_step{ p_copy.m_animation_step },
 					m_current_frame{ p_copy.m_current_frame }, m_vertices_default{ p_copy.m_vertices_default }, m_animation_vertices{ p_copy.m_animation_vertices },
 					m_vertices_count{ p_copy.m_vertices_count } {
@@ -59,35 +59,72 @@ PW_NAMESPACE_SRT
 			Animation::Animation(const std::shared_ptr<Animation>& p_animation) : 
 					Animation::Animation(*p_animation) {
 			}
-			void Animation::Change_Frame() {
-				if (TRY_LINE m_vertices_default != nullptr) {
-					if (m_frame_timer.Use() == true && m_keep_animating == true) {
-						if (m_current_frame != m_frame_count && m_current_frame != 0) {
-							for (size_t i = 0; i < m_vertices_count; i++) {
-								m_animation_vertices[i].Set_Texture_Coord(glm::vec2(m_animation_vertices[i].Texture_Coord().x + m_animation_step, m_animation_vertices[i].Texture_Coord().y));
-							}
-							m_frame_timer.Reset();
-							m_current_frame = m_current_frame + 1;
-							m_start = false;
-							if (m_frame_count == m_current_frame) {
-								m_end = true;
+			void Animation::Change_Frame(bool p_render_call) {
+				if (p_render_call == false) {
+					if (m_is_async == true) {
+						if (TRY_LINE m_vertices_default != nullptr) {
+							if (m_frame_timer.Use() == true) {
+								if (m_current_frame != m_frame_count && m_current_frame != 0) {
+									for (size_t i = 0; i < m_vertices_count; i++) {
+										m_animation_vertices[i].Set_Texture_Coord(glm::vec2(m_animation_vertices[i].Texture_Coord().x + m_animation_step, m_animation_vertices[i].Texture_Coord().y));
+									}
+									m_frame_timer.Reset();
+									m_current_frame = m_current_frame + 1;
+									m_start = false;
+									if (m_frame_count == m_current_frame) {
+										m_end = true;
+									}
+									else {
+										m_end = false;
+									}
+								}
+								else {
+									m_end = false;
+									Reset_Animation();
+								}
 							}
 							else {
+								m_start = false;
 								m_end = false;
 							}
 						}
 						else {
-							m_end = false;
-							Reset_Animation();
+							throw pw::er::Warning_Error(L"Animation", L"vertices_default was nullptr", EXCEPTION_LINE, __FILEW__, L"Change_Frame");
 						}
-					}
-					else {
-						m_start = false;
-						m_end = false;
 					}
 				}
 				else {
-					throw pw::er::Warning_Error(L"Animation", L"vertices_default was nullptr", EXCEPTION_LINE, __FILEW__, L"Change_Frame");
+					if (m_is_async == false) {
+						if (TRY_LINE m_vertices_default != nullptr) {
+							if (m_frame_timer.Use() == true && m_keep_animating == true) {
+								if (m_current_frame != m_frame_count && m_current_frame != 0) {
+									for (size_t i = 0; i < m_vertices_count; i++) {
+										m_animation_vertices[i].Set_Texture_Coord(glm::vec2(m_animation_vertices[i].Texture_Coord().x + m_animation_step, m_animation_vertices[i].Texture_Coord().y));
+									}
+									m_frame_timer.Reset();
+									m_current_frame = m_current_frame + 1;
+									m_start = false;
+									if (m_frame_count == m_current_frame) {
+										m_end = true;
+									}
+									else {
+										m_end = false;
+									}
+								}
+								else {
+									m_end = false;
+									Reset_Animation();
+								}
+							}
+							else {
+								m_start = false;
+								m_end = false;
+							}
+						}
+						else {
+							throw pw::er::Warning_Error(L"Animation", L"vertices_default was nullptr", EXCEPTION_LINE, __FILEW__, L"Change_Frame");
+						}
+					}
 				}
 			}
 			void Animation::Finish_Init(Vertex_Data* p_vertices, size_t p_vertices_count) {
@@ -155,6 +192,9 @@ PW_NAMESPACE_SRT
 			const bool& Animation::End() {
 				return m_end;
 			}
+			const bool& Animation::Is_Async() {
+				return m_is_async;
+			}
 		// End of Class Members
 		// Animation_Structure
 		// Static Declarations
@@ -194,6 +234,9 @@ PW_NAMESPACE_SRT
 				else {
 					return std::move(std::tuple<st::Animation*, st::Texture*>());
 				}
+			}
+			std::map<std::wstring, std::tuple<st::Animation*, st::Texture*>>& Animation_Structure::Animations() {
+				return m_animations;
 			}
 		// End of Class Members
 	//////////////////////////////////

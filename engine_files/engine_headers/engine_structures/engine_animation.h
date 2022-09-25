@@ -72,9 +72,9 @@ PW_NAMESPACE_SRT
 		public:
 			Animation();
 
-			Animation(const float& p_animation_length, const uint32_t& p_frame_count, const uint32_t& p_frame_size_x, Vertex_Data* p_vertices, const size_t& p_vertices_count);
+			Animation(const float& p_animation_length, const uint32_t& p_frame_count, const uint32_t& p_frame_size_x, Vertex_Data* p_vertices, const size_t& p_vertices_count, const bool& p_is_async);
 			
-			Animation(const float& p_animation_length, const uint32_t& p_frame_count, const uint32_t& p_frame_size_x);
+			Animation(const float& p_animation_length, const uint32_t& p_frame_count, const uint32_t& p_frame_size_x, const bool& p_is_async);
 			
 			~Animation();
 			
@@ -84,7 +84,7 @@ PW_NAMESPACE_SRT
 		private:
 		// Public Functions/Macros
 		public:
-			void Change_Frame();
+			void Change_Frame(bool p_render_call = true);
 			
 			void Finish_Init(Vertex_Data* p_vertices, size_t p_vertices_count);
 			
@@ -99,6 +99,8 @@ PW_NAMESPACE_SRT
 			const bool& Start();
 			// Returns true if we are at the end
 			const bool& End();
+			// Returns if the animation should be updated
+			const bool& Is_Async();
 		// Public Variables
 		public:
 		// Private Functions/Macros 
@@ -109,6 +111,9 @@ PW_NAMESPACE_SRT
 			bool m_end;
 
 			bool m_keep_animating;
+			// Do we keep running the animation
+			// as long as the scene is still being played
+			bool m_is_async;
 
 			cm::Engine_Timer m_frame_timer;
 			// The number of frames
@@ -136,6 +141,7 @@ PW_NAMESPACE_SRT
 			// If the structure only has one animation it will return a shared ptr to the animation else a nullptr
 			std::tuple<st::Animation*, st::Texture*> Animation() const;
 			std::tuple<st::Animation*, st::Texture*> Animation(const std::wstring& p_animation_id);
+			std::map<std::wstring, std::tuple<st::Animation*, st::Texture*>>& Animations();
 		// Public Variables         
 		public:
 		// Private Functions/Macros 

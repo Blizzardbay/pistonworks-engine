@@ -280,6 +280,7 @@
     <Text Include="engine_files\engine_resource\engine_fonts\roboto_font\LICENSE.txt">
       <Filter>engine_files\engine_resource\engine_fonts\roboto_font</Filter>
     </Text>
+    <Text Include="engine_files\engine_resource\engine_log\Empty.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="engine_files\engine_source\engine_control\engine_control.cpp">

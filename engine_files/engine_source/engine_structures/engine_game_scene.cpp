@@ -477,7 +477,7 @@ PW_NAMESPACE_SRT
 					m_scene_name{}, m_main_scene_models{}, m_collision_models{},
 					m_scene_input{}, m_scene_events{}, m_scene_id_counter{ 0 }, m_active_scene_events{}, m_scene_physics{ nullptr }, s_id_models{}, m_render_queue{}, m_screen_models{}, m_last_render_count{ 0 }, m_re_render{ true },
 					m_camera_position_instance{ st::Camera::Camera_Position() },
-					m_body_models{}, m_current_scene_collision_events{},
+					m_body_models{}, m_async_animations{}, m_current_scene_collision_events{},
 					m_quadtree_render_box{ quadtree::Box<float>{(float)INT32_MIN, (float)INT32_MIN, 2.0f * (float)INT32_MAX, 2.0f * (float)INT32_MAX} },
 					m_quadtree_renderer{ quadtree::Box<float>{(float)INT32_MIN, (float)INT32_MIN, 2.0f * (float)INT32_MAX, 2.0f * (float)INT32_MAX},
 					Game_Scene::Get_Box }, m_sub_scene_deposit{}, m_listener_id{}, m_current_scene_input{ nullptr }, m_current_scene_events{ nullptr }, m_scene_alt_events{}, m_current_scene_alt_events{nullptr},
@@ -489,7 +489,7 @@ PW_NAMESPACE_SRT
 					m_scene_name{ p_scene_name }, m_main_scene_models{ p_scene_models }, m_collision_models{ p_collision_models },
 					m_scene_input{ p_scene_input }, m_scene_events{}, m_scene_id_counter{ 0 }, m_active_scene_events{}, m_scene_physics{ p_scene_physics }, s_id_models{}, m_render_queue{}, m_screen_models{}, m_last_render_count{ 0 }, m_re_render{ true },
 					m_camera_position_instance{ st::Camera::Camera_Position() },
-					m_body_models{},
+					m_body_models{}, m_async_animations{},
 					m_quadtree_render_box{ quadtree::Box<float>{(float)INT32_MIN, (float)INT32_MIN, 2.0f * (float)INT32_MAX, 2.0f * (float)INT32_MAX} },
 					m_quadtree_renderer{ quadtree::Box<float>{(float)INT32_MIN, (float)INT32_MIN, 2.0f * (float)INT32_MAX, 2.0f * (float)INT32_MAX},
 					Game_Scene::Get_Box }, m_sub_scene_deposit{ p_sub_scene_deposit }, m_listener_id{ p_listener_id }, m_current_scene_input{ nullptr }, m_current_scene_events{ nullptr }, m_scene_alt_events{},
@@ -541,6 +541,30 @@ PW_NAMESPACE_SRT
 
 				for (auto i = m_sub_scene_deposit.begin(); i != m_sub_scene_deposit.end(); i++) {
 					i->second->Push_Screen_Models(m_screen_models);
+				}
+
+				// Fill the async animation vector for use
+				for (size_t i = 0; i < m_main_scene_models.size(); i++) {
+					if (m_main_scene_models.at(i)->Animation_Structure() != nullptr) {
+						for (auto j = m_main_scene_models.at(i)->Animation_Structure()->Animations().begin(); j != m_main_scene_models.at(i)->Animation_Structure()->Animations().end(); j++) {
+							if (std::get<0>(j->second)->Is_Async() == true) {
+								auto k = m_async_animations.find(std::get<0>(j->second));
+								if (k == m_async_animations.end()) {
+									m_async_animations.insert(std::make_pair(std::get<0>(j->second), std::get<0>(j->second)));
+								}
+							}
+						}
+					}
+					else {
+						if (m_main_scene_models.at(i)->Animation() != nullptr) {
+							if (m_main_scene_models.at(i)->Animation()->Is_Async() == true) {
+								auto k = m_async_animations.find(m_main_scene_models.at(i)->Animation());
+								if (k == m_async_animations.end()) {
+									m_async_animations.insert(std::make_pair(m_main_scene_models.at(i)->Animation(), m_main_scene_models.at(i)->Animation()));
+								}
+							}
+						}
+					}
 				}
 			}
 			Game_Scene::~Game_Scene() {
@@ -757,6 +781,10 @@ PW_NAMESPACE_SRT
 					else {
 						st::Listener::Update();
 					}
+				}
+				// Update all of the async animations
+				for (auto i = m_async_animations.begin(); i != m_async_animations.end(); i++) {
+					i->first->Change_Frame(false);
 				}
 			}
 			void Game_Scene::Render() {
@@ -1041,6 +1069,27 @@ PW_NAMESPACE_SRT
 
 					m_screen_models.push_back(v_temp);
 				}
+
+				if (p_new_model->Animation_Structure() != nullptr) {
+					for (auto j = p_new_model->Animation_Structure()->Animations().begin(); j != p_new_model->Animation_Structure()->Animations().end(); j++) {
+						if (std::get<0>(j->second)->Is_Async() == true) {
+							auto k = m_async_animations.find(std::get<0>(j->second));
+							if (k == m_async_animations.end()) {
+								m_async_animations.insert(std::make_pair(std::get<0>(j->second), std::get<0>(j->second)));
+							}
+						}
+					}
+				}
+				else {
+					if (p_new_model->Animation() != nullptr) {
+						if (p_new_model->Animation()->Is_Async() == true) {
+							auto k = m_async_animations.find(p_new_model->Animation());
+							if (k == m_async_animations.end()) {
+								m_async_animations.insert(std::make_pair(p_new_model->Animation(), p_new_model->Animation()));
+							}
+						}
+					}
+				}
 			}
 			void Game_Scene::Toggle_Render(std::wstring p_s_id) {
 				auto v_found = s_id_models.find(p_s_id);
@@ -1063,6 +1112,27 @@ PW_NAMESPACE_SRT
 					if (*i == &*v_model) {
 						m_main_scene_models.erase(i);
 						break;
+					}
+				}
+				for (auto i = m_screen_models.begin(); i != m_screen_models.end(); i++) {
+					if (*i == &*v_model) {
+						m_screen_models.erase(i);
+						break;
+					}
+				}
+
+				if (v_model->Animation_Structure() != nullptr) {
+					for (auto j = v_model->Animation_Structure()->Animations().begin(); j != v_model->Animation_Structure()->Animations().end(); j++) {
+						if (std::get<0>(j->second)->Is_Async() == true) {
+							m_async_animations.erase(std::get<0>(j->second));
+						}
+					}
+				}
+				else {
+					if (v_model->Animation() != nullptr) {
+						if (v_model->Animation()->Is_Async() == true) {
+							m_async_animations.erase(v_model->Animation());
+						}
 					}
 				}
 			}

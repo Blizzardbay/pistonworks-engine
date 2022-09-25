@@ -102,6 +102,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="engine_files\engine_resource\engine_fonts\roboto_font\LICENSE.txt" />
+    <Text Include="engine_files\engine_resource\engine_log\Empty.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="engine_files\engine_source\engine_common\engine_common.cpp" />
