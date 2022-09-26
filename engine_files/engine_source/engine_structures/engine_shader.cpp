@@ -47,6 +47,7 @@ PW_NAMESPACE_SRT
 				if (pw::Engine_Memory::Deallocate<char>(v_shader_code) == false) {
 					if (v_shader_code != nullptr) {
 						delete[] v_shader_code;
+						v_shader_code = nullptr;
 					}
 				}
 

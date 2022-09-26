@@ -115,6 +115,7 @@ PW_NAMESPACE_SRT
 				if (pw::Engine_Memory::Deallocate<b2Vec2>(m_shape_vertices) == false) {
 					if (m_shape_vertices != nullptr) {
 						delete m_shape_vertices;
+						m_shape_vertices = nullptr;
 					}
 				}
 			}
@@ -370,6 +371,7 @@ PW_NAMESPACE_SRT
 					if (pw::Engine_Memory::Deallocate<st::Physics_Object>(*i) == false) {
 						if (*i != nullptr) {
 							delete *i;
+							*i = nullptr;
 						}
 					}
 				}
@@ -377,12 +379,14 @@ PW_NAMESPACE_SRT
 					if (pw::Engine_Memory::Deallocate<st::Physics_Object>(i->second) == false) {
 						if (i->second != nullptr) {
 							delete i->second;
+							i->second = nullptr;
 						}
 					}
 				}
 				if (pw::Engine_Memory::Deallocate<b2World>(m_world) == false) {
 					if (m_world != nullptr) {
 						delete m_world;
+						m_world = nullptr;
 					}
 				}
 			}

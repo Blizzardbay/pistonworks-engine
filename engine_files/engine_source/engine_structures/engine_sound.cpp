@@ -333,6 +333,7 @@ PW_NAMESPACE_SRT
 				if (pw::Engine_Memory::Deallocate<st::Sound>(i->second) == false) {
 					if (i->second != nullptr) {
 						delete i->second;
+						i->second = nullptr;
 					}
 				}
 			}

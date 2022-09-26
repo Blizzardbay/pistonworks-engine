@@ -32,6 +32,7 @@ PW_NAMESPACE_SRT
 				if (pw::Engine_Memory::Deallocate<st::Texture>(m_character_data) == false) {
 					if (m_character_data != nullptr) {
 						delete m_character_data;
+						m_character_data = nullptr;
 					}
 				}
 			}
@@ -129,6 +130,7 @@ PW_NAMESPACE_SRT
 					if (pw::Engine_Memory::Deallocate<st::Model>(*i) == false) {
 						if (*i != nullptr) {
 							delete *i;
+							*i = nullptr;
 						}
 					}
 				}
@@ -172,6 +174,7 @@ PW_NAMESPACE_SRT
 							if (pw::Engine_Memory::Deallocate<st::Model>(*i) == false) {
 								if (*i != nullptr) {
 									delete *i;
+									*i = nullptr;
 								}
 							}
 						}
@@ -370,6 +373,7 @@ PW_NAMESPACE_SRT
 						if (pw::Engine_Memory::Deallocate<Character>(j->second) == false) {
 							if (j->second != nullptr) {
 								delete j->second;
+								j->second = nullptr;
 							}
 						}
 						j->second = nullptr;
@@ -378,6 +382,7 @@ PW_NAMESPACE_SRT
 				if (pw::Engine_Memory::Deallocate<std::map<std::wstring, std::map<wchar_t, Character*>>>(m_font_library) == false) {
 					if (m_font_library != nullptr) {
 						delete m_font_library;
+						m_font_library = nullptr;
 					}
 				}
 			}

@@ -199,6 +199,7 @@ PW_NAMESPACE_SRT
 						if (pw::Engine_Memory::Deallocate<GLFWimage>(v_icon) == false) {
 							if (v_icon != nullptr) {
 								delete v_icon;
+								v_icon = nullptr;
 							}
 						}
 					}

@@ -35,6 +35,7 @@ PW_NAMESPACE_SRT
 							if (pw::Engine_Memory::Deallocate<pw::st::Event_Base>(k->second) == false) {
 								if (k->second != nullptr) {
 									delete k->second;
+									k->second = nullptr;
 								}
 							}
 						}
@@ -50,6 +51,7 @@ PW_NAMESPACE_SRT
 							if (pw::Engine_Memory::Deallocate<pw::st::Event_Base>(k->second) == false) {
 								if (k->second != nullptr) {
 									delete k->second;
+									k->second = nullptr;
 								}
 							}
 						}
@@ -61,6 +63,7 @@ PW_NAMESPACE_SRT
 						if (pw::Engine_Memory::Deallocate<pw::st::Event_Base>(j->second) == false) {
 							if (j->second != nullptr) {
 								delete j->second;
+								j->second = nullptr;
 							}
 						}
 					}
@@ -74,6 +77,7 @@ PW_NAMESPACE_SRT
 				if (pw::Engine_Memory::Deallocate<std::map<std::wstring, std::shared_ptr<PW_FUNCTION>>>(m_function_register) == false) {
 					if (m_function_register != nullptr) {
 						delete m_function_register;
+						m_function_register = nullptr;
 					}
 				}
 

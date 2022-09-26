@@ -87,32 +87,40 @@ PW_NAMESPACE_SRT
 				if (pw::Engine_Memory::Deallocate<st::Model>(m_model) == false) {
 					if (m_model != nullptr) {
 						delete m_model;
+						m_model = nullptr;
 					}
 				}
 				m_body = nullptr;
 				if (pw::Engine_Memory::Deallocate<st::Texture_Structure>(m_multi_texture) == false) {
 					if (m_multi_texture != nullptr) {
 						delete m_multi_texture;
+						m_multi_texture = nullptr;
 					}
 				}
 				if (pw::Engine_Memory::Deallocate<st::Sound_Structure>(m_sound_deposit) == false) {
 					if (m_sound_deposit != nullptr) {
 						delete m_sound_deposit;
+						m_sound_deposit = nullptr;
 					}
 				}
 				if (pw::Engine_Memory::Deallocate<st::Text>(m_text) == false) {
 					if (m_text != nullptr) {
 						delete m_text;
-					}
-				}
-				if (pw::Engine_Memory::Deallocate<st::Animation>(m_current_animation) == false) {
-					if (m_current_animation != nullptr) {
-						delete m_current_animation;
+						m_text = nullptr;
 					}
 				}
 				if (pw::Engine_Memory::Deallocate<st::Animation_Structure>(m_animations) == false) {
 					if (m_animations != nullptr) {
 						delete m_animations;
+						m_animations = nullptr;
+					}
+				}
+				if (m_animations == nullptr) {
+					if (pw::Engine_Memory::Deallocate<st::Animation>(m_current_animation) == false) {
+						if (m_current_animation != nullptr) {
+							delete m_current_animation;
+							m_current_animation = nullptr;
+						}
 					}
 				}
 			}
@@ -366,6 +374,7 @@ PW_NAMESPACE_SRT
 				if (pw::Engine_Memory::Deallocate<st::Event_Base>(m_model_event) == false) {
 					if (m_model_event != nullptr) {
 						delete m_model_event;
+						m_model_event = nullptr;
 					}
 				}
 			}
@@ -410,6 +419,7 @@ PW_NAMESPACE_SRT
 					if (pw::Engine_Memory::Deallocate<st::Actor>(*i) == false) {
 						if (*i != nullptr) {
 							delete *i;
+							*i = nullptr;
 						}
 					}
 				}
@@ -572,6 +582,7 @@ PW_NAMESPACE_SRT
 					if (pw::Engine_Memory::Deallocate<pw::co::Engine_Input>(i->second) == false) {
 						if (i->second != nullptr) {
 							delete i->second;
+							i->second = nullptr;
 						}
 					}
 				}
@@ -582,6 +593,7 @@ PW_NAMESPACE_SRT
 								if (pw::Engine_Memory::Deallocate<st::Scene_Event>(l->second) == false) {
 									if (l->second != nullptr) {
 										delete l->second;
+										l->second = nullptr;
 									}
 								}
 							}
@@ -597,6 +609,7 @@ PW_NAMESPACE_SRT
 										if (pw::Engine_Memory::Deallocate<st::Scene_Event>(g->second) == false) {
 											if (g->second != nullptr) {
 												delete g->second;
+												g->second = nullptr;
 											}
 										}
 									}
@@ -612,6 +625,7 @@ PW_NAMESPACE_SRT
 								if (pw::Engine_Memory::Deallocate<st::Scene_Event>(l->second) == false) {
 									if (l->second != nullptr) {
 										delete l->second;
+										l->second = nullptr;
 									}
 								}
 							}
@@ -622,6 +636,7 @@ PW_NAMESPACE_SRT
 					if (pw::Engine_Memory::Deallocate<st::Actor>(*i) == false) {
 						if (*i != nullptr) {
 							delete *i;
+							*i = nullptr;
 						}
 					}
 				}
@@ -629,6 +644,7 @@ PW_NAMESPACE_SRT
 					if (pw::Engine_Memory::Deallocate<st::Sub_Scene_Structure>(i->second) == false) {
 						if (i->second != nullptr) {
 							delete i->second;
+							i->second = nullptr;
 						}
 					}
 				}
@@ -636,6 +652,7 @@ PW_NAMESPACE_SRT
 				if (pw::Engine_Memory::Deallocate<st::Physics_Factory>(m_scene_physics) == false) {
 					if (m_scene_physics != nullptr) {
 						delete m_scene_physics;
+						m_scene_physics = nullptr;
 					}
 				}
 			}

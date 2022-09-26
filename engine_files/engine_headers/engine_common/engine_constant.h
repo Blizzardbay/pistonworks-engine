@@ -383,6 +383,7 @@ PW_NAMESPACE_SRT
 							if (pw::Engine_Memory::Deallocate<wchar_t>(v_msg) == false) {
 								if (v_msg != nullptr) {
 									delete[] v_msg;
+									v_msg = nullptr;
 								}
 							}
 
@@ -426,6 +427,7 @@ PW_NAMESPACE_SRT
 							if (pw::Engine_Memory::Deallocate<wchar_t>(v_msg) == false) {
 								if (v_msg != nullptr) {
 									delete[] v_msg;
+									v_msg = nullptr;
 								}
 							}
 
@@ -484,6 +486,7 @@ PW_NAMESPACE_SRT
 							if (pw::Engine_Memory::Deallocate<char>(v_msg) == false) {
 								if (v_msg != nullptr) {
 									delete[] v_msg;
+									v_msg = nullptr;
 								}
 							}
 
@@ -527,6 +530,7 @@ PW_NAMESPACE_SRT
 							if (pw::Engine_Memory::Deallocate<char>(v_msg) == false) {
 								if (v_msg != nullptr) {
 									delete[] v_msg;
+									v_msg = nullptr;
 								}
 							}
 

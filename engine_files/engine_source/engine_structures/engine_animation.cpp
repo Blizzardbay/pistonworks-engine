@@ -42,11 +42,13 @@ PW_NAMESPACE_SRT
 				if (pw::Engine_Memory::Deallocate<st::Vertex_Data>(m_vertices_default) == false) {
 					if (m_vertices_default != nullptr) {
 						delete[] m_vertices_default;
+						m_vertices_default = nullptr;
 					}
 				}
 				if (pw::Engine_Memory::Deallocate<st::Vertex_Data>(m_animation_vertices) == false) {
 					if (m_animation_vertices != nullptr) {
 						delete[] m_animation_vertices;
+						m_animation_vertices = nullptr;
 					}
 				}
 			}
@@ -215,6 +217,22 @@ PW_NAMESPACE_SRT
 				}
 			}
 			Animation_Structure::~Animation_Structure() {
+				for (auto i = m_animations.begin(); i != m_animations.end(); i++) {
+					if (pw::Engine_Memory::Deallocate<st::Animation>(std::get<0>(i->second)) == false) {
+						if (std::get<0>(i->second) != nullptr) {
+							delete std::get<0>(i->second);
+							std::get<0>(i->second) = nullptr;
+						}
+					}
+					if (m_current_access != std::get<1>(i->second)) {
+						if (pw::Engine_Memory::Deallocate<st::Texture>(std::get<1>(i->second)) == false) {
+							if (std::get<1>(i->second) != nullptr) {
+								delete std::get<1>(i->second);
+								std::get<1>(i->second) = nullptr;
+							}
+						}
+					}
+				}
 				m_animations.clear();
 			}
 			std::tuple<st::Animation*, st::Texture*> Animation_Structure::Animation() const {

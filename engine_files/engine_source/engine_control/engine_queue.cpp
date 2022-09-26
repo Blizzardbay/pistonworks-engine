@@ -45,6 +45,7 @@ PW_NAMESPACE_SRT
 				if (pw::Engine_Memory::Deallocate<std::map<std::wstring, st::Game_Scene*>>(m_scene_directory) == false) {
 					if (m_scene_directory != nullptr) {
 						delete m_scene_directory;
+						m_scene_directory = nullptr;
 					}
 				}
 
@@ -237,6 +238,7 @@ PW_NAMESPACE_SRT
 											if (pw::Engine_Memory::Deallocate<GLFWimage>(v_icon) == false) {
 												if (v_icon != nullptr) {
 													delete v_icon;
+													v_icon = nullptr;
 												}
 											}
 											// Lock Window
@@ -374,6 +376,7 @@ PW_NAMESPACE_SRT
 					if (pw::Engine_Memory::Deallocate<pw::st::Game_Scene>(v_found->second) == false) {
 						if (v_found->second != nullptr) {
 							delete v_found->second;
+							v_found->second = nullptr;
 						}
 					}
 

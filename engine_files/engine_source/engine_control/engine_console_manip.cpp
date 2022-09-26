@@ -723,6 +723,7 @@ PW_NAMESPACE_SRT
 					if (pw::Engine_Memory::Deallocate<std::map<Console_Manip::Msg_Types, Console_Color>>(m_msg_colors) == false) {
 						if (m_msg_colors != nullptr) {
 							delete m_msg_colors;
+							m_msg_colors = nullptr;
 						}
 					}
 					if (TRY_LINE FreeConsole() == FALSE) {

@@ -128,16 +128,19 @@ PW_NAMESPACE_SRT
 					if (pw::Engine_Memory::Deallocate<glm::vec3>(v_vertex_position_arr) == false) {
 						if (v_vertex_position_arr != nullptr) {
 							delete[] v_vertex_position_arr;
+							v_vertex_position_arr = nullptr;
 						}
 					}
 					if(pw::Engine_Memory::Deallocate<glm::vec2>(v_texture_data_arr) == false) {
 						if (v_texture_data_arr != nullptr) {
 							delete[] v_texture_data_arr;
+							v_texture_data_arr = nullptr;
 						}
 					}
 					if (pw::Engine_Memory::Deallocate<glm::vec4>(v_color_data) == false) {
 						if (v_color_data != nullptr) {
 							delete[] v_color_data;
+							v_color_data = nullptr;
 						}
 					}
 				}
@@ -196,6 +199,7 @@ PW_NAMESPACE_SRT
 					if (pw::Engine_Memory::Deallocate<glm::vec4>(v_color_data) == false) {
 						if (v_color_data != nullptr) {
 							delete[] v_color_data;
+							v_color_data = nullptr;
 						}
 					}
 
@@ -222,6 +226,7 @@ PW_NAMESPACE_SRT
 					if (pw::Engine_Memory::Deallocate<glm::vec2>(v_texture_data_arr) == false) {
 						if (v_texture_data_arr != nullptr) {
 							delete[] v_texture_data_arr;
+							v_texture_data_arr = nullptr;
 						}
 					}
 

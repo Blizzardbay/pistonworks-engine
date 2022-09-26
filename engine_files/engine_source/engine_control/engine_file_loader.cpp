@@ -142,6 +142,7 @@ PW_NAMESPACE_SRT
 				if (pw::Engine_Memory::Deallocate<std::map<std::wstring, st::Texture*>>(m_texture_repository) == false) {
 					if (m_texture_repository != nullptr) {
 						delete m_texture_repository;
+						m_texture_repository = nullptr;
 					}
 				}
 			}

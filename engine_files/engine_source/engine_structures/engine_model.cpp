@@ -365,18 +365,21 @@ PW_NAMESPACE_SRT
 				if (pw::Engine_Memory::Deallocate<st::Texture>(m_texture) == false) {
 					if (m_texture != nullptr) {
 						delete m_texture;
+						m_texture = nullptr;
 					}
 				}
 				if (m_attached != true) {
 					if (pw::Engine_Memory::Deallocate<glm::vec2>(m_position) == false) {
 						if (m_position != nullptr) {
 							delete m_position;
+							m_position = nullptr;
 						}
 					}
 				}
 				if (pw::Engine_Memory::Deallocate<st::Mesh>(m_mesh) == false) {
 					if (m_mesh != nullptr) {
 						delete m_mesh;
+						m_mesh = nullptr;
 					}
 				}
 
@@ -458,6 +461,7 @@ PW_NAMESPACE_SRT
 				if (pw::Engine_Memory::Deallocate<glm::vec2>(m_position) == false) {
 					if (m_position != nullptr) {
 						delete m_position;
+						m_position = nullptr;
 					}
 				}
 
