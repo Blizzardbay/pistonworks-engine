@@ -308,15 +308,15 @@ PW_NAMESPACE_SRT
 			};
 		// Class Members            
 			Model::Model() :
-					m_texture{ NULL }, m_position{ NULL }, m_last_position{ NULL }, m_rotation{ NULL },
+					m_texture{ NULL }, m_position{ NULL }, m_last_position{ std::numeric_limits<float>::quiet_NaN() }, m_rotation{ NULL },
 					m_size{ NULL }, m_mesh{ nullptr }, m_type{ Geometry_Types::UNINIT }, m_is_colored{ false },
-					m_color{ NULL }, m_matrix{ 0.0f }, m_id{ 0 }, m_offset{ NULL }, m_last_rotation{ 0.0f },
+					m_color{ NULL }, m_matrix{}, m_id{ 0 }, m_offset{ NULL }, m_last_rotation{ 0.0f },
 					m_repeats{ false }, m_attached{ false }, m_fixed_rotation{ false } {
 			}
 			Model::Model(const Geometry_Types& p_type, st::Texture* p_texture, const glm::vec2& p_position, const float& p_rotation, const glm::vec2& p_size, const bool& p_repeats, const bool& p_fixed_rotation) :
 					m_texture{ p_texture }, m_position{ pw::Engine_Memory::Allocate<glm::vec2, bool>(p_position) },
-					m_last_position{ NULL }, m_rotation{ p_rotation }, m_size{ p_size }, m_mesh{ nullptr }, m_type{ p_type }, m_is_colored{ false },
-					m_color{ glm::vec4(0.0f, 0.0f, 0.0f, 0.0f) }, m_matrix{ 0.0f }, m_id{ ++Model::m_model_id_assigner },
+					m_last_position{ std::numeric_limits<float>::quiet_NaN() }, m_rotation{ p_rotation }, m_size{ p_size }, m_mesh{ nullptr }, m_type{ p_type }, m_is_colored{ false },
+					m_color{ glm::vec4(0.0f, 0.0f, 0.0f, 0.0f) }, m_matrix{}, m_id{ ++Model::m_model_id_assigner },
 					m_offset{ NULL }, m_last_rotation{ 0.0f },
 					m_repeats{ p_repeats }, m_attached{ false }, m_fixed_rotation{ p_fixed_rotation } {
 				if (m_repeats == true) {
@@ -330,8 +330,8 @@ PW_NAMESPACE_SRT
 			}
 			Model::Model(const Geometry_Types& p_type, st::Texture* p_texture, const glm::vec2& p_position, const float& p_rotation, const glm::vec2& p_size, const glm::vec4& p_color, const bool& p_repeats, const bool& p_fixed_rotation) :
 					m_texture{ p_texture }, m_position{ pw::Engine_Memory::Allocate<glm::vec2, bool>(p_position) },
-					m_last_position{ NULL }, m_rotation{ p_rotation }, m_size{ p_size }, m_mesh{ nullptr }, m_type{ p_type }, m_is_colored{ true },
-					m_color{ p_color }, m_matrix{ 0.0f }, m_id{ ++Model::m_model_id_assigner }, m_offset{ NULL }, m_last_rotation{ 0.0f },
+					m_last_position{ std::numeric_limits<float>::quiet_NaN() }, m_rotation{ p_rotation }, m_size{ p_size }, m_mesh{ nullptr }, m_type{ p_type }, m_is_colored{ true },
+					m_color{ p_color }, m_matrix{}, m_id{ ++Model::m_model_id_assigner }, m_offset{ NULL }, m_last_rotation{ 0.0f },
 					m_repeats{ p_repeats }, m_attached{ false }, m_fixed_rotation{ p_fixed_rotation } {
 				if (m_repeats == true) {
 					model_functions_c[(int)m_type - 1](m_mesh, m_color, m_size, m_texture->Size());
