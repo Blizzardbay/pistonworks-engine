@@ -520,9 +520,6 @@ PW_NAMESPACE_SRT
 				v_window_y = TO_INT32(ceilf((float)v_window_y / 2));
 				cm::Engine_Constant::Set_Hafe_Window_Height(TO_UINT32(v_window_y));
 
-				if (v_fps_cap == -1) {
-					v_fps_cap = INT32_MAX;
-				}
 				cm::Engine_Constant::Set_FPS_Info(v_fps_cap, TO_BOOL(v_has_vsync));
 
 				v_loaded_project = true;
@@ -587,7 +584,7 @@ PW_NAMESPACE_SRT
 				std::wstring v_wscene_name{ TO_WSTRING(v_cscene_name) };
 				st::Physics_Factory* v_physics_factory = nullptr;
 				if (v_has_physics_factory == 1) {
-					v_physics_factory = pw::Engine_Memory::Allocate<st::Physics_Factory, bool>(b2Vec2(v_gravity_x, v_gravity_y), v_velocity_it, v_position_it, 1.0f / 144.0f);
+					v_physics_factory = pw::Engine_Memory::Allocate<st::Physics_Factory, bool>(b2Vec2(v_gravity_x, v_gravity_y), v_velocity_it, v_position_it);
 				}
 				// End of scene loading
 				// Next load the scene / sub-scene locations

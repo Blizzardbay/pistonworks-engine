@@ -197,7 +197,7 @@ PW_NAMESPACE_SRT
 							// Getting characters for most fonts ideally positioned does not really work
 							// for the way positions are calculated, so we will have to segregate the lower
 							// baseline characters
-							if (m_text[i] == L'g' || m_text[i] == L'p' || m_text[i] == L'y') {
+							if (p_new_text[i] == L'g' || p_new_text[i] == L'p' || p_new_text[i] == L'y') {
 								v_char_model = pw::Engine_Memory::Allocate<Model, bool>(Geometry_Types::SQUARE, v_current_char->Character_Data(),
 									glm::vec2(v_position_x + ((float)v_current_char->Baseline_Offset().x * v_x_scale),
 										m_raw_text_position.y - (m_raw_text_size.y - ((float)v_current_char->Baseline_Offset().y * v_y_scale))),

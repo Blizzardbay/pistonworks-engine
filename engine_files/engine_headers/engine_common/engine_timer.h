@@ -79,22 +79,16 @@ PW_NAMESPACE_SRT
 					m_start_ready = false;
 					return true;
 				}
-				else {
-					if (m_activation_time >= cm::Engine_Constant::Current_Time() && m_reseted == true) {
-						return false;
-					}
-					else {
-						if (m_should_reset == false) {
-							m_reseted = false;
-							return true;
-						}
-						else {
-							m_reseted = true;
-							m_activation_time = cm::Engine_Constant::Current_Time() + std::chrono::milliseconds(TO_INT32(m_timer_length));
-							return true;
-						}
-					}
+				if (m_activation_time >= cm::Engine_Constant::Current_Time() && m_reseted == true) {
+					return false;
 				}
+				if (m_should_reset == false) {
+					m_reseted = false;
+					return true;
+				}
+				m_reseted = true;
+				m_activation_time = cm::Engine_Constant::Current_Time() + std::chrono::milliseconds(TO_INT32(m_timer_length));
+				return true;
 			}
 			// If the time is not reseting automatically
 			// turn it on and

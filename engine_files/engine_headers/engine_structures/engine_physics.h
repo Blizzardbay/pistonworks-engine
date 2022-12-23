@@ -133,7 +133,7 @@ PW_NAMESPACE_SRT
 		// Default Class Structures 
 		public:
 			Physics_Factory();
-			Physics_Factory(const b2Vec2& p_gravity, const int32_t& p_velocity_it, const int32_t& p_position_it, const float& p_time_step);
+			Physics_Factory(const b2Vec2& p_gravity, const int32_t& p_velocity_it, const int32_t& p_position_it);
 			
 			~Physics_Factory();
 		private:
@@ -155,7 +155,6 @@ PW_NAMESPACE_SRT
 
 			int32_t m_velocity_it;
 			int32_t m_position_it;
-			float m_time_step;
 
 			b2Body* m_last_added_body;
 

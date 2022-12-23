@@ -358,12 +358,12 @@ PW_NAMESPACE_SRT
 		// Static Declarations      
 		// Class Members
 			Physics_Factory::Physics_Factory() : m_world{ nullptr }, m_velocity_it{ 0 }, m_position_it{ 0 },
-					m_time_step{ 0 }, m_last_added_body{ NULL },
+					m_last_added_body{ NULL },
 					m_factory_static{}, m_factory_dynamic{} {
 			}
-			Physics_Factory::Physics_Factory(const b2Vec2& p_gravity, const int32_t& p_velocity_it, const int32_t& p_position_it, const float& p_time_step) :
+			Physics_Factory::Physics_Factory(const b2Vec2& p_gravity, const int32_t& p_velocity_it, const int32_t& p_position_it) :
 					m_world{ pw::Engine_Memory::Allocate<b2World, bool>(p_gravity) }, m_velocity_it{ p_velocity_it }, m_position_it{ p_position_it },
-					m_time_step{ p_time_step }, m_last_added_body{ NULL },
+					m_last_added_body{ NULL },
 					m_factory_static{}, m_factory_dynamic{} {
 			}
 			Physics_Factory::~Physics_Factory() {
@@ -391,7 +391,7 @@ PW_NAMESPACE_SRT
 				}
 			}
 			void Physics_Factory::Run() {
-				m_world->Step(m_time_step, m_velocity_it, m_position_it);
+				m_world->Step(std::chrono::duration<float, std::deci>(pw::cm::Engine_Constant::Delta_Time()).count() / 10.0f, m_velocity_it, m_position_it);
 			}
 			void Physics_Factory::Add_Object(st::Model* p_model, const b2BodyType& p_type, const st::Physics_Object::Object_Type& p_polygon, const bool& p_is_sensor, const PW_ID& p_object_id, const bool& p_is_fixed, const float& p_friction, const float& p_restitution, const float& p_density) {
 				try {

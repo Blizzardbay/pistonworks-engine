@@ -537,7 +537,7 @@ PW_NAMESPACE_SRT
 			}
 			glm::vec2 Model::Calculate_Center() {
 				// The general formula for any of the engine shapes is
-				 // x , y = (X1 + X2... Xn) / n , (Y1 + Y2... Yn) / n
+				// x , y = (X1 + X2... Xn) / n , (Y1 + Y2... Yn) / n
 				float v_center_x_position = 0;
 				float v_center_y_position = 0;
 				for (uint16_t i = 0; i < m_mesh->Vertex_Count(); i++) {

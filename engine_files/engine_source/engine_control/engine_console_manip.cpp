@@ -344,24 +344,12 @@ PW_NAMESPACE_SRT
 						}
 						v_wstr = temp_wstr;
 
-						if (v_wstr.size() > 18) {
-							for (size_t i = 0; i < 18; i++) {
-								int16_t x_pos = TO_INT16(v_x_off + (int16_t)i);
-								Console_Manip::Draw_WChar(COORD{ x_pos, TO_INT16(p_line + 1) }, v_wstr.at(i), m_msg_colors->at(Console_Manip::Msg_Types::E_DEFAULT));
-							}
-							Console_Manip::Draw_WChar(COORD{ TO_INT16(v_x_off + 17), TO_INT16(p_line + 1) }, L'|', m_msg_colors->at(Console_Manip::Msg_Types::E_DEFAULT));
+						while (v_wstr.size() != 18) {
+							v_wstr.push_back(L' ');
 						}
-						else {
-							for (size_t i = 0; i < v_wstr.size(); i++) {
-								int16_t x_pos = TO_INT16(v_x_off + (int16_t)i);
-								Console_Manip::Draw_WChar(COORD{ x_pos, TO_INT16(p_line + 1) }, v_wstr.at(i), m_msg_colors->at(Console_Manip::Msg_Types::E_DEFAULT));
-							}
-							for (size_t i = 0; i < (18 - v_wstr.size()); i++) {
-								int16_t x_pos = TO_INT16(v_x_off + (int16_t)i + v_wstr.size());
-								Console_Manip::Draw_WChar(COORD{ x_pos, TO_INT16(p_line + 1) }, L' ', m_msg_colors->at(Console_Manip::Msg_Types::E_DEFAULT));
-							}
-							Console_Manip::Draw_WChar(COORD{ TO_INT16(v_x_off + 17), TO_INT16(p_line + 1) }, L'|', m_msg_colors->at(Console_Manip::Msg_Types::E_DEFAULT));
-						}
+						v_wstr.push_back(L'|');
+
+						Draw_Text_Line({ v_x_off , TO_INT16(p_line + 1) }, v_wstr, m_msg_colors->at(Console_Manip::Msg_Types::E_DEFAULT));
 					}
 					catch (const std::invalid_argument& v_error) {
 						throw er::Severe_Error(L"Console", TO_WSTRING(v_error.what()), EXCEPTION_LINE, __FILEW__, L"Draw_WChar");
@@ -386,42 +374,47 @@ PW_NAMESPACE_SRT
 						v_wstr.insert(1, TO_WSTRING(__TIME__));
 
 						switch (p_msg_type) {
-							case Msg_Types::E_CLEAR: {
-								break;
-							}
-							case Msg_Types::E_ENGINE: {
-								v_wstr.insert(10, L"ENGINE ");
-								break;
-							}
-							case Msg_Types::E_ERROR: {
-								v_wstr.insert(10, L"ERROR  ");
-								break;
-							}
-							case Msg_Types::E_GAME: {
-								v_wstr.insert(10, L"GAME   ");
-								break;
-							}
-							case Msg_Types::E_INFO: {
-								v_wstr.insert(10, L"INFO   ");
-								break;
-							}
-							case Msg_Types::E_SUCCESS: {
-								v_wstr.insert(10, L"SUCCESS");
-								break;
-							}
-							case Msg_Types::E_DEFAULT:
-							default: {
-								v_wstr.insert(10, L"COUTMSG");
-								break;
-							}
+						case Msg_Types::E_CLEAR: {
+							break;
 						}
-						if (p_block_msg == true) {
-							v_wstr.insert(18, p_from);
-							v_wstr.insert(p_from.size() + 18, p_msg);
+						case Msg_Types::E_ENGINE: {
+							v_wstr.insert(10, L"ENGINE ");
+							break;
+						}
+						case Msg_Types::E_ERROR: {
+							v_wstr.insert(10, L"ERROR  ");
+							break;
+						}
+						case Msg_Types::E_GAME: {
+							v_wstr.insert(10, L"GAME   ");
+							break;
+						}
+						case Msg_Types::E_INFO: {
+							v_wstr.insert(10, L"INFO   ");
+							break;
+						}
+						case Msg_Types::E_SUCCESS: {
+							v_wstr.insert(10, L"SUCCESS");
+							break;
+						}
+						case Msg_Types::E_DEFAULT:
+						default: {
+							v_wstr.insert(10, L"COUTMSG");
+							break;
+						}
+						}
+						if (p_from.empty() == true) {
+							v_wstr.append(p_msg);
 						}
 						else {
-							v_wstr.insert(18, std::wstring(p_from + L"| "));
-							v_wstr.insert(p_from.size() + 20, p_msg);
+							if (p_block_msg == true) {
+								v_wstr.insert(18, p_from);
+								v_wstr.append(p_msg);
+							}
+							else {
+								v_wstr.insert(18, std::wstring(p_from + L"| "));
+								v_wstr.append(p_msg);
+							}
 						}
 
 						int16_t v_x_off = 2;
@@ -444,20 +437,8 @@ PW_NAMESPACE_SRT
 
 						er::Error_Log::Dump_Log(pw::cm::Engine_Constant::Pistonworks_Path(), v_wstr.c_str());
 
-						if (v_wstr.size() > 75) {
-							for (size_t i = 0; i < 76; i++) {
-								int16_t x_pos = v_x_off + (int16_t)i;
-								Console_Manip::Draw_WChar(COORD{ x_pos, TO_INT16(m_msg_line + 1) }, v_wstr.at(i), m_msg_colors->at(Console_Manip::Msg_Types::E_DEFAULT));
-							}
-							Console_Manip::Draw_WChar(COORD{ 77, TO_INT16(m_msg_line + 1) }, L'|', m_msg_colors->at(Console_Manip::Msg_Types::E_DEFAULT));
-						}
-						else {
-							for (size_t i = 0; i < v_wstr.size(); i++) {
-								int16_t x_pos = v_x_off + (int16_t)i;
-								Console_Manip::Draw_WChar(COORD{ x_pos, TO_INT16(m_msg_line + 1) }, v_wstr.at(i), m_msg_colors->at(Console_Manip::Msg_Types::E_DEFAULT));
-							}
-							Console_Manip::Draw_WChar(COORD{ 77, TO_INT16(m_msg_line + 1) }, L'|', m_msg_colors->at(Console_Manip::Msg_Types::E_DEFAULT));
-						}
+						Draw_Text_Line({ v_x_off , TO_INT16(m_msg_line + 1) }, v_wstr.substr(0, v_wstr.size() > 75 ? 75 : v_wstr.size()), m_msg_colors->at(Console_Manip::Msg_Types::E_DEFAULT));
+						Draw_WChar({ TO_INT16(77), TO_INT16(m_msg_line + 1) }, L'|', m_msg_colors->at(Console_Manip::Msg_Types::E_DEFAULT));
 
 						for (size_t i = 0; i < 7; i++) {
 							int16_t x_pos = v_x_off + (int16_t)i + 10;
@@ -483,11 +464,7 @@ PW_NAMESPACE_SRT
 					try {
 						int16_t v_x_off = 2;
 
-						for (int16_t i = 0; i < 76; i++) {
-							for (int16_t j = 0; j < 38; j++) {
-								Console_Manip::Draw_WChar(COORD{ TO_INT16(i + v_x_off),  TO_INT16(j + 1) }, L' ', m_msg_colors->at(Console_Manip::Msg_Types::E_CLEAR));
-							}
-						}
+						Draw_WChar_Block(COORD{ TO_INT16(v_x_off), 1 }, COORD{ 78, 39 }, L' ', m_msg_colors->at(Console_Manip::Msg_Types::E_CLEAR));
 					}
 					catch (const std::invalid_argument& v_error) {
 						throw v_error;
@@ -504,6 +481,46 @@ PW_NAMESPACE_SRT
 					}
 					if (TRY_LINE WriteConsoleOutputAttribute(m_console_output, &p_color.Return_Color(), 1, p_position, &v_bytes_written) == FALSE) {
 						throw er::Warning_Error(L"Console", Console_Error::Windows_Last_Error(), EXCEPTION_LINE, __FILEW__, L"WriteConsoleOutputAttribute");
+					}
+				}
+				void Console_Manip::Draw_WChar_Block(const COORD& p_position, const COORD& p_size, const wchar_t& p_character, const Console_Color& p_color) {
+					if (p_position.X < 0 || p_position.Y < 0) {
+						throw std::invalid_argument("position");
+					}
+					SMALL_RECT v_write_area{};
+
+					v_write_area.Left = p_position.X;
+					v_write_area.Top = p_position.Y;
+					v_write_area.Right = p_size.X;
+					v_write_area.Bottom = p_size.Y;
+
+					size_t v_block_size = TO_UINT64(p_size.X) * TO_UINT64(p_size.Y);
+
+					CHAR_INFO* v_block = pw::Engine_Memory::Allocate<CHAR_INFO>(v_block_size);
+					for (size_t i = 0; i < v_block_size; i++) {
+						v_block[i].Char.UnicodeChar = p_character;
+						v_block[i].Attributes = p_color.Return_Color();
+					}
+					if (TRY_LINE WriteConsoleOutputW(m_console_output, v_block, p_size, p_position, &v_write_area) == FALSE) {
+						throw er::Warning_Error(L"Console", Console_Error::Windows_Last_Error(), EXCEPTION_LINE, __FILEW__, L"WriteConsoleOutputW");
+					}
+					pw::Engine_Memory::Deallocate<CHAR_INFO>(v_block);
+				}
+				void Console_Manip::Draw_Text_Line(const COORD& p_position, const std::wstring& p_block, const Console_Color& p_color) {
+					if (p_position.X < 0 || p_position.Y < 0) {
+						throw std::invalid_argument("position");
+					}
+					if (TRY_LINE SetConsoleCursorPosition(m_console_output, p_position) == FALSE) {
+						throw er::Warning_Error(L"Console", Console_Error::Windows_Last_Error(), EXCEPTION_LINE, __FILEW__, L"SetConsoleCursorPosition");
+					}
+					if (TRY_LINE SetConsoleTextAttribute(m_console_output, p_color.Return_Color()) == FALSE) {
+						throw er::Warning_Error(L"Console", Console_Error::Windows_Last_Error(), EXCEPTION_LINE, __FILEW__, L"SetConsoleTextAttribute");
+					}
+
+					DWORD v_characters_written{ 0 };
+
+					if (TRY_LINE WriteConsoleW(m_console_output, p_block.c_str(), static_cast<DWORD>(p_block.size()), &v_characters_written, nullptr) == FALSE) {
+						throw er::Warning_Error(L"Console", Console_Error::Windows_Last_Error(), EXCEPTION_LINE, __FILEW__, L"WriteConsoleW");
 					}
 				}
 				void Console_Manip::Draw_Line(const COORD& p_start, const COORD& p_end, const wchar_t& p_character, const Console_Color& p_color) {

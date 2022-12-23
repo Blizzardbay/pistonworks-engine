@@ -163,6 +163,8 @@ PW_NAMESPACE_SRT
 				static void Clear_Console();
 				
 				static void Draw_WChar(const COORD& p_position, const wchar_t& character, const Console_Color& color);
+				static void Draw_WChar_Block(const COORD& p_position, const COORD& p_size, const wchar_t& p_character, const Console_Color& p_color);
+				static void Draw_Text_Line(const COORD& p_position, const std::wstring& p_block, const Console_Color& p_color);
 				
 				static void Draw_Line(const COORD& p_start, const COORD& p_end, const wchar_t& p_character, const Console_Color& p_color);
 				static void Draw_Rectangle_Vertical(const COORD& p_top_left, const COORD& p_size, const wchar_t& p_character, const Console_Color& p_color);

@@ -730,7 +730,12 @@ PW_NAMESPACE_SRT
 				m_refresh_rate = p_refresh_rate;
 			}
 			static inline void Set_FPS_Info(const int32_t& p_fps_cap, const bool& p_has_vsync) {
-				m_fps_cap = p_fps_cap;
+				if (p_fps_cap <= 0) {
+					m_fps_cap = INT32_MAX;
+				}
+				else {
+					m_fps_cap = p_fps_cap;
+				}
 				m_vsync = p_has_vsync;
 			}
 			//////////////////////////////////
