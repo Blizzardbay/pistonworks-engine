@@ -20,47 +20,54 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="config\physics_config\b2_user_settings.h" />
-    <ClInclude Include="engine_files\engine_headers\engine_common\engine_build.h" />
-    <ClInclude Include="engine_files\engine_headers\engine_common\engine_constant.h" />
-    <ClInclude Include="engine_files\engine_headers\engine_common\engine_error.h" />
-    <ClInclude Include="engine_files\engine_headers\engine_common\engine_error_log.h" />
-    <ClInclude Include="engine_files\engine_headers\engine_common\engine_exception.h" />
-    <ClInclude Include="engine_files\engine_headers\engine_common\engine_macro.h" />
-    <ClInclude Include="engine_files\engine_headers\engine_common\engine_math.h" />
-    <ClInclude Include="engine_files\engine_headers\engine_common\engine_memory.h" />
-    <ClInclude Include="engine_files\engine_headers\engine_common\engine_timer.h" />
-    <ClInclude Include="engine_files\engine_headers\engine_common\engine_typedef.h" />
-    <ClInclude Include="engine_files\engine_headers\engine_control\engine_console_manip.h" />
-    <ClInclude Include="engine_files\engine_headers\engine_control\engine_control.h" />
-    <ClInclude Include="engine_files\engine_headers\engine_control\engine_file_finder.h" />
-    <ClInclude Include="engine_files\engine_headers\engine_control\engine_file_loader.h" />
-    <ClInclude Include="engine_files\engine_headers\engine_control\engine_input.h" />
-    <ClInclude Include="engine_files\engine_headers\engine_control\engine_queue.h" />
-    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_animation.h" />
-    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_camera.h" />
-    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_event.h" />
-    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_game_header.h" />
-    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_game_scene.h" />
-    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_mesh.h" />
-    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_model.h" />
-    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_physics.h" />
-    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_shader.h" />
-    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_sound.h" />
-    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_text.h" />
-    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_texture.h" />
+    <ClInclude Include="files\headers\common\build.h" />
+    <ClInclude Include="files\headers\common\constant.h" />
+    <ClInclude Include="files\headers\common\error.h" />
+    <ClInclude Include="files\headers\common\error_log.h" />
+    <ClInclude Include="files\headers\common\error_state.h" />
+    <ClInclude Include="files\headers\common\error_values.h" />
+    <ClInclude Include="files\headers\common\macro.h" />
+    <ClInclude Include="files\headers\common\math.h" />
+    <ClInclude Include="files\headers\control\async_timer.h" />
+    <ClInclude Include="files\headers\control\listener.h" />
+    <ClInclude Include="files\headers\control\memory.h" />
+    <ClInclude Include="files\headers\control\multi_scope_timer.h" />
+    <ClInclude Include="files\headers\structures\timer.h" />
+    <ClInclude Include="files\headers\common\typedef.h" />
+    <ClInclude Include="files\headers\control\console_manip.h" />
+    <ClInclude Include="files\headers\control\control.h" />
+    <ClInclude Include="files\headers\control\file_finder.h" />
+    <ClInclude Include="files\headers\control\file_loader.h" />
+    <ClInclude Include="files\headers\control\input.h" />
+    <ClInclude Include="files\headers\control\queue.h" />
+    <ClInclude Include="files\headers\control\text_renderer.h" />
+    <ClInclude Include="files\headers\structures\animation.h" />
+    <ClInclude Include="files\headers\structures\camera.h" />
+    <ClInclude Include="files\headers\structures\event.h" />
+    <ClInclude Include="files\headers\structures\game_header.h" />
+    <ClInclude Include="files\headers\structures\game_scene.h" />
+    <ClInclude Include="files\headers\structures\mesh.h" />
+    <ClInclude Include="files\headers\structures\model.h" />
+    <ClInclude Include="files\headers\structures\physics.h" />
+    <ClInclude Include="files\headers\control\shader.h" />
+    <ClInclude Include="files\headers\structures\sound.h" />
+    <ClInclude Include="files\headers\structures\text.h" />
+    <ClInclude Include="files\headers\structures\texture.h" />
+    <ClInclude Include="files\headers\utility\color.h" />
+    <ClInclude Include="files\headers\utility\string.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitattributes" />
     <None Include=".gitignore" />
-    <None Include="engine_files\engine_resource\engine_essential\engine_shader\dynamic_fragment.shader" />
-    <None Include="engine_files\engine_resource\engine_essential\engine_shader\dynamic_vertex.shader" />
-    <None Include="engine_files\engine_resource\engine_info\engine_event_types.info" />
-    <None Include="engine_files\engine_resource\engine_info\engine_function_descriptions.info" />
+    <None Include="files\resource\essential\shader\fragment.shader" />
+    <None Include="files\resource\essential\shader\vertex.shader" />
+    <None Include="files\resource\info\engine_event_types.info" />
+    <None Include="files\resource\info\engine_function_descriptions.info" />
     <None Include="LICENSE" />
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="engine_files\engine_resource\engine_essential\engine_icon\Icon.png" />
+    <Image Include="files\resource\essential\icon\Icon.png" />
     <Image Include="engine_files\engine_resource\engine_essential\engine_textures\animation.png" />
     <Image Include="engine_files\engine_resource\engine_essential\engine_textures\animation1.png" />
     <Image Include="engine_files\engine_resource\engine_essential\engine_textures\animation2.png" />
@@ -74,11 +81,11 @@
     <Image Include="engine_files\engine_resource\engine_essential\engine_textures\Test_Animation.gif" />
     <Image Include="engine_files\engine_resource\engine_essential\engine_textures\Test_Animation2.gif" />
     <Image Include="engine_files\engine_resource\engine_essential\engine_textures\Test_Animation3.gif" />
-    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\Test_Image_4.png" />
+    <Image Include="files\resource\essential\textures\Test_Image_4.png" />
     <Image Include="engine_files\engine_resource\engine_essential\engine_textures\Test_Image_5.png" />
     <Image Include="engine_files\engine_resource\engine_essential\engine_textures\Test_Image_6.png" />
     <Image Include="engine_files\engine_resource\engine_essential\engine_textures\unknown.png" />
-    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\White.png" />
+    <Image Include="files\resource\essential\textures\White.png" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="engine_files\engine_resource\engine_fonts\arial_font\arial 1.ttf" />
@@ -102,27 +109,35 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="engine_files\engine_resource\engine_fonts\roboto_font\LICENSE.txt" />
-    <Text Include="engine_files\engine_resource\engine_log\Empty.txt" />
+    <Text Include="files\resource\log\Empty.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="engine_files\engine_source\engine_common\engine_common.cpp" />
-    <ClCompile Include="engine_files\engine_source\engine_control\engine_console_manip.cpp" />
-    <ClCompile Include="engine_files\engine_source\engine_control\engine_control.cpp" />
-    <ClCompile Include="engine_files\engine_source\engine_control\engine_file_finder.cpp" />
-    <ClCompile Include="engine_files\engine_source\engine_control\engine_file_loader.cpp" />
-    <ClCompile Include="engine_files\engine_source\engine_control\engine_input.cpp" />
-    <ClCompile Include="engine_files\engine_source\engine_control\engine_queue.cpp" />
-    <ClCompile Include="engine_files\engine_source\engine_structures\engine_animation.cpp" />
-    <ClCompile Include="engine_files\engine_source\engine_structures\engine_camera.cpp" />
-    <ClCompile Include="engine_files\engine_source\engine_structures\engine_event.cpp" />
-    <ClCompile Include="engine_files\engine_source\engine_structures\engine_game_scene.cpp" />
-    <ClCompile Include="engine_files\engine_source\engine_structures\engine_mesh.cpp" />
-    <ClCompile Include="engine_files\engine_source\engine_structures\engine_model.cpp" />
-    <ClCompile Include="engine_files\engine_source\engine_structures\engine_physics.cpp" />
-    <ClCompile Include="engine_files\engine_source\engine_structures\engine_shader.cpp" />
-    <ClCompile Include="engine_files\engine_source\engine_structures\engine_sound.cpp" />
-    <ClCompile Include="engine_files\engine_source\engine_structures\engine_text.cpp" />
-    <ClCompile Include="engine_files\engine_source\engine_structures\engine_texture.cpp" />
+    <ClCompile Include="files\source\common\common.cpp" />
+    <ClCompile Include="files\source\control\async_timer.cpp" />
+    <ClCompile Include="files\source\control\console_manip.cpp" />
+    <ClCompile Include="files\source\control\control.cpp" />
+    <ClCompile Include="files\source\control\file_finder.cpp" />
+    <ClCompile Include="files\source\control\file_loader.cpp" />
+    <ClCompile Include="files\source\control\input.cpp" />
+    <ClCompile Include="files\source\control\listener.cpp" />
+    <ClCompile Include="files\source\control\memory.cpp" />
+    <ClCompile Include="files\source\control\queue.cpp" />
+    <ClCompile Include="files\source\control\text_renderer.cpp" />
+    <ClCompile Include="files\source\control\multi_scope_timer.cpp" />
+    <ClCompile Include="files\source\structures\animation.cpp" />
+    <ClCompile Include="files\source\structures\camera.cpp" />
+    <ClCompile Include="files\source\structures\event.cpp" />
+    <ClCompile Include="files\source\structures\game_scene.cpp" />
+    <ClCompile Include="files\source\structures\mesh.cpp" />
+    <ClCompile Include="files\source\structures\model.cpp" />
+    <ClCompile Include="files\source\structures\physics.cpp" />
+    <ClCompile Include="files\source\control\shader.cpp" />
+    <ClCompile Include="files\source\structures\sound.cpp" />
+    <ClCompile Include="files\source\structures\text.cpp" />
+    <ClCompile Include="files\source\structures\texture.cpp" />
+    <ClCompile Include="files\source\structures\timer.cpp" />
+    <ClCompile Include="files\source\utility\color.cpp" />
+    <ClCompile Include="files\source\utility\string.cpp" />
     <ClCompile Include="temp\temp.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -135,14 +150,14 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -202,7 +217,7 @@
   <PropertyGroup Label="Vcpkg" />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CRT_SECURE_NO_WARNINGS;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;FT2_BUILD_LIBRARY</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
@@ -210,6 +225,9 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <IntrinsicFunctions>true</IntrinsicFunctions>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)/analyze:stacksize 65536/analyze:stacksize 65536</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -221,12 +239,15 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>$(Solution)dependencies\graphics_win64\glew-2.1.0\include;$(Solution)dependencies\audio_win64\freealut-master\include;$(Solution)dependencies\audio_win64\OpenAL\include;$(Solution)dependencies\data_structures_win64\Quadtree-master\include;$(Solution)dependencies\graphics_win64\FreeImage\Dist\x64;$(Solution)dependencies\graphics_win64\freetype-2.10.4\include;$(Solution)dependencies\graphics_win64\glfw-3.3.3.bin.WIN64\include;$(Solution)dependencies\graphics_win64\glm\glm;$(Solution)dependencies\parser_win64\fast-cpp-csv-parser-master;$(Solution)dependencies\physics_win64\box2d-main\include;$(Solution)engine_files\engine_headers;$(Solution)config</AdditionalIncludeDirectories>
+      <WarningLevel>Level4</WarningLevel>
+      <AdditionalIncludeDirectories>$(Solution)dependencies\graphics_win64\glew-2.1.0\include;$(Solution)dependencies\audio_win64\freealut-master\include;$(Solution)dependencies\audio_win64\OpenAL\include;$(Solution)dependencies\data_structures_win64\Quadtree-master\include;$(Solution)dependencies\graphics_win64\FreeImage\Dist\x64;$(Solution)dependencies\graphics_win64\freetype-2.10.4\include;$(Solution)dependencies\graphics_win64\glfw-3.3.3.bin.WIN64\include;$(Solution)dependencies\graphics_win64\glm\glm;$(Solution)dependencies\parser_win64\fast-cpp-csv-parser-master;$(Solution)dependencies\physics_win64\box2d-main\include;$(Solution)files\headers;$(Solution)config</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;FT2_BUILD_LIBRARY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <AdditionalOptions>/bigobj /analyze:stacksize 65536 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -246,7 +267,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
@@ -255,6 +276,9 @@
       <AdditionalIncludeDirectories>$(Solution)dependencies\graphics_win64\glew-2.1.0\include;$(Solution)dependencies\audio_win64\freealut-master\include;$(Solution)dependencies\audio_win64\OpenAL\include;$(Solution)dependencies\data_structures_win64\Quadtree-master\include;$(Solution)dependencies\graphics_win64\FreeImage\Dist\x64;$(Solution)dependencies\graphics_win64\freetype-2.10.4\include;$(Solution)dependencies\graphics_win64\glfw-3.3.3.bin.WIN64\include;$(Solution)dependencies\graphics_win64\glm\glm;$(Solution)dependencies\parser_win64\fast-cpp-csv-parser-master;$(Solution)dependencies\physics_win64\box2d-master\include;$(Solution)engine_files\engine_headers</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <AdditionalOptions>/bigobj %(AdditionalOptions)/analyze:stacksize 65536/analyze:stacksize 65536</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -269,10 +293,13 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <PreprocessorDefinitions>NDEBUG;_CRT_SECURE_NO_WARNINGS;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;FT2_BUILD_LIBRARY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(Solution)dependencies\graphics_win64\glew-2.1.0\include;$(Solution)dependencies\audio_win64\freealut-master\include;$(Solution)dependencies\audio_win64\OpenAL\include;$(Solution)dependencies\data_structures_win64\Quadtree-master\include;$(Solution)dependencies\graphics_win64\FreeImage\Dist\x64;$(Solution)dependencies\graphics_win64\freetype-2.10.4\include;$(Solution)dependencies\graphics_win64\glfw-3.3.3.bin.WIN64\include;$(Solution)dependencies\graphics_win64\glm\glm;$(Solution)dependencies\parser_win64\fast-cpp-csv-parser-master;$(Solution)dependencies\physics_win64\box2d-main\include;$(Solution)engine_files\engine_headers;$(Solution)config</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(Solution)dependencies\graphics_win64\glew-2.1.0\include;$(Solution)dependencies\audio_win64\freealut-master\include;$(Solution)dependencies\audio_win64\OpenAL\include;$(Solution)dependencies\data_structures_win64\Quadtree-master\include;$(Solution)dependencies\graphics_win64\FreeImage\Dist\x64;$(Solution)dependencies\graphics_win64\freetype-2.10.4\include;$(Solution)dependencies\graphics_win64\glfw-3.3.3.bin.WIN64\include;$(Solution)dependencies\graphics_win64\glm\glm;$(Solution)dependencies\parser_win64\fast-cpp-csv-parser-master;$(Solution)dependencies\physics_win64\box2d-main\include;$(Solution)files\headers;$(Solution)config</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <AdditionalOptions>/bigobj /analyze:stacksize 65536 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

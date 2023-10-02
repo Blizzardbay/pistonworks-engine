@@ -61,108 +61,120 @@
     <Filter Include="engine_files\engine_source\engine_common">
       <UniqueIdentifier>{e68a85d0-3ff5-4880-80c4-106ff75b8891}</UniqueIdentifier>
     </Filter>
+    <Filter Include="config\physics_config">
+      <UniqueIdentifier>{16ca15c5-2be4-45f2-92e6-73552c3f5063}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="engine_files\engine_headers\engine_common\engine_error.h">
+    <ClInclude Include="files\headers\common\error.h">
       <Filter>engine_files\engine_headers\engine_common</Filter>
     </ClInclude>
-    <ClInclude Include="engine_files\engine_headers\engine_control\engine_control.h">
+    <ClInclude Include="files\headers\control\control.h">
       <Filter>engine_files\engine_headers\engine_control</Filter>
     </ClInclude>
-    <ClInclude Include="engine_files\engine_headers\engine_control\engine_file_loader.h">
+    <ClInclude Include="files\headers\control\file_loader.h">
       <Filter>engine_files\engine_headers\engine_control</Filter>
     </ClInclude>
-    <ClInclude Include="engine_files\engine_headers\engine_control\engine_input.h">
+    <ClInclude Include="files\headers\control\input.h">
       <Filter>engine_files\engine_headers\engine_control</Filter>
     </ClInclude>
-    <ClInclude Include="engine_files\engine_headers\engine_control\engine_queue.h">
+    <ClInclude Include="files\headers\control\queue.h">
       <Filter>engine_files\engine_headers\engine_control</Filter>
     </ClInclude>
-    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_animation.h">
+    <ClInclude Include="files\headers\structures\animation.h">
       <Filter>engine_files\engine_headers\engine_structures</Filter>
     </ClInclude>
-    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_camera.h">
+    <ClInclude Include="files\headers\structures\camera.h">
       <Filter>engine_files\engine_headers\engine_structures</Filter>
     </ClInclude>
-    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_event.h">
+    <ClInclude Include="files\headers\structures\event.h">
       <Filter>engine_files\engine_headers\engine_structures</Filter>
     </ClInclude>
-    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_game_scene.h">
+    <ClInclude Include="files\headers\structures\game_scene.h">
       <Filter>engine_files\engine_headers\engine_structures</Filter>
     </ClInclude>
-    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_mesh.h">
+    <ClInclude Include="files\headers\structures\mesh.h">
       <Filter>engine_files\engine_headers\engine_structures</Filter>
     </ClInclude>
-    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_model.h">
+    <ClInclude Include="files\headers\structures\model.h">
       <Filter>engine_files\engine_headers\engine_structures</Filter>
     </ClInclude>
-    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_shader.h">
+    <ClInclude Include="files\headers\control\shader.h">
       <Filter>engine_files\engine_headers\engine_structures</Filter>
     </ClInclude>
-    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_text.h">
+    <ClInclude Include="files\headers\structures\text.h">
       <Filter>engine_files\engine_headers\engine_structures</Filter>
     </ClInclude>
-    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_texture.h">
+    <ClInclude Include="files\headers\structures\texture.h">
       <Filter>engine_files\engine_headers\engine_structures</Filter>
     </ClInclude>
-    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_physics.h">
+    <ClInclude Include="files\headers\structures\physics.h">
       <Filter>engine_files\engine_headers\engine_structures</Filter>
     </ClInclude>
-    <ClInclude Include="engine_files\engine_headers\engine_control\engine_console_manip.h">
+    <ClInclude Include="files\headers\control\console_manip.h">
       <Filter>engine_files\engine_headers\engine_control</Filter>
     </ClInclude>
-    <ClInclude Include="engine_files\engine_headers\engine_common\engine_error_log.h">
+    <ClInclude Include="files\headers\common\error_log.h">
       <Filter>engine_files\engine_headers\engine_common</Filter>
     </ClInclude>
-    <ClInclude Include="engine_files\engine_headers\engine_common\engine_memory.h">
+    <ClInclude Include="files\headers\control\memory.h">
       <Filter>engine_files\engine_headers\engine_common</Filter>
     </ClInclude>
-    <ClInclude Include="engine_files\engine_headers\engine_common\engine_exception.h">
+    <ClInclude Include="files\headers\common\macro.h">
       <Filter>engine_files\engine_headers\engine_common</Filter>
     </ClInclude>
-    <ClInclude Include="engine_files\engine_headers\engine_common\engine_macro.h">
-      <Filter>engine_files\engine_headers\engine_common</Filter>
-    </ClInclude>
-    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_game_header.h">
+    <ClInclude Include="files\headers\structures\game_header.h">
       <Filter>engine_files\engine_headers\engine_structures</Filter>
     </ClInclude>
-    <ClInclude Include="engine_files\engine_headers\engine_structures\engine_sound.h">
+    <ClInclude Include="files\headers\structures\sound.h">
       <Filter>engine_files\engine_headers\engine_structures</Filter>
     </ClInclude>
-    <ClInclude Include="engine_files\engine_headers\engine_common\engine_constant.h">
+    <ClInclude Include="files\headers\common\constant.h">
       <Filter>engine_files\engine_headers\engine_common</Filter>
     </ClInclude>
-    <ClInclude Include="engine_files\engine_headers\engine_common\engine_math.h">
+    <ClInclude Include="files\headers\common\math.h">
       <Filter>engine_files\engine_headers\engine_common</Filter>
     </ClInclude>
-    <ClInclude Include="engine_files\engine_headers\engine_common\engine_typedef.h">
+    <ClInclude Include="files\headers\common\typedef.h">
       <Filter>engine_files\engine_headers\engine_common</Filter>
     </ClInclude>
-    <ClInclude Include="engine_files\engine_headers\engine_common\engine_timer.h">
+    <ClInclude Include="files\headers\structures\timer.h">
       <Filter>engine_files\engine_headers\engine_common</Filter>
     </ClInclude>
-    <ClInclude Include="engine_files\engine_headers\engine_control\engine_file_finder.h">
+    <ClInclude Include="files\headers\control\file_finder.h">
       <Filter>engine_files\engine_headers\engine_control</Filter>
     </ClInclude>
-    <ClInclude Include="engine_files\engine_headers\engine_common\engine_build.h" />
-    <ClInclude Include="config\physics_config\b2_user_settings.h" />
+    <ClInclude Include="files\headers\common\build.h" />
+    <ClInclude Include="files\headers\control\text_renderer.h" />
+    <ClInclude Include="files\headers\control\multi_scope_timer.h" />
+    <ClInclude Include="files\headers\control\listener.h">
+      <Filter>engine_files\engine_headers\engine_control</Filter>
+    </ClInclude>
+    <ClInclude Include="config\physics_config\b2_user_settings.h">
+      <Filter>config\physics_config</Filter>
+    </ClInclude>
+    <ClInclude Include="files\headers\common\error_values.h" />
+    <ClInclude Include="files\headers\common\error_state.h" />
+    <ClInclude Include="files\headers\utility\string.h" />
+    <ClInclude Include="files\headers\utility\color.h" />
+    <ClInclude Include="files\headers\control\async_timer.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="engine_files\engine_resource\engine_essential\engine_shader\dynamic_fragment.shader">
+    <None Include="files\resource\essential\shader\fragment.shader">
       <Filter>engine_files\engine_resource\engine_essential\engine_shader</Filter>
     </None>
-    <None Include="engine_files\engine_resource\engine_essential\engine_shader\dynamic_vertex.shader">
+    <None Include="files\resource\essential\shader\vertex.shader">
       <Filter>engine_files\engine_resource\engine_essential\engine_shader</Filter>
     </None>
-    <None Include="engine_files\engine_resource\engine_info\engine_event_types.info" />
-    <None Include="engine_files\engine_resource\engine_info\engine_function_descriptions.info" />
+    <None Include="files\resource\info\engine_event_types.info" />
+    <None Include="files\resource\info\engine_function_descriptions.info" />
     <None Include=".gitattributes" />
     <None Include=".gitignore" />
     <None Include="LICENSE" />
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="engine_files\engine_resource\engine_essential\engine_icon\Icon.png">
+    <Image Include="files\resource\essential\icon\Icon.png">
       <Filter>engine_files\engine_resource\engine_essential\engine_icon</Filter>
     </Image>
     <Image Include="engine_files\engine_resource\engine_essential\engine_textures\animation.png">
@@ -204,7 +216,7 @@
     <Image Include="engine_files\engine_resource\engine_essential\engine_textures\Test_Animation3.gif">
       <Filter>engine_files\engine_resource\engine_essential\engine_textures</Filter>
     </Image>
-    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\Test_Image_4.png">
+    <Image Include="files\resource\essential\textures\Test_Image_4.png">
       <Filter>engine_files\engine_resource\engine_essential\engine_textures</Filter>
     </Image>
     <Image Include="engine_files\engine_resource\engine_essential\engine_textures\Test_Image_5.png">
@@ -216,7 +228,7 @@
     <Image Include="engine_files\engine_resource\engine_essential\engine_textures\unknown.png">
       <Filter>engine_files\engine_resource\engine_essential\engine_textures</Filter>
     </Image>
-    <Image Include="engine_files\engine_resource\engine_essential\engine_textures\White.png">
+    <Image Include="files\resource\essential\textures\White.png">
       <Filter>engine_files\engine_resource\engine_essential\engine_textures</Filter>
     </Image>
   </ItemGroup>
@@ -280,63 +292,75 @@
     <Text Include="engine_files\engine_resource\engine_fonts\roboto_font\LICENSE.txt">
       <Filter>engine_files\engine_resource\engine_fonts\roboto_font</Filter>
     </Text>
-    <Text Include="engine_files\engine_resource\engine_log\Empty.txt" />
+    <Text Include="files\resource\log\Empty.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="engine_files\engine_source\engine_control\engine_control.cpp">
+    <ClCompile Include="files\source\control\control.cpp">
       <Filter>engine_files\engine_source\engine_control</Filter>
     </ClCompile>
-    <ClCompile Include="engine_files\engine_source\engine_control\engine_file_loader.cpp">
+    <ClCompile Include="files\source\control\file_loader.cpp">
       <Filter>engine_files\engine_source\engine_control</Filter>
     </ClCompile>
-    <ClCompile Include="engine_files\engine_source\engine_control\engine_input.cpp">
+    <ClCompile Include="files\source\control\input.cpp">
       <Filter>engine_files\engine_source\engine_control</Filter>
     </ClCompile>
-    <ClCompile Include="engine_files\engine_source\engine_control\engine_queue.cpp">
+    <ClCompile Include="files\source\control\queue.cpp">
       <Filter>engine_files\engine_source\engine_control</Filter>
     </ClCompile>
-    <ClCompile Include="engine_files\engine_source\engine_structures\engine_animation.cpp">
+    <ClCompile Include="files\source\structures\animation.cpp">
       <Filter>engine_files\engine_source\engine_structures</Filter>
     </ClCompile>
-    <ClCompile Include="engine_files\engine_source\engine_structures\engine_camera.cpp">
+    <ClCompile Include="files\source\structures\camera.cpp">
       <Filter>engine_files\engine_source\engine_structures</Filter>
     </ClCompile>
-    <ClCompile Include="engine_files\engine_source\engine_structures\engine_event.cpp">
+    <ClCompile Include="files\source\structures\event.cpp">
       <Filter>engine_files\engine_source\engine_structures</Filter>
     </ClCompile>
-    <ClCompile Include="engine_files\engine_source\engine_structures\engine_mesh.cpp">
+    <ClCompile Include="files\source\structures\mesh.cpp">
       <Filter>engine_files\engine_source\engine_structures</Filter>
     </ClCompile>
-    <ClCompile Include="engine_files\engine_source\engine_structures\engine_model.cpp">
+    <ClCompile Include="files\source\structures\model.cpp">
       <Filter>engine_files\engine_source\engine_structures</Filter>
     </ClCompile>
-    <ClCompile Include="engine_files\engine_source\engine_structures\engine_shader.cpp">
+    <ClCompile Include="files\source\control\shader.cpp">
       <Filter>engine_files\engine_source\engine_structures</Filter>
     </ClCompile>
-    <ClCompile Include="engine_files\engine_source\engine_structures\engine_text.cpp">
+    <ClCompile Include="files\source\structures\text.cpp">
       <Filter>engine_files\engine_source\engine_structures</Filter>
     </ClCompile>
-    <ClCompile Include="engine_files\engine_source\engine_structures\engine_texture.cpp">
+    <ClCompile Include="files\source\structures\texture.cpp">
       <Filter>engine_files\engine_source\engine_structures</Filter>
     </ClCompile>
-    <ClCompile Include="engine_files\engine_source\engine_structures\engine_physics.cpp">
+    <ClCompile Include="files\source\structures\physics.cpp">
       <Filter>engine_files\engine_source\engine_structures</Filter>
     </ClCompile>
-    <ClCompile Include="engine_files\engine_source\engine_control\engine_console_manip.cpp">
+    <ClCompile Include="files\source\control\console_manip.cpp">
       <Filter>engine_files\engine_source\engine_control</Filter>
     </ClCompile>
-    <ClCompile Include="engine_files\engine_source\engine_structures\engine_sound.cpp">
+    <ClCompile Include="files\source\structures\sound.cpp">
       <Filter>engine_files\engine_source\engine_structures</Filter>
     </ClCompile>
-    <ClCompile Include="engine_files\engine_source\engine_structures\engine_game_scene.cpp">
+    <ClCompile Include="files\source\structures\game_scene.cpp">
       <Filter>engine_files\engine_source\engine_structures</Filter>
     </ClCompile>
-    <ClCompile Include="engine_files\engine_source\engine_common\engine_common.cpp">
+    <ClCompile Include="files\source\common\common.cpp">
       <Filter>engine_files\engine_source\engine_common</Filter>
     </ClCompile>
-    <ClCompile Include="engine_files\engine_source\engine_control\engine_file_finder.cpp">
+    <ClCompile Include="files\source\control\file_finder.cpp">
       <Filter>engine_files\engine_source\engine_control</Filter>
     </ClCompile>
     <ClCompile Include="temp\temp.cpp" />
+    <ClCompile Include="files\source\control\text_renderer.cpp" />
+    <ClCompile Include="files\source\structures\timer.cpp" />
+    <ClCompile Include="files\source\control\memory.cpp">
+      <Filter>engine_files\engine_source\engine_control</Filter>
+    </ClCompile>
+    <ClCompile Include="files\source\control\listener.cpp">
+      <Filter>engine_files\engine_source\engine_control</Filter>
+    </ClCompile>
+    <ClCompile Include="files\source\control\multi_scope_timer.cpp" />
+    <ClCompile Include="files\source\utility\string.cpp" />
+    <ClCompile Include="files\source\utility\color.cpp" />
+    <ClCompile Include="files\source\control\async_timer.cpp" />
   </ItemGroup>
 </Project>
