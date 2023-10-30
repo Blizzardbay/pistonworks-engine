@@ -231,9 +231,9 @@ PW_NAMESPACE_SRT
 		// Public Functions/Macros  
 		public:
 			/* Error List: PW_NULL_PARAMETER_W, PW_FUNCTION_ERROR */
-			void Render();
+			void Render(const uint32_t& p_layer);
 			/* Error List: PW_NULL_PARAMETER_W, PW_FUNCTION_ERROR */
-			void Render(b2Body* p_body);
+			void Render(const uint32_t& p_layer, b2Body* p_body);
 
 			/* Error List: PW_FUNCTION_ERROR */
 			void Set_Texture(st::Texture* p_new_texture);
@@ -314,14 +314,16 @@ PW_NAMESPACE_SRT
 
 			/* Error List: PW_FUNCTION_ERROR */
 			static void Draw();
+			/* Error List: PW_FUNCTION_ERROR */
+			static void Draw_Transparent();
 		// Protected Variables
 		protected:
 		// Private Functions/Macros 
 		private:
 			/* Error List: PW_FUNCTION_ERROR */
-			void Update_Matrix();
+			void Update_Matrix(const uint32_t& p_layer);
 			/* Error List: PW_FUNCTION_ERROR */
-			void Update_Matrix(b2Body*& p_body);
+			void Update_Matrix(const uint32_t& p_layer, b2Body*& p_body);
 		// Private Variables      
 		private:
 			Geometry_Types m_type;

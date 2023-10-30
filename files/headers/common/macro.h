@@ -125,5 +125,4 @@
 #define EXPRESSION_WSTRING(x)								_CRT_WIDE(#x)
 #define EXPRESSION_TO_WSTRING(x)							_CRT_WIDE(x)
 
-
 #endif // !H_MACRO

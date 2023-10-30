@@ -10,7 +10,7 @@ PW_NAMESPACE_SRT
 			float Camera::m_camera_width{ 800.0f };
 			float Camera::m_camera_height{ 600.0f };
 			glm::vec3 Camera::m_last_camera_position{ 0.0f };
-			glm::mat4 Camera::m_perspective = glm::ortho(-400.0f, 400.0f, -300.0f, 300.0f, 0.1f, 100.0f);
+			glm::mat4 Camera::m_perspective = glm::ortho(-400.0f, 400.0f, -300.0f, 300.0f, 0.1f, (float)INT16_MAX);
 			glm::mat4 Camera::m_camera{ glm::lookAt(
 				glm::vec3(m_camera_position.x, m_camera_position.y, m_camera_zoom + 1),
 				glm::vec3(m_camera_position.x, m_camera_position.y, m_camera_zoom),
@@ -34,7 +34,7 @@ PW_NAMESPACE_SRT
 
 					m_at_vector = glm::vec3(m_camera_position.x, m_camera_position.y, pw::cm::Constant::Inverse_Z_Tan());
 					m_camera = glm::lookAt(
-						glm::vec3(m_camera_position.x, m_camera_position.y, 0.0f),
+						glm::vec3(m_camera_position.x, m_camera_position.y, (float)INT16_MAX / 2.0f),
 						m_at_vector,
 						glm::vec3(0.0f, 1.0f, 0.0f));
 
@@ -56,7 +56,7 @@ PW_NAMESPACE_SRT
 			}
 			const glm::mat4& Camera::Update_Projection() {
 				m_perspective = glm::ortho((-m_camera_width/2.f) + m_camera_zoom, (m_camera_width / 2.f) - m_camera_zoom,
-					(-m_camera_height / 2.f) + m_camera_zoom, (m_camera_height / 2.f) - m_camera_zoom, 0.1f, 100.0f);
+					(-m_camera_height / 2.f) + m_camera_zoom, (m_camera_height / 2.f) - m_camera_zoom, 0.1f, (float)INT16_MAX);
 				return m_perspective;
 			}
 			void Camera::Center_Camera(const glm::vec2& p_new_center) {

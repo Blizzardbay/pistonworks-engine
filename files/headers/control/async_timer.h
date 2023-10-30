@@ -67,11 +67,11 @@ PW_NAMESPACE_SRT
 			static void Initialize();
 			/* Error List: NONE */
 			static void Release();
-		// Public Functions/Macros 
-		public:
 			// Polls all of the timers stored in m_timers
 			// Error List: NONE 
 			static void Poll();
+		// Public Functions/Macros 
+		public:
 			/* Error List: NONE */
 			static void Add(const std::wstring& p_timer_id, pw::st::Manual_Timer<std::chrono::milliseconds>* p_timer, pw::st::Event_Base* p_callback);
 			/* Error List: NONE */

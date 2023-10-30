@@ -56,7 +56,7 @@
 //////////////////////////////////
 PW_NAMESPACE_SRT
 	CO_NAMESPACE_SRT
-		class Engine_Queue : pw::co::Text_Renderer, pw::co::Shader {
+		class Engine_Queue : pw::co::Text_Renderer, pw::st::Model {
 		// Default Class Structures
 		public:
 		private:

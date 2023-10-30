@@ -522,7 +522,11 @@ PW_NAMESPACE_SRT
 				m_end_time = std::chrono::steady_clock::now();
 				m_delta_time = m_end_time - m_start_time;
 				if (m_vsync != true) {
-					while ((std::chrono::steady_clock::now() - m_end_time) < (std::chrono::milliseconds((1000 / m_fps_cap) * 2) - m_delta_time));
+					if (m_expected_frame_time > m_delta_time) {
+						while ((std::chrono::steady_clock::now() - m_end_time) < m_expected_frame_time - m_delta_time);
+						m_elapsed_time = m_elapsed_time + (m_expected_frame_time - m_delta_time);
+						m_end_time = std::chrono::steady_clock::now();
+					}
 				}
 			}
 			//////////////////////////////////
@@ -666,6 +670,8 @@ PW_NAMESPACE_SRT
 				else {
 					m_fps_cap = p_fps_cap;
 				}
+				m_expected_frame_time = std::chrono::nanoseconds(std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::seconds(1)).count() / m_fps_cap);
+
 				m_vsync = p_has_vsync;
 			}
 			//////////////////////////////////
@@ -833,6 +839,7 @@ PW_NAMESPACE_SRT
 
 			static bool m_window_lock;
 			static const float m_inverse_z_tan;
+			static std::chrono::steady_clock::duration m_expected_frame_time;
 
 			#ifdef PW_DEBUG_MODE
 				static PW_FUNCTION m_debug_info;

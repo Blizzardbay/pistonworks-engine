@@ -59,8 +59,8 @@
   <ItemGroup>
     <None Include=".gitattributes" />
     <None Include=".gitignore" />
-    <None Include="files\resource\essential\shader\fragment.shader" />
-    <None Include="files\resource\essential\shader\vertex.shader" />
+    <None Include="files\resource\essential\shader\fragment.frag" />
+    <None Include="files\resource\essential\shader\vertex.vert" />
     <None Include="files\resource\info\engine_event_types.info" />
     <None Include="files\resource\info\engine_function_descriptions.info" />
     <None Include="LICENSE" />
@@ -81,7 +81,6 @@
     <Image Include="engine_files\engine_resource\engine_essential\engine_textures\Test_Animation.gif" />
     <Image Include="engine_files\engine_resource\engine_essential\engine_textures\Test_Animation2.gif" />
     <Image Include="engine_files\engine_resource\engine_essential\engine_textures\Test_Animation3.gif" />
-    <Image Include="files\resource\essential\textures\Test_Image_4.png" />
     <Image Include="engine_files\engine_resource\engine_essential\engine_textures\Test_Image_5.png" />
     <Image Include="engine_files\engine_resource\engine_essential\engine_textures\Test_Image_6.png" />
     <Image Include="engine_files\engine_resource\engine_essential\engine_textures\unknown.png" />

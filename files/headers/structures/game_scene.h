@@ -210,6 +210,18 @@ PW_NAMESPACE_SRT
 		public:
 		// Private Functions/Macros 
 		private:
+			/* Error List: PW_FUNCTION_ERROR */
+			void Render_Animation();
+			/* Error List: PW_FUNCTION_ERROR */
+			void Render_Text();
+			/* Error List: PW_FUNCTION_ERROR */
+			void Render_Default();
+			/* Error List: PW_FUNCTION_ERROR */
+			void Render_Animation_Sound();
+			/* Error List: PW_FUNCTION_ERROR */
+			void Render_Text_Sound();
+			/* Error List: PW_FUNCTION_ERROR */
+			void Render_Default_Sound();
 		// Private Variables       
 		private:
 			st::Model* m_model;
@@ -232,6 +244,11 @@ PW_NAMESPACE_SRT
 			int32_t m_layer;
 
 			bool m_is_copy;
+			// There are many different checks in the main render function
+			// so make many different render functions determined by constructor
+			// Even though it may guarantee that members are non-nullptr checks will
+			// still be in place
+			std::function<void()> m_render_function;
 
 			static PW_ID m_global_index;
 		};

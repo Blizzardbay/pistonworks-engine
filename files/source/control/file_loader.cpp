@@ -25,14 +25,14 @@ PW_NAMESPACE_SRT
 			std::function<void(const std::wstring&)> File_Loader::m_remove_scene_function{};
 			std::function<void(const std::wstring&, const std::wstring&, const bool&)> File_Loader::m_sub_scene_render{};
 
-			std::map<std::wstring, st::Texture*>* File_Loader::m_texture_repository{ nullptr };
+			std::map<std::wstring, std::map<bool, std::map<bool, st::Texture*>>>* File_Loader::m_texture_repository{ nullptr };
 		// Class Members
 			void File_Loader::Initialize() {
 				m_engine_texture_dir = pw::cm::Constant::Pistonworks_Path().generic_wstring() + m_engine_texture_dir;
 				m_engine_icon_dir = pw::cm::Constant::Pistonworks_Path().generic_wstring() + m_engine_icon_dir;
 				m_engine_animation_dir = pw::cm::Constant::Pistonworks_Path().generic_wstring() + m_engine_animation_dir;
 
-				typedef std::map<std::wstring, st::Texture*> TEXTURE_REPOSITORY;
+				typedef std::map<std::wstring, std::map<bool, std::map<bool, st::Texture*>>> TEXTURE_REPOSITORY;
 
 				PW_CALL(m_texture_repository = pw::co::Memory::Allocate<TEXTURE_REPOSITORY>(), false);
 			}
@@ -58,7 +58,7 @@ PW_NAMESPACE_SRT
 				m_engine_icon_dir.~basic_string();
 				m_engine_animation_dir.~basic_string();
 
-				if (pw::co::Memory::Deallocate<std::map<std::wstring, st::Texture*>>(m_texture_repository) == false) {
+				if (pw::co::Memory::Deallocate<std::map<std::wstring, std::map<bool, std::map<bool, st::Texture*>>>>(m_texture_repository) == false) {
 					if (m_texture_repository != nullptr) {
 						delete m_texture_repository;
 						m_texture_repository = nullptr;
@@ -117,7 +117,6 @@ PW_NAMESPACE_SRT
 				// File Type
 				FREE_IMAGE_FORMAT v_image_type{ FREE_IMAGE_FORMAT::FIF_UNKNOWN };
 				// File
-				FIBITMAP* v_file{ nullptr };
 				FIMULTIBITMAP* v_gif_bitmap{ nullptr };
 				// Image Data
 				BYTE* v_image_data{ nullptr };
@@ -147,6 +146,7 @@ PW_NAMESPACE_SRT
 						return std::tuple<st::Texture*, st::Animation*>();
 					}
 				}
+				bool v_is_transparent = false;
 				// Check if the file type is able to be loaded
 				if (TRY_LINE FreeImage_FIFSupportsReading(v_image_type) == (BOOL)true) {
 					v_gif_bitmap = FreeImage_OpenMultiBitmap(FREE_IMAGE_FORMAT::FIF_GIF, v_file_location.generic_string().c_str(), false, true);
@@ -164,6 +164,13 @@ PW_NAMESPACE_SRT
 							FIBITMAP* v_bitmap = FreeImage_LockPage(v_gif_bitmap, TO_INT32(i));
 							// Convert bitmap to RGBA with 4 bytes per pixel
 							v_bitmap = FreeImage_ConvertTo32Bits(v_bitmap);
+
+							// Test if the file has transparency
+							// If one bitmap has transparency then label all
+							if (v_is_transparent != true) {
+								v_is_transparent = (bool)FreeImage_IsTransparent(v_bitmap);
+							}
+
 							if (i == 0) {
 								v_bytes_per_pixel = FreeImage_GetBPP(v_bitmap) / TO_UINT32(8);
 
@@ -216,6 +223,10 @@ PW_NAMESPACE_SRT
 						// Create Animation
 						PW_CUSTOM_CALL(v_animation = pw::co::Memory::Allocate_Args<st::Animation>(static_cast<float>(v_frame_time) / static_cast<float>(CLOCKS_PER_SEC), v_frames, v_width, p_is_async), false, LOAD_RETURN);
 
+						if (v_is_transparent == true) {
+							pw::st::Mesh::Label_Transparent_Texture_Handle(v_texture->Texture_Handle());
+						}
+
 						if (v_animation == nullptr) {
 							if (pw::co::Memory::Deallocate<st::Animation>(v_animation) == false) {
 								if (v_animation != nullptr) {
@@ -225,8 +236,6 @@ PW_NAMESPACE_SRT
 							}
 							return LOAD_RETURN();
 						}
-
-						FreeImage_Unload(v_file);
 
 						FreeImage_CloseMultiBitmap(v_gif_bitmap);
 						
@@ -336,8 +345,9 @@ PW_NAMESPACE_SRT
 				// Result
 				st::Texture* v_texture{ nullptr };
 
-				auto v_found = m_texture_repository->find(p_file_location.filename().wstring());
-				if (v_found == m_texture_repository->end()) {
+				auto v_found_id = m_texture_repository->find(p_file_location.filename().wstring());
+
+				if (v_found_id == m_texture_repository->end()) {
 					// Load File
 					PW_FI_VOID_CALL(TRY_LINE v_file = FreeImage_Load(v_image_type, p_file_location.generic_string().c_str(), PNG_DEFAULT), false);
 
@@ -357,8 +367,18 @@ PW_NAMESPACE_SRT
 						// Create Texture
 						PW_CALL(v_texture = pw::co::Memory::Allocate_Args<st::Texture>(v_image_data, v_width, v_height, GL_RGBA, GL_BGRA, p_repeat, p_linear), false);
 
+						// Test if the file has transparency
+						bool v_is_transparent = (bool)FreeImage_IsTransparent(v_file);
+						if (v_is_transparent == true) {
+							pw::st::Mesh::Label_Transparent_Texture_Handle(v_texture->Texture_Handle());
+						}
+
 						if (v_texture != nullptr) {
-							m_texture_repository->insert(std::make_pair(p_file_location.filename().wstring(), v_texture));
+							std::map<bool, st::Texture*> v_linear_map{ std::make_pair(p_linear, v_texture) };
+
+							std::map<bool, std::map<bool, st::Texture*>> v_repeat_map{ std::make_pair(p_repeat, v_linear_map) };
+
+							m_texture_repository->insert(std::make_pair(p_file_location.filename().wstring(), v_repeat_map));
 
 							FreeImage_Unload(v_file);
 							return v_texture;
@@ -375,8 +395,104 @@ PW_NAMESPACE_SRT
 					}
 				}
 				else {
-					PW_PTR_CALL(st::Texture* v_temp = pw::co::Memory::Allocate_Args<st::Texture>(*v_found->second), true);
-					return v_temp;
+					auto v_has_repeat = v_found_id->second.find(p_repeat);
+
+					if (v_has_repeat == v_found_id->second.end()) {
+						// Load File
+						PW_FI_VOID_CALL(TRY_LINE v_file = FreeImage_Load(v_image_type, p_file_location.generic_string().c_str(), PNG_DEFAULT), false);
+
+						if (!v_file == true) {
+							SET_ERROR_STATE(PW_FI_FILE_LOAD_FAILURE);
+							SET_ERROR_TYPE(pw::er::Warning_Error(L"pw::co::File_Loader", L"Unable to load file: " + p_file_location.generic_wstring(), ERROR_LINE, __FILEW__, L"Load_PNG"));
+							return nullptr;
+						}
+
+						if (TRY_LINE FreeImage_HasPixels(v_file) == (BOOL)true) {
+							// If successful get data
+							v_image_data = FreeImage_GetBits(v_file);
+
+							v_width = FreeImage_GetWidth(v_file);
+							v_height = FreeImage_GetHeight(v_file);
+
+							// Create Texture
+							PW_CALL(v_texture = pw::co::Memory::Allocate_Args<st::Texture>(v_image_data, v_width, v_height, GL_RGBA, GL_BGRA, p_repeat, p_linear), false);
+
+							// Test if the file has transparency
+							bool v_is_transparent = (bool)FreeImage_IsTransparent(v_file);
+							if (v_is_transparent == true) {
+								pw::st::Mesh::Label_Transparent_Texture_Handle(v_texture->Texture_Handle());
+							}
+
+							if (v_texture != nullptr) {
+								std::map<bool, st::Texture*> v_linear_map{ std::make_pair(p_linear, v_texture) };
+
+								m_texture_repository->at(p_file_location.filename().wstring()).insert(std::make_pair(p_repeat, v_linear_map));
+
+								FreeImage_Unload(v_file);
+								return v_texture;
+							}
+							else {
+								FreeImage_Unload(v_file);
+								return nullptr;
+							}
+						}
+						else {
+							SET_ERROR_STATE(PW_FI_NO_PIXELS);
+							SET_ERROR_TYPE(pw::er::Warning_Error(L"pw::co::File_Loader", L"Loaded file had no pixels, file: " + p_file_location.generic_wstring(), ERROR_LINE, __FILEW__, L"Load_PNG"));
+							return nullptr;
+						}
+					}
+					else {
+						auto v_is_linear = v_has_repeat->second.find(p_repeat);
+
+						if (v_is_linear == v_has_repeat->second.end()) {
+							// Load File
+							PW_FI_VOID_CALL(TRY_LINE v_file = FreeImage_Load(v_image_type, p_file_location.generic_string().c_str(), PNG_DEFAULT), false);
+
+							if (!v_file == true) {
+								SET_ERROR_STATE(PW_FI_FILE_LOAD_FAILURE);
+								SET_ERROR_TYPE(pw::er::Warning_Error(L"pw::co::File_Loader", L"Unable to load file: " + p_file_location.generic_wstring(), ERROR_LINE, __FILEW__, L"Load_PNG"));
+								return nullptr;
+							}
+
+							if (TRY_LINE FreeImage_HasPixels(v_file) == (BOOL)true) {
+								// If successful get data
+								v_image_data = FreeImage_GetBits(v_file);
+
+								v_width = FreeImage_GetWidth(v_file);
+								v_height = FreeImage_GetHeight(v_file);
+
+								// Create Texture
+								PW_CALL(v_texture = pw::co::Memory::Allocate_Args<st::Texture>(v_image_data, v_width, v_height, GL_RGBA, GL_BGRA, p_repeat, p_linear), false);
+
+								// Test if the file has transparency
+								bool v_is_transparent = (bool)FreeImage_IsTransparent(v_file);
+								if (v_is_transparent == true) {
+									pw::st::Mesh::Label_Transparent_Texture_Handle(v_texture->Texture_Handle());
+								}
+
+								if (v_texture != nullptr) {
+									m_texture_repository->at(p_file_location.filename().wstring()).at(p_repeat).insert(std::make_pair(p_linear, v_texture));
+
+									FreeImage_Unload(v_file);
+									return v_texture;
+								}
+								else {
+									FreeImage_Unload(v_file);
+									return nullptr;
+								}
+							}
+							else {
+								SET_ERROR_STATE(PW_FI_NO_PIXELS);
+								SET_ERROR_TYPE(pw::er::Warning_Error(L"pw::co::File_Loader", L"Loaded file had no pixels, file: " + p_file_location.generic_wstring(), ERROR_LINE, __FILEW__, L"Load_PNG"));
+								return nullptr;
+							}
+						}
+						else {
+							PW_PTR_CALL(st::Texture * v_temp = pw::co::Memory::Allocate_Args<st::Texture>(*v_is_linear->second), true);
+							return v_temp;
+						}
+					}
 				}
 			}
 			st::Texture* File_Loader::Load_BMP(const std::filesystem::path& p_file_location, const bool& p_repeat, const bool& p_linear) {
@@ -409,6 +525,12 @@ PW_NAMESPACE_SRT
 
 					// Create Texture
 					PW_CALL(v_texture = pw::co::Memory::Allocate_Args<st::Texture>(v_image_data, v_width, v_height, GL_RGB, GL_BGR, p_repeat, p_linear), false);
+
+					// Test if the file has transparency
+					bool v_is_transparent = (bool)FreeImage_IsTransparent(v_file);
+					if (v_is_transparent == true) {
+						pw::st::Mesh::Label_Transparent_Texture_Handle(v_texture->Texture_Handle());
+					}
 
 					if (v_texture != nullptr) {
 						FreeImage_Unload(v_file);
@@ -456,6 +578,12 @@ PW_NAMESPACE_SRT
 
 					// Create Texture
 					PW_CALL(v_texture = pw::co::Memory::Allocate_Args<st::Texture>(v_image_data, v_width, v_height, GL_RGB, GL_BGR, p_repeat, p_linear), false);
+
+					// Test if the file has transparency
+					bool v_is_transparent = (bool)FreeImage_IsTransparent(v_file);
+					if (v_is_transparent == true) {
+						pw::st::Mesh::Label_Transparent_Texture_Handle(v_texture->Texture_Handle());
+					}
 
 					if (v_texture != nullptr) {
 						FreeImage_Unload(v_file);

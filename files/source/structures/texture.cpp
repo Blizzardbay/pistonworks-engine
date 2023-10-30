@@ -123,5 +123,8 @@ PW_NAMESPACE_SRT
 					return nullptr;
 				}
 			}
+			std::map<std::wstring, st::Texture*>& Texture_Structure::Textures() {
+				return m_textures;
+			}
 	ST_NAMESPACE_END
 PW_NAMESPACE_END

@@ -109,10 +109,15 @@ PW_NAMESPACE_SRT
 			/* Error List: NONE */
 			bool Should_Close() const;
 
+			/* Error List: PW_POSSIBLE_ERROR */
 			void Pre_Load();
+			/* Error List: PW_POSSIBLE_ERROR */
 			void Initialize_Game();
+			/* Error List: PW_POSSIBLE_ERROR */
 			void Before_Queue();
+			/* Error List: PW_POSSIBLE_ERROR */
 			void After_Queue();
+			/* Error List: PW_POSSIBLE_ERROR */
 			void Release_Game();
 
 			/* Error List: PW_POSSIBLE_ERROR */

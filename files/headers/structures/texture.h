@@ -107,6 +107,8 @@ PW_NAMESPACE_SRT
 			st::Texture* Texture() const;
 			/* Error List: NONE */
 			st::Texture* Texture(const std::wstring& p_texture_id);
+			/* Error List: NONE */
+			std::map<std::wstring, st::Texture*>& Textures();
 		// Public Variables         
 		public:
 		// Private Functions/Macros 

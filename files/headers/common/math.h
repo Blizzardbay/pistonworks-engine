@@ -57,23 +57,16 @@ PW_NAMESPACE_SRT
 		private:
 		// Public Functions/Macros 
 		public:
-			/*
-				Returns the angle in degrees given a vector 
-				Error List: PW_WIN_FUNCTION_ERROR
-			*/
+			// Returns the angle in degrees given a vector 
+			// Error List: PW_WIN_FUNCTION_ERROR
 			static float Vector_Angle(glm::vec2 p_vector) noexcept {
+				// Convert to unit vector
+				float v_magnitude = glm::sqrt(TO_FLOAT(glm::pow(p_vector.x, 2) + glm::pow(p_vector.y, 2)));
+				p_vector = glm::vec2(p_vector.x / v_magnitude, p_vector.y / v_magnitude);
+
 				bool v_x_sign = !signbit(p_vector.x);
 				bool v_y_sign = !signbit(p_vector.y);
-				// In the case that p_vector.x is zero then the angle could only be
-				// 90.0f or -90.0f
-				if (p_vector.x == 0.0f) {
-					if (v_y_sign) {
-						return 90.0f;
-					}
-					else {
-						return -90.0f;
-					}
-				}
+
 				// Quadrant_1 +,+
 				// Quadrant_4 +,-
 				if (v_x_sign == true) {
@@ -83,7 +76,7 @@ PW_NAMESPACE_SRT
 					}
 					// Quadrant_4 +,-
 					else {
-						return 360.0f - glm::degrees(glm::atan(p_vector.y / p_vector.x));
+						return 360.0f + glm::degrees(glm::atan(p_vector.y / p_vector.x));
 					}
 				}
 				// Quadrant_2 -,+
@@ -91,7 +84,7 @@ PW_NAMESPACE_SRT
 				else {
 					// Quadrant_2 -,+
 					if (v_y_sign == true) {
-						return 180.0f - glm::degrees(glm::atan(p_vector.y / p_vector.x));
+						return 180.0f + glm::degrees(glm::atan(p_vector.y / p_vector.x));
 					}
 					// Quadrant_3 -,-
 					else {

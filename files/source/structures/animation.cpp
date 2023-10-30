@@ -6,7 +6,7 @@ PW_NAMESPACE_SRT
 		// Static Declarations
 		// Class Members
 			Animation::Animation() :
-					m_keep_animating{ true }, m_is_async{ false}, m_start{ false }, m_end{ false },
+					m_keep_animating{ true }, m_is_async{ false }, m_start{ false }, m_end{ false },
 					m_frame_timer{ 0, true, false }, m_frame_count{ 0 }, m_animation_step{ 0.0f },
 					m_current_frame{ 0 }, m_vertices_default{ nullptr },
 					m_animation_vertices{ nullptr }, m_vertices_count{} {

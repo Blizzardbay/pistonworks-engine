@@ -160,10 +160,10 @@
     <ClInclude Include="files\headers\control\async_timer.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="files\resource\essential\shader\fragment.shader">
+    <None Include="files\resource\essential\shader\fragment.frag">
       <Filter>engine_files\engine_resource\engine_essential\engine_shader</Filter>
     </None>
-    <None Include="files\resource\essential\shader\vertex.shader">
+    <None Include="files\resource\essential\shader\vertex.vert">
       <Filter>engine_files\engine_resource\engine_essential\engine_shader</Filter>
     </None>
     <None Include="files\resource\info\engine_event_types.info" />
@@ -214,9 +214,6 @@
       <Filter>engine_files\engine_resource\engine_essential\engine_textures</Filter>
     </Image>
     <Image Include="engine_files\engine_resource\engine_essential\engine_textures\Test_Animation3.gif">
-      <Filter>engine_files\engine_resource\engine_essential\engine_textures</Filter>
-    </Image>
-    <Image Include="files\resource\essential\textures\Test_Image_4.png">
       <Filter>engine_files\engine_resource\engine_essential\engine_textures</Filter>
     </Image>
     <Image Include="engine_files\engine_resource\engine_essential\engine_textures\Test_Image_5.png">

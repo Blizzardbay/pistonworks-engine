@@ -119,11 +119,11 @@ PW_NAMESPACE_SRT
 				PW_GL_VOID_CALL(glBindAttribLocation(m_program_id, 0, "object_position"), false, false);
 				PW_GL_VOID_CALL(glBindAttribLocation(m_program_id, 1, "object_texture_coords"), false, false);
 				PW_GL_VOID_CALL(glBindAttribLocation(m_program_id, 2, "object_color"), false, false);
-				PW_GL_VOID_CALL(glBindAttribLocation(m_program_id, 3, "object_model"), false, false);
-				PW_GL_VOID_CALL(glBindAttribLocation(m_program_id, 7, "object_is_colored"), false, false);
-				PW_GL_VOID_CALL(glBindAttribLocation(m_program_id, 8, "object_is_text"), false, false);
-				PW_GL_VOID_CALL(glBindAttribLocation(m_program_id, 9, "object_texture_handle"), false, false);
-
+				PW_GL_VOID_CALL(glBindAttribLocation(m_program_id, 3, "object_is_colored"), false, false);
+				PW_GL_VOID_CALL(glBindAttribLocation(m_program_id, 4, "object_is_text"), false, false);
+				PW_GL_VOID_CALL(glBindAttribLocation(m_program_id, 5, "object_model_index"), false, false);
+				PW_GL_VOID_CALL(glBindAttribLocation(m_program_id, 6, "object_texture_handle"), false, false);
+				
 				PW_GL_VOID_CALL(glLinkProgram(m_program_id), false, false);
 
 				PW_CALL(Shader_Loader::Check_Error(m_program_id, GL_LINK_STATUS, true, L"Failed to link program error: "), true);

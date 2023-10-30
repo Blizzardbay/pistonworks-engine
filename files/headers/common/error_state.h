@@ -271,16 +271,46 @@ PW_NAMESPACE_SRT
 						return L"PW_GLFW_ERROR";
 					}
 					case PW_GL_ERROR: {
-						return L"PW_GLFW_ERROR";
+						return L"PW_GL_ERROR";
 					}
 					case PW_FI_ERROR: {
-						return L"PW_GLFW_ERROR";
+						return L"PW_FI_ERROR";
 					}
 					case PW_FT_ERROR: {
-						return L"PW_GLFW_ERROR";
+						return L"PW_FT_ERROR";
 					}
 					case PW_AL_ERROR: {
-						return L"PW_GLFW_ERROR";
+						return L"PW_AL_ERROR";
+					}
+					case PW_NO_AUDIO_SOURCE_ERROR: {
+						return L"PW_NO_AUDIO_SOURCE_ERROR";
+					}
+					case PW_SOUND_ID_SIZE_MISMATCH: {
+						return L"PW_SOUND_ID_SIZE_MISMATCH";
+					}
+					case PW_B2SHAPE_INVALID: {
+						return L"PW_B2SHAPE_INVALID";
+					}
+					case PW_AUDIO_SOURCE_NOT_FOUND: {
+						return L"PW_AUDIO_SOURCE_NOT_FOUND";
+					}
+					case PW_FI_UNKNOWN_FILE_TYPE: {
+						return L"PW_FI_UNKNOWN_FILE_TYPE";
+					}
+					case PW_FI_UNSUPPORTED_FILE_TYPE: {
+						return L"PW_FI_UNSUPPORTED_FILE_TYPE";
+					}
+					case PW_FI_FILE_LOAD_FAILURE: {
+						return L"PW_FI_FILE_LOAD_FAILURE";
+					}
+					case PW_FI_NO_PIXELS: {
+						return L"PW_FI_NO_PIXELS";
+					}
+					case PW_UNSUPPORTED_ANIMATION_EXTENSION: {
+						return L"PW_UNSUPPORTED_ANIMATION_EXTENSION";
+					}
+					case PW_POSSIBLE_ERROR: {
+						return L"PW_POSSIBLE_ERROR";
 					}
 					default: {
 						return L"Unknown Error: Invalid error state.";

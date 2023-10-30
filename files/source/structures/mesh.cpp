@@ -6,10 +6,14 @@ PW_NAMESPACE_SRT
 		// Static Declarations   
 		// Class Members
 			Vertex_Data::Vertex_Data() :
-					m_vertex_position{ glm::vec3(0.0f, 0.0f, 0.0f) }, m_texture_coord{ glm::vec2(0.0f, 0.0f) } {
+				m_vertex_position{ 0.0f }, m_texture_coord{ 0.0f },
+				m_color{ 0.0f }, m_is_colored{ 0 }, m_is_text{ 0 },
+				m_model_index{ 0 }, m_texture_handle{ 0 } {
 			}
 			Vertex_Data::Vertex_Data(const glm::vec3& p_vertex_position, const glm::vec2& p_texture_coord) :
-					m_vertex_position{ p_vertex_position }, m_texture_coord{ p_texture_coord } {
+				m_vertex_position{ p_vertex_position }, m_texture_coord{ p_texture_coord },
+				m_color{ 0.0f }, m_is_colored{ 0 }, m_is_text{ 0 },
+				m_model_index{ 0 }, m_texture_handle{ 0 } {
 			}
 			Vertex_Data::~Vertex_Data() {
 			}
@@ -25,38 +29,65 @@ PW_NAMESPACE_SRT
 			const glm::vec2& Vertex_Data::Texture_Coord() const {
 				return m_texture_coord;
 			}
+			const glm::vec4& Vertex_Data::Color() const {
+				return m_color;
+			}
+			void Vertex_Data::Set_Color(const glm::vec4& p_color) {
+				m_color = p_color;
+			}
+			const uint32_t& Vertex_Data::Is_Colored() const {
+				return m_is_colored;
+			}
+			void Vertex_Data::Set_Is_Colored(const uint32_t& p_is_colored) {
+				m_is_colored = p_is_colored;
+			}
+			const uint32_t& Vertex_Data::Is_Text() const {
+				return m_is_text;
+			}
+			void Vertex_Data::Set_Is_Text(const uint32_t& p_is_text) {
+				m_is_text = p_is_text;
+			}
+			const uint32_t& Vertex_Data::Model_Index() const {
+				return m_model_index;
+			}
+			void Vertex_Data::Set_Model_Index(const uint32_t& p_model_index) {
+				m_model_index = p_model_index;
+			}
+			const uint64_t& Vertex_Data::Texture_Handle() const {
+				return m_texture_handle;
+			}
+			void Vertex_Data::Set_Texture_Handle(const uint64_t& p_texture_handle) {
+				m_texture_handle = p_texture_handle;
+			}
 		// Mesh
 			// Non_Colored
 			// Static Declarations 
-				int32_t Mesh::Non_Colored::m_is_colored = 0;
+			int32_t Mesh::Non_Colored::m_is_colored = 0;
 			// Class Members  
 			// Colored
 			// Static Declarations 
-				int32_t Mesh::Colored::m_is_colored = 1;
+			int32_t Mesh::Colored::m_is_colored = 1;
 			// Class Members  
 		// Static Declarations
+		uint32_t Mesh::m_model_object{ 0 };
+		uint32_t Mesh::m_mo_size{ 0 };
+		uint32_t Mesh::m_mo_max_size{ 1 };
+		uint32_t Mesh::m_mo_size_tframe{ 0 };
+		uint32_t Mesh::m_mo_marr_max_size{ 0 };
+		std::vector<uint32_t> Mesh::m_mo_free_spaces{};
+		std::vector<std::pair<uint32_t, glm::mat4>> Mesh::m_matrix_array_access{};
+		std::set<uint64_t> Mesh::m_transparent_textures{};
+		std::set<uint32_t> Mesh::m_transparent_indices{};
 		// Class Members    
 			Mesh::Mesh() :
-					m_vertices{ nullptr }, m_vertex_count{ 0 }, m_indice_count{ 0 }, m_array_object{ 0 },
-					m_position_object{ 0 }, m_element_object{ 0 }, m_draw_command_object{ 0 }, m_draw_command_size{ 0 }, m_last_draw_size{ 0 }, m_draw_command_max_size{ 1 },
-					m_frame_changed{ true }, m_draw_indices{}, m_render_index_free_spaces{}, m_mo_size_tframe{ 0 }, m_mo_marr_max_size{ 0 },
-					m_texture_object{ 0 }, m_to_size{ 0 }, m_to_max_size{ 1 }, m_to_free_spaces{},
-					m_color_object{ 0 }, m_co_size{ 0 }, m_co_max_size{ 1 }, m_co_free_spaces{},
-					m_model_object{ 0 }, m_mo_size{ 0 }, m_mo_max_size{ 1 }, m_mo_free_spaces{},
-					m_is_colored_object{ 0 }, m_ico_size{ 0 }, m_ico_max_size{ 1 }, m_ico_free_spaces{},
-					m_is_text_object{ 0 }, m_ito_size{ 0 }, m_ito_max_size{ 1 }, m_ito_free_spaces{},
-					m_texture_handle_object{ 0 }, m_tho_size{ 0 }, m_tho_max_size{ 1 }, m_tho_free_spaces{}, m_color_array_storage{ nullptr } {
+				m_vertices{ nullptr }, m_vertex_count{ 0 }, m_indice_count{ 0 }, m_array_object{ 0 },
+				m_buffer_object{ 0 }, m_bo_size{ 0 }, m_bo_max_size{ 1 }, m_element_object{ 0 }, m_draw_command_object{ 0 }, m_transparent_draw_command_object{ 0 }, m_dc_size{ 0 }, m_last_dc_size{ 0 }, m_dcv_changed{ false },
+				m_draw_indices{}, m_tdc_size{ 0 }, m_last_tdc_size{ 0 }, m_tdcv_changed{ false }, m_transparent_draw_indices{}, m_render_index_free_spaces{}, m_matrix_index_converter{} {
 			}
 			Mesh::Mesh(Vertex_Data* p_vertices, const uint16_t& p_vertex_count, const uint32_t* p_indices, const uint16_t& p_indice_count) :
-					m_vertices{ nullptr }, m_vertex_count{ p_vertex_count }, m_indice_count{ p_indice_count }, m_array_object{ 0 },
-					m_position_object{ 0 }, m_element_object{ 0 }, m_draw_command_object{ 0 }, m_draw_command_size{ 0 }, m_last_draw_size{ 0 }, m_draw_command_max_size{ 1 },
-					m_frame_changed{ true }, m_draw_indices{}, m_render_index_free_spaces{}, m_mo_size_tframe{ 0 }, m_mo_marr_max_size{ 0 },
-					m_texture_object{ 0 }, m_to_size{ 0 }, m_to_max_size{ 1 }, m_to_free_spaces{},
-					m_color_object{ 0 }, m_co_size{ 0 }, m_co_max_size{ 1 }, m_co_free_spaces{},
-					m_model_object{ 0 }, m_mo_size{ 0 }, m_mo_max_size{ 1 }, m_mo_free_spaces{},
-					m_is_colored_object{ 0 }, m_ico_size{ 0 }, m_ico_max_size{ 1 }, m_ico_free_spaces{},
-					m_is_text_object{ 0 }, m_ito_size{ 0 }, m_ito_max_size{ 1 }, m_ito_free_spaces{},
-					m_texture_handle_object{ 0 }, m_tho_size{ 0 }, m_tho_max_size{ 1 }, m_tho_free_spaces{}, m_color_array_storage{ nullptr }, m_color_array_access{}, m_matrix_array_access{} {
+				m_vertices{ nullptr }, m_vertex_count{ p_vertex_count }, m_indice_count{ p_indice_count }, m_array_object{ 0 },
+				m_buffer_object{ 0 }, m_bo_size{ 0 }, m_bo_max_size{ 1 }, m_element_object{ 0 }, m_draw_command_object{ 0 }, m_transparent_draw_command_object{ 0 }, m_dc_size{ 0 }, m_last_dc_size{ 0 }, m_dcv_changed{ false },
+				m_draw_indices{}, m_tdc_size{ 0 }, m_last_tdc_size{ 0 }, m_tdcv_changed{ false }, m_transparent_draw_indices{}, m_render_index_free_spaces{}, m_matrix_index_converter{} {
 				m_vertices = p_vertices;
 
 				for (size_t i = 0; i < p_vertex_count; i++) {
@@ -66,632 +97,383 @@ PW_NAMESPACE_SRT
 				PW_GL_VOID_CALL(glGenVertexArrays(1, &m_array_object), true, false);
 				PW_GL_VOID_CALL(glBindVertexArray(m_array_object), true, false);
 
-				glm::vec3* v_vertex_position_arr{ nullptr };
-				PW_CALL(v_vertex_position_arr = pw::co::Memory::Allocate<glm::vec3>(m_vertex_count), false);
+				Vertex_Data* v_vertex_data_arr{ nullptr };
+				PW_CALL(v_vertex_data_arr = pw::co::Memory::Allocate<Vertex_Data>(m_vertex_count), false);
 
-				if (v_vertex_position_arr == nullptr) {
+				if (v_vertex_data_arr == nullptr) {
 					return;
 				}
 
 				for (size_t i = 0; i < m_vertex_count; i++) {
-					v_vertex_position_arr[i] = glm::vec3(
+					v_vertex_data_arr[i].Set_Vertex_Position(glm::vec3(
 						m_vertices[i].Vertex_Position().x - 0.5f,
 						m_vertices[i].Vertex_Position().y + 0.5f,
-						m_vertices[i].Vertex_Position().z);
+						m_vertices[i].Vertex_Position().z));
 				}
 
-				PW_GL_VOID_CALL(glGenBuffers(1, &m_draw_command_object), true, false);
-				PW_GL_VOID_CALL(glBindBuffer(GL_DRAW_INDIRECT_BUFFER, m_draw_command_object), true, false);
+				// Per-Model vertex data
+				PW_GL_VOID_CALL(glGenBuffers(1, &m_buffer_object), true, false);
+				PW_GL_VOID_CALL(glBindBuffer(GL_ARRAY_BUFFER, m_buffer_object), true, false);
+
+				// 4 bytes of padding get added on by the compiler, since OpenGL does not care about padding
+				// tightly pack the array data on the GPU
+				constexpr uint32_t v_buffer_object_size = sizeof(Vertex_Data);
+
+				PW_GL_VOID_CALL(glBufferData(GL_ARRAY_BUFFER, MUL_UINT64(MUL_UINT64(v_buffer_object_size, m_vertex_count), m_bo_max_size), &v_vertex_data_arr[0], GL_DYNAMIC_DRAW), true, false);
+
+				// Everything is tightly packed so there is no offset to the data
+				// Position
+				PW_GL_VOID_CALL(glEnableVertexAttribArray(0), true, false);
+				PW_GL_VOID_CALL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, v_buffer_object_size, (void*)0), true, false);
+				// Texture coords
+				PW_GL_VOID_CALL(glEnableVertexAttribArray(1), true, false);
+				PW_GL_VOID_CALL(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, v_buffer_object_size, (void*)(3 * sizeof(float))), true, false);
+				// Color
+				PW_GL_VOID_CALL(glEnableVertexAttribArray(2), true, false);
+				PW_GL_VOID_CALL(glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, v_buffer_object_size, (void*)(5 * sizeof(float))), true, false);
+				// Is_Colored
+				PW_GL_VOID_CALL(glEnableVertexAttribArray(3), true, false);
+				PW_GL_VOID_CALL(glVertexAttribIPointer(3, 1, GL_INT, v_buffer_object_size, (void*)(9 * sizeof(float))), true, false);
+				// Is_Text
+				PW_GL_VOID_CALL(glEnableVertexAttribArray(4), true, false);
+				PW_GL_VOID_CALL(glVertexAttribIPointer(4, 1, GL_INT, v_buffer_object_size, (void*)(sizeof(uint32_t) + (9 * sizeof(float)))), true, false);
+				// Model_Index
+				PW_GL_VOID_CALL(glEnableVertexAttribArray(5), true, false);
+				PW_GL_VOID_CALL(glVertexAttribIPointer(5, 1, GL_INT, v_buffer_object_size, (void*)(sizeof(uint32_t) + sizeof(uint32_t) + (9 * sizeof(float)))), true, false);
+				// Texture_Handle
+				PW_GL_VOID_CALL(glEnableVertexAttribArray(6), true, false);
+				PW_GL_VOID_CALL(glVertexAttribLPointer(6, 1, GL_UNSIGNED_INT64_ARB, v_buffer_object_size, (void*)(sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) + (9 * sizeof(float)))), true, false);
 
 				constexpr uint32_t v_draw_command_buffer_size = sizeof(Draw_Command);
 
+				// Indirect index drawing
+				PW_GL_VOID_CALL(glGenBuffers(1, &m_draw_command_object), true, false);
+				PW_GL_VOID_CALL(glBindBuffer(GL_DRAW_INDIRECT_BUFFER, m_draw_command_object), true, false);
+
 				PW_GL_VOID_CALL(
-					glBufferData(GL_DRAW_INDIRECT_BUFFER, MUL_UINT64(v_draw_command_buffer_size, m_draw_command_max_size), nullptr, GL_DYNAMIC_DRAW),
+					glBufferData(GL_DRAW_INDIRECT_BUFFER, v_draw_command_buffer_size, nullptr, GL_DYNAMIC_DRAW),
 					true, false
 				);
-				
+
 				PW_GL_VOID_CALL(glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0), true, false);
 
-				// Use the vertex_buffer_object for positions inside the vertex shader
-				PW_GL_VOID_CALL(glGenBuffers(1, &m_position_object), true, false);
-				PW_GL_VOID_CALL(glBindBuffer(GL_ARRAY_BUFFER, m_position_object), true, false);
-				PW_GL_VOID_CALL(glBufferData(GL_ARRAY_BUFFER, TO_INT64(m_vertex_count *
-					sizeof(v_vertex_position_arr[0])), &v_vertex_position_arr[0], GL_STATIC_DRAW), true, false);
-
-				PW_GL_VOID_CALL(glEnableVertexAttribArray(0), true, false);
-				PW_GL_VOID_CALL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0), true, false);
-
-				// Use vertex_texture_object to handle texture coordinates
-				PW_GL_VOID_CALL(glGenBuffers(1, &m_texture_object), true, false);
-				PW_GL_VOID_CALL(glBindBuffer(GL_ARRAY_BUFFER, m_texture_object), true, false);
-
-				constexpr uint32_t v_texture_unit_size = 2 * sizeof(float);
+				// Transparent Indirect index drawing
+				PW_GL_VOID_CALL(glGenBuffers(1, &m_transparent_draw_command_object), true, false);
+				PW_GL_VOID_CALL(glBindBuffer(GL_DRAW_INDIRECT_BUFFER, m_transparent_draw_command_object), true, false);
 
 				PW_GL_VOID_CALL(
-					glBufferData(GL_ARRAY_BUFFER, MUL_UINT64(m_vertex_count, MUL_UINT64(v_texture_unit_size, m_to_max_size)), nullptr, GL_DYNAMIC_DRAW),
+					glBufferData(GL_DRAW_INDIRECT_BUFFER, v_draw_command_buffer_size, nullptr, GL_DYNAMIC_DRAW),
 					true, false
 				);
 
-				PW_GL_VOID_CALL(glEnableVertexAttribArray(1), true, false);
-				PW_GL_VOID_CALL(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, v_texture_unit_size, (void*)0), true, false);
+				PW_GL_VOID_CALL(glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0), true, false);
 
-				//PW_GL_VOID_CALL(glVertexAttribDivisor(1, 1), true, false);
-
-				// Use vertex_color_data to handle color data
-				PW_GL_VOID_CALL(glGenBuffers(1, &m_color_object), true, false);
-				PW_GL_VOID_CALL(glBindBuffer(GL_ARRAY_BUFFER, m_color_object), true, false);
-
-				constexpr uint32_t v_color_unit_size = 4 * sizeof(float);
-
-				PW_GL_VOID_CALL(
-					glBufferData(GL_ARRAY_BUFFER, MUL_UINT64(m_vertex_count, MUL_UINT64(v_color_unit_size, m_co_max_size)), nullptr, GL_DYNAMIC_DRAW),
-					true, false
-				);
-				
-				PW_GL_VOID_CALL(glEnableVertexAttribArray(2), true, false);
-				PW_GL_VOID_CALL(glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, MUL_UINT64(m_vertex_count, v_color_unit_size), (void*)0), true, false);
-				PW_GL_VOID_CALL(glVertexAttribDivisor(2, 1), true, false);
-				
-				// Use vertex_element_buffer to handle index drawing
+				// Element index drawing
 				PW_GL_VOID_CALL(glGenBuffers(1, &m_element_object), true, false);
 				PW_GL_VOID_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_element_object), true, false);
 				PW_GL_VOID_CALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, TO_INT64(m_indice_count *
 					sizeof(p_indices[0])), &p_indices[0], GL_STATIC_DRAW), true, false);
 
-				PW_GL_VOID_CALL(glGenBuffers(1, &m_model_object), true, false);
-				PW_GL_VOID_CALL(glBindBuffer(GL_ARRAY_BUFFER, m_model_object), true, false);
-
-				PW_GL_VOID_CALL(
-					glBufferData(GL_ARRAY_BUFFER, TO_INT64(sizeof(glm::mat4)) * m_mo_max_size, nullptr, GL_DYNAMIC_DRAW),
-					true, false
-				);
-
-				PW_GL_VOID_CALL(glEnableVertexAttribArray(3), true, false);
-				PW_GL_VOID_CALL(glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)0), true, false);
-				PW_GL_VOID_CALL(glEnableVertexAttribArray(4), true, false);
-				PW_GL_VOID_CALL(glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(sizeof(glm::vec4))), true, false);
-				PW_GL_VOID_CALL(glEnableVertexAttribArray(5), true, false);
-				PW_GL_VOID_CALL(glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(2 * sizeof(glm::vec4))), true, false);
-				PW_GL_VOID_CALL(glEnableVertexAttribArray(6), true, false);
-				PW_GL_VOID_CALL(glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4), (void*)(3 * sizeof(glm::vec4))), true, false);
-				
-				PW_GL_VOID_CALL(glVertexAttribDivisor(3, 1), true, false);
-				PW_GL_VOID_CALL(glVertexAttribDivisor(4, 1), true, false);
-				PW_GL_VOID_CALL(glVertexAttribDivisor(5, 1), true, false);
-				PW_GL_VOID_CALL(glVertexAttribDivisor(6, 1), true, false);
-
-				PW_GL_VOID_CALL(glGenBuffers(1, &m_is_colored_object), true, false);
-				PW_GL_VOID_CALL(glBindBuffer(GL_ARRAY_BUFFER, m_is_colored_object), true, false);
-
-				constexpr uint32_t v_is_colored_unit_size = 1 * sizeof(int32_t);
-
-				PW_GL_VOID_CALL(
-					glBufferData(GL_ARRAY_BUFFER, MUL_UINT64(m_vertex_count, MUL_UINT64(v_is_colored_unit_size, m_ico_max_size)), nullptr, GL_DYNAMIC_DRAW),
-					true, false
-				);
-
-				PW_GL_VOID_CALL(glEnableVertexAttribArray(7), true, false);
-				PW_GL_VOID_CALL(glVertexAttribIPointer(7, 1, GL_INT, MUL_UINT64(m_vertex_count, v_is_colored_unit_size), (void*)0), true, false);
-
-				PW_GL_VOID_CALL(glVertexAttribDivisor(7, 1), true, false);
-
-				PW_GL_VOID_CALL(glGenBuffers(1, &m_is_text_object), true, false);
-				PW_GL_VOID_CALL(glBindBuffer(GL_ARRAY_BUFFER, m_is_text_object), true, false);
-
-				constexpr uint32_t v_is_text_unit_size = 1 * sizeof(int32_t);
-
-				PW_GL_VOID_CALL(
-					glBufferData(GL_ARRAY_BUFFER, MUL_UINT64(m_vertex_count, MUL_UINT64(v_is_text_unit_size, m_ito_max_size)), nullptr, GL_DYNAMIC_DRAW),
-					true, false
-				);
-
-				PW_GL_VOID_CALL(glEnableVertexAttribArray(8), true, false);
-				PW_GL_VOID_CALL(glVertexAttribIPointer(8, 1, GL_INT, MUL_UINT64(m_vertex_count, v_is_text_unit_size), (void*)0), true, false);
-
-				PW_GL_VOID_CALL(glVertexAttribDivisor(8, 1), true, false);
-
-				PW_GL_VOID_CALL(glGenBuffers(1, &m_texture_handle_object), true, false);
-				PW_GL_VOID_CALL(glBindBuffer(GL_ARRAY_BUFFER, m_texture_handle_object), true, false);
-
-				constexpr uint32_t v_texture_handle_unit_size = 1 * sizeof(uint64_t);
-				
-				PW_GL_VOID_CALL(
-					glBufferData(GL_ARRAY_BUFFER, MUL_UINT64(m_vertex_count, MUL_UINT64(v_texture_handle_unit_size, m_tho_max_size)), nullptr, GL_DYNAMIC_DRAW),
-					true, false
-				);
-
-				PW_GL_VOID_CALL(glEnableVertexAttribArray(9), true, false);
-				PW_GL_VOID_CALL(glVertexAttribLPointer(9, 1, GL_UNSIGNED_INT64_ARB, MUL_UINT64(m_vertex_count, v_texture_handle_unit_size), (void*)0), true, false);
-
-				PW_GL_VOID_CALL(glVertexAttribDivisor(9, 1), true, false);
+				PW_GL_VOID_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0), true, false);
 
 				PW_GL_VOID_CALL(glBindVertexArray(0), true, false);
 
-				if (pw::co::Memory::Deallocate<glm::vec3>(v_vertex_position_arr) == false) {
-					if (v_vertex_position_arr != nullptr) {
-						delete[] v_vertex_position_arr;
-						v_vertex_position_arr = nullptr;
+				if (pw::co::Memory::Deallocate<Vertex_Data>(v_vertex_data_arr) == false) {
+					if (v_vertex_data_arr != nullptr) {
+						delete[] v_vertex_data_arr;
+						v_vertex_data_arr = nullptr;
 					}
 				}
 			}
 			Mesh::~Mesh() {
 				PW_GL_VOID_CALL(glDeleteVertexArrays(1, &m_array_object), true, false);
-				PW_GL_VOID_CALL(glDeleteBuffers(1, &m_position_object), true, false);
-				PW_GL_VOID_CALL(glDeleteBuffers(1, &m_texture_object), true, false);
-				PW_GL_VOID_CALL(glDeleteBuffers(1, &m_color_object), true, false);
+				PW_GL_VOID_CALL(glDeleteBuffers(1, &m_buffer_object), true, false);
 				PW_GL_VOID_CALL(glDeleteBuffers(1, &m_element_object), true, false);
-				PW_GL_VOID_CALL(glDeleteBuffers(1, &m_model_object), true, false);
-				PW_GL_VOID_CALL(glDeleteBuffers(1, &m_is_colored_object), true, false);
-				PW_GL_VOID_CALL(glDeleteBuffers(1, &m_is_text_object), true, false);
-				PW_GL_VOID_CALL(glDeleteBuffers(1, &m_texture_handle_object), true, false);
 				PW_GL_VOID_CALL(glDeleteBuffers(1, &m_draw_command_object), true, false);
+				PW_GL_VOID_CALL(glDeleteBuffers(1, &m_transparent_draw_command_object), true, false);
 			}
 			uint32_t Mesh::Add(const Non_Colored& p_data) {
-				glm::vec2* v_texture_data_arr{ nullptr };
-				PW_CALL(v_texture_data_arr = pw::co::Memory::Allocate<glm::vec2>(m_vertex_count), false);
+				Vertex_Data* v_vertex_data_arr{ nullptr };
+				PW_CALL(v_vertex_data_arr = pw::co::Memory::Allocate<Vertex_Data>(m_vertex_count), false);
 
-				if (v_texture_data_arr == nullptr) {
+				if (v_vertex_data_arr == nullptr) {
 					return 0;
 				}
 
-				glm::vec4* v_color_data{ nullptr };
-				PW_CALL(v_color_data = pw::co::Memory::Allocate<glm::vec4>(m_vertex_count), false);
+				uint32_t v_model_index = Add_Matrix_To_SSBO(&p_data.m_matrix);
 
-				if (v_color_data == nullptr) {
-					if (pw::co::Memory::Deallocate<glm::vec2>(v_texture_data_arr) == false) {
-						if (v_texture_data_arr != nullptr) {
-							delete[] v_texture_data_arr;
-							v_texture_data_arr = nullptr;
-						}
-					}
-					return 0;
-				}
-
-				int32_t* v_is_colored{ nullptr };
-				PW_CALL(v_is_colored = pw::co::Memory::Allocate<int32_t>(m_vertex_count), false);
-
-				if (v_is_colored == nullptr) {
-					if (pw::co::Memory::Deallocate<glm::vec2>(v_texture_data_arr) == false) {
-						if (v_texture_data_arr != nullptr) {
-							delete[] v_texture_data_arr;
-							v_texture_data_arr = nullptr;
-						}
-					}
-					if (pw::co::Memory::Deallocate<glm::vec4>(v_color_data) == false) {
-						if (v_color_data != nullptr) {
-							delete[] v_color_data;
-							v_color_data = nullptr;
-						}
-					}
-					return 0;
-				}
-
-				int32_t* v_is_text{ nullptr };
-				PW_CALL(v_is_text = pw::co::Memory::Allocate<int32_t>(m_vertex_count), false);
-
-				if (v_is_text == nullptr) {
-					if (pw::co::Memory::Deallocate<glm::vec2>(v_texture_data_arr) == false) {
-						if (v_texture_data_arr != nullptr) {
-							delete[] v_texture_data_arr;
-							v_texture_data_arr = nullptr;
-						}
-					}
-					if (pw::co::Memory::Deallocate<glm::vec4>(v_color_data) == false) {
-						if (v_color_data != nullptr) {
-							delete[] v_color_data;
-							v_color_data = nullptr;
-						}
-					}
-					if (pw::co::Memory::Deallocate<int32_t>(v_is_colored) == false) {
-						if (v_is_colored != nullptr) {
-							delete[] v_is_colored;
-							v_is_colored = nullptr;
-						}
-					}
-					return 0;
-				}
-
-				uint64_t* v_texture_handle{ nullptr };
-				PW_CALL(v_texture_handle = pw::co::Memory::Allocate<uint64_t>(m_vertex_count), false);
-
-				if (v_texture_handle == nullptr) {
-					if (pw::co::Memory::Deallocate<glm::vec2>(v_texture_data_arr) == false) {
-						if (v_texture_data_arr != nullptr) {
-							delete[] v_texture_data_arr;
-							v_texture_data_arr = nullptr;
-						}
-					}
-					if (pw::co::Memory::Deallocate<glm::vec4>(v_color_data) == false) {
-						if (v_color_data != nullptr) {
-							delete[] v_color_data;
-							v_color_data = nullptr;
-						}
-					}
-					if (pw::co::Memory::Deallocate<int32_t>(v_is_colored) == false) {
-						if (v_is_colored != nullptr) {
-							delete[] v_is_colored;
-							v_is_colored = nullptr;
-						}
-					}
-					if (pw::co::Memory::Deallocate<int32_t>(v_is_text) == false) {
-						if (v_is_text != nullptr) {
-							delete[] v_is_text;
-							v_is_text = nullptr;
-						}
-					}
-					return 0;
-				}
 				for (size_t i = 0; i < m_vertex_count; i++) {
-					v_texture_data_arr[i] = glm::vec2(
+					v_vertex_data_arr[i].Set_Vertex_Position(glm::vec3(
+						m_vertices[i].Vertex_Position().x - 0.5f,
+						m_vertices[i].Vertex_Position().y + 0.5f,
+						m_vertices[i].Vertex_Position().z
+					));
+					v_vertex_data_arr[i].Set_Texture_Coord(glm::vec2(
 						m_vertices[i].Texture_Coord().x * (p_data.m_size.x / p_data.m_texture_size.x),
 						m_vertices[i].Texture_Coord().y * (p_data.m_size.y / p_data.m_texture_size.y)
-					);
-					v_color_data[i] = glm::vec4(0.0f);
-					v_is_colored[i] = Non_Colored::m_is_colored;
-					v_is_text[i] = p_data.m_is_text;
-					v_texture_handle[i] = p_data.m_texture_handle;
+					));
+					v_vertex_data_arr[i].Set_Color(glm::vec4(0.0f));
+					v_vertex_data_arr[i].Set_Is_Colored(p_data.m_is_colored);
+					v_vertex_data_arr[i].Set_Is_Text(p_data.m_is_text);
+					v_vertex_data_arr[i].Set_Model_Index(v_model_index);
+					v_vertex_data_arr[i].Set_Texture_Handle(p_data.m_texture_handle);
 				}
+
 				PW_GL_CUSTOM_CALL(glBindVertexArray(m_array_object), true, false, uint32_t);
-				// Texture
-				Add_To_Buffer<glm::vec2>(m_texture_object, m_to_size, m_to_max_size, m_to_free_spaces, v_texture_data_arr);
-				// Color
-				Add_To_Buffer<glm::vec4>(m_color_object, m_co_size, m_co_max_size, m_co_free_spaces, v_color_data);
-				// Model Matrix
-				Add_To_Matrix_Buffer(m_model_object, m_mo_size, m_mo_max_size, m_mo_free_spaces, p_data.m_matrix);
-				// Is_Colored
-				Add_To_Buffer<int32_t>(m_is_colored_object, m_ico_size, m_ico_max_size, m_ico_free_spaces, v_is_colored);
-				// Is_Text
-				Add_To_Buffer<int32_t>(m_is_text_object, m_ito_size, m_ito_max_size, m_ito_free_spaces, v_is_text);
-				// Texture_Handle
-				Add_To_Buffer<uint64_t>(m_texture_handle_object, m_tho_size, m_tho_max_size, m_tho_free_spaces, v_texture_handle);
+
+				Add_To_Buffer(v_vertex_data_arr);
 
 				PW_GL_CUSTOM_CALL(glBindVertexArray(0), true, false, uint32_t);
 
-				if (pw::co::Memory::Deallocate<glm::vec2>(v_texture_data_arr) == false) {
-					if (v_texture_data_arr != nullptr) {
-						delete[] v_texture_data_arr;
-						v_texture_data_arr = nullptr;
+				if (pw::co::Memory::Deallocate<Vertex_Data>(v_vertex_data_arr) == false) {
+					if (v_vertex_data_arr != nullptr) {
+						delete[] v_vertex_data_arr;
+						v_vertex_data_arr = nullptr;
 					}
 				}
-				if (pw::co::Memory::Deallocate<glm::vec4>(v_color_data) == false) {
-					if (v_color_data != nullptr) {
-						delete[] v_color_data;
-						v_color_data = nullptr;
-					}
-				}
-				if (pw::co::Memory::Deallocate<int32_t>(v_is_colored) == false) {
-					if (v_is_colored != nullptr) {
-						delete[] v_is_colored;
-						v_is_colored = nullptr;
-					}
-				}
-				if (pw::co::Memory::Deallocate<int32_t>(v_is_text) == false) {
-					if (v_is_text != nullptr) {
-						delete[] v_is_text;
-						v_is_text = nullptr;
-					}
-				}
-				if (pw::co::Memory::Deallocate<uint64_t>(v_texture_handle) == false) {
-					if (v_texture_handle != nullptr) {
-						delete[] v_texture_handle;
-						v_texture_handle = nullptr;
-					}
-				}
-				// Make sure they are all the same size
-				if ((m_to_size == m_co_size) &&
-						(m_to_size == m_mo_size) &&
-						(m_to_size == m_ico_size) &&
-						(m_to_size == m_ito_size) &&
-						(m_to_size == m_tho_size)) {
-					if (m_to_size >= 1) {
-						if (m_render_index_free_spaces.size() > 0) {
-							uint32_t v_temp_return = m_render_index_free_spaces[0];
+				if (m_bo_size >= 1) {
+					if (m_render_index_free_spaces.size() > 0) {
+						uint32_t v_temp_return = m_render_index_free_spaces[0];
 
-							m_render_index_free_spaces.erase(m_render_index_free_spaces.begin());
+						m_render_index_free_spaces.erase(m_render_index_free_spaces.begin());
 
-							return v_temp_return;
+						m_matrix_index_converter.insert(std::make_pair(v_temp_return, v_model_index));
+
+						auto v_found = m_transparent_textures.find(p_data.m_texture_handle);
+
+						if (v_found != m_transparent_textures.end()) {
+							m_transparent_indices.insert(v_temp_return);
 						}
-						return m_to_size - 1;
+						return v_temp_return;
 					}
-					else {
-						// Something went wrong if the size is not greater than 0
-						return 0;
+					m_matrix_index_converter.insert(std::make_pair(m_bo_size - 1, v_model_index));
+
+					auto v_found = m_transparent_textures.find(p_data.m_texture_handle);
+
+					if (v_found != m_transparent_textures.end()) {
+						m_transparent_indices.insert(m_bo_size - 1);
 					}
+
+					return m_bo_size - 1;
 				}
 				else {
+					// Something went wrong if the size is not greater than 0
 					return 0;
 				}
 			}
 			uint32_t Mesh::Add(const Colored& p_data) {
-				glm::vec2* v_texture_data_arr{ nullptr };
-				PW_CALL(v_texture_data_arr = pw::co::Memory::Allocate<glm::vec2>(m_vertex_count), false);
+				Vertex_Data* v_vertex_data_arr{ nullptr };
+				PW_CALL(v_vertex_data_arr = pw::co::Memory::Allocate<Vertex_Data>(m_vertex_count), false);
 
-				if (v_texture_data_arr == nullptr) {
+				if (v_vertex_data_arr == nullptr) {
 					return 0;
 				}
 
-				glm::vec4* v_color_data{ nullptr };
-				PW_CALL(v_color_data = pw::co::Memory::Allocate<glm::vec4>(m_vertex_count), false);
+				uint32_t v_model_index = Add_Matrix_To_SSBO(&p_data.m_matrix);
 
-				if (v_color_data == nullptr) {
-					if (pw::co::Memory::Deallocate<glm::vec2>(v_texture_data_arr) == false) {
-						if (v_texture_data_arr != nullptr) {
-							delete[] v_texture_data_arr;
-							v_texture_data_arr = nullptr;
-						}
-					}
-					return 0;
-				}
-
-				int32_t* v_is_colored{ nullptr };
-				PW_CALL(v_is_colored = pw::co::Memory::Allocate<int32_t>(m_vertex_count), false);
-
-				if (v_is_colored == nullptr) {
-					if (pw::co::Memory::Deallocate<glm::vec2>(v_texture_data_arr) == false) {
-						if (v_texture_data_arr != nullptr) {
-							delete[] v_texture_data_arr;
-							v_texture_data_arr = nullptr;
-						}
-					}
-					if (pw::co::Memory::Deallocate<glm::vec4>(v_color_data) == false) {
-						if (v_color_data != nullptr) {
-							delete[] v_color_data;
-							v_color_data = nullptr;
-						}
-					}
-					return 0;
-				}
-
-				int32_t* v_is_text{ nullptr };
-				PW_CALL(v_is_text = pw::co::Memory::Allocate<int32_t>(m_vertex_count), false);
-
-				if (v_is_text == nullptr) {
-					if (pw::co::Memory::Deallocate<glm::vec2>(v_texture_data_arr) == false) {
-						if (v_texture_data_arr != nullptr) {
-							delete[] v_texture_data_arr;
-							v_texture_data_arr = nullptr;
-						}
-					}
-					if (pw::co::Memory::Deallocate<glm::vec4>(v_color_data) == false) {
-						if (v_color_data != nullptr) {
-							delete[] v_color_data;
-							v_color_data = nullptr;
-						}
-					}
-					if (pw::co::Memory::Deallocate<int32_t>(v_is_colored) == false) {
-						if (v_is_colored != nullptr) {
-							delete[] v_is_colored;
-							v_is_colored = nullptr;
-						}
-					}
-					return 0;
-				}
-
-				uint64_t* v_texture_handle{ nullptr };
-				PW_CALL(v_texture_handle = pw::co::Memory::Allocate<uint64_t>(m_vertex_count), false);
-
-				if (v_texture_handle == nullptr) {
-					if (pw::co::Memory::Deallocate<glm::vec2>(v_texture_data_arr) == false) {
-						if (v_texture_data_arr != nullptr) {
-							delete[] v_texture_data_arr;
-							v_texture_data_arr = nullptr;
-						}
-					}
-					if (pw::co::Memory::Deallocate<glm::vec4>(v_color_data) == false) {
-						if (v_color_data != nullptr) {
-							delete[] v_color_data;
-							v_color_data = nullptr;
-						}
-					}
-					if (pw::co::Memory::Deallocate<int32_t>(v_is_colored) == false) {
-						if (v_is_colored != nullptr) {
-							delete[] v_is_colored;
-							v_is_colored = nullptr;
-						}
-					}
-					if (pw::co::Memory::Deallocate<int32_t>(v_is_text) == false) {
-						if (v_is_text != nullptr) {
-							delete[] v_is_text;
-							v_is_text = nullptr;
-						}
-					}
-					return 0;
-				}
 				for (size_t i = 0; i < m_vertex_count; i++) {
-					v_texture_data_arr[i] = glm::vec2(
+					v_vertex_data_arr[i].Set_Vertex_Position(glm::vec3(
+						m_vertices[i].Vertex_Position().x - 0.5f,
+						m_vertices[i].Vertex_Position().y + 0.5f,
+						m_vertices[i].Vertex_Position().z
+					));
+					v_vertex_data_arr[i].Set_Texture_Coord(glm::vec2(
 						m_vertices[i].Texture_Coord().x * (p_data.m_size.x / p_data.m_texture_size.x),
 						m_vertices[i].Texture_Coord().y * (p_data.m_size.y / p_data.m_texture_size.y)
-					);
-					v_color_data[i] = p_data.m_color;
-					v_is_colored[i] = Colored::m_is_colored;
-					v_is_text[i] = p_data.m_is_text;
-					v_texture_handle[i] = p_data.m_texture_handle;
+					));
+					v_vertex_data_arr[i].Set_Color(p_data.m_color);
+					v_vertex_data_arr[i].Set_Is_Colored(p_data.m_is_colored);
+					v_vertex_data_arr[i].Set_Is_Text(p_data.m_is_text);
+					v_vertex_data_arr[i].Set_Model_Index(v_model_index);
+					v_vertex_data_arr[i].Set_Texture_Handle(p_data.m_texture_handle);
 				}
+
 				PW_GL_CUSTOM_CALL(glBindVertexArray(m_array_object), true, false, uint32_t);
-				// Texture
-				Add_To_Buffer<glm::vec2>(m_texture_object, m_to_size, m_to_max_size, m_to_free_spaces, v_texture_data_arr);
-				// Color
-				Add_To_Buffer<glm::vec4>(m_color_object, m_co_size, m_co_max_size, m_co_free_spaces, v_color_data);
-				// Model Matrix
-				Add_To_Matrix_Buffer(m_model_object, m_mo_size, m_mo_max_size, m_mo_free_spaces, p_data.m_matrix);
-				// Is_Colored
-				Add_To_Buffer<int32_t>(m_is_colored_object, m_ico_size, m_ico_max_size, m_ico_free_spaces, v_is_colored);
-				// Is_Text
-				Add_To_Buffer<int32_t>(m_is_text_object, m_ito_size, m_ito_max_size, m_ito_free_spaces, v_is_text);
-				// Texture_Handle
-				Add_To_Buffer<uint64_t>(m_texture_handle_object, m_tho_size, m_tho_max_size, m_tho_free_spaces, v_texture_handle);
+
+				Add_To_Buffer(v_vertex_data_arr);
 
 				PW_GL_CUSTOM_CALL(glBindVertexArray(0), true, false, uint32_t);
 
-				if (pw::co::Memory::Deallocate<glm::vec2>(v_texture_data_arr) == false) {
-					if (v_texture_data_arr != nullptr) {
-						delete[] v_texture_data_arr;
-						v_texture_data_arr = nullptr;
+				if (pw::co::Memory::Deallocate<Vertex_Data>(v_vertex_data_arr) == false) {
+					if (v_vertex_data_arr != nullptr) {
+						delete[] v_vertex_data_arr;
+						v_vertex_data_arr = nullptr;
 					}
 				}
-				if (pw::co::Memory::Deallocate<glm::vec4>(v_color_data) == false) {
-					if (v_color_data != nullptr) {
-						delete[] v_color_data;
-						v_color_data = nullptr;
-					}
-				}
-				if (pw::co::Memory::Deallocate<int32_t>(v_is_colored) == false) {
-					if (v_is_colored != nullptr) {
-						delete[] v_is_colored;
-						v_is_colored = nullptr;
-					}
-				}
-				if (pw::co::Memory::Deallocate<int32_t>(v_is_text) == false) {
-					if (v_is_text != nullptr) {
-						delete[] v_is_text;
-						v_is_text = nullptr;
-					}
-				}
-				if (pw::co::Memory::Deallocate<uint64_t>(v_texture_handle) == false) {
-					if (v_texture_handle != nullptr) {
-						delete[] v_texture_handle;
-						v_texture_handle = nullptr;
-					}
-				}
-				// Make sure they are all the same size
-				if ((m_to_size == m_co_size) &&
-					(m_to_size == m_mo_size) &&
-					(m_to_size == m_ico_size) &&
-					(m_to_size == m_ito_size) &&
-					(m_to_size == m_tho_size)) {
-					if (m_to_size >= 1) {
-						if (m_render_index_free_spaces.size() > 0) {
-							uint32_t v_temp_return = m_render_index_free_spaces[0];
+				if (m_bo_size >= 1) {
+					if (m_render_index_free_spaces.size() > 0) {
+						uint32_t v_temp_return = m_render_index_free_spaces[0];
 
-							m_render_index_free_spaces.erase(m_render_index_free_spaces.begin());
+						m_render_index_free_spaces.erase(m_render_index_free_spaces.begin());
 
-							return v_temp_return;
+						m_matrix_index_converter.insert(std::make_pair(v_temp_return, v_model_index));
+
+						auto v_found = m_transparent_textures.find(p_data.m_texture_handle);
+
+						if (v_found != m_transparent_textures.end()) {
+							m_transparent_indices.insert(v_temp_return);
 						}
-						return m_to_size - 1;
+						return v_temp_return;
 					}
-					else {
-						// Something went wrong if the size is not greater than 0
-						return 0;
+					m_matrix_index_converter.insert(std::make_pair(m_bo_size - 1, v_model_index));
+
+					auto v_found = m_transparent_textures.find(p_data.m_texture_handle);
+
+					if (v_found != m_transparent_textures.end()) {
+						m_transparent_indices.insert(m_bo_size - 1);
 					}
+
+					return m_bo_size - 1;
 				}
 				else {
+					// Something went wrong if the size is not greater than 0
 					return 0;
 				}
 			}
 			void Mesh::Remove(uint32_t p_index) {
+				constexpr uint32_t v_vertex_size = sizeof(Vertex_Data);
 				// Removing the data from the OpenGL buffer would be
 				// too resource intensive to overwrite the old info
 				// so just label the space as open for new data.
-				m_to_free_spaces.push_back(p_index);
-				m_co_free_spaces.push_back(p_index);
-				m_mo_free_spaces.push_back(p_index);
-				m_ico_free_spaces.push_back(p_index);
-				m_ito_free_spaces.push_back(p_index);
-				m_tho_free_spaces.push_back(p_index);
-
 				m_render_index_free_spaces.push_back(p_index);
 
-				m_to_size = m_to_size - 1;
-				m_co_size = m_co_size - 1;
-				m_mo_size = m_mo_size - 1;
-				m_ico_size = m_ico_size - 1;
-				m_ito_size = m_ito_size - 1;
-				m_tho_size = m_tho_size - 1;
+				std::sort(m_render_index_free_spaces.begin(), m_render_index_free_spaces.end());
+
+				PW_GL_VOID_CALL(glBindBuffer(GL_ARRAY_BUFFER, m_buffer_object), true, false);
+
+				Vertex_Data v_temp{};
+
+				PW_GL_VOID_CALL(glGetBufferSubData(GL_ARRAY_BUFFER, MUL_UINT64(MUL_UINT64(p_index, v_vertex_size), m_vertex_count), v_vertex_size, &v_temp), true, false);
+
+				PW_GL_VOID_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0), true, false);
+
+				m_matrix_index_converter.erase(p_index);
+
+				auto v_found = m_transparent_indices.find(p_index);
+
+				if (v_found != m_transparent_indices.end()) {
+					m_transparent_indices.erase(v_found);
+				}
+
+				m_mo_free_spaces.push_back(v_temp.Model_Index());
 			}
 			void Mesh::Render(uint32_t p_index) {
-				constexpr uint32_t OBJECT_SIZE = sizeof(glm::vec2) + sizeof(glm::vec4) + sizeof(glm::mat4) + sizeof(int32_t) + sizeof(int32_t) + sizeof(uint64_t);
+				constexpr uint32_t v_vertex_size = sizeof(Vertex_Data);
 				constexpr uint32_t v_unit_size = sizeof(Draw_Command);
 				// The add function guarantee's that 
 				// p_index if correct is m_to_size - 1
 				// so test for any range 0 < p_index < m_to_size
-				if (p_index < m_to_size) {
+				if (p_index < m_bo_size) {
 					Draw_Command v_temp{};
 
 					v_temp.m_count = m_indice_count;
-					v_temp.m_instance_count = 0;
-					v_temp.m_first_index = 0;
+					v_temp.m_instance_count = 1;
+					v_temp.m_first_index = p_index * m_indice_count;
 					v_temp.m_base_vertex = 0;
-					v_temp.m_base_instance = p_index;
+					v_temp.m_base_instance = 0;
 
-					if (m_draw_indices.size() > p_index && m_draw_indices.size() > m_draw_command_size) {
-						if (p_index != m_draw_indices[m_draw_command_size].m_base_instance) {
-							m_frame_changed = true;
-							m_draw_indices[m_draw_command_size] = v_temp;
+					auto v_found = m_transparent_indices.find(p_index);
+
+					if (v_found == m_transparent_indices.end()) {
+						if (m_draw_indices.size() > m_dc_size) {
+							if (p_index * m_indice_count != m_draw_indices[m_dc_size].m_first_index) {
+								m_dcv_changed = true;
+								m_draw_indices[m_dc_size] = v_temp;
+							}
 						}
+						else {
+							m_dcv_changed = true;
+							m_draw_indices.push_back(v_temp);
+						}
+						m_dc_size = m_dc_size + 1;
 					}
 					else {
-						m_draw_indices.push_back(v_temp);
-					}
-
-					m_draw_command_size = m_draw_command_size + 1;
-					if (m_draw_command_size >= m_draw_command_max_size) {
-						uint32_t v_new_buffer_size = m_draw_command_max_size + TO_UINT32(m_draw_command_max_size * glm::golden_ratio<double>());
-
-						PW_GL_VOID_CALL(
-							glBindBuffer(GL_DRAW_INDIRECT_BUFFER, m_draw_command_object),
-							true, false
-						);
-
-						PW_GL_VOID_CALL(
-							glBufferData(GL_DRAW_INDIRECT_BUFFER, MUL_UINT64(v_unit_size, v_new_buffer_size), nullptr, GL_DYNAMIC_DRAW),
-							true, false
-						);
-
-						PW_GL_VOID_CALL(
-							glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0),
-							true, false
-						);
-						m_draw_command_max_size = v_new_buffer_size;
+						if (m_transparent_draw_indices.size() > m_tdc_size) {
+							if (p_index * m_indice_count != m_transparent_draw_indices[m_tdc_size].m_first_index) {
+								m_tdcv_changed = true;
+								m_transparent_draw_indices[m_tdc_size] = v_temp;
+							}
+						}
+						else {
+							m_tdcv_changed = true;
+							m_transparent_draw_indices.push_back(v_temp);
+						}
+						m_tdc_size = m_tdc_size + 1;
 					}
 				}
 			}
 			void Mesh::Draw() {
 				constexpr uint32_t v_unit_size = sizeof(Draw_Command);
 
-				if (m_matrix_array_access.size() > 0) {
-					PW_GL_VOID_CALL(glBindBuffer(GL_ARRAY_BUFFER, m_model_object), true, false);
+				if (m_mo_size_tframe > 0) {
+					PW_GL_VOID_CALL(glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_model_object), true, false);
 
-					PW_GL_VOID_CALL(glm::mat4 * v_temp_mo_access = static_cast<glm::mat4*>(glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY)), true, false);
+					PW_GL_VOID_CALL(glm::mat4 * v_temp_mo_access = static_cast<glm::mat4*>(glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY)), true, false);
 
 					for (uint32_t i = 0; i < m_mo_size_tframe; i++) {
 						v_temp_mo_access[m_matrix_array_access[i].first] = m_matrix_array_access[i].second;
 					}
 
-					PW_GL_VOID_CALL(glUnmapBuffer(GL_ARRAY_BUFFER), true, false);
+					PW_GL_VOID_CALL(glUnmapBuffer(GL_SHADER_STORAGE_BUFFER), true, false);
 
-					if (m_matrix_array_access.size() > m_mo_marr_max_size) {
-						m_mo_marr_max_size = TO_UINT32(m_matrix_array_access.size());
-					}
+					PW_GL_VOID_CALL(glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0), true, false);
 
-					PW_GL_VOID_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0), true, false);
-
+					m_mo_marr_max_size = TO_UINT32(m_matrix_array_access.size());
 					m_mo_size_tframe = 0;
 				}
-				if (m_draw_command_size != 0) {
+				if (m_dc_size > 0) {
 					PW_GL_VOID_CALL(glBindVertexArray(m_array_object), true, false);
+
+					PW_GL_VOID_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_element_object), true, false);
 
 					PW_GL_VOID_CALL(glBindBuffer(GL_DRAW_INDIRECT_BUFFER, m_draw_command_object), true, false);
 
-					if (m_last_draw_size != m_draw_command_size) {
-						m_frame_changed = true;
-					}
-
-					if (m_frame_changed == true) {
-						for (uint32_t i = 0; i < m_draw_indices.size(); i++) {
-							m_draw_indices[i].m_instance_count = m_draw_command_size;
-						}
-
+					if (m_dcv_changed == true || m_last_dc_size != m_dc_size) {
 						PW_GL_VOID_CALL(
-							glBufferSubData(GL_DRAW_INDIRECT_BUFFER, 0, MUL_UINT64(v_unit_size, m_draw_command_size), m_draw_indices.data()),
+							glBufferData(GL_DRAW_INDIRECT_BUFFER, MUL_UINT64(v_unit_size, m_dc_size), m_draw_indices.data(), GL_DYNAMIC_DRAW),
 							true, false
 						);
-						m_last_draw_size = m_draw_command_size;
-						m_frame_changed = false;
+						m_dcv_changed = false;
 					}
-					PW_GL_VOID_CALL(glDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, nullptr), true, false);
+					m_last_dc_size = m_dc_size;
+
+					PW_GL_VOID_CALL(glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, nullptr, m_dc_size, 0), true, false);
+
 					PW_GL_VOID_CALL(glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0), true, false);
+					PW_GL_VOID_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0), true, false);
+
 					PW_GL_VOID_CALL(glBindVertexArray(0), true, false);
-					m_draw_command_size = 0;
+
+					m_dc_size = 0;
+				}
+			}
+			void Mesh::Draw_Transparent() {
+				constexpr uint32_t v_unit_size = sizeof(Draw_Command);
+
+				if (m_tdc_size > 0) {
+					PW_GL_VOID_CALL(glBindVertexArray(m_array_object), true, false);
+
+					PW_GL_VOID_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_element_object), true, false);
+
+					PW_GL_VOID_CALL(glBindBuffer(GL_DRAW_INDIRECT_BUFFER, m_transparent_draw_command_object), true, false);
+
+					if (m_tdcv_changed == true || m_last_tdc_size != m_tdc_size) {
+						PW_GL_VOID_CALL(
+							glBufferData(GL_DRAW_INDIRECT_BUFFER, MUL_UINT64(v_unit_size, m_tdc_size), m_transparent_draw_indices.data(), GL_DYNAMIC_DRAW),
+							true, false
+						);
+						m_tdcv_changed = false;
+					}
+					m_last_tdc_size = m_tdc_size;
+
+					PW_GL_VOID_CALL(glMultiDrawElementsIndirect(GL_TRIANGLES, GL_UNSIGNED_INT, nullptr, m_tdc_size, 0), true, false);
+
+					PW_GL_VOID_CALL(glBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0), true, false);
+					PW_GL_VOID_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0), true, false);
+
+					PW_GL_VOID_CALL(glBindVertexArray(0), true, false);
+
+					m_tdc_size = 0;
 				}
 			}
 			Vertex_Data* Mesh::Vertices() {
@@ -707,181 +489,329 @@ PW_NAMESPACE_SRT
 			}
 			void Mesh::Change_Color_Data(uint32_t p_index, const glm::vec4& p_new_color_data) {
 				constexpr uint32_t v_unit_size = sizeof(glm::vec4);
-				if (p_index < m_to_size) {
-					if (m_color_array_storage == nullptr) {
-						PW_CALL(m_color_array_storage = pw::co::Memory::Allocate<glm::vec4>(m_vertex_count), true);
-					}
+				if (p_index < m_bo_size) {
+					PW_GL_VOID_CALL(glBindBuffer(GL_ARRAY_BUFFER, m_buffer_object), true, false);
 
-					for (uint32_t i = 0; i < m_vertex_count; i++) {
-						m_color_array_storage[i] = p_new_color_data;
-					}
-					
-					PW_GL_VOID_CALL(glBindBuffer(GL_ARRAY_BUFFER, m_color_object), true, false);
-
-					
 					PW_GL_VOID_CALL(
-						glBufferSubData(GL_ARRAY_BUFFER, MUL_UINT64(p_index, MUL_UINT64(v_unit_size, m_vertex_count)), MUL_UINT64(m_vertex_count, v_unit_size), &m_color_array_storage[0]),
+						Vertex_Data* v_temp_read_buffer = static_cast<Vertex_Data*>(glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY)),
+						true, false
+					);
+
+					for (size_t i = 0; i < m_vertex_count; i++) {
+						v_temp_read_buffer[MUL_UINT64(p_index, m_vertex_count) + i].Set_Color(p_new_color_data);
+					}
+
+
+					PW_GL_VOID_CALL(glUnmapBuffer(GL_ARRAY_BUFFER),
 						true, false
 					);
 
 					PW_GL_VOID_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0), true, false);
 				}
 			}
-			void Mesh::Change_Texture_Data(uint32_t p_index, Vertex_Data* new_texture_data) {
+			void Mesh::Change_Texture_Data(uint32_t p_index, Vertex_Data* p_new_texture_data) {
 				constexpr uint32_t v_unit_size = sizeof(glm::vec2);
-				if (p_index < m_to_size) {
-					glm::vec2* v_texture_data_arr{ nullptr };
-					PW_CALL(v_texture_data_arr = pw::co::Memory::Allocate<glm::vec2>(m_vertex_count), true);
-
-					for (size_t i = 0; i < m_vertex_count; i++) {
-						v_texture_data_arr[i] = new_texture_data[i].Texture_Coord();
-					}
-
-					PW_GL_VOID_CALL(glBindBuffer(GL_ARRAY_BUFFER, m_texture_object), true, false);
+				if (p_index < m_bo_size) {
+					PW_GL_VOID_CALL(glBindBuffer(GL_ARRAY_BUFFER, m_buffer_object), true, false);
 
 					PW_GL_VOID_CALL(
-						glBufferSubData(GL_ARRAY_BUFFER, MUL_UINT64(p_index, MUL_UINT64(v_unit_size, m_vertex_count)), MUL_UINT64(m_vertex_count, v_unit_size), &v_texture_data_arr[0]),
+						Vertex_Data* v_temp_read_buffer = static_cast<Vertex_Data*>(glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY)),
 						true, false
 					);
 
-					PW_GL_VOID_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0), true, false);
-
-					if (pw::co::Memory::Deallocate<glm::vec2>(v_texture_data_arr) == false) {
-						if (v_texture_data_arr != nullptr) {
-							delete[] v_texture_data_arr;
-							v_texture_data_arr = nullptr;
-						}
+					for (size_t i = 0; i < m_vertex_count; i++) {
+						v_temp_read_buffer[MUL_UINT64(p_index, m_vertex_count) + i].Set_Texture_Coord(p_new_texture_data[i].Texture_Coord());
 					}
+
+
+					PW_GL_VOID_CALL(glUnmapBuffer(GL_ARRAY_BUFFER),
+						true, false
+					);
 
 					PW_GL_VOID_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0), true, false);
 				}
 			}
 			void Mesh::Change_Matrix_Data(uint32_t p_index, const glm::mat4& p_matrix) {
+				constexpr uint32_t v_vertex_size = sizeof(Vertex_Data);
 				constexpr uint32_t v_unit_size = sizeof(glm::mat4);
-				if (p_index < m_to_size) {
-					if (ADD_UINT64(m_mo_marr_max_size, 1) > m_matrix_array_access.size() && m_matrix_array_access.size() != 0) {
-						m_matrix_array_access[m_mo_size_tframe] = std::make_pair(p_index, p_matrix);
-						m_mo_size_tframe = m_mo_size_tframe + 1;
-						return;
+				if (p_index < m_bo_size) {
+					if (m_matrix_array_access.size() > m_mo_size_tframe) {
+						auto v_found = m_matrix_index_converter.find(p_index);
+
+						if (v_found != m_matrix_index_converter.end()) {
+							m_matrix_array_access[m_mo_size_tframe] = std::make_pair(v_found->second, p_matrix);
+							m_mo_size_tframe = m_mo_size_tframe + 1;
+						}
 					}
-					m_matrix_array_access.push_back(std::make_pair(p_index, p_matrix));
-					m_mo_size_tframe = m_mo_size_tframe + 1;
+					else {
+						auto v_found = m_matrix_index_converter.find(p_index);
+
+						if (v_found != m_matrix_index_converter.end()) {
+							m_matrix_array_access.push_back(std::make_pair(v_found->second, p_matrix));
+							m_mo_size_tframe = m_mo_size_tframe + 1;
+						}
+
+					}
 				}
 			}
 			void Mesh::Change_Texture_Handle(uint32_t p_index, const uint64_t& p_texture_handle) {
 				constexpr uint32_t v_unit_size = sizeof(uint64_t);
-				if (p_index < m_to_size) {
-					uint64_t* v_texture_handle{ nullptr };
-					PW_CALL(v_texture_handle = pw::co::Memory::Allocate<uint64_t>(m_vertex_count), true);
-
-					for (size_t i = 0; i < m_vertex_count; i++) {
-						v_texture_handle[i] = p_texture_handle;
-					}
-					PW_GL_VOID_CALL(glBindBuffer(GL_ARRAY_BUFFER, m_texture_handle_object), true, false);
+				if (p_index < m_bo_size) {
+					PW_GL_VOID_CALL(glBindBuffer(GL_ARRAY_BUFFER, m_buffer_object), true, false);
 
 					PW_GL_VOID_CALL(
-						glBufferSubData(GL_ARRAY_BUFFER, MUL_UINT64(p_index, MUL_UINT64(v_unit_size, m_vertex_count)), MUL_UINT64(m_vertex_count, v_unit_size), &v_texture_handle[0]),
+						Vertex_Data* v_temp_read_buffer = static_cast<Vertex_Data*>(glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY)),
+						true, false
+					);
+
+					for (size_t i = 0; i < m_vertex_count; i++) {
+						v_temp_read_buffer[MUL_UINT64(p_index, m_vertex_count) + i].Set_Texture_Handle(p_texture_handle);
+					}
+
+
+					PW_GL_VOID_CALL(glUnmapBuffer(GL_ARRAY_BUFFER),
+						true, false
+					);
+
+					PW_GL_VOID_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0), true, false);
+				}
+			}
+			void Mesh::Label_Transparent_Texture_Handle(const uint64_t& p_texture_handle) {
+				auto v_found = m_transparent_textures.find(p_texture_handle);
+
+				if (v_found == m_transparent_textures.end()) {
+					m_transparent_textures.insert(p_texture_handle);
+				}
+			}
+			void Mesh::Validate_Multitex(uint32_t p_associated_index, const std::vector<uint64_t>& p_texture_handles) {
+				for (auto i = p_texture_handles.begin(); i != p_texture_handles.end(); i++) {
+					auto v_found = m_transparent_textures.find((*i));
+
+					if (v_found != m_transparent_textures.end()) {
+						m_transparent_indices.insert(p_associated_index);
+					}
+				}
+			}
+			void Mesh::Initialize() {
+				// SSBO matrices
+				PW_GL_VOID_CALL(glGenBuffers(1, &m_model_object), true, false);
+				PW_GL_VOID_CALL(glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_model_object), true, false);
+
+				PW_GL_VOID_CALL(
+					glBufferData(GL_SHADER_STORAGE_BUFFER, TO_INT64(sizeof(glm::mat4)) * m_mo_max_size, nullptr, GL_DYNAMIC_DRAW),
+					true, false
+				);
+				PW_GL_VOID_CALL(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, m_model_object), true, false);
+
+				PW_GL_VOID_CALL(glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0), true, false);
+			}
+			void Mesh::Release() {
+				PW_GL_VOID_CALL(glDeleteBuffers(1, &m_model_object), true, false);
+
+				m_matrix_array_access.clear();
+				m_mo_free_spaces.clear();
+			}
+			void Mesh::Add_To_Buffer(Vertex_Data* p_data) {
+				constexpr uint32_t v_buffer_object_size = sizeof(Vertex_Data);
+
+				if (m_render_index_free_spaces.size() > 0) {
+					PW_GL_VOID_CALL(glBindBuffer(GL_ARRAY_BUFFER, m_buffer_object), true, false);
+
+					PW_GL_VOID_CALL(
+						glBufferSubData(GL_ARRAY_BUFFER, MUL_UINT64(m_render_index_free_spaces[0], MUL_UINT64(v_buffer_object_size, m_vertex_count)), MUL_UINT64(m_vertex_count, v_buffer_object_size), &p_data[0]),
 						true, false
 					);
 
 					PW_GL_VOID_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0), true, false);
 
-					if (pw::co::Memory::Deallocate<uint64_t>(v_texture_handle) == false) {
-						if (v_texture_handle != nullptr) {
-							delete[] v_texture_handle;
-							v_texture_handle = nullptr;
+					return;
+				}
+
+				if (m_bo_size < m_bo_max_size) {
+					m_bo_size = m_bo_size + 1;
+
+					PW_GL_VOID_CALL(glBindBuffer(GL_ARRAY_BUFFER, m_buffer_object), true, false);
+
+					PW_GL_VOID_CALL(
+						glBufferSubData(GL_ARRAY_BUFFER, MUL_UINT64(m_vertex_count, MUL_UINT64((m_bo_size - 1), v_buffer_object_size)), MUL_UINT64(m_vertex_count, v_buffer_object_size), &p_data[0]),
+						true, false
+					);
+
+					PW_GL_VOID_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0), true, false);
+				}
+				else {
+					PW_GL_VOID_CALL(glBindVertexArray(m_array_object), true, false);
+					// m_size >= m_max_size
+					// Allocate new buffer
+					uint32_t v_new_buffer_size = m_bo_max_size + TO_UINT32(m_bo_max_size * glm::golden_ratio<double>());
+					// Vertex Data
+					{
+						PW_GL_VOID_CALL(
+							glBindBuffer(GL_ARRAY_BUFFER, m_buffer_object),
+							true, false
+						);
+
+						PW_CALL(Vertex_Data* v_read_buffer = pw::co::Memory::Allocate<Vertex_Data>(MUL_UINT64(m_vertex_count, v_new_buffer_size)), true);
+
+						PW_GL_VOID_CALL(
+							Vertex_Data* v_temp_read_buffer = static_cast<Vertex_Data*>(glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY)),
+							true, false
+						);
+
+						for (uint32_t i = 0; i < MUL_UINT32(m_vertex_count, m_bo_max_size); i++) {
+							v_read_buffer[i] = v_temp_read_buffer[i];
+						}
+						for (uint32_t i = 0; i < m_vertex_count; i++) {
+							v_read_buffer[(m_vertex_count * m_bo_max_size) + i] = p_data[i];
+						}
+						for (uint32_t i = MUL_UINT32(m_vertex_count, (m_bo_max_size + 1)); i < MUL_UINT32(m_vertex_count, v_new_buffer_size); i++) {
+							v_read_buffer[i] = Vertex_Data();
+						}
+
+						m_bo_size = m_bo_size + 1;
+
+						PW_GL_VOID_CALL(glUnmapBuffer(GL_ARRAY_BUFFER),
+							true, false
+						);
+						PW_GL_VOID_CALL(
+							glBufferData(GL_ARRAY_BUFFER, MUL_UINT64(m_vertex_count, MUL_UINT64(v_buffer_object_size, v_new_buffer_size)), &v_read_buffer[0], GL_DYNAMIC_DRAW),
+							true, false
+						);
+
+						PW_GL_VOID_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0), true, false);
+
+						if (pw::co::Memory::Deallocate<Vertex_Data>(v_read_buffer) == false) {
+							if (v_read_buffer != nullptr) {
+								delete[] v_read_buffer;
+								v_read_buffer = nullptr;
+							}
 						}
 					}
+					// Index Data
+					{
+						PW_GL_VOID_CALL(
+							glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_element_object),
+							true, false
+						);
+
+						PW_CALL(uint32_t* v_read_buffer = pw::co::Memory::Allocate<uint32_t>(MUL_UINT64(m_indice_count, v_new_buffer_size)), true);
+
+						PW_GL_VOID_CALL(
+							uint32_t* v_temp_read_buffer = static_cast<uint32_t*>(glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_READ_ONLY)),
+							true, false
+						);
+
+						for (uint32_t i = 0; i < MUL_UINT32(m_indice_count, m_bo_max_size); i++) {
+							v_read_buffer[i] = v_temp_read_buffer[i];
+						}
+						for (uint32_t i = MUL_UINT32(m_indice_count, m_bo_max_size); i < MUL_UINT32(m_indice_count, v_new_buffer_size); i++) {
+							v_read_buffer[i] = v_read_buffer[(i - 6)] + 4;
+						}
+
+						PW_GL_VOID_CALL(glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER),
+							true, false
+						);
+						PW_GL_VOID_CALL(
+							glBufferData(GL_ELEMENT_ARRAY_BUFFER, MUL_UINT64(m_indice_count, MUL_UINT64(sizeof(uint32_t), v_new_buffer_size)), &v_read_buffer[0], GL_DYNAMIC_DRAW),
+							true, false
+						);
+
+						PW_GL_VOID_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0), true, false);
+
+						if (pw::co::Memory::Deallocate<uint32_t>(v_read_buffer) == false) {
+							if (v_read_buffer != nullptr) {
+								delete[] v_read_buffer;
+								v_read_buffer = nullptr;
+							}
+						}
+					}
+					m_bo_max_size = v_new_buffer_size;
+
+					PW_GL_VOID_CALL(glBindVertexArray(0), true, false);
+				}
+			}
+			uint32_t Mesh::Add_Matrix_To_SSBO(const glm::mat4* p_data) {
+				constexpr uint32_t v_unit_size = sizeof(glm::mat4);
+
+				if (m_mo_free_spaces.size() > 0) {
+					PW_GL_CUSTOM_CALL(glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_model_object), true, false, uint32_t);
+
+					PW_GL_CUSTOM_CALL(
+						glBufferSubData(GL_SHADER_STORAGE_BUFFER, MUL_UINT64(m_mo_free_spaces[0], v_unit_size), v_unit_size, &p_data[0]),
+						true, false, uint32_t
+					);
+
+					uint32_t v_temp = m_mo_free_spaces[0];
+
+					m_mo_free_spaces.erase(m_mo_free_spaces.begin());
+
+					PW_GL_CUSTOM_CALL(glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0), true, false, uint32_t);
+
+					return v_temp;
+				}
+
+				if (m_mo_size < m_mo_max_size) {
+					m_mo_size = m_mo_size + 1;
+
+					PW_GL_CUSTOM_CALL(glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_model_object), true, false, uint32_t);
+
+					PW_GL_CUSTOM_CALL(
+						glBufferSubData(GL_SHADER_STORAGE_BUFFER, MUL_UINT64(m_mo_size - 1, v_unit_size), v_unit_size, &p_data[0]),
+						true, false, uint32_t
+					);
+
+					PW_GL_CUSTOM_CALL(glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0), true, false, uint32_t);
+
+					return m_mo_size - 1;
+				}
+				else {
+					// m_size >= m_max_size
+					// Allocate new buffer
+					uint32_t v_new_buffer_size = m_mo_max_size + TO_UINT32(m_mo_max_size * glm::golden_ratio<double>());
+
+					PW_GL_CUSTOM_CALL(
+						glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_model_object),
+						true, false, uint32_t
+					);
+
+					PW_CUSTOM_CALL(glm::mat4* v_read_buffer = pw::co::Memory::Allocate<glm::mat4>(v_new_buffer_size), true, uint32_t);
+
+					PW_GL_CUSTOM_CALL(
+						glm::mat4* v_temp_read_buffer = static_cast<glm::mat4*>(glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY)),
+						true, false, uint32_t
+					);
+
+					for (uint32_t i = 0; i < m_mo_max_size; i++) {
+						v_read_buffer[i] = v_temp_read_buffer[i];
+					}
+					v_read_buffer[m_mo_max_size] = *p_data;
+					for (uint32_t i = (m_mo_max_size + 1); i < v_new_buffer_size; i++) {
+						v_read_buffer[i] = glm::mat4();
+					}
+
+					m_mo_size = m_mo_size + 1;
+
+					PW_GL_CUSTOM_CALL(glUnmapBuffer(GL_SHADER_STORAGE_BUFFER),
+						true, false, uint32_t
+					);
+					PW_GL_CUSTOM_CALL(
+						glBufferData(GL_SHADER_STORAGE_BUFFER, MUL_UINT64(v_unit_size, v_new_buffer_size), &v_read_buffer[0], GL_DYNAMIC_DRAW),
+						true, false, uint32_t
+					);
+
+					PW_GL_CUSTOM_CALL(glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0), true, false, uint32_t);
+
+					if (pw::co::Memory::Deallocate<glm::mat4>(v_read_buffer) == false) {
+						if (v_read_buffer != nullptr) {
+							delete[] v_read_buffer;
+							v_read_buffer = nullptr;
+						}
+					}
+
+					m_mo_max_size = v_new_buffer_size;
+
+					return m_mo_size - 1;
 				}
 			}
 	ST_NAMESPACE_END
 PW_NAMESPACE_END
-/*
-* constexpr uint32_t v_texture_unit_size = 2 * sizeof(float);
-
-				if (m_to_size < m_to_max_size) {
-					m_to_size = m_to_size + 1;
-
-					PW_GL_CUSTOM_CALL(glBindBuffer(GL_ARRAY_BUFFER, m_texture_object), true, false, uint32_t);
-
-					PW_GL_CUSTOM_CALL(
-						glBufferSubData(GL_ARRAY_BUFFER, m_to_size * v_texture_unit_size * m_vertex_count, m_vertex_count * v_texture_unit_size, &v_texture_data_arr[0]),
-						true, false, uint32_t
-					);
-
-					PW_GL_CUSTOM_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0), true, false, uint32_t);
-				}
-				else {
-					// m_to_size >= m_to_max_size
-					// Prepare to read the old buffer data
-					PW_GL_CUSTOM_CALL(
-						glBindBuffer(GL_COPY_READ_BUFFER, m_texture_object),
-						true, false, uint32_t
-					);
-
-					// Allocate new buffer
-					uint32_t v_temp_buffer{ 0 };
-					uint32_t v_new_buffer_size = TO_UINT32(m_to_max_size * glm::golden_ratio<double>());
-					PW_GL_CUSTOM_CALL(
-						glGenBuffers(1, &v_temp_buffer),
-						true, false, uint32_t
-					);
-					PW_GL_CUSTOM_CALL(
-						glBindBuffer(GL_COPY_WRITE_BUFFER, v_temp_buffer),
-						true, false, uint32_t
-					);
-					PW_GL_CUSTOM_CALL(
-						glBufferData(GL_COPY_WRITE_BUFFER, m_vertex_count * v_texture_unit_size * v_new_buffer_size, nullptr, GL_DYNAMIC_DRAW),
-						true, false, uint32_t
-					);
-
-					// Write old buffer into new buffer
-					PW_GL_CUSTOM_CALL(
-						glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, 0, 0, m_to_max_size),
-						true, false, uint32_t
-					);
-					// Set old buffer to new buffer
-					// Might be memory leak
-					m_texture_object = v_temp_buffer;
-					m_to_max_size = v_new_buffer_size;
-					// Insert element into new buffer
-					m_to_size = m_to_size + 1;
-
-					PW_GL_CUSTOM_CALL(glBindBuffer(GL_ARRAY_BUFFER, m_texture_object), true, false, uint32_t);
-
-					PW_GL_CUSTOM_CALL(
-						glBufferSubData(GL_ARRAY_BUFFER, m_to_size * v_texture_unit_size * m_vertex_count, m_vertex_count * v_texture_unit_size, &v_texture_data_arr[0]),
-						true, false, uint32_t
-					);
-
-					PW_GL_CUSTOM_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0), true, false, uint32_t);
-				}
-				*/
-		/*
-		* // Texture
-				PW_GL_CUSTOM_CALL(glBindBuffer(GL_ARRAY_BUFFER, m_texture_object), true, false, uint32_t);
-				PW_GL_CUSTOM_CALL(glBufferData(GL_ARRAY_BUFFER, TO_INT64(m_vertex_count *
-					sizeof(v_texture_data_arr[0])), &v_texture_data_arr[0], GL_STATIC_DRAW), true, false, uint32_t);
-				PW_GL_CUSTOM_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0), true, false, uint32_t);
-				// Color
-				PW_GL_CUSTOM_CALL(glBindBuffer(GL_ARRAY_BUFFER, m_color_object), true, false, uint32_t);
-				PW_GL_CUSTOM_CALL(glBufferData(GL_ARRAY_BUFFER, TO_INT64(m_vertex_count *
-					sizeof(v_color_data[0])), &v_color_data[0], GL_STATIC_DRAW), true, false, uint32_t);
-				PW_GL_CUSTOM_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0), true, false, uint32_t);
-				// Model Matrix
-				PW_GL_CUSTOM_CALL(glBindBuffer(GL_ARRAY_BUFFER, m_model_object), true, false, uint32_t);
-				PW_GL_CUSTOM_CALL(glBufferData(GL_ARRAY_BUFFER, TO_INT64(sizeof(glm::mat4)), glm::value_ptr(p_data.m_matrix), GL_DYNAMIC_DRAW), true, false, uint32_t);
-				PW_GL_CUSTOM_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0), true, false, uint32_t);
-				// Is_Colored
-				PW_GL_CUSTOM_CALL(glBindBuffer(GL_ARRAY_BUFFER, m_is_colored_object), true, false, uint32_t);
-				PW_GL_CUSTOM_CALL(glBufferData(GL_ARRAY_BUFFER, TO_INT64(sizeof(int32_t)* m_vertex_count), &v_is_colored[0], GL_STATIC_DRAW), true, false, uint32_t);
-				PW_GL_CUSTOM_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0), true, false, uint32_t);
-				// Is_Text
-				PW_GL_CUSTOM_CALL(glBindBuffer(GL_ARRAY_BUFFER, m_is_text_object), true, false, uint32_t);
-				PW_GL_CUSTOM_CALL(glBufferData(GL_ARRAY_BUFFER, TO_INT64(sizeof(int32_t)* m_vertex_count), &v_is_text[0], GL_STATIC_DRAW), true, false, uint32_t);
-				PW_GL_CUSTOM_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0), true, false, uint32_t);
-				// Texture_Handle
-				PW_GL_CUSTOM_CALL(glBindBuffer(GL_ARRAY_BUFFER, m_texture_handle_object), true, false, uint32_t);
-				PW_GL_CUSTOM_CALL(glBufferData(GL_ARRAY_BUFFER, TO_INT64(sizeof(uint64_t)* m_vertex_count), &v_texture_handle[0], GL_STATIC_DRAW), true, false, uint32_t);
-				PW_GL_CUSTOM_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0), true, false, uint32_t);
-				*/

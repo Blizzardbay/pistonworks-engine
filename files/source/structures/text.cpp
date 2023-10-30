@@ -92,13 +92,23 @@ PW_NAMESPACE_SRT
 							// baseline characters, may cause problems for some fonts
 							// TODO : Add opt out for normal calculation method
 							if (p_text[i] == L'g' || p_text[i] == L'p' || p_text[i] == L'y') {
-								if (i == (*v_current_delimiter)) {
-									PW_CALL(v_char_model = pw::co::Memory::Allocate_Args<Model>(Geometry_Types::SQUARE, v_current_char->Character_Data(),
-										glm::vec2(m_text_position.x + ((float)v_current_char->Baseline_Offset().x * v_x_scale),
-											m_text_position.y - (p_size.y - ((float)v_current_char->Baseline_Offset().y * v_y_scale))),
-										0.0f, glm::vec2(((float)v_current_char->Character_Size().x * v_x_scale),
-											(v_character_height)),
-										p_default_color, false, false, 1), true);
+								if (v_current_delimiter != v_delimiters.end()) {
+									if (i == (*v_current_delimiter)) {
+										PW_CALL(v_char_model = pw::co::Memory::Allocate_Args<Model>(Geometry_Types::SQUARE, v_current_char->Character_Data(),
+											glm::vec2(m_text_position.x + ((float)v_current_char->Baseline_Offset().x * v_x_scale),
+												m_text_position.y - (p_size.y - ((float)v_current_char->Baseline_Offset().y * v_y_scale))),
+											0.0f, glm::vec2(((float)v_current_char->Character_Size().x * v_x_scale),
+												(v_character_height)),
+											p_default_color, false, false, 1), true);
+									}
+									else {
+										PW_CALL(v_char_model = pw::co::Memory::Allocate_Args<Model>(Geometry_Types::SQUARE, v_current_char->Character_Data(),
+											glm::vec2(m_text_position.x + ((float)v_current_char->Baseline_Offset().x * v_x_scale),
+												m_text_position.y - (p_size.y - ((float)v_current_char->Baseline_Offset().y * v_y_scale))),
+											0.0f, glm::vec2(((float)v_current_char->Character_Size().x * v_x_scale),
+												(v_character_height)),
+											(*v_current_color), false, false, 1), true);
+									}
 								}
 								else {
 									PW_CALL(v_char_model = pw::co::Memory::Allocate_Args<Model>(Geometry_Types::SQUARE, v_current_char->Character_Data(),
@@ -110,13 +120,23 @@ PW_NAMESPACE_SRT
 								}
 							}
 							else {
-								if (i == (*v_current_delimiter)) {
-									PW_CALL(v_char_model = pw::co::Memory::Allocate_Args<Model>(Geometry_Types::SQUARE, v_current_char->Character_Data(),
-										glm::vec2(m_text_position.x + ((float)v_current_char->Baseline_Offset().x * v_x_scale),
-											m_text_position.y - (p_size.y - (((float)v_current_char->Baseline_Offset().y + ((float)v_current_char->Character_Size().y - (float)v_current_char->Baseline_Offset().y)) * v_y_scale))),
-										0.0f, glm::vec2(((float)v_current_char->Character_Size().x * v_x_scale),
-											(v_character_height)),
-										p_default_color, false, false, 1), true);
+								if (v_current_delimiter != v_delimiters.end()) {
+									if (i == (*v_current_delimiter)) {
+										PW_CALL(v_char_model = pw::co::Memory::Allocate_Args<Model>(Geometry_Types::SQUARE, v_current_char->Character_Data(),
+											glm::vec2(m_text_position.x + ((float)v_current_char->Baseline_Offset().x * v_x_scale),
+												m_text_position.y - (p_size.y - (((float)v_current_char->Baseline_Offset().y + ((float)v_current_char->Character_Size().y - (float)v_current_char->Baseline_Offset().y)) * v_y_scale))),
+											0.0f, glm::vec2(((float)v_current_char->Character_Size().x * v_x_scale),
+												(v_character_height)),
+											p_default_color, false, false, 1), true);
+									}
+									else {
+										PW_CALL(v_char_model = pw::co::Memory::Allocate_Args<Model>(Geometry_Types::SQUARE, v_current_char->Character_Data(),
+											glm::vec2(m_text_position.x + ((float)v_current_char->Baseline_Offset().x * v_x_scale),
+												m_text_position.y - (p_size.y - (((float)v_current_char->Baseline_Offset().y + ((float)v_current_char->Character_Size().y - (float)v_current_char->Baseline_Offset().y)) * v_y_scale))),
+											0.0f, glm::vec2(((float)v_current_char->Character_Size().x * v_x_scale),
+												(v_character_height)),
+											(*v_current_color), false, false, 1), true);
+									}
 								}
 								else {
 									PW_CALL(v_char_model = pw::co::Memory::Allocate_Args<Model>(Geometry_Types::SQUARE, v_current_char->Character_Data(),
@@ -135,10 +155,17 @@ PW_NAMESPACE_SRT
 							m_text_string.push_back(v_char_model);
 							m_text_position.x = m_text_position.x + TO_INT32((float)v_current_char->Spacing() * v_x_scale);
 							m_text_size.x = m_text_size.x + TO_INT32((float)v_current_char->Spacing() * v_x_scale);
-
-							if (i == (*v_current_delimiter)) {
-								if ((v_current_delimiter + 1) != v_delimiters.end()) {
-									v_current_delimiter = v_current_delimiter + 1;
+							if (v_current_delimiter != v_delimiters.end()) {
+								if (i == (*v_current_delimiter)) {
+									if ((v_current_delimiter + 1) != v_delimiters.end()) {
+										v_current_delimiter = v_current_delimiter + 1;
+									}
+								}
+								else {
+									v_current_color = v_current_color + 1;
+									if (v_current_color == p_colors.end()) {
+										v_current_color = p_colors.begin();
+									}
 								}
 							}
 							else {
@@ -360,9 +387,9 @@ PW_NAMESPACE_SRT
 					}
 				}
 			}
-			void Text::Render() {
+			void Text::Render(const uint32_t& p_layer) {
 				for (size_t i = 0; i < m_text_string.size(); i++) {
-					PW_CALL(m_text_string.at(i)->Render(), true);
+					PW_CALL(m_text_string.at(i)->Render(p_layer), true);
 				}
 			}
 			void Text::Set_Position(const glm::vec2& p_new_position) {
@@ -464,6 +491,9 @@ PW_NAMESPACE_SRT
 			}
 			const std::wstring& Text::String() const {
 				return m_text;
+			}
+			const std::vector<st::Model*>& Text::Models() const {
+				return m_text_string;
 			}
 	ST_NAMESPACE_END
 PW_NAMESPACE_END

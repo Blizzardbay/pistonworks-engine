@@ -182,15 +182,14 @@ PW_NAMESPACE_SRT
 				// Create loading animation
 				std::tuple<st::Texture*, st::Animation*> v_animation{};
 				PW_CALL(v_animation = co::File_Loader::Load_Animation_File(L"Loading_Bar.gif", false, true, false, true), true);
-				PW_CALL(st::Model* v_model = pw::co::Memory::Allocate_Args<st::Model>(st::Geometry_Types::SQUARE, v_animation._Myfirst._Val, glm::vec2(0.0f, cm::Constant::Window_Height()), 0.0f, glm::vec2(cm::Constant::Window_Width(), cm::Constant::Window_Height())), true);
+				PW_CALL(st::Model * v_model = pw::co::Memory::Allocate_Args<st::Model>(st::Geometry_Types::SQUARE, v_animation._Myfirst._Val, glm::vec2(-TO_FLOAT(cm::Constant::Hafe_Window_Width()), cm::Constant::Hafe_Window_Height()), 0.0f, glm::vec2(cm::Constant::Window_Width(), cm::Constant::Window_Height())), true);
 				PW_CALL(v_animation._Get_rest()._Myfirst._Val->Finish_Init(v_model->Mesh()->Vertices(), v_model->Mesh()->Vertex_Count()), true);
 				st::Actor v_loading_bar = st::Actor(v_model, v_animation._Get_rest()._Myfirst._Val);
 
 				PW_CALL(v_animation = co::File_Loader::Load_Animation_File(L"Loading_PW_Logo.gif", false, true, false, true), true);
-				PW_CALL(v_model = pw::co::Memory::Allocate_Args<st::Model>(st::Geometry_Types::SQUARE, v_animation._Myfirst._Val, glm::vec2(cm::Constant::Window_Width() - 163.0f, 163.0f), 0.0f, glm::vec2(163.0f, 163.0f)), true);
+				PW_CALL(v_model = pw::co::Memory::Allocate_Args<st::Model>(st::Geometry_Types::SQUARE, v_animation._Myfirst._Val, glm::vec2(TO_FLOAT(cm::Constant::Hafe_Window_Width()) - 163.0f, -TO_FLOAT(cm::Constant::Hafe_Window_Height()) + 163.0f), 0.0f, glm::vec2(163.0f, 163.0f)), true);
 				PW_CALL(v_animation._Get_rest()._Myfirst._Val->Finish_Init(v_model->Mesh()->Vertices(), v_model->Mesh()->Vertex_Count()), true);
-				st::Actor v_loading_icon = st::Actor(v_model, v_animation._Get_rest()._Myfirst._Val);
-
+				st::Actor v_loading_icon = st::Actor(v_model, v_animation._Get_rest()._Myfirst._Val, 1);
 				v_model = nullptr;
 
 				v_loading_bar.Stop_Animation();
@@ -202,11 +201,19 @@ PW_NAMESPACE_SRT
 
 					// Engine Input
 					PW_GLFW_VOID_CALL(glfwPollEvents(), true);
+					// Engine Frame / Shader
+					PW_GL_VOID_CALL(glClearColor(0.0f, 0.0f, 0.0f, 1.0f), true, false);
+					PW_GL_VOID_CALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT), true, false);
 					// Update the projection information for the vertex shader / fragment shader
 					PW_CALL(pw::co::Shader::Update_Projection(), true);
 
+					// Send Draws
 					PW_CALL(v_loading_bar.Render(), true);
 					PW_CALL(v_loading_icon.Render(), true);
+
+					// Render
+					PW_CALL(pw::st::Model::Draw(), true);
+					PW_CALL(pw::st::Model::Draw_Transparent(), true);
 
 					// Swap Open GL Buffers
 					PW_CALL((*p_state_function)(), true);
@@ -274,14 +281,22 @@ PW_NAMESPACE_SRT
 
 						// Engine Input
 						PW_GLFW_VOID_CALL(glfwPollEvents(), true);
+						// Engine Frame / Shader
+						PW_GL_VOID_CALL(glClearColor(0.0f, 0.0f, 0.0f, 1.0f), true, false);
+						PW_GL_VOID_CALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT), true, false);
 						// Update the projection information for the vertex shader / fragment shader
 						PW_CALL(pw::co::Shader::Update_Projection(), true);
 						if (v_loaded > v_quarter && v_quarter <= 1.0f) {
 							PW_CALL(v_loading_bar.Advance_Animation(), true);
 							v_quarter = v_quarter + 0.25f;
 						}
+						// Send Draws
 						PW_CALL(v_loading_bar.Render(), true);
 						PW_CALL(v_loading_icon.Render(), true);
+
+						// Render
+						PW_CALL(pw::st::Model::Draw(), true);
+						PW_CALL(pw::st::Model::Draw_Transparent(), true);
 
 						// Swap Open GL Buffers
 						PW_CALL((*p_state_function)(), true);
@@ -298,14 +313,22 @@ PW_NAMESPACE_SRT
 
 						// Engine Input
 						PW_GLFW_VOID_CALL(glfwPollEvents(), true);
+						// Engine Frame / Shader
+						PW_GL_VOID_CALL(glClearColor(0.0f, 0.0f, 0.0f, 1.0f), true, false);
+						PW_GL_VOID_CALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT), true, false);
 						// Update the projection information for the vertex shader / fragment shader
 						PW_CALL(pw::co::Shader::Update_Projection(), true);
 						if (v_loaded > v_quarter && v_quarter <= 1.0f) {
 							PW_CALL(v_loading_bar.Advance_Animation(), true);
 							v_quarter = v_quarter + 0.25f;
 						}
+						// Send Draws
 						PW_CALL(v_loading_bar.Render(), true);
 						PW_CALL(v_loading_icon.Render(), true);
+
+						// Render
+						PW_CALL(pw::st::Model::Draw(), true);
+						PW_CALL(pw::st::Model::Draw_Transparent(), true);
 
 						// Swap Open GL Buffers
 						PW_CALL((*p_state_function)(), true);

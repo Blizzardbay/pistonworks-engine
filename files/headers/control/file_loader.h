@@ -150,7 +150,7 @@ PW_NAMESPACE_SRT
 			static std::function<void(const std::wstring&)> m_remove_scene_function;
 			static std::function<void(const std::wstring&, const std::wstring&, const bool&)> m_sub_scene_render;
 
-			static std::map<std::wstring, st::Texture*>* m_texture_repository;
+			static std::map<std::wstring, std::map<bool, std::map<bool, st::Texture*>>>* m_texture_repository;
 		};
 	CO_NAMESPACE_END
 PW_NAMESPACE_END

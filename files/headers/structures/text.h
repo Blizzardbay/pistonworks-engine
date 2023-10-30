@@ -80,7 +80,7 @@ PW_NAMESPACE_SRT
 		// Public Variables   
 		public:
 			/* Error List: PW_FUNCTION_ERROR */
-			void Render();
+			void Render(const uint32_t& p_layer);
 			/* Error List: NONE */
 			void Set_Position(const glm::vec2& p_new_position);
 			/* Error List: NONE */
@@ -101,6 +101,8 @@ PW_NAMESPACE_SRT
 			const uint64_t Count() const;
 			/* Error List: NONE */
 			const std::wstring& String() const;
+			/* Error List: NONE */
+			const std::vector<st::Model*>& Models() const;
 		// Private Functions/Macros 
 		private:
 		// Private Variables  

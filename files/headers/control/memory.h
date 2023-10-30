@@ -251,7 +251,7 @@ PW_NAMESPACE_SRT
 					return v_memory;
 				}
 				else {
-					PW_CALL(type* v_memory = new(std::nothrow) type[p_count](copy), false);
+					PW_CALL(type* v_memory = new(std::nothrow) type[p_count], false);
 
 					if (v_memory == nullptr) {
 						// If we can't allocate the memory throw a fatal error and exit the engine immediately
@@ -259,7 +259,9 @@ PW_NAMESPACE_SRT
 						SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::Memory", L"Failure To Allocate Memory.", ERROR_LINE, __FILEW__, L"Allocate"));
 						return nullptr;
 					}
-
+					for (size_t i = 0; i < p_count; i++) {
+						v_memory[i] = type(copy);
+					}
 					// Add memory to the total engine count
 					m_heap_memory = m_heap_memory + ((size_t)sizeof(type) * p_count);
 					// Store the highest about of memory the engine had

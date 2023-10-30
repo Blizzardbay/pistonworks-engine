@@ -89,6 +89,7 @@ std::filesystem::path pw::cm::Constant::m_game_path{
 
 bool pw::cm::Constant::m_window_lock{ true };
 const float pw::cm::Constant::m_inverse_z_tan{ -(1.0f / tan(glm::radians(45.0f / 2.0f))) };
+std::chrono::steady_clock::duration pw::cm::Constant::m_expected_frame_time{ 0 };
 
 #ifdef PW_DEBUG_MODE
 pw::PW_FUNCTION pw::cm::Constant::m_debug_info{};

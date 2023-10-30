@@ -37,15 +37,19 @@ PW_NAMESPACE_SRT
 
 						v_previous = v_indices + 1;
 					}
+					if (v_positions.size() > 0) {
+						uint64_t v_last_position = v_positions.at(v_positions.size() - 1);
 
-					uint64_t v_last_position = v_positions.at(v_positions.size() - 1);
+						if (v_last_position < p_input.size() - 1) {
+							std::wstring v_phrase = p_input.substr(v_last_position + 1, p_input.size() - v_last_position);
 
-					if (v_last_position < p_input.size() - 1) {
-						std::wstring v_phrase = p_input.substr(v_last_position + 1, p_input.size() - v_last_position);
-
-						if (v_phrase != L"") {
-							v_output.push_back(v_phrase);
+							if (v_phrase != L"") {
+								v_output.push_back(v_phrase);
+							}
 						}
+					}
+					else {
+						v_output.push_back(p_input);
 					}
 
 					return v_output;

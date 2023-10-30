@@ -64,7 +64,6 @@ PW_NAMESPACE_SRT
 						return;
 					}
 				}
-
 				PW_CALL(pw::co::Text_Renderer::Initialize(), false);
 				PW_SET_RET(m_no_error, true);
 				PW_CALL(pw::co::Engine_Queue::Initialize(), false);
@@ -107,7 +106,7 @@ PW_NAMESPACE_SRT
 				// Version---------------->3     .      3
 				PW_GLFW_VOID_CALL(glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4), false);
 				PW_SET_RET(m_no_error, true);
-				PW_GLFW_VOID_CALL(glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5), false);
+				PW_GLFW_VOID_CALL(glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6), false);
 				PW_SET_RET(m_no_error, true);
 				// For only using newer code and excluding other older code
 				PW_GLFW_VOID_CALL(glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE), false);
@@ -164,6 +163,12 @@ PW_NAMESPACE_SRT
 				PW_GL_VOID_CALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA), false, false);
 				PW_SET_RET(m_no_error, true);
 
+				// "Layers" are decided by depth testing on a orthographic display
+				PW_GL_VOID_CALL(glEnable(GL_DEPTH_TEST), false, false);
+				PW_SET_RET(m_no_error, true);
+				PW_GL_VOID_CALL(glDepthFunc(GL_LEQUAL), false, false);
+				PW_SET_RET(m_no_error, true);
+
 				#ifdef PW_DEBUG_MODE
 					PW_CALL(PRINT_BLOCK(L"Settings", L"Display Creation  ( Completed )", ENGINE_MSG), false);
 					PW_SET_RET(m_no_error, true);
@@ -197,6 +202,7 @@ PW_NAMESPACE_SRT
 				cm::Constant::Set_Refresh_Rate(glfwGetVideoMode(v_monitor)->refreshRate);
 
 				(void)pw::st::Camera::Update_Camera();
+				pw::st::Camera::Center_Camera(glm::vec2(0.0f, 0.0f));
 				//////////////////////////////////
 				// Input Callback Init
 				//////////////////////////////////
@@ -246,6 +252,8 @@ PW_NAMESPACE_SRT
 				//////////////////////////////////
 				// Finish Up Program Things
 				//////////////////////////////////
+				PW_CALL(pw::st::Mesh::Initialize(), false);
+				PW_SET_RET(m_no_error, true);
 				// For setting up view port size
 				PW_GL_VOID_CALL(glViewport(0, 0, TO_INT32(cm::Constant::Window_Width()), TO_INT32(cm::Constant::Window_Height())), false, true);
 				PW_SET_RET(m_no_error, true);
@@ -289,8 +297,8 @@ PW_NAMESPACE_SRT
 				//////////////////////////////////
 				// Init Key Engine Objects
 				//////////////////////////////////
-				PW_CALL(pw::co::Shader::Create_Shader(L"/files/resource/essential/shader/vertex.shader",
-					L"/files/resource/essential/shader/fragment.shader"), true);
+				PW_CALL(pw::co::Shader::Create_Shader(L"/files/resource/essential/shader/vertex.vert",
+					L"/files/resource/essential/shader/fragment.frag"), true);
 
 				PW_CALL(pw::st::Model::Initialize(), true);
 
@@ -309,6 +317,9 @@ PW_NAMESPACE_SRT
 				m_queue_complete = true;
 
 				PW_GLFW_VOID_CALL(glfwSwapInterval(TO_INT16(cm::Constant::Vsync())), true);
+
+				(void)pw::st::Camera::Update_Camera();
+				pw::st::Camera::Center_Camera(glm::vec2(0.0f, 0.0f));
 
 				#ifdef PW_DEBUG_MODE
 					PW_CALL(PRINT_BLOCK(L"Engine Queue", L"Project Load ( Completed )", ENGINE_MSG), true);
@@ -329,6 +340,10 @@ PW_NAMESPACE_SRT
 
 					// Engine Input
 					PW_GLFW_VOID_CALL(glfwPollEvents(), true);
+
+					// Engine Async Timer
+					pw::co::Async_Timer::Poll();
+
 					// Any concurrent events need to be dealt with 
 					pw::co::Input* v_current_input = pw::co::Input::Current_Input();
 					if (v_current_input != nullptr) {
@@ -336,7 +351,7 @@ PW_NAMESPACE_SRT
 					}
 					// Engine Frame / Shader
 					PW_GL_VOID_CALL(glClearColor(0.0f, 0.0f, 0.0f, 1.0f), true, false);
-					PW_GL_VOID_CALL(glClear(GL_COLOR_BUFFER_BIT), true, false);
+					PW_GL_VOID_CALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT), true, false);
 					// Update Model Information After An Event
 					PW_CALL(Engine_Queue::Pre_Queue(), true);
 					// Update the projection information for the vertex shader / fragment shader
@@ -352,6 +367,7 @@ PW_NAMESPACE_SRT
 
 					// Render
 					PW_CALL(pw::st::Model::Draw(), true);
+					PW_CALL(pw::st::Model::Draw_Transparent(), true);
 
 					// Swap Open GL Buffers
 					PW_CALL(Update_Engine_State(), true);
@@ -400,6 +416,7 @@ PW_NAMESPACE_SRT
 					pw::co::Input::Release();
 					pw::st::Time_Constant::Release();
 					pw::co::Multi_Scope_Timer::Release();
+					pw::st::Mesh::Release();
 					pw::st::Model::Release();
 					pw::co::Async_Timer::Release();
 

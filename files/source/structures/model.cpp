@@ -229,6 +229,11 @@ PW_NAMESPACE_SRT
 					m_is_text{ p_is_text }, m_color{ glm::vec4(0.0f, 0.0f, 0.0f, 0.0f) }, m_matrix{}, m_id{ ++Model::m_model_id_assigner }, m_render_index{ 0 },
 					m_offset{ NULL }, m_last_rotation{ 0.0f },
 					m_repeats{ p_repeats }, m_attached{ false }, m_fixed_rotation{ p_fixed_rotation }, m_is_copy{ false }, m_changed{ true } {
+				if (p_texture == nullptr) {
+					SET_ERROR_STATE(PW_NULL_PARAMETER_W);
+					SET_ERROR_TYPE(pw::er::Warning_Error(L"pw::st::Model", L"Invalid Parameter: p_texture was nullptr", ERROR_LINE, __FILEW__, L"Model"));
+					return;
+				}
 				if (m_repeats == true) {
 					st::Mesh::Non_Colored v_non_colored{};
 					v_non_colored.m_size = m_size;
@@ -242,7 +247,7 @@ PW_NAMESPACE_SRT
 					if (v_found != m_geometry_holder_noc.end()) {
 						m_mesh = v_found->second;
 
-						m_mesh->Add(v_non_colored);
+						m_render_index = m_mesh->Add(v_non_colored);
 					}
 				}
 				else {
@@ -258,7 +263,7 @@ PW_NAMESPACE_SRT
 					if (v_found != m_geometry_holder_noc.end()) {
 						m_mesh = v_found->second;
 
-						m_mesh->Add(v_non_colored);
+						m_render_index = m_mesh->Add(v_non_colored);
 					}
 				}
 				
@@ -269,6 +274,11 @@ PW_NAMESPACE_SRT
 					m_last_position{ std::numeric_limits<float>::quiet_NaN() }, m_rotation{ p_rotation }, m_size{ p_size }, m_mesh{ nullptr }, m_type{ p_type }, m_is_colored{ true },
 					m_is_text{ p_is_text }, m_color{ p_color }, m_matrix{}, m_id{ ++Model::m_model_id_assigner }, m_render_index{ 0 }, m_offset{ NULL }, m_last_rotation{ 0.0f },
 					m_repeats{ p_repeats }, m_attached{ false }, m_fixed_rotation{ p_fixed_rotation }, m_is_copy{ false }, m_changed{ true } {
+				if (p_texture == nullptr) {
+					SET_ERROR_STATE(PW_NULL_PARAMETER_W);
+					SET_ERROR_TYPE(pw::er::Warning_Error(L"pw::st::Model", L"Invalid Parameter: p_texture was nullptr", ERROR_LINE, __FILEW__, L"Model"));
+					return;
+				}
 				if (m_repeats == true) {
 					st::Mesh::Colored v_colored{};
 					v_colored.m_size = m_size;
@@ -351,7 +361,7 @@ PW_NAMESPACE_SRT
 					m_mesh->Remove(m_render_index);
 				}
 			}
-			void Model::Render() {
+			void Model::Render(const uint32_t& p_layer) {
 				if (TRY_LINE m_texture == nullptr) {
 					SET_ERROR_STATE(PW_NULL_PARAMETER_W);
 					SET_ERROR_TYPE(pw::er::Warning_Error(L"pw::st::Model", L"Invalid Parameter: m_texture was nullptr", ERROR_LINE, __FILEW__, L"Render"));
@@ -362,11 +372,11 @@ PW_NAMESPACE_SRT
 					SET_ERROR_TYPE(pw::er::Warning_Error(L"pw::st::Model", L"Invalid Parameter: m_mesh was nullptr", ERROR_LINE, __FILEW__, L"Render"));
 					return;
 				}
-				PW_CALL(Update_Matrix(), true);
+				PW_CALL(Update_Matrix(p_layer), true);
 
 				PW_CALL(m_mesh->Render(m_render_index), false);
 			}
-			void Model::Render(b2Body* p_model_body) {
+			void Model::Render(const uint32_t& p_layer, b2Body* p_model_body) {
 				if (TRY_LINE m_texture == nullptr) {
 					SET_ERROR_STATE(PW_NULL_PARAMETER_W);
 					SET_ERROR_TYPE(pw::er::Warning_Error(L"pw::st::Model", L"Invalid Parameter: m_texture was nullptr", ERROR_LINE, __FILEW__, L"Render"));
@@ -377,7 +387,7 @@ PW_NAMESPACE_SRT
 					SET_ERROR_TYPE(pw::er::Warning_Error(L"pw::st::Model", L"Invalid Parameter: m_mesh was nullptr", ERROR_LINE, __FILEW__, L"Render"));
 					return;
 				}
-				PW_CALL(Update_Matrix(p_model_body), true);
+				PW_CALL(Update_Matrix(p_layer, p_model_body), true);
 
 				PW_CALL(m_mesh->Render(m_render_index), false);
 			}
@@ -615,8 +625,15 @@ PW_NAMESPACE_SRT
 					PW_CALL(i->second->Draw(), true);
 				}
 			}
-			void Model::Update_Matrix() {
-				//if (*m_position != m_last_position || m_rotation != m_last_rotation || m_offset.y != 0.0f || m_offset.x != 0.0f) {
+			void Model::Draw_Transparent() {
+				for (auto i = m_geometry_holder_noc.begin(); i != m_geometry_holder_noc.end(); i++) {
+					PW_CALL(i->second->Draw_Transparent(), true);
+				}
+				for (auto i = m_geometry_holder_c.begin(); i != m_geometry_holder_c.end(); i++) {
+					PW_CALL(i->second->Draw_Transparent(), true);
+				}
+			}
+			void Model::Update_Matrix(const uint32_t& p_layer) {
 				if (m_changed == true || m_offset.y != 0.0f || m_offset.x != 0.0f) {
 					m_matrix = glm::mat4(1.0f);
 
@@ -629,7 +646,7 @@ PW_NAMESPACE_SRT
 
 					glm::vec2 v_model_difference = glm::vec2(m_position->x + m_offset.x, m_position->y + m_offset.y) - v_tile_center;
 
-					m_matrix = glm::translate(m_matrix, glm::vec3(glm::vec2(m_position->x + m_offset.x, m_position->y + m_offset.y) - v_model_difference, cm::Constant::Inverse_Z_Tan()));
+					m_matrix = glm::translate(m_matrix, glm::vec3(glm::vec2(m_position->x + m_offset.x, m_position->y + m_offset.y) - v_model_difference, p_layer));
 
 					m_matrix = glm::rotate(m_matrix, glm::radians(m_rotation), glm::vec3(0.0f, 0.0f, 1.0f));
 
@@ -640,7 +657,7 @@ PW_NAMESPACE_SRT
 					m_changed = false;
 				}
 			}
-			void Model::Update_Matrix(b2Body*& p_model_body) {
+			void Model::Update_Matrix(const uint32_t& p_layer, b2Body*& p_model_body) {
 				if (p_model_body != nullptr) {
 					if (m_attached != true) {
 						glm::vec2 v_model_center_position = Calculate_Center();
@@ -663,7 +680,7 @@ PW_NAMESPACE_SRT
 
 						glm::vec2 v_model_difference = glm::vec2(m_position->x + m_offset.x, m_position->y + m_offset.y) - v_tile_center;
 
-						m_matrix = glm::translate(m_matrix, glm::vec3(glm::vec2(m_position->x + m_offset.x, m_position->y + m_offset.y) - v_model_difference, cm::Constant::Inverse_Z_Tan()));
+						m_matrix = glm::translate(m_matrix, glm::vec3(glm::vec2(m_position->x + m_offset.x, m_position->y + m_offset.y) - v_model_difference, p_layer));
 
 						m_matrix = glm::rotate(m_matrix, glm::radians(m_rotation), glm::vec3(0.0f, 0.0f, 1.0f));
 
@@ -687,7 +704,7 @@ PW_NAMESPACE_SRT
 
 						glm::vec2 v_model_difference = glm::vec2(m_position->x + m_offset.x, m_position->y + m_offset.y) - v_tile_center;
 
-						m_matrix = glm::translate(m_matrix, glm::vec3(glm::vec2(m_position->x + m_offset.x, m_position->y + m_offset.y) - v_model_difference, cm::Constant::Inverse_Z_Tan()));
+						m_matrix = glm::translate(m_matrix, glm::vec3(glm::vec2(m_position->x + m_offset.x, m_position->y + m_offset.y) - v_model_difference, p_layer));
 
 						m_matrix = glm::rotate(m_matrix, glm::radians(m_rotation), glm::vec3(0.0f, 0.0f, 1.0f));
 
