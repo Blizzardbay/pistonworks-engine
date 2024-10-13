@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021-2023, Darrian Corkadel
+// Copyright(c) 2021-2024, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -53,6 +53,7 @@
 PW_NAMESPACE_SRT
 	ER_NAMESPACE_SRT
 		class Warning_Error {
+		// Friends
 		// Default Class Structures
 		public:
 			/* Error List: NONE */
@@ -100,6 +101,7 @@ PW_NAMESPACE_SRT
 			std::wstring m_function;
 		};
 		class Severe_Error {
+		// Friends
 		// Default Class Structures
 		public:
 			/* Error List: NONE */
@@ -147,6 +149,7 @@ PW_NAMESPACE_SRT
 			std::wstring m_function;
 		};
 		class Error_Log {
+		// Friends
 		// Default Class Structures
 		public:
 		private:

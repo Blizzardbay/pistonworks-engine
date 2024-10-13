@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021-2023, Darrian Corkadel
+// Copyright(c) 2021-2024, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -71,34 +71,34 @@
 // Engine Utility Headers
 #include "utility\color.h"
 //////////////////////////////////
+
 PW_NAMESPACE_SRT
 	CO_NAMESPACE_SRT
-		class File_Loader : public pw::co::Listener {
+		class Engine_Queue;
+	CO_NAMESPACE_END
+PW_NAMESPACE_END
+
+PW_NAMESPACE_SRT
+	CO_NAMESPACE_SRT
+		class File_Loader {
+		// Friends
+			friend class pw::co::Control;
+			friend class pw::co::Engine_Queue;
 		// Default Class Structures 
 		public:
 		private:
 		// Public Functions/Macros 
 		public:
-			/* Error List: PW_FUNCTION_ERROR */
-			static void Initialize();
-			/* Error List: NONE */
-			static void Initialize_Loader(const std::function<void(const std::wstring&, const bool&)>& p_add_scene_function,
-											const std::function<void(const std::wstring&)>& p_change_scene_function,
-											const std::function<void(const std::wstring&)>& p_remove_scene_function,
-											const std::function<void(const std::wstring&, const std::wstring&, const bool&)>& p_sub_scene_render);
-			/* Error List: NONE */
-			static void Release();
-
 			/* Error List: PW_FI_ERROR, PW_FI_UNKNOWN_FILE_TYPE, PW_FUNCTION_ERROR, PW_FI_UNSUPPORTED_FILE_TYPE */
 			static st::Texture* Load_Texture_File(const std::wstring& p_file_name,
-				const bool& p_repeat, const bool& p_linear, const bool& p_engine_dir = false, std::wstring* p_override_dir = nullptr);
+				const bool p_repeat, const bool p_linear, const bool p_engine_dir = false, std::wstring* p_override_dir = nullptr);
 
 			/* Error List: PW_FI_ERROR, PW_FI_UNKNOWN_FILE_TYPE, PW_FUNCTION_ERROR, PW_FI_UNKNOWN_FILE_TYPE */
 			static std::tuple<st::Texture*, st::Animation*> Load_Animation_File(const std::wstring& p_file_name,
-				const bool& p_repeat, const bool& p_linear, const bool& p_is_async, const bool& p_engine_dir = false, std::wstring* p_override_dir = nullptr);
+				const bool p_repeat, const bool p_linear, const bool p_is_async, const bool p_engine_dir = false, std::wstring* p_override_dir = nullptr);
 
 			/* Error List: PW_FUNCTION_ERROR, PW_FI_ERROR, PW_FI_UNKNOWN_FILE_TYPE, PW_FI_FILE_LOAD_FAILURE */
-			static GLFWimage* Load_Icon(const std::wstring& p_file_name, const bool& p_engine_dir);
+			static GLFWimage* Load_Icon(const std::wstring& p_file_name, const bool p_engine_dir);
 			/* Error List: NONE */
 			static void Unload_Icon();
 			/* Error List: PW_FUNCTION_ERROR */
@@ -116,17 +116,27 @@ PW_NAMESPACE_SRT
 				std::string& p_main_scene, std::vector<std::string>& p_sub_scenes, std::vector<std::tuple<std::wstring, st::Actor*, glm::vec2>>& p_model_attachments);
 			
 			/* Error List: PW_AL_ERROR, PW_FUNCTION_ERROR */
-			static st::Sound* Load_Audio_File(const std::wstring& file_name, const bool& p_loops, const float& p_volume, const bool& p_windows_style);
+			static st::Sound* Load_Audio_File(const std::wstring& file_name, const bool p_loops, const float p_volume, const bool p_windows_style);
 		// Public Variables         
 		public:
 		// Private Functions/Macros 
 		private:
 			/* Error List: PW_FI_ERROR, PW_FI_FILE_LOAD_FAILURE, PW_FUNCTION_ERROR, PW_FI_NO_PIXELS */
-			static st::Texture* Load_PNG(const std::filesystem::path& p_file_location, const bool& p_repeat, const bool& p_linear);
+			static st::Texture* Load_PNG(const std::filesystem::path& p_file_location, const bool p_repeat, const bool p_linear);
 			/* Error List: PW_FI_ERROR, PW_FI_FILE_LOAD_FAILURE, PW_FUNCTION_ERROR, PW_FI_NO_PIXELS */
-			static st::Texture* Load_BMP(const std::filesystem::path& p_file_location, const bool& p_repeat, const bool& p_linear);
+			static st::Texture* Load_BMP(const std::filesystem::path& p_file_location, const bool p_repeat, const bool p_linear);
 			/* Error List: PW_FI_ERROR, PW_FI_FILE_LOAD_FAILURE, PW_FUNCTION_ERROR, PW_FI_NO_PIXELS */
-			static st::Texture* Load_JPEG(const std::filesystem::path& p_file_location, const bool& p_repeat, const bool& p_linear);
+			static st::Texture* Load_JPEG(const std::filesystem::path& p_file_location, const bool p_repeat, const bool p_linear);
+
+			/* Error List: PW_FUNCTION_ERROR */
+			static void Initialize();
+			/* Error List: NONE */
+			static void Initialize_Loader(const std::function<void(const std::wstring&, const bool)>& p_add_scene_function,
+				const std::function<void(const std::wstring&)>& p_change_scene_function,
+				const std::function<void(const std::wstring&)>& p_remove_scene_function,
+				const std::function<void(const std::wstring&, const std::wstring&, const bool)>& p_sub_scene_render);
+			/* Error List: NONE */
+			static void Release();
 		// Private Variables        
 		private:
 			static FIBITMAP* m_current_icon; // Current icon to be unloaded
@@ -145,10 +155,10 @@ PW_NAMESPACE_SRT
 			static std::wstring m_engine_texture_dir; // The directory of the texture depository
 			static std::wstring m_engine_animation_dir; // The directory of the animation depository
 
-			static std::function<void(const std::wstring&, const bool&)> m_add_scene_function;
+			static std::function<void(const std::wstring&, const bool)> m_add_scene_function;
 			static std::function<void(const std::wstring&)> m_change_scene_function;
 			static std::function<void(const std::wstring&)> m_remove_scene_function;
-			static std::function<void(const std::wstring&, const std::wstring&, const bool&)> m_sub_scene_render;
+			static std::function<void(const std::wstring&, const std::wstring&, const bool)> m_sub_scene_render;
 
 			static std::map<std::wstring, std::map<bool, std::map<bool, st::Texture*>>>* m_texture_repository;
 		};

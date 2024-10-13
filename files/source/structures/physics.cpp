@@ -5,7 +5,7 @@ PW_NAMESPACE_SRT
 		// Physics_Object          
 		// Static Declarations     
 		// Class Members
-			Physics_Object::Physics_Object(st::Model* p_model, const b2BodyType& p_type, b2World* p_world, const bool& p_is_fixed, const float& p_friction, const float& p_restitution, const float& p_density, const Object_Type& p_polygon, const bool& p_is_sensor) :
+			Physics_Object::Physics_Object(st::Model* p_model, const b2BodyType& p_type, b2World* p_world, const bool p_is_fixed, const float p_friction, const float p_restitution, const float p_density, const Object_Type& p_polygon, const bool p_is_sensor) :
 					m_body{},
 					m_shape_vertices{ nullptr },
 					m_model_size{}, m_current_fixture{ nullptr },
@@ -119,10 +119,10 @@ PW_NAMESPACE_SRT
 					}
 				}
 			}
-			int32_t Physics_Object::X_Pixels_Position(const int32_t& p_scale_factor) {
+			int32_t Physics_Object::X_Pixels_Position(const int32_t p_scale_factor) {
 				return static_cast<int32_t>(m_body->GetPosition().x * p_scale_factor);
 			}
-			int32_t Physics_Object::Y_Pixels_Position(const int32_t& p_scale_factor) {
+			int32_t Physics_Object::Y_Pixels_Position(const int32_t p_scale_factor) {
 				return static_cast<int32_t>(m_body->GetPosition().y * p_scale_factor);
 			}
 			b2Body* Physics_Object::Body() {
@@ -368,7 +368,7 @@ PW_NAMESPACE_SRT
 					m_last_added_body{ NULL },
 					m_factory_static{}, m_factory_dynamic{} {
 			}
-			Physics_Factory::Physics_Factory(const b2Vec2& p_gravity, const int32_t& p_velocity_it, const int32_t& p_position_it) :
+			Physics_Factory::Physics_Factory(const b2Vec2& p_gravity, const int32_t p_velocity_it, const int32_t p_position_it) :
 					m_world{ nullptr }, m_velocity_it{ p_velocity_it }, m_position_it{ p_position_it },
 					m_last_added_body{ NULL },
 					m_factory_static{}, m_factory_dynamic{} {
@@ -401,7 +401,7 @@ PW_NAMESPACE_SRT
 			void Physics_Factory::Run() {
 				m_world->Step(std::chrono::duration<float, std::deci>(pw::cm::Constant::Delta_Time()).count() / 10.0f, m_velocity_it, m_position_it);
 			}
-			void Physics_Factory::Add_Object(st::Model* p_model, const b2BodyType& p_type, const st::Physics_Object::Object_Type& p_polygon, const bool& p_is_sensor, const PW_ID& p_object_id, const bool& p_is_fixed, const float& p_friction, const float& p_restitution, const float& p_density) {
+			void Physics_Factory::Add_Object(st::Model* p_model, const b2BodyType& p_type, const st::Physics_Object::Object_Type& p_polygon, const bool p_is_sensor, const PW_ID& p_object_id, const bool p_is_fixed, const float p_friction, const float p_restitution, const float p_density) {
 				PW_CALL(st::Physics_Object* v_object = pw::co::Memory::Allocate_Args<Physics_Object>(p_model, p_type, m_world, p_is_fixed, p_friction, p_restitution, p_density, p_polygon, p_is_sensor), true);
 				m_last_added_body = v_object->Body();
 				m_factory_dynamic.insert(std::make_pair(p_object_id, v_object));

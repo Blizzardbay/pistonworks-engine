@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021-2023, Darrian Corkadel
+// Copyright(c) 2021-2024, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -81,6 +81,7 @@
 PW_NAMESPACE_SRT
 	ER_NAMESPACE_SRT
 		class Error {
+		// Friends
 		// Default Class Structures
 		public:
 		private:
@@ -127,6 +128,8 @@ PW_NAMESPACE_SRT
 							}
 						}
 					}
+					// Clear to stop double reporting
+					pw::er::Error_State::Clear_Error();
 					// If the print function has an error then just dump and clear error state.
 					PRINT_MSG(p_error.From(), p_error.Msg(), ERROR_MSG);
 					HANDLE_MSG_ERROR;
@@ -170,7 +173,8 @@ PW_NAMESPACE_SRT
 							}
 						}
 					}
-
+					// Clear to stop double reporting
+					pw::er::Error_State::Clear_Error();
 					// If the print function has an error then just dump and clear error state.
 					PRINT_MSG(p_error.From(), p_error.Msg(), ERROR_MSG);
 					HANDLE_MSG_ERROR;
@@ -201,7 +205,7 @@ PW_NAMESPACE_SRT
 				}
 			}
 			/* Error List: PW_GLFW_ERROR */
-			static void GLFW_Handle(const int32_t& p_result, const uint64_t& p_line, const std::wstring& p_file) {
+			static void GLFW_Handle(const int32_t p_result, const uint64_t& p_line, const std::wstring& p_file) {
 				if (p_result != GLFW_NO_ERROR && p_result != GLFW_TRUE) {
 					const char* v_error_msg{ nullptr };
 					// Returns pointer that will be handled by GLFW
@@ -227,7 +231,7 @@ PW_NAMESPACE_SRT
 				#endif // PW_DEBUG_MODE
 			}
 			/* Error List: PW_GL_ERROR */
-			static void GL_VOID_Handle(const GLenum& p_result, const uint64_t& p_line, const wchar_t* p_file, const bool& p_handle_type) {
+			static void GL_VOID_Handle(const GLenum& p_result, const uint64_t& p_line, const wchar_t* p_file, const bool p_handle_type) {
 				if (p_result != 0 && p_result != 1282) {
 					SET_ERROR_STATE(PW_GL_ERROR);
 					SET_ERROR_TYPE(er::Severe_Error(
@@ -284,7 +288,7 @@ PW_NAMESPACE_SRT
 				}
 				#ifdef PW_DEBUG_MODE
 				else {
-					PRINT_MSG(L"GL", L"Function Success ( Completed )", SUCCESS_MSG);
+					//PRINT_MSG(L"GL", L"Function Success ( Completed )", SUCCESS_MSG);
 					HANDLE_MSG_ERROR;
 				}
 				#endif // PW_DEBUG_MODE
@@ -398,6 +402,27 @@ PW_NAMESPACE_SRT
 						MAINTAIN_ERROR_TYPE(v_class, v_funct, ERROR_LINE, __FILEW__, v_function);									\
 					}																												\
 					if constexpr(TO_BOOL(p_return) == true) return p_type(0);														\
+				}
+			/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			// In this special case where you return a template type or special return type value
+			#define PW_GL_CUSTOM_CALL_T(p_funct, p_return, p_handle_type, ...)														\
+				TRY_LINE p_funct;																									\
+				pw::er::Error::GL_VOID_Handle(glGetError(), pw::er::Error_State::Error_Line(), __FILEW__, TO_BOOL(p_handle_type));	\
+				if (pw::er::Error_State::Get() > 0) {																				\
+					pw::er::Error_State::Handle_Error();																			\
+					std::wstring v_funct{ L"\"" };																					\
+					std::wstring v_class{ __FUNCTIONW__ };																			\
+					v_funct.append(EXPRESSION_WSTRING(p_funct));																	\
+					v_funct.append(L"\" had an error.");																			\
+					size_t v_last_colon{ 0 };																						\
+					v_last_colon = v_class.find_last_of(L':');																		\
+					if (v_last_colon != std::wstring::npos) {																		\
+						std::wstring v_function{ v_class.substr(v_last_colon + 1, v_class.size()) };								\
+						v_class = v_class.substr(0, v_last_colon - 1);																\
+						SET_ERROR_STATE(PW_GL_ERROR);																				\
+						MAINTAIN_ERROR_TYPE(v_class, v_funct, ERROR_LINE, __FILEW__, v_function);									\
+					}																												\
+					if constexpr(TO_BOOL(p_return) == true) return __VA_ARGS__;														\
 				}
 			/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			#define PW_FI_VOID_CALL(p_funct, p_return)																				\

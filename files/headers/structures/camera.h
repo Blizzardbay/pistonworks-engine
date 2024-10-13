@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021-2023, Darrian Corkadel
+// Copyright(c) 2021-2024, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -54,6 +54,7 @@
 PW_NAMESPACE_SRT
 	ST_NAMESPACE_SRT
 		class Camera {
+		// Friends
 		// Default Class Structures
 		public:
 		private:
@@ -68,7 +69,7 @@ PW_NAMESPACE_SRT
 			/* Error List: NONE */
 			static void Update_Position(const glm::vec3& p_new_position);
 			/* Error List: NONE */
-			static void Update_Zoom(const float& p_new_zoom);
+			static void Update_Zoom(const float p_new_zoom);
 			/* Error List: NONE */
 			static glm::vec3 Camera_Position();
 			/* Error List: NONE */

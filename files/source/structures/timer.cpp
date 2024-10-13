@@ -71,8 +71,8 @@ PW_NAMESPACE_SRT
 		// Class Members
 			template<class duration>
 			std::wstring Time<duration>::Total() {
-				auto v_found = this->m_time_total->find(typeid(duration).name());
-				if (v_found != this->m_time_total->end()) {
+				auto v_found = Time_Constant::m_time_total->find(typeid(duration).name());
+				if (v_found != Time_Constant::m_time_total->end()) {
 					return v_found->second;
 				}
 				else {
@@ -81,8 +81,8 @@ PW_NAMESPACE_SRT
 			}
 			template<class duration>
 			std::wstring Time<duration>::Postfix() {
-				auto v_found = this->m_time_postfix->find(typeid(duration).name());
-				if (v_found != this->m_time_postfix->end()) {
+				auto v_found = Time_Constant::m_time_postfix->find(typeid(duration).name());
+				if (v_found != Time_Constant::m_time_postfix->end()) {
 					return v_found->second;
 				}
 				else {
@@ -102,12 +102,26 @@ PW_NAMESPACE_SRT
 		// Static Declarations
 		// Class Members
 			template<class duration>
-			_NODISCARD Manual_Timer<duration>::Manual_Timer(const uint64_t& p_timer_length, const bool& p_start_ready, const bool& p_reset) noexcept :
+			_NODISCARD Manual_Timer<duration>::Manual_Timer(const uint64_t& p_timer_length, const bool p_start_ready, const bool p_reset) noexcept :
 					Time<duration>{}, m_activation_time{},
-					m_timer_length{ p_timer_length }, m_start_ready{ p_start_ready }, m_should_reset{ p_reset }, m_reseted{ false } {
+					m_timer_length{ p_timer_length }, m_start_ready{ p_start_ready }, m_started{ false }, m_should_reset{ p_reset }, m_reseted{ false } {
 			}
 			template<class duration>
 			_NODISCARD bool Manual_Timer<duration>::Use() noexcept {
+				if (m_started == false) {
+					if (m_start_ready == false) {
+						// Fixes problem where cm::Constant::Current_Time() has not been set
+						// since it could run before the first frame has completed
+						// You cannot really fix this since the load time could be very large
+						// triggering the timer instantly upon use instead of what was set in the settings
+						m_activation_time = std::chrono::steady_clock::now() + duration(m_timer_length);
+
+						m_started = true;
+						m_reseted = true;
+
+						return false;
+					}
+				}
 				if (m_start_ready == true) {
 					m_start_ready = false;
 					return true;
@@ -147,15 +161,15 @@ PW_NAMESPACE_SRT
 				return v_temp.count();
 			}
 			template<class duration>
-			_NODISCARD const bool& Manual_Timer<duration>::Start_Ready() noexcept {
+			_NODISCARD const bool Manual_Timer<duration>::Start_Ready() noexcept {
 				return m_start_ready;
 			}
 			template<class duration>
-			_NODISCARD const bool& Manual_Timer<duration>::Should_Reset() noexcept {
+			_NODISCARD const bool Manual_Timer<duration>::Should_Reset() noexcept {
 				return m_should_reset;
 			}
 			template<class duration>
-			_NODISCARD const bool& Manual_Timer<duration>::Reseted() noexcept {
+			_NODISCARD const bool Manual_Timer<duration>::Reseted() noexcept {
 				return m_reseted;
 			}
 			template<class duration>

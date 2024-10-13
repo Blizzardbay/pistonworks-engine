@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021-2023, Darrian Corkadel
+// Copyright(c) 2021-2024, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -59,12 +59,13 @@
 PW_NAMESPACE_SRT
 	ST_NAMESPACE_SRT
 		class Sound {
+		// Friends
 		// Default Class Structures 
 		public:
 			/* Error List: NONE */
 			Sound();
 			/* Error List: PW_NO_AUDIO_SOURCE_ERROR, PW_AL_ERROR */
-			Sound(const uint32_t& p_source_id, const bool& p_loop);
+			Sound(const uint32_t p_source_id, const bool p_loop);
 			/* Error List: PW_AL_ERROR */
 			~Sound();
 		private:
@@ -81,13 +82,13 @@ PW_NAMESPACE_SRT
 			/* Error List: PW_AL_ERROR */
 			void Reset();
 			/* Error List: PW_AL_ERROR */
-			void Set_Volume(const float& p_new_gain, const bool& p_windows_style);
+			void Set_Volume(const float p_new_gain, const bool p_windows_style);
 			/* Error List: NONE */
 			void Attach(const std::function<glm::vec2()>& p_center_calculator);
 			/* Error List: NONE */
-			const bool& Start();
+			const bool Start();
 			/* Error List: NONE */
-			const bool& End();
+			const bool End();
 			/* Error List: NONE */
 			const int32_t& State() const;
 		// Public Variables         
@@ -110,6 +111,7 @@ PW_NAMESPACE_SRT
 			int32_t m_source_state;
 		};
 		struct Sound_Structure {
+		// Friends
 		// Default Class Structures 
 		public:
 			/* Error List: NONE */

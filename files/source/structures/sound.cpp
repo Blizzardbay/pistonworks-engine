@@ -9,7 +9,7 @@ PW_NAMESPACE_SRT
 				m_audio_source_id{ 0 }, m_position{}, m_center_calculator{}, m_source_state{ AL_INITIAL }, m_loop{ false },
 				m_start{ true }, m_end{ false }, m_natural_stop{ false } {
 		}
-		Sound::Sound(const uint32_t& p_source_id, const bool& p_loop) :
+		Sound::Sound(const uint32_t p_source_id, const bool p_loop) :
 				m_audio_source_id { p_source_id }, m_position{}, m_center_calculator{}, m_source_state{ AL_INITIAL }, m_loop{ p_loop },
 				m_start{ true }, m_end{ false }, m_natural_stop{ false } {
 			if (TRY_LINE alIsSource(m_audio_source_id) != AL_TRUE) {
@@ -117,7 +117,7 @@ PW_NAMESPACE_SRT
 				PW_AL_VOID_CALL(alSourceRewind(m_audio_source_id), true);
 			}
 		}
-		void Sound::Set_Volume(const float& p_new_gain, const bool& p_windows_style) {
+		void Sound::Set_Volume(const float p_new_gain, const bool p_windows_style) {
 			if (p_windows_style == true) {
 				PW_AL_VOID_CALL(alSourcef(m_audio_source_id, AL_GAIN, p_new_gain / 100.0f), false);
 			}
@@ -128,10 +128,10 @@ PW_NAMESPACE_SRT
 		void Sound::Attach(const std::function<glm::vec2()>& p_center_calculator) {
 			m_center_calculator = p_center_calculator;
 		}
-		const bool& Sound::Start() {
+		const bool Sound::Start() {
 			return m_start;
 		}
-		const bool& Sound::End() {
+		const bool Sound::End() {
 			return m_end;
 		}
 		const int32_t& Sound::State() const {

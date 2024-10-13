@@ -20,10 +20,10 @@ PW_NAMESPACE_SRT
 			std::wstring File_Loader::m_engine_icon_dir{ L"/files/resource/essential/icon" };
 			std::wstring File_Loader::m_engine_animation_dir{ L"/files/resource/essential/animations" };
 
-			std::function<void(const std::wstring&, const bool&)> File_Loader::m_add_scene_function{};
+			std::function<void(const std::wstring&, const bool)> File_Loader::m_add_scene_function{};
 			std::function<void(const std::wstring&)> File_Loader::m_change_scene_function{};
 			std::function<void(const std::wstring&)> File_Loader::m_remove_scene_function{};
-			std::function<void(const std::wstring&, const std::wstring&, const bool&)> File_Loader::m_sub_scene_render{};
+			std::function<void(const std::wstring&, const std::wstring&, const bool)> File_Loader::m_sub_scene_render{};
 
 			std::map<std::wstring, std::map<bool, std::map<bool, st::Texture*>>>* File_Loader::m_texture_repository{ nullptr };
 		// Class Members
@@ -36,10 +36,10 @@ PW_NAMESPACE_SRT
 
 				PW_CALL(m_texture_repository = pw::co::Memory::Allocate<TEXTURE_REPOSITORY>(), false);
 			}
-			void File_Loader::Initialize_Loader(const std::function<void(const std::wstring&, const bool&)>& p_add_scene_function,
+			void File_Loader::Initialize_Loader(const std::function<void(const std::wstring&, const bool)>& p_add_scene_function,
 					const std::function<void(const std::wstring&)>& p_change_scene_function,
 					const std::function<void(const std::wstring&)>& p_remove_scene_function,
-					const std::function<void(const std::wstring&, const std::wstring&, const bool&)>& p_sub_scene_render) {
+					const std::function<void(const std::wstring&, const std::wstring&, const bool)>& p_sub_scene_render) {
 				m_add_scene_function = p_add_scene_function;
 				m_change_scene_function = p_change_scene_function;
 				m_remove_scene_function = p_remove_scene_function;
@@ -65,7 +65,7 @@ PW_NAMESPACE_SRT
 					}
 				}
 			}
-			st::Texture* File_Loader::Load_Texture_File(const std::wstring& p_file_name, const bool& p_repeat, const bool& p_linear, const bool& p_engine_dir, std::wstring* p_override_dir) {
+			st::Texture* File_Loader::Load_Texture_File(const std::wstring& p_file_name, const bool p_repeat, const bool p_linear, const bool p_engine_dir, std::wstring* p_override_dir) {
 				// File Type
 				FREE_IMAGE_FORMAT v_image_type{ FREE_IMAGE_FORMAT::FIF_UNKNOWN };
 				// First make sure the file location exists
@@ -113,7 +113,7 @@ PW_NAMESPACE_SRT
 					return nullptr;
 				}
 			}
-			std::tuple<st::Texture*, st::Animation*> File_Loader::Load_Animation_File(const std::wstring& p_file_name, const bool& p_repeat, const bool& p_linear, const bool& p_is_async, const bool& p_engine_dir, std::wstring* p_override_dir) {
+			std::tuple<st::Texture*, st::Animation*> File_Loader::Load_Animation_File(const std::wstring& p_file_name, const bool p_repeat, const bool p_linear, const bool p_is_async, const bool p_engine_dir, std::wstring* p_override_dir) {
 				// File Type
 				FREE_IMAGE_FORMAT v_image_type{ FREE_IMAGE_FORMAT::FIF_UNKNOWN };
 				// File
@@ -247,7 +247,7 @@ PW_NAMESPACE_SRT
 					return std::tuple<st::Texture*, st::Animation*>();
 				}
 			}
-			GLFWimage* File_Loader::Load_Icon(const std::wstring& p_file_name, const bool& p_engine_dir) {
+			GLFWimage* File_Loader::Load_Icon(const std::wstring& p_file_name, const bool p_engine_dir) {
 				// File Type
 				FREE_IMAGE_FORMAT v_image_type{ FREE_IMAGE_FORMAT::FIF_UNKNOWN };
 				// File
@@ -332,7 +332,7 @@ PW_NAMESPACE_SRT
 			void File_Loader::Unload_Icon() {
 				FreeImage_Unload(m_current_icon);
 			}
-			st::Texture* File_Loader::Load_PNG(const std::filesystem::path& p_file_location, const bool& p_repeat, const bool& p_linear) {
+			st::Texture* File_Loader::Load_PNG(const std::filesystem::path& p_file_location, const bool p_repeat, const bool p_linear) {
 				// File Type
 				FREE_IMAGE_FORMAT v_image_type{ FREE_IMAGE_FORMAT::FIF_PNG };
 				// File
@@ -495,7 +495,7 @@ PW_NAMESPACE_SRT
 					}
 				}
 			}
-			st::Texture* File_Loader::Load_BMP(const std::filesystem::path& p_file_location, const bool& p_repeat, const bool& p_linear) {
+			st::Texture* File_Loader::Load_BMP(const std::filesystem::path& p_file_location, const bool p_repeat, const bool p_linear) {
 				// File Type
 				FREE_IMAGE_FORMAT v_image_type{ FREE_IMAGE_FORMAT::FIF_BMP };
 				// File
@@ -548,7 +548,7 @@ PW_NAMESPACE_SRT
 					return nullptr;
 				}
 			}
-			st::Texture* File_Loader::Load_JPEG(const std::filesystem::path& p_file_location, const bool& p_repeat, const bool& p_linear) {
+			st::Texture* File_Loader::Load_JPEG(const std::filesystem::path& p_file_location, const bool p_repeat, const bool p_linear) {
 				// File Type
 				FREE_IMAGE_FORMAT v_image_type{ FREE_IMAGE_FORMAT::FIF_JPEG };
 				// File
@@ -2959,7 +2959,7 @@ PW_NAMESPACE_SRT
 				}
 				// End of loading each sub-scene
 			}
-			st::Sound* File_Loader::Load_Audio_File(const std::wstring& p_file_name, const bool& p_loops, const float& p_volume, const bool& p_windows_style) {
+			st::Sound* File_Loader::Load_Audio_File(const std::wstring& p_file_name, const bool p_loops, const float p_volume, const bool p_windows_style) {
 				// First make sure the file location exists
 				std::filesystem::path v_location{ co::File_Finder::Find_File(m_sound_location, p_file_name) };
 				// File information

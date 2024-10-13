@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021-2023, Darrian Corkadel
+// Copyright(c) 2021-2024, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -62,10 +62,11 @@
 PW_NAMESPACE_SRT
 	ST_NAMESPACE_SRT
 		class Event_Base {
+		// Friends
 		// Default Class Structures
 		public:
 			/* Error List: NONE */
-			Event_Base(const PW_BUTTON_CODE& p_button, const bool& p_play_once, const PW_INPUT_TYPE& p_trigger, const PW_INPUT_TYPE& p_resolution);
+			Event_Base(const PW_BUTTON_CODE p_button, const bool p_play_once, const PW_INPUT_TYPE p_trigger, const PW_INPUT_TYPE p_resolution);
 
 			virtual ~Event_Base();
 		private:
@@ -74,13 +75,13 @@ PW_NAMESPACE_SRT
 			/* Error List: PW_FUNCTION_ERROR */
 			virtual void Trigger_Event();
 			/* Error List: NONE */
-			PW_INPUT_TYPE Find_Resolution(const PW_INPUT_TYPE& p_trigger) const;
+			PW_INPUT_TYPE Find_Resolution(const PW_INPUT_TYPE p_trigger) const;
 			/* Error List: NONE */
 			const PW_INPUT_TYPE& Trigger() const;
 			/* Error List: NONE */
 			const PW_INPUT_TYPE& Resolution() const;
 			/* Error List: NONE */
-			const bool& Play_State() const;
+			const bool Play_State() const;
 			/* Error List: NONE */
 			const PW_BUTTON_CODE& Button() const;
 		// Public Variables         
@@ -96,6 +97,7 @@ PW_NAMESPACE_SRT
 		};
 		template<class type, class ...args>
 		class Event : public Event_Base {
+		// Friends
 		// Default Class Structures
 		public:
 			/* Error List: NONE */
@@ -104,7 +106,7 @@ PW_NAMESPACE_SRT
 					m_arguments{} {
 			}
 			/* Error List: NONE */
-			explicit Event(const PW_BUTTON_CODE& p_button, const PW_INPUT_TYPE& p_trigger, const std::shared_ptr<std::function<type(args...)>>& p_trigger_function, const bool& p_play_once, args... p_arguments) :
+			explicit Event(const PW_BUTTON_CODE p_button, const PW_INPUT_TYPE p_trigger, const std::shared_ptr<std::function<type(args...)>>& p_trigger_function, const bool p_play_once, args... p_arguments) :
 					Event_Base{ p_button, p_play_once, p_trigger, Find_Resolution(p_trigger) }, m_standard_callback{ *p_trigger_function },
 					m_arguments{ std::forward<args>(p_arguments)... } {
 			}

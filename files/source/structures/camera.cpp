@@ -70,7 +70,7 @@ PW_NAMESPACE_SRT
 			void Camera::Update_Position(const glm::vec3& p_new_position) {
 				m_camera_position = p_new_position;
 			}
-			void Camera::Update_Zoom(const float& p_new_zoom) {
+			void Camera::Update_Zoom(const float p_new_zoom) {
 				m_camera_zoom = p_new_zoom;
 			}
 			glm::vec3 Camera::Camera_Position() {

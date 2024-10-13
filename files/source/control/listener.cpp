@@ -117,7 +117,7 @@ PW_NAMESPACE_SRT
 					}
 				}
 			}
-			void Listener::Set_Volume(const float& p_new_gain, const bool& p_windows_style) {
+			void Listener::Set_Volume(const float p_new_gain, const bool p_windows_style) {
 				if (m_created_listener == true) {
 					if (p_windows_style == true) {
 						PW_AL_VOID_CALL(alListenerf(AL_GAIN, p_new_gain / 100.0f), false);

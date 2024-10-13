@@ -8,8 +8,8 @@ PW_NAMESPACE_SRT
 			Texture::Texture() :
 					m_copy{ false }, m_texture_id{ 0 }, m_texture_width{ 0 }, m_texture_height{ 0 }, m_texture_handle{ 0 }{
 			}
-			Texture::Texture(BYTE* p_tex_data, const uint32_t& p_target, const uint32_t& p_texture_width, const uint32_t& p_texture_height,
-								const int32_t& p_internal_format, const int32_t& p_format, const bool& p_repeat, const bool& p_linear) :
+			Texture::Texture(BYTE* p_tex_data, const uint32_t p_target, const uint32_t p_texture_width, const uint32_t p_texture_height,
+								const int32_t p_internal_format, const int32_t p_format, const bool p_repeat, const bool p_linear) :
 					m_copy{ false }, m_texture_id{ 0 }, m_texture_width{ p_texture_width }, m_texture_height{ p_texture_height }, m_texture_handle{ 0 } {
 				if (TRY_LINE p_tex_data == nullptr) {
 					SET_ERROR_STATE(PW_NULL_PARAMETER_W);
@@ -23,10 +23,11 @@ PW_NAMESPACE_SRT
 					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, p_repeat ? GL_REPEAT : GL_CLAMP_TO_EDGE), true, false);
 					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, p_repeat ? GL_REPEAT : GL_CLAMP_TO_EDGE), true, false);
 
-					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, p_linear ? GL_LINEAR : GL_NEAREST), true, false);
+					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, p_linear ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST_MIPMAP_NEAREST), true, false);
 					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, p_linear ? GL_LINEAR : GL_NEAREST), true, false);
 
 					PW_GL_VOID_CALL(glTexImage2D(p_target, 0, p_internal_format, TO_INT32(p_texture_width), TO_INT32(p_texture_height), 0, p_format, GL_UNSIGNED_BYTE, p_tex_data), true, false);
+					PW_GL_VOID_CALL(glGenerateMipmap(GL_TEXTURE_2D), true, false);
 
 					m_texture_handle = glGetTextureHandleARB(m_texture_id);
 
@@ -38,8 +39,8 @@ PW_NAMESPACE_SRT
 					}
 				}
 			}
-			Texture::Texture(BYTE* p_tex_data, const uint32_t& p_texture_width, const uint32_t& p_texture_height,
-								const int32_t& p_internal_format, const int32_t& p_format, const bool& p_repeat, const bool& p_linear) :
+			Texture::Texture(BYTE* p_tex_data, const uint32_t p_texture_width, const uint32_t p_texture_height,
+								const int32_t p_internal_format, const int32_t p_format, const bool p_repeat, const bool p_linear) :
 					m_copy{ false }, m_texture_id{ 0 }, m_texture_width{ p_texture_width }, m_texture_height{ p_texture_height }, m_texture_handle{ 0 } {
 				if (TRY_LINE p_tex_data == nullptr) {
 					SET_ERROR_STATE(PW_NULL_PARAMETER_W);
@@ -53,13 +54,14 @@ PW_NAMESPACE_SRT
 					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, p_repeat ? GL_REPEAT : GL_CLAMP_TO_EDGE), true, false);
 					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, p_repeat ? GL_REPEAT : GL_CLAMP_TO_EDGE), true, false);
 
-					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, p_linear ? GL_LINEAR : GL_NEAREST), true, false);
+					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, p_linear ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST_MIPMAP_NEAREST), true, false);
 					PW_GL_VOID_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, p_linear ? GL_LINEAR : GL_NEAREST), true, false);
 
 					PW_GL_VOID_CALL(glTexImage2D(GL_TEXTURE_2D, 0, p_internal_format, TO_INT32(p_texture_width), TO_INT32(p_texture_height), 0, p_format, GL_UNSIGNED_BYTE, p_tex_data), true, false);
+					PW_GL_VOID_CALL(glGenerateMipmap(GL_TEXTURE_2D), true, false);
 
 					m_texture_handle = glGetTextureHandleARB(m_texture_id);
-
+					
 					if (TRY_LINE m_texture_handle != NULL) {
 						PW_GL_VOID_CALL(glMakeTextureHandleResidentARB(m_texture_handle), true, false);
 					}

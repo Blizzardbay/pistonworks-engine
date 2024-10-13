@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021-2023, Darrian Corkadel
+// Copyright(c) 2021-2024, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -44,8 +44,10 @@
 //////////////////////////////////
 // Engine Common Headers
 #include "common\macro.h"
+#include "common\error_state.h"
 //////////////////////////////////
 // Engine Control Headers
+#include "control\memory.h"
 //////////////////////////////////
 // Engine Structures Headers
 //////////////////////////////////
@@ -54,11 +56,42 @@
 PW_NAMESPACE_SRT
 	UTIL_NAMESPACE_SRT
 		class String {
+		// Friends
 		// Default Class Structures 
 		public:
 		private:
 		// Public Functions/Macros  
 		public:
+			#define TO_WCHAR(c_str)				pw::util::String::Evaluate_WStr(c_str)
+			#define TO_CHAR(w_str)				pw::util::String::Evaluate_Str(w_str)
+			#define TO_WSTRING(c_str)			pw::util::String::Evaluate_TWStr(c_str)
+			#define TO_STRING(w_str)			pw::util::String::Evaluate_TStr(w_str)
+
+			/* Error List: PW_FUNCTION_ERROR, PW_UNKNOWN_STRING_TYPE */
+			_NODISCARD static wchar_t* Evaluate_WStr(const std::any& p_str) noexcept;
+			/* Error List: PW_NULL_PARAMETER_W, PW_EMPTY_PARAMETER_W, PW_FUNCTION_ERROR, PW_BUFFER_SIZE_MISMATCH, PW_CRT_FUNCTION_FAILURE */
+			_NODISCARD static wchar_t* To_WChar(const char* p_msg) noexcept;
+			/* Error List: PW_NULL_PARAMETER_W, PW_EMPTY_PARAMETER_W, PW_FUNCTION_ERROR, PW_BUFFER_SIZE_MISMATCH, PW_CRT_FUNCTION_FAILURE */
+			_NODISCARD static wchar_t* To_WChar(const std::string& p_msg) noexcept;
+			/* Error List: PW_NULL_PARAMETER_W, PW_EMPTY_PARAMETER_W, PW_FUNCTION_ERROR */
+			_NODISCARD static wchar_t* To_WChar(const wchar_t* p_msg) noexcept;
+			/* Error List: PW_NULL_PARAMETER_W, PW_EMPTY_PARAMETER_W, PW_FUNCTION_ERROR */
+			_NODISCARD static wchar_t* To_WChar(const std::wstring& p_msg) noexcept;
+			/* Error List: PW_FUNCTION_ERROR, PW_UNKNOWN_STRING_TYPE */
+			_NODISCARD static char* Evaluate_Str(const std::any& p_str) noexcept;
+			/* Error List: PW_NULL_PARAMETER_W, PW_EMPTY_PARAMETER_W, PW_FUNCTION_ERROR, PW_BUFFER_SIZE_MISMATCH, PW_CRT_FUNCTION_FAILURE */
+			_NODISCARD static char* To_Char(const wchar_t* p_msg) noexcept;
+			/* Error List: PW_NULL_PARAMETER_W, PW_EMPTY_PARAMETER_W, PW_FUNCTION_ERROR, PW_BUFFER_SIZE_MISMATCH, PW_CRT_FUNCTION_FAILURE */
+			_NODISCARD static char* To_Char(const std::wstring& p_msg) noexcept;
+			/* Error List: PW_NULL_PARAMETER_W, PW_EMPTY_PARAMETER_W, PW_FUNCTION_ERROR */
+			_NODISCARD static char* To_Char(const char* p_msg) noexcept;
+			/* Error List: PW_NULL_PARAMETER_W, PW_EMPTY_PARAMETER_W, PW_FUNCTION_ERROR */
+			_NODISCARD static char* To_Char(const std::string& p_msg) noexcept;
+			/* Error List: PW_FUNCTION_ERROR */
+			_NODISCARD static std::wstring Evaluate_TWStr(const std::any& p_str) noexcept;
+			/* Error List: PW_FUNCTION_ERROR */
+			_NODISCARD static std::string Evaluate_TStr(const std::any& p_str) noexcept;
+
 			/* Error List: NONE */
 			static std::vector<std::wstring> Parse(const std::wstring& p_input, const std::vector<std::wstring>& p_delimeters);
 			/* Error List: NONE */

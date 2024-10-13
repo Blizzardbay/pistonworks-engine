@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021-2023, Darrian Corkadel
+// Copyright(c) 2021-2024, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -37,6 +37,7 @@
 #pragma warning(disable: PW_ALL_WARNINGS)
 #include <string>
 #include <any>
+#include <stack>
 #pragma warning(pop)
 //////////////////////////////////
 // Project Headers
@@ -55,6 +56,8 @@
 PW_NAMESPACE_SRT
 	ER_NAMESPACE_SRT
 		class Error_State {
+		// Friends
+			friend class pw::co::Control;
 		// Default Class Structures
 		public:
 		private:
@@ -65,11 +68,11 @@ PW_NAMESPACE_SRT
 				return m_error_state;
 			}
 			/* Error List: NONE */
-			static const bool& Is_Warning_Error() noexcept {
+			static const bool Is_Warning_Error() noexcept {
 				return m_warning_error;
 			}
 			/* Error List: NONE */
-			static const bool& Is_Severe_Error() noexcept {
+			static const bool Is_Severe_Error() noexcept {
 				return m_severe_error;
 			}
 			/* Error List: NONE */
@@ -85,7 +88,7 @@ PW_NAMESPACE_SRT
 				return m_error_line;
 			}
 			/* Error List: NONE */
-			static void Set(const uint32_t& p_state) noexcept {
+			static void Set(const uint32_t p_state) noexcept {
 				m_error_state = p_state;
 			}
 			/* Error List: NONE */
@@ -97,7 +100,7 @@ PW_NAMESPACE_SRT
 				m_serror_info = p_error;
 			}
 			/* Error List: NONE */
-			static void Set_Error_Line(const uint32_t& p_new_line) noexcept {
+			static void Set_Error_Line(const uint32_t p_new_line) noexcept {
 				m_error_line = p_new_line;
 			}
 			// Sets the execution line of the code in question
@@ -312,66 +315,78 @@ PW_NAMESPACE_SRT
 					case PW_POSSIBLE_ERROR: {
 						return L"PW_POSSIBLE_ERROR";
 					}
+					case PW_FILESYSTEM_ERROR: {
+						return L"PW_FILESYSTEM_ERROR";
+					}
+					case PW_INVALID_LAYER: {
+						return L"PW_INVALID_LAYER";
+					}
+					case PW_INVALID_SIZE: {
+						return L"PW_INVALID_SIZE";
+					}
+					case PW_NULL_RETURN: {
+						return L"PW_NULL_RETURN";
+					}
 					default: {
 						return L"Unknown Error: Invalid error state.";
 					}
 				}
 			}
-			#define PW_CALL(p_funct, p_return)															\
-				TRY_LINE p_funct;																		\
-				if (pw::er::Error_State::Get() > 0) {													\
-					pw::er::Error_State::Handle_Error();												\
-					std::wstring v_funct{ L"\"" };														\
-					std::wstring v_class{ __FUNCTIONW__ };												\
-					v_funct.append(EXPRESSION_WSTRING(p_funct));										\
-					v_funct.append(L"\" had an error.");												\
-					size_t v_last_colon{ 0 };															\
-					v_last_colon = v_class.find_last_of(L':');											\
-					if (v_last_colon != std::wstring::npos) {											\
-						std::wstring v_function{ v_class.substr(v_last_colon + 1, v_class.size()) };	\
-						v_class = v_class.substr(0, v_last_colon - 1);									\
-						SET_ERROR_STATE(PW_FUNCTION_ERROR);												\
-						MAINTAIN_ERROR_TYPE(v_class, v_funct, ERROR_LINE, __FILEW__, v_function);		\
-					}																					\
-					if constexpr (TO_BOOL(p_return) == true) return;									\
+			#define PW_CALL(p_funct, p_return)																	\
+				TRY_LINE p_funct;																				\
+				if (pw::er::Error_State::Get() > 0) {															\
+					pw::er::Error_State::Handle_Error();														\
+					std::wstring v_funct{ L"\"" };																\
+					std::wstring v_class{ __FUNCTIONW__ };														\
+					v_funct.append(EXPRESSION_WSTRING(p_funct));												\
+					v_funct.append(L"\" had an error.");														\
+					size_t v_last_colon{ 0 };																	\
+					v_last_colon = v_class.find_last_of(L':');													\
+					if (v_last_colon != std::wstring::npos) {													\
+						std::wstring v_function{ v_class.substr(v_last_colon + 1, v_class.size()) };			\
+						v_class = v_class.substr(0, v_last_colon - 1);											\
+						SET_ERROR_STATE(PW_FUNCTION_ERROR);														\
+						MAINTAIN_ERROR_TYPE(v_class, v_funct, TO_UINT32(__LINE__), __FILEW__, v_function);		\
+					}																							\
+					if constexpr (TO_BOOL(p_return) == true) return;											\
 				}
-			/////////////////////////////////////////////////////////////////////////////////////////////
-			#define PW_PTR_CALL(p_funct, p_return)														\
-				TRY_LINE p_funct;																		\
-				if (pw::er::Error_State::Get() > 0) {													\
-					pw::er::Error_State::Handle_Error();												\
-					std::wstring v_funct{ L"\"" };														\
-					std::wstring v_class{ __FUNCTIONW__ };												\
-					v_funct.append(EXPRESSION_WSTRING(p_funct));										\
-					v_funct.append(L"\" had an error.");												\
-					size_t v_last_colon{ 0 };															\
-					v_last_colon = v_class.find_last_of(L':');											\
-					if (v_last_colon != std::wstring::npos) {											\
-						std::wstring v_function{ v_class.substr(v_last_colon + 1, v_class.size()) };	\
-						v_class = v_class.substr(0, v_last_colon - 1);									\
-						SET_ERROR_STATE(PW_FUNCTION_ERROR);												\
-						MAINTAIN_ERROR_TYPE(v_class, v_funct, ERROR_LINE, __FILEW__, v_function);		\
-					}																					\
-					if constexpr(TO_BOOL(p_return) == true) return nullptr;								\
+			/////////////////////////////////////////////////////////////////////////////////////////////////////
+			#define PW_PTR_CALL(p_funct, p_return)																\
+				TRY_LINE p_funct;																				\
+				if (pw::er::Error_State::Get() > 0) {															\
+					pw::er::Error_State::Handle_Error();														\
+					std::wstring v_funct{ L"\"" };																\
+					std::wstring v_class{ __FUNCTIONW__ };														\
+					v_funct.append(EXPRESSION_WSTRING(p_funct));												\
+					v_funct.append(L"\" had an error.");														\
+					size_t v_last_colon{ 0 };																	\
+					v_last_colon = v_class.find_last_of(L':');													\
+					if (v_last_colon != std::wstring::npos) {													\
+						std::wstring v_function{ v_class.substr(v_last_colon + 1, v_class.size()) };			\
+						v_class = v_class.substr(0, v_last_colon - 1);											\
+						SET_ERROR_STATE(PW_FUNCTION_ERROR);														\
+						MAINTAIN_ERROR_TYPE(v_class, v_funct, TO_UINT32(__LINE__), __FILEW__, v_function);		\
+					}																							\
+					if constexpr(TO_BOOL(p_return) == true) return nullptr;										\
 				}
-			/////////////////////////////////////////////////////////////////////////////////////////////
-			#define PW_CUSTOM_CALL(p_funct, p_return, p_type)											\
-				TRY_LINE p_funct;																		\
-				if (pw::er::Error_State::Get() > 0) {													\
-					pw::er::Error_State::Handle_Error();												\
-					std::wstring v_funct{ L"\"" };														\
-					std::wstring v_class{ __FUNCTIONW__ };												\
-					v_funct.append(EXPRESSION_WSTRING(p_funct));										\
-					v_funct.append(L"\" had an error.");												\
-					size_t v_last_colon{ 0 };															\
-					v_last_colon = v_class.find_last_of(L':');											\
-					if (v_last_colon != std::wstring::npos) {											\
-						std::wstring v_function{ v_class.substr(v_last_colon + 1, v_class.size()) };	\
-						v_class = v_class.substr(0, v_last_colon - 1);									\
-						SET_ERROR_STATE(PW_FUNCTION_ERROR);												\
-						MAINTAIN_ERROR_TYPE(v_class, v_funct, ERROR_LINE, __FILEW__, v_function);		\
-					}																					\
-					if constexpr(TO_BOOL(p_return) == true) return p_type();							\
+			/////////////////////////////////////////////////////////////////////////////////////////////////////
+			#define PW_CUSTOM_CALL(p_funct, p_return, p_type)													\
+				TRY_LINE p_funct;																				\
+				if (pw::er::Error_State::Get() > 0) {															\
+					pw::er::Error_State::Handle_Error();														\
+					std::wstring v_funct{ L"\"" };																\
+					std::wstring v_class{ __FUNCTIONW__ };														\
+					v_funct.append(EXPRESSION_WSTRING(p_funct));												\
+					v_funct.append(L"\" had an error.");														\
+					size_t v_last_colon{ 0 };																	\
+					v_last_colon = v_class.find_last_of(L':');													\
+					if (v_last_colon != std::wstring::npos) {													\
+						std::wstring v_function{ v_class.substr(v_last_colon + 1, v_class.size()) };			\
+						v_class = v_class.substr(0, v_last_colon - 1);											\
+						SET_ERROR_STATE(PW_FUNCTION_ERROR);														\
+						MAINTAIN_ERROR_TYPE(v_class, v_funct, TO_UINT32(__LINE__), __FILEW__, v_function);		\
+					}																							\
+					if constexpr(TO_BOOL(p_return) == true) return p_type();									\
 				}
 			/////////////////////////////////////////////////////////////////////////////////////////////
 			#define PW_AFTER_CALL(p_funct_name, p_return)												\
@@ -423,21 +438,17 @@ PW_NAMESPACE_SRT
 				}					
 		// Public Variables
 		public:
-		// Protected Functions/Macros
-		protected:
+		// Private Functions/Macros
+		private:
 			/* Error List: NONE */
 			static void Initialize(
-					const std::function<void(const pw::er::Warning_Error&)>& p_warning_handler,
-					std::function<void(const pw::er::Severe_Error&)> p_severe_handler) noexcept {
+				const std::function<void(const pw::er::Warning_Error&)>& p_warning_handler,
+				std::function<void(const pw::er::Severe_Error&)> p_severe_handler) noexcept {
 				m_warning_handler = p_warning_handler;
 				m_severe_handler = p_severe_handler;
 
 				pw::er::Error_Log::Set_Error_State_Value_Callback(Error_Value_String);
 			}
-		// Protected Variables
-		protected:
-		// Private Functions/Macros
-		private:
 		// Private Variables
 		private:
 			static uint64_t m_error_line;

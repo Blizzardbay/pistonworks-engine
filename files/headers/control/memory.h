@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021-2023, Darrian Corkadel
+// Copyright(c) 2021-2024, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -56,6 +56,8 @@
 PW_NAMESPACE_SRT
 	CO_NAMESPACE_SRT
 		class Memory {
+		// Friends
+			friend class pw::co::Control;
 		// Default Class Structures
 		public:
 			struct Data {
@@ -66,7 +68,7 @@ PW_NAMESPACE_SRT
 					m_stored_memory{ p_data }, m_array_member{ false }, m_blocks{ 0 }, m_bytes{ 0 }, m_type_name{ "" } {
 				}
 				/* Error List: NONE */
-				Data(void* p_data, const size_t& p_blocks, const size_t& p_byte_size, const std::string& p_type_name, const bool& p_array_member = false) :
+				Data(void* p_data, const size_t& p_blocks, const size_t& p_byte_size, const std::string& p_type_name, const bool p_array_member = false) :
 					m_stored_memory{ p_data }, m_array_member{ p_array_member }, m_blocks{ p_blocks }, m_bytes{ p_byte_size }, m_type_name{ p_type_name } {
 				}
 				/* Error List: NONE */
@@ -99,7 +101,7 @@ PW_NAMESPACE_SRT
 					return this->m_type_name;
 				}
 				/* Error List: NONE */
-				const bool& Array_Member() const {
+				const bool Array_Member() const {
 					return this->m_array_member;
 				}
 				// Public Variables
@@ -122,23 +124,9 @@ PW_NAMESPACE_SRT
 		private:
 		// Public Functions/Macros
 		public:
-			/* Error List: PW_MEMORY_FAILURE */
-			_NODISCARD static bool Initialize() noexcept {
-				// Not tracked by engine, guaranteed memory deallocation
-				// Could cause memory leak if terminated prematurely but at that point
-				// windows should clean up the program memory
-				TRY_LINE m_memory_pointers = new(std::nothrow) std::set<pw::co::Memory::Data>();
-
-				if (m_memory_pointers == nullptr) {
-					SET_ERROR_STATE(PW_MEMORY_FAILURE);
-					SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::Memory", L"Failure To Allocate Memory Tracker.", ERROR_LINE, __FILEW__, L"Initialize"));
-					return false;
-				}
-				return true;
-			}
 			/* Error List: PW_ZERO_ALLOCATION, PW_FUNCTION_ERROR, PW_ALLOCATION_FAILURE */
 			template<class type>
-			_NODISCARD static type* Allocate(const size_t p_count = 1, const bool& p_array = false) noexcept {
+			_NODISCARD static type* Allocate(const size_t p_count = 1, const bool p_array = false) noexcept {
 				if (TRY_LINE p_count == 0) {
 					SET_ERROR_STATE(PW_ZERO_ALLOCATION);
 					SET_ERROR_TYPE(pw::er::Warning_Error(L"pw::co::Memory", L"Invalid Parameter: p_count was 0", ERROR_LINE, __FILEW__, L"Allocate"));
@@ -157,7 +145,7 @@ PW_NAMESPACE_SRT
 
 					// Add memory to the total engine count
 					m_heap_memory = m_heap_memory + ((size_t)sizeof(type) * p_count);
-					// Store the highest about of memory the engine had
+					// Store the highest amount of memory the engine had
 					if (m_high_heap_memory < m_heap_memory) {
 						m_high_heap_memory = m_heap_memory;
 					}
@@ -178,7 +166,7 @@ PW_NAMESPACE_SRT
 					}
 					// Add memory to the total engine count
 					m_heap_memory = m_heap_memory + ((size_t)sizeof(type) * p_count);
-					// Store the highest about of memory the engine had
+					// Store the highest amount of memory the engine had
 					if (m_high_heap_memory < m_heap_memory) {
 						m_high_heap_memory = m_heap_memory;
 					}
@@ -209,7 +197,7 @@ PW_NAMESPACE_SRT
 				}
 				// Add memory to the total engine count
 				m_heap_memory = m_heap_memory + ((size_t)sizeof(type));
-				// Store the highest about of memory the engine had
+				// Store the highest amount of memory the engine had
 				if (m_high_heap_memory < m_heap_memory) {
 					m_high_heap_memory = m_heap_memory;
 				}
@@ -221,7 +209,7 @@ PW_NAMESPACE_SRT
 			}
 			/* Error List: PW_ZERO_ALLOCATION, PW_FUNCTION_ERROR, PW_ALLOCATION_FAILURE */
 			template<class type>
-			_NODISCARD static type* Allocate(type&& copy, const size_t p_count = 1, const bool& p_array = false) {
+			_NODISCARD static type* Allocate(type&& copy, const size_t p_count = 1, const bool p_array = false) {
 				if (TRY_LINE p_count == 0) {
 					SET_ERROR_STATE(PW_ZERO_ALLOCATION);
 					SET_ERROR_TYPE(pw::er::Warning_Error(L"pw::co::Memory", L"Invalid Parameter: p_count was 0", ERROR_LINE, __FILEW__, L"Allocate"));
@@ -240,7 +228,7 @@ PW_NAMESPACE_SRT
 
 					// Add memory to the total engine count
 					m_heap_memory = m_heap_memory + ((size_t)sizeof(type) * p_count);
-					// Store the highest about of memory the engine had
+					// Store the highest amount of memory the engine had
 					if (m_high_heap_memory < m_heap_memory) {
 						m_high_heap_memory = m_heap_memory;
 					}
@@ -264,7 +252,7 @@ PW_NAMESPACE_SRT
 					}
 					// Add memory to the total engine count
 					m_heap_memory = m_heap_memory + ((size_t)sizeof(type) * p_count);
-					// Store the highest about of memory the engine had
+					// Store the highest amount of memory the engine had
 					if (m_high_heap_memory < m_heap_memory) {
 						m_high_heap_memory = m_heap_memory;
 					}
@@ -330,30 +318,6 @@ PW_NAMESPACE_SRT
 				// I might add two sets of pointers in the future to prevent this
 				// So the memory is handled regardless, but there are other draw backs...
 				return true;
-			}
-			/* Error List: NONE */
-			static void Release_All() {
-				// Iterate though all members and delete them all accordingly
-				for (auto i = m_memory_pointers->begin(); i != m_memory_pointers->end(); i++) {
-					if (i->m_stored_memory != nullptr) {
-						if (i->Blocks() == 1) {
-							if (i->Array_Member() != true) {
-								// Subtract memory from the total engine count
-								m_heap_memory = m_heap_memory - i->Bytes();
-								m_allocations = m_allocations - 1;
-
-								delete i->m_stored_memory;
-							}
-						}
-						else {
-							delete[] i->m_stored_memory;
-							m_allocations = m_allocations - 1;
-							m_heap_memory = m_heap_memory - i->Bytes();
-						}
-					}
-				}
-				// Erase all of the members from the program
-				delete m_memory_pointers;
 			}
 			/* Error List: NONE */
 			_NODISCARD static std::wstring Memory_String(const uint64_t& p_bytes) {
@@ -477,6 +441,44 @@ PW_NAMESPACE_SRT
 		public:
 		// Private Functions/Macros 
 		private:
+			/* Error List: PW_MEMORY_FAILURE */
+			_NODISCARD static bool Initialize() noexcept {
+				// Not tracked by engine, guaranteed memory deallocation
+				// Could cause memory leak if terminated prematurely but at that point
+				// windows should clean up the program memory
+				TRY_LINE m_memory_pointers = new(std::nothrow) std::set<pw::co::Memory::Data>();
+
+				if (m_memory_pointers == nullptr) {
+					SET_ERROR_STATE(PW_MEMORY_FAILURE);
+					SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::Memory", L"Failure To Allocate Memory Tracker.", ERROR_LINE, __FILEW__, L"Initialize"));
+					return false;
+				}
+				return true;
+			}
+			/* Error List: NONE */
+			static void Release_All() {
+				// Iterate though all members and delete them all accordingly
+				for (auto i = m_memory_pointers->begin(); i != m_memory_pointers->end(); i++) {
+					if (i->m_stored_memory != nullptr) {
+						if (i->Blocks() == 1) {
+							if (i->Array_Member() != true) {
+								// Subtract memory from the total engine count
+								m_heap_memory = m_heap_memory - i->Bytes();
+								m_allocations = m_allocations - 1;
+
+								delete i->m_stored_memory;
+							}
+						}
+						else {
+							delete[] i->m_stored_memory;
+							m_allocations = m_allocations - 1;
+							m_heap_memory = m_heap_memory - i->Bytes();
+						}
+					}
+				}
+				// Erase all of the members from the program
+				delete m_memory_pointers;
+			}
 		// Private Variables
 		private:
 			// How much memory is allocated with the new() operator

@@ -27,7 +27,7 @@ PW_NAMESPACE_SRT
 				v_fileStream.close();
 				return v_content;
 			}
-			uint32_t Shader_Loader::Compile_Shader(const std::wstring& p_shader_code, const uint32_t& p_shader_type) {
+			uint32_t Shader_Loader::Compile_Shader(const std::wstring& p_shader_code, const uint32_t p_shader_type) {
 				uint32_t v_shader{ 0 };
 
 				if (p_shader_code == L"") {
@@ -63,7 +63,7 @@ PW_NAMESPACE_SRT
 
 				return v_shader;
 			}
-			void Shader_Loader::Check_Error(const uint32_t& p_object_id, const uint32_t& p_error, const bool& p_is_program, const std::wstring& p_custom_error_msg) {
+			void Shader_Loader::Check_Error(const uint32_t p_object_id, const uint32_t p_error, const bool p_is_program, const std::wstring& p_custom_error_msg) {
 				int32_t v_success{ 0 };
 				char v_error_message[1024]{ 0 };
 				wchar_t v_werror_message[1024]{ 0 };

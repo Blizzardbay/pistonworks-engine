@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021-2023, Darrian Corkadel
+// Copyright(c) 2021-2024, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -58,6 +58,7 @@
 PW_NAMESPACE_SRT
 	ST_NAMESPACE_SRT
 		struct Vertex_Data {
+		// Friends
 		// Default Class Structures 
 		public:
 			/* Error List: NONE */
@@ -84,15 +85,15 @@ PW_NAMESPACE_SRT
 			/* Error List: NONE */
 			const uint32_t& Is_Colored() const;
 			/* Error List: NONE */
-			void Set_Is_Colored(const uint32_t& p_is_colored);
+			void Set_Is_Colored(uint32_t p_is_colored);
 			/* Error List: NONE */
 			const uint32_t& Is_Text() const;
 			/* Error List: NONE */
-			void Set_Is_Text(const uint32_t& p_is_text);
+			void Set_Is_Text(uint32_t p_is_text);
 			/* Error List: NONE */
 			const uint32_t& Model_Index() const;
 			/* Error List: NONE */
-			void Set_Model_Index(const uint32_t& p_model_index);
+			void Set_Model_Index(uint32_t p_model_index);
 			/* Error List: NONE */
 			const uint64_t& Texture_Handle() const;
 			/* Error List: NONE */
@@ -112,6 +113,8 @@ PW_NAMESPACE_SRT
 			uint64_t m_texture_handle;
 		};
 		class Mesh {
+		// Friends
+			friend class pw::co::Control;
 		// Default Class Structures 
 		public:
 			struct Non_Colored {
@@ -153,6 +156,21 @@ PW_NAMESPACE_SRT
 			// Private Variables      
 			private:
 			};
+			struct Matrix_Write {
+			// Default Class Structures 
+			public:
+			private:
+			// Public Functions/Macros  
+			public:
+			// Public Variables        
+			public:
+				uint32_t m_index;
+				const glm::mat4* m_matrix;
+			// Private Functions/Macros 
+			private:
+			// Private Variables      
+			private:
+			};
 			class Draw_Command {
 			public:
 				uint32_t m_count;
@@ -181,11 +199,11 @@ PW_NAMESPACE_SRT
 		// Public Functions/Macros 
 		public:
 			/* Error List: PW_FUNCTION_ERROR, PW_GL_ERROR */
-			uint32_t Add(const Non_Colored& p_data);
+			std::pair<uint32_t, uint32_t> Add(const Non_Colored& p_data);
 			/* Error List: PW_FUNCTION_ERROR, PW_GL_ERROR */
-			uint32_t Add(const Colored& p_data);
+			std::pair<uint32_t, uint32_t> Add(const Colored& p_data);
 			/* Error List: PW_GL_ERROR */
-			void Remove(uint32_t p_index);
+			void Remove(uint32_t p_index, uint32_t p_model_matrix_index);
 			/* Error List: PW_GL_ERROR */
 			void Render(uint32_t p_index);
 			/* Error List: PW_GL_ERROR */
@@ -203,7 +221,7 @@ PW_NAMESPACE_SRT
 			/* Error List: PW_FUNCTION_ERROR, PW_GL_ERROR */
 			void Change_Texture_Data(uint32_t p_index, Vertex_Data* p_new_texture_data);
 			/* Error List: PW_GL_ERROR */
-			void Change_Matrix_Data(uint32_t p_index, const glm::mat4& p_matrix);
+			void Change_Matrix_Data(uint32_t p_index, uint32_t p_model_matrix_index, const glm::mat4* const p_matrix);
 			/* Error List: PW_FUNCTION_ERROR, PW_GL_ERROR */
 			void Change_Texture_Handle(uint32_t p_index, const uint64_t& p_texture_handle);
 			// Sets the texture handle as transparent internally so meshes know to render
@@ -217,20 +235,20 @@ PW_NAMESPACE_SRT
 			static void Validate_Multitex(uint32_t p_associated_index, const std::vector<uint64_t>& p_texture_handles);
 		// Public Variables         
 		public:
-		// Protected Functions/Macros
-		protected:
-			/* Error List: PW_GL_ERROR */
-			static void Initialize();
-			/* Error List: PW_GL_ERROR */
-			static void Release();
-			// Protected Variables
-		protected:
 		// Private Functions/Macros 
 		private:
 			/* Error List: PW_GL_ERROR, PW_FUNCTION_ERROR */
 			void Add_To_Buffer(Vertex_Data* p_data);
 			/* Error List: PW_GL_ERROR, PW_FUNCTION_ERROR */
 			uint32_t Add_Matrix_To_SSBO(const glm::mat4* p_data);
+
+			void Start_Sync_GPU();
+			void End_Sync_GPU();
+
+			/* Error List: PW_GL_ERROR */
+			static void Initialize();
+			/* Error List: PW_GL_ERROR */
+			static void Release();
 		// Private Variables      
 		private:
 			Vertex_Data* m_vertices;
@@ -265,13 +283,15 @@ PW_NAMESPACE_SRT
 
 			std::vector<uint32_t> m_render_index_free_spaces;
 
-			std::map<uint32_t, uint32_t> m_matrix_index_converter;
-
 			static uint32_t m_model_object;
 			// Size of m_model_object
 			static uint32_t m_mo_size;
 			// Max size of m_model_object
 			static uint32_t m_mo_max_size;
+
+			static glm::mat4* m_model_access;
+			// The sync object for the model access
+			static GLsync m_model_access_sync;
 
 			// The size of the buffer this frame
 			static uint32_t m_mo_size_tframe;
@@ -279,7 +299,7 @@ PW_NAMESPACE_SRT
 			// despite having the memory for the previous size
 			static uint32_t m_mo_marr_max_size;
 			static std::vector<uint32_t> m_mo_free_spaces;
-			static std::vector<std::pair<uint32_t, glm::mat4>> m_matrix_array_access;
+			static std::vector<Matrix_Write> m_matrix_array_access;
 			// Transparent textures must be rendered last or it leads to problems
 			// Store texture_handles relating to such textures and then label indices that
 			// render the textures

@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021-2023, Darrian Corkadel
+// Copyright(c) 2021-2024, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -78,12 +78,12 @@
 //////////////////////////////////
 // Engine Utility Headers
 //////////////////////////////////
+// Engine Extensions Headers
+#include "extensions\user_interface.h"
+//////////////////////////////////
 PW_NAMESPACE_SRT
 	CO_NAMESPACE_SRT
-		class Control :
-			public pw::co::Text_Renderer, public pw::co::Listener,
-			public pw::co::Multi_Scope_Timer, public pw::st::Mesh, public pw::st::Time_Constant,
-			public pw::er::Error_State, public pw::st::Model, public pw::co::Async_Timer {
+		class Control {
 		// Default Class Structures
 		public:
 			/* Error List: NONE */
@@ -95,7 +95,7 @@ PW_NAMESPACE_SRT
 		// Public Functions/Macros
 		public:
 			/* Error List: PW_FUNCTION_ERROR, PW_GLFW_ERROR, PW_GL_ERROR, PW_AL_ERROR */
-			void Initialize_Engine(int argc, char* argv[], const std::wstring& p_window_name, const int32_t& p_window_width, const int32_t& p_window_height, const bool& p_require_game_path);
+			void Initialize_Engine(int argc, char* argv[], const std::wstring& p_window_name, const int32_t p_window_width, const int32_t p_window_height, const bool p_require_game_path);
 
 			/* Error List: PW_FUNCTION_ERROR, PW_GLFW_ERROR, PW_GL_ERROR */
 			void Run_Engine();
@@ -135,7 +135,7 @@ PW_NAMESPACE_SRT
 			void Post_Scene_Removal(const std::wstring& p_scene);
 
 			/* Error List: NONE */
-			const bool& No_Error() const;
+			const bool No_Error() const;
 		// Public Variables
 		public:
 		// Private Functions/Macros

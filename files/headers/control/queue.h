@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021-2023, Darrian Corkadel
+// Copyright(c) 2021-2024, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -57,29 +57,15 @@
 PW_NAMESPACE_SRT
 	CO_NAMESPACE_SRT
 		class Engine_Queue : pw::co::Text_Renderer, pw::st::Model {
+		// Friends
+			friend class pw::co::Control;
 		// Default Class Structures
 		public:
 		private:
 		// Public Functions/Macros
 		public:
 			/* Error List: PW_FUNCTION_ERROR */
-			static void Pre_Queue();
-			/* Error List: PW_FUNCTION_ERROR */
-			static void Run_Queue();
-
-			/* Error List: PW_FUNCTION_ERROR */
-			static void Initialize();
-			/* Error List: PW_FUNCTION_ERROR */
-			static void Release();
-
-			/* Error List: PW_FUNCTION_ERROR */
-			static void Print_Debug_Stats();
-
-			/* Error List: PW_GAME_PATH_NOT_FOUND, PW_DIRECTORY_NOT_FOUND, PW_FUNCTION_ERROR, PW_GLFW_ERROR */
-			static void Load_From_Dir(std::unique_ptr<GLFWwindow, pw::cm::Destroy_GLFW>& p_main_window, std::shared_ptr<PW_FUNCTION> p_state_function);
-			
-			/* Error List: PW_FUNCTION_ERROR */
-			static void Add_Scene(const std::wstring& p_scene_name, const bool& p_set_current = false);
+			static void Add_Scene(const std::wstring& p_scene_name, const bool p_set_current = false);
 			/* Error List: PW_FUNCTION_ERROR */
 			static void Set_Current_Scene(const std::wstring& p_scene_name);
 			/* Error List: PW_FUNCTION_ERROR */
@@ -96,7 +82,7 @@ PW_NAMESPACE_SRT
 			static void Set_User_Debug_Function(const std::function<void()>& p_debug_function);
 
 			/* Error List: NONE */
-			static void Set_Sub_Scene_Render(const std::wstring& p_base_scene, const std::wstring& p_sub_scene, const bool& p_state);
+			static void Set_Sub_Scene_Render(const std::wstring& p_base_scene, const std::wstring& p_sub_scene, const bool p_state);
 
 			/* Error List: NONE */
 			static st::Game_Scene* Get_Scene(const std::wstring& p_scene_name);
@@ -106,6 +92,21 @@ PW_NAMESPACE_SRT
 		public:
 		// Private Functions/Macros
 		private:
+			/* Error List: PW_FUNCTION_ERROR */
+			static void Pre_Queue();
+			/* Error List: PW_FUNCTION_ERROR */
+			static void Run_Queue();
+
+			/* Error List: PW_FUNCTION_ERROR */
+			static void Initialize();
+			/* Error List: PW_FUNCTION_ERROR */
+			static void Release();
+
+			/* Error List: PW_FUNCTION_ERROR */
+			static void Print_Debug_Stats();
+
+			/* Error List: PW_GAME_PATH_NOT_FOUND, PW_DIRECTORY_NOT_FOUND, PW_FUNCTION_ERROR, PW_GLFW_ERROR */
+			static void Load_From_Dir(std::unique_ptr<GLFWwindow, pw::cm::Destroy_GLFW>& p_main_window, std::shared_ptr<PW_FUNCTION> p_state_function);
 		// Private Variables       
 		private:
 			// Has the pwproject file been loaded

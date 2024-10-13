@@ -44,6 +44,30 @@ PW_NAMESPACE_SRT
 						}
 					}
 				}
+				void Console_Error::Handle_Windows_Error(const std::wstring& p_function, const std::wstring& p_caller) noexcept {
+					std::wstring v_win_error = Console_Error::Windows_Last_Error();
+
+					if (v_win_error != std::wstring()) {
+						if (v_win_error.find(L"FormatMessageW Function Failure: Error Code: ") == std::wstring::npos) {
+							SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
+
+							std::wstring v_total_error = { L"Function FormatMessageW: " + v_win_error };
+
+							SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, p_caller));
+							return;
+						}
+						else {
+							pw::er::Error_State::Handle_Error();
+
+							SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
+
+							std::wstring v_total_error = { L"Function " + p_function + L": " + v_win_error };
+
+							SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, p_caller));
+							return;
+						}
+					}
+				}
 			// Console_Color
 			// Static Declarations
 			// Class Members
@@ -90,28 +114,8 @@ PW_NAMESPACE_SRT
 					TRY_LINE m_window_handle = GetConsoleWindow();
 
 					if (m_window_handle == FALSE) {
-						std::wstring v_win_error = Console_Error::Windows_Last_Error();
-						
-						if (v_win_error != std::wstring()) {
-							if (v_win_error.find(L"FormatMessageW Function Failure: Error Code: ") == std::wstring::npos) {
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function GetConsoleWindow: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Set_Up_Console"));
-								return;
-							}
-							else {
-								pw::er::Error_State::Handle_Error();
-
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function GetConsoleWindow: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Set_Up_Console"));
-								return;
-							}
-						}
+						Console_Error::Handle_Windows_Error(L"GetConsoleWindow", L"Set_Up_Console");
+						return;
 					}
 					// The windows API does not standard error handling for this function
 					ShowWindow(m_window_handle, SW_HIDE);
@@ -120,153 +124,33 @@ PW_NAMESPACE_SRT
 					TRY_LINE m_screen_handle = CreateConsoleScreenBuffer(GENERIC_READ, NULL, NULL, CONSOLE_TEXTMODE_BUFFER, NULL);
 
 					if (m_screen_handle == INVALID_HANDLE_VALUE) {
-						std::wstring v_win_error = Console_Error::Windows_Last_Error();
-
-						if (v_win_error != std::wstring()) {
-							if (v_win_error.find(L"FormatMessageW Function Failure: Error Code: ") == std::wstring::npos) {
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function CreateConsoleScreenBuffer: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Set_Up_Console"));
-								return;
-							}
-							else {
-								pw::er::Error_State::Handle_Error();
-
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function CreateConsoleScreenBuffer: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Set_Up_Console"));
-								return;
-							}
-						}
+						Console_Error::Handle_Windows_Error(L"CreateConsoleScreenBuffer", L"Set_Up_Console");
+						return;
 					}
 					// Make the console un-resize-able
 					if (TRY_LINE SetWindowLongA(m_window_handle, GWL_STYLE, GetWindowLongA(m_window_handle, GWL_STYLE) & ~WS_MAXIMIZEBOX & ~WS_SIZEBOX) == NULL) {
-						std::wstring v_win_error = Console_Error::Windows_Last_Error();
-
-						if (v_win_error != std::wstring()) {
-							if (v_win_error.find(L"FormatMessageW Function Failure: Error Code: ") == std::wstring::npos) {
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function SetWindowLongA: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Set_Up_Console"));
-								return;
-							}
-							else {
-								pw::er::Error_State::Handle_Error();
-
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function SetWindowLongA: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Set_Up_Console"));
-								return;
-							}
-						}
+						Console_Error::Handle_Windows_Error(L"SetWindowLongA", L"Set_Up_Console");
+						return;
 					}
 					// Make the cursor go away
 					TRY_LINE m_console_output = GetStdHandle(STD_OUTPUT_HANDLE);
 
 					if (m_console_output == INVALID_HANDLE_VALUE || m_console_output == FALSE) {
-						std::wstring v_win_error = Console_Error::Windows_Last_Error();
-
-						if (v_win_error != std::wstring()) {
-							if (v_win_error.find(L"FormatMessageW Function Failure: Error Code: ") == std::wstring::npos) {
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function GetStdHandle: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Set_Up_Console"));
-								return;
-							}
-							else {
-								pw::er::Error_State::Handle_Error();
-
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function GetStdHandle: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Set_Up_Console"));
-								return;
-							}
-						}
+						Console_Error::Handle_Windows_Error(L"GetStdHandle", L"Set_Up_Console");
+						return;
 					}
 
 					if (TRY_LINE setlocale(LC_ALL, "chinese") == nullptr) {
-						std::wstring v_win_error = Console_Error::Windows_Last_Error();
-
-						if (v_win_error != std::wstring()) {
-							if (v_win_error.find(L"FormatMessageW Function Failure: Error Code: ") == std::wstring::npos) {
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function setlocale: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Set_Up_Console"));
-								return;
-							}
-							else {
-								pw::er::Error_State::Handle_Error();
-
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function setlocale: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Set_Up_Console"));
-								return;
-							}
-						}
+						Console_Error::Handle_Windows_Error(L"setlocale", L"Set_Up_Console");
+						return;
 					}
 					if (TRY_LINE SetConsoleOutputCP(CP_UTF8) == FALSE) {
-						std::wstring v_win_error = Console_Error::Windows_Last_Error();
-
-						if (v_win_error != std::wstring()) {
-							if (v_win_error.find(L"FormatMessageW Function Failure: Error Code: ") == std::wstring::npos) {
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function SetConsoleOutputCP: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Set_Up_Console"));
-								return;
-							}
-							else {
-								pw::er::Error_State::Handle_Error();
-
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function SetConsoleOutputCP: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Set_Up_Console"));
-								return;
-							}
-						}
+						Console_Error::Handle_Windows_Error(L"SetConsoleOutputCP", L"Set_Up_Console");
+						return;
 					}
 					if (TRY_LINE SetConsoleCP(CP_UTF8) == FALSE) {
-						std::wstring v_win_error = Console_Error::Windows_Last_Error();
-
-						if (v_win_error != std::wstring()) {
-							if (v_win_error.find(L"FormatMessageW Function Failure: Error Code: ") == std::wstring::npos) {
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function SetConsoleCP: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Set_Up_Console"));
-								return;
-							}
-							else {
-								pw::er::Error_State::Handle_Error();
-
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function SetConsoleCP: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Set_Up_Console"));
-								return;
-							}
-						}
+						Console_Error::Handle_Windows_Error(L"SetConsoleCP", L"Set_Up_Console");
+						return;
 					}
 
 					CONSOLE_FONT_INFOEX v_font_info;
@@ -280,105 +164,25 @@ PW_NAMESPACE_SRT
 					std::copy(v_font, v_font + (sizeof(v_font) / sizeof(wchar_t)), v_font_info.FaceName);
 
 					if (TRY_LINE SetCurrentConsoleFontEx(m_console_output, false, &v_font_info) == FALSE) {
-						std::wstring v_win_error = Console_Error::Windows_Last_Error();
-
-						if (v_win_error != std::wstring()) {
-							if (v_win_error.find(L"FormatMessageW Function Failure: Error Code: ") == std::wstring::npos) {
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function SetCurrentConsoleFontEx: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Set_Up_Console"));
-								return;
-							}
-							else {
-								pw::er::Error_State::Handle_Error();
-
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function SetCurrentConsoleFontEx: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Set_Up_Console"));
-								return;
-							}
-						}
+						Console_Error::Handle_Windows_Error(L"SetCurrentConsoleFontEx", L"Set_Up_Console");
+						return;
 					}
 					CONSOLE_CURSOR_INFO v_cursor_info{};
 
 					if (TRY_LINE GetConsoleCursorInfo(m_console_output, &v_cursor_info) == FALSE) {
-						std::wstring v_win_error = Console_Error::Windows_Last_Error();
-
-						if (v_win_error != std::wstring()) {
-							if (v_win_error.find(L"FormatMessageW Function Failure: Error Code: ") == std::wstring::npos) {
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function GetConsoleCursorInfo: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Set_Up_Console"));
-								return;
-							}
-							else {
-								pw::er::Error_State::Handle_Error();
-
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function GetConsoleCursorInfo: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Set_Up_Console"));
-								return;
-							}
-						}
+						Console_Error::Handle_Windows_Error(L"GetConsoleCursorInfo", L"Set_Up_Console");
+						return;
 					}
 					v_cursor_info.bVisible = false;
 					if (TRY_LINE SetConsoleCursorInfo(m_console_output, &v_cursor_info) == FALSE) {
-						std::wstring v_win_error = Console_Error::Windows_Last_Error();
-
-						if (v_win_error != std::wstring()) {
-							if (v_win_error.find(L"FormatMessageW Function Failure: Error Code: ") == std::wstring::npos) {
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function SetConsoleCursorInfo: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Set_Up_Console"));
-								return;
-							}
-							else {
-								pw::er::Error_State::Handle_Error();
-
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function SetConsoleCursorInfo: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Set_Up_Console"));
-								return;
-							}
-						}
+						Console_Error::Handle_Windows_Error(L"SetConsoleCursorInfo", L"Set_Up_Console");
+						return;
 					}
 					PW_CALL(m_console_screen_buffer = pw::co::Memory::Allocate<wchar_t>(TO_UINT64(m_console_width) * TO_UINT64(m_console_height)), true);
 
 					if (TRY_LINE SetConsoleTitleW(L"Pistonworks Console") == FALSE) {
-						std::wstring v_win_error = Console_Error::Windows_Last_Error();
-
-						if (v_win_error != std::wstring()) {
-							if (v_win_error.find(L"FormatMessageW Function Failure: Error Code: ") == std::wstring::npos) {
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function SetConsoleTitleW: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Set_Up_Console"));
-								return;
-							}
-							else {
-								pw::er::Error_State::Handle_Error();
-
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function SetConsoleTitleW: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Set_Up_Console"));
-								return;
-							}
-						}
+						Console_Error::Handle_Windows_Error(L"SetConsoleTitleW", L"Set_Up_Console");
+						return;
 					}
 					std::wstring v_temp_wstr{};
 
@@ -395,28 +199,8 @@ PW_NAMESPACE_SRT
 					}
 
 					if (TRY_LINE SetConsoleActiveScreenBuffer(m_console_output) == FALSE) {
-						std::wstring v_win_error = Console_Error::Windows_Last_Error();
-
-						if (v_win_error != std::wstring()) {
-							if (v_win_error.find(L"FormatMessageW Function Failure: Error Code: ") == std::wstring::npos) {
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function SetConsoleActiveScreenBuffer: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Set_Up_Console"));
-								return;
-							}
-							else {
-								pw::er::Error_State::Handle_Error();
-
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function SetConsoleActiveScreenBuffer: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Set_Up_Console"));
-								return;
-							}
-						}
+						Console_Error::Handle_Windows_Error(L"SetConsoleActiveScreenBuffer", L"Set_Up_Console");
+						return;
 					}
 				}
 				void Console_Manip::Initialize() {
@@ -434,7 +218,7 @@ PW_NAMESPACE_SRT
 					typedef std::map<pw::co::cn::Msg_Types, pw::co::cn::Console_Color> MSG_COLORS;
 					PW_CALL(m_msg_colors = pw::co::Memory::Allocate_Args<MSG_COLORS>(v_temp), true);
 				}
-				void Console_Manip::Resize(const uint32_t& p_size_x, const uint32_t& p_size_y) {
+				void Console_Manip::Resize(const uint32_t p_size_x, const uint32_t p_size_y) {
 					COORD v_size{};
 					v_size.X = TO_INT16(p_size_x);
 					v_size.Y = TO_INT16(p_size_y);
@@ -446,76 +230,16 @@ PW_NAMESPACE_SRT
 					v_console_rect.Bottom = v_size.Y - 1;
 
 					if (TRY_LINE SetConsoleWindowInfo(m_console_output, TRUE, &v_console_rect) == FALSE) {
-						std::wstring v_win_error = Console_Error::Windows_Last_Error();
-
-						if (v_win_error != std::wstring()) {
-							if (v_win_error.find(L"FormatMessageW Function Failure: Error Code: ") == std::wstring::npos) {
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function SetConsoleWindowInfo: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Resize"));
-								return;
-							}
-							else {
-								pw::er::Error_State::Handle_Error();
-
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function SetConsoleWindowInfo: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Resize"));
-								return;
-							}
-						}
+						Console_Error::Handle_Windows_Error(L"SetConsoleWindowInfo", L"Resize");
+						return;
 					}
 					if (TRY_LINE SetConsoleScreenBufferSize(m_console_output, v_size) == FALSE) {
-						std::wstring v_win_error = Console_Error::Windows_Last_Error();
-
-						if (v_win_error != std::wstring()) {
-							if (v_win_error.find(L"FormatMessageW Function Failure: Error Code: ") == std::wstring::npos) {
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function SetConsoleScreenBufferSize: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Resize"));
-								return;
-							}
-							else {
-								pw::er::Error_State::Handle_Error();
-
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function SetConsoleScreenBufferSize: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Resize"));
-								return;
-							}
-						}
+						Console_Error::Handle_Windows_Error(L"SetConsoleScreenBufferSize", L"Resize");
+						return;
 					}
 					if (TRY_LINE SetConsoleActiveScreenBuffer(m_console_output) == FALSE) {
-						std::wstring v_win_error = Console_Error::Windows_Last_Error();
-
-						if (v_win_error != std::wstring()) {
-							if (v_win_error.find(L"FormatMessageW Function Failure: Error Code: ") == std::wstring::npos) {
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function SetConsoleActiveScreenBuffer: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Resize"));
-								return;
-							}
-							else {
-								pw::er::Error_State::Handle_Error();
-
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function SetConsoleActiveScreenBuffer: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Resize"));
-								return;
-							}
-						}
+						Console_Error::Handle_Windows_Error(L"SetConsoleActiveScreenBuffer", L"Resize");
+						return;
 					}
 				}
 				void Console_Manip::Draw_Screen() {
@@ -532,80 +256,20 @@ PW_NAMESPACE_SRT
 							v_line.push_back(m_console_screen_buffer[ADD_UINT64(MUL_UINT64(i, m_console_width), j)]);
 							if (v_line.at(j) != L' ') {
 								if (TRY_LINE WriteConsoleOutputAttribute(m_console_output, &v_color, 1, { TO_INT16(j), TO_INT16(i) }, &v_bytes_received) == FALSE) {
-									std::wstring v_win_error = Console_Error::Windows_Last_Error();
-
-									if (v_win_error != std::wstring()) {
-										if (v_win_error.find(L"FormatMessageW Function Failure: Error Code: ") == std::wstring::npos) {
-											SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-											std::wstring v_total_error = { L"Function WriteConsoleOutputAttribute: " + v_win_error };
-
-											SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Draw_Screen"));
-											return;
-										}
-										else {
-											pw::er::Error_State::Handle_Error();
-
-											SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-											std::wstring v_total_error = { L"Function WriteConsoleOutputAttribute: " + v_win_error };
-
-											SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Draw_Screen"));
-											return;
-										}
-									}
+									Console_Error::Handle_Windows_Error(L"WriteConsoleOutputAttribute", L"Draw_Screen");
+									return;
 								}
 							}
 							else {
 								if (TRY_LINE WriteConsoleOutputAttribute(m_console_output, &v_color_default, 1, { TO_INT16(j), TO_INT16(i) }, &v_bytes_received) == FALSE) {
-									std::wstring v_win_error = Console_Error::Windows_Last_Error();
-
-									if (v_win_error != std::wstring()) {
-										if (v_win_error.find(L"FormatMessageW Function Failure: Error Code: ") == std::wstring::npos) {
-											SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-											std::wstring v_total_error = { L"Function WriteConsoleOutputAttribute: " + v_win_error };
-
-											SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Draw_Screen"));
-											return;
-										}
-										else {
-											pw::er::Error_State::Handle_Error();
-
-											SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-											std::wstring v_total_error = { L"Function WriteConsoleOutputAttribute: " + v_win_error };
-
-											SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Draw_Screen"));
-											return;
-										}
-									}
+									Console_Error::Handle_Windows_Error(L"WriteConsoleOutputAttribute", L"Draw_Screen");
+									return;
 								}
 							}
 						}
 						if (TRY_LINE WriteConsoleOutputCharacterW(m_console_output, v_line.c_str(), m_console_width, { 0, TO_INT16(i) }, &v_bytes_received) == FALSE) {
-							std::wstring v_win_error = Console_Error::Windows_Last_Error();
-
-							if (v_win_error != std::wstring()) {
-								if (v_win_error.find(L"FormatMessageW Function Failure: Error Code: ") == std::wstring::npos) {
-									SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-									std::wstring v_total_error = { L"Function WriteConsoleOutputCharacterW: " + v_win_error };
-
-									SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Draw_Screen"));
-									return;
-								}
-								else {
-									pw::er::Error_State::Handle_Error();
-
-									SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-									std::wstring v_total_error = { L"Function WriteConsoleOutputCharacterW: " + v_win_error };
-
-									SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Draw_Screen"));
-									return;
-								}
-							}
+							Console_Error::Handle_Windows_Error(L"WriteConsoleOutputCharacterW", L"Draw_Screen");
+							return;
 						}
 					}
 					// The windows API does not standard error handling for this function
@@ -613,28 +277,8 @@ PW_NAMESPACE_SRT
 					// Not guaranteed but we can try
 					TRY_LINE SetFocus(m_window_handle);
 					if (TRY_LINE SetConsoleActiveScreenBuffer(m_console_output) == FALSE) {
-						std::wstring v_win_error = Console_Error::Windows_Last_Error();
-
-						if (v_win_error != std::wstring()) {
-							if (v_win_error.find(L"FormatMessageW Function Failure: Error Code: ") == std::wstring::npos) {
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function SetConsoleActiveScreenBuffer: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Draw_Screen"));
-								return;
-							}
-							else {
-								pw::er::Error_State::Handle_Error();
-
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function SetConsoleActiveScreenBuffer: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Draw_Screen"));
-								return;
-							}
-						}
+						Console_Error::Handle_Windows_Error(L"SetConsoleActiveScreenBuffer", L"Draw_Screen");
+						return;
 					}
 				}
 				void Console_Manip::Print_Info(const std::wstring& p_from, const std::wstring& p_msg, const uint16_t& p_line) {
@@ -669,7 +313,7 @@ PW_NAMESPACE_SRT
 
 					PW_CALL(Draw_Text_Line({ v_x_off , TO_INT16(p_line + 1) }, v_wstr, m_msg_colors->at(pw::co::cn::Msg_Types::E_DEFAULT)), true);
 				}
-				void Console_Manip::Print_Console(const std::wstring& p_from, const std::wstring& p_msg, const pw::co::cn::Msg_Types& p_msg_type, const bool& p_block_msg) {
+				void Console_Manip::Print_Console(const std::wstring& p_from, const std::wstring& p_msg, const pw::co::cn::Msg_Types& p_msg_type, const bool p_block_msg) {
 					if (m_msg_line > 37) {
 						m_msg_line = 0;
 						Clear_Console();
@@ -753,37 +397,17 @@ PW_NAMESPACE_SRT
 						int16_t x_pos = v_x_off + (int16_t)i + 10;
 
 						if (TRY_LINE WriteConsoleOutputAttribute(m_console_output, &m_msg_colors->at(p_msg_type).Return_Color(), 1, { x_pos, INC_INT16(m_msg_line) }, &v_bytes_written) == FALSE) {
-							std::wstring v_win_error = Console_Error::Windows_Last_Error();
-
-							if (v_win_error != std::wstring()) {
-								if (v_win_error.find(L"FormatMessageW Function Failure: Error Code: ") == std::wstring::npos) {
-									SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-									std::wstring v_total_error = { L"Function WriteConsoleOutputAttribute: " + v_win_error };
-
-									SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Print_Console"));
-									return;
-								}
-								else {
-									pw::er::Error_State::Handle_Error();
-
-									SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-									std::wstring v_total_error = { L"Function WriteConsoleOutputAttribute: " + v_win_error };
-
-									SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Print_Console"));
-									return;
-								}
-							}
+							Console_Error::Handle_Windows_Error(L"WriteConsoleOutputAttribute", L"Print_Console");
+							return;
 						}
 					}
 
 					m_msg_line = INC_UINT16(m_msg_line);
 				}
-				void Console_Manip::Print_Console(const Console_Msg& p_msg, const bool& p_block_msg) {
+				void Console_Manip::Print_Console(const Console_Msg& p_msg, const bool p_block_msg) {
 					if (m_msg_line > 37) {
 						m_msg_line = 0;
-						Clear_Console();
+						PW_FINAL_CALL(Clear_Console(), pw::cm::Constant::Pistonworks_Path());
 					}
 
 					DWORD v_bytes_written = 0;
@@ -862,26 +486,8 @@ PW_NAMESPACE_SRT
 						int16_t x_pos = ADD_INT16(v_x_off + i, 10);
 
 						if (TRY_LINE WriteConsoleOutputAttribute(m_console_output, &m_msg_colors->at(p_msg.Type()).Return_Color(), 1, { x_pos, TO_INT16(m_msg_line + 1) }, &v_bytes_written) == FALSE) {
-							std::wstring v_win_error = Console_Error::Windows_Last_Error();
-
-							if (v_win_error != std::wstring()) {
-								if (v_win_error.find(L"FormatMessageW Function Failure: Error Code: ") == std::wstring::npos) {
-									SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-									std::wstring v_total_error = { L"Function WriteConsoleOutputAttribute: " + v_win_error };
-
-									er::Error_Log::Dump_Log(pw::cm::Constant::Pistonworks_Path(), v_total_error);
-									return;
-								}
-								else {
-									SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-									std::wstring v_total_error = { L"Function WriteConsoleOutputAttribute: " + v_win_error };
-
-									er::Error_Log::Dump_Log(pw::cm::Constant::Pistonworks_Path(), v_total_error);
-									return;
-								}
-							}
+							Console_Error::Handle_Windows_Error(L"WriteConsoleOutputAttribute", L"Print_Console");
+							return;
 						}
 					}
 					m_msg_line = INC_UINT16(m_msg_line);
@@ -900,52 +506,12 @@ PW_NAMESPACE_SRT
 					}
 
 					if (TRY_LINE WriteConsoleOutputCharacterW(m_console_output, &p_character, 1, p_position, &v_bytes_written) == FALSE) {
-						std::wstring v_win_error = Console_Error::Windows_Last_Error();
-
-						if (v_win_error != std::wstring()) {
-							if (v_win_error.find(L"FormatMessageW Function Failure: Error Code: ") == std::wstring::npos) {
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function WriteConsoleOutputCharacterW: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Draw_WChar"));
-								return;
-							}
-							else {
-								pw::er::Error_State::Handle_Error();
-
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function WriteConsoleOutputCharacterW: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Draw_WChar"));
-								return;
-							}
-						}
+						Console_Error::Handle_Windows_Error(L"WriteConsoleOutputCharacterW", L"Draw_WChar");
+						return;
 					}
 					if (TRY_LINE WriteConsoleOutputAttribute(m_console_output, &p_color.Return_Color(), 1, p_position, &v_bytes_written) == FALSE) {
-						std::wstring v_win_error = Console_Error::Windows_Last_Error();
-
-						if (v_win_error != std::wstring()) {
-							if (v_win_error.find(L"FormatMessageW Function Failure: Error Code: ") == std::wstring::npos) {
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function WriteConsoleOutputAttribute: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Draw_WChar"));
-								return;
-							}
-							else {
-								pw::er::Error_State::Handle_Error();
-
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function WriteConsoleOutputAttribute: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Draw_WChar"));
-								return;
-							}
-						}
+						Console_Error::Handle_Windows_Error(L"WriteConsoleOutputAttribute", L"Draw_WChar");
+						return;
 					}
 				}
 				void Console_Manip::Draw_WChar_Block(const COORD& p_position, const COORD& p_size, const wchar_t& p_character, const Console_Color& p_color) {
@@ -971,28 +537,8 @@ PW_NAMESPACE_SRT
 						v_block[i].Attributes = p_color.Return_Color();
 					}
 					if (TRY_LINE WriteConsoleOutputW(m_console_output, v_block, p_size, p_position, &v_write_area) == FALSE) {
-						std::wstring v_win_error = Console_Error::Windows_Last_Error();
-
-						if (v_win_error != std::wstring()) {
-							if (v_win_error.find(L"FormatMessageW Function Failure: Error Code: ") == std::wstring::npos) {
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function WriteConsoleOutputW: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Draw_WChar_Block"));
-								return;
-							}
-							else {
-								pw::er::Error_State::Handle_Error();
-
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function WriteConsoleOutputW: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Draw_WChar_Block"));
-								return;
-							}
-						}
+						Console_Error::Handle_Windows_Error(L"WriteConsoleOutputW", L"Draw_WChar");
+						return;
 					}
 					if (pw::co::Memory::Deallocate<CHAR_INFO>(v_block) == false) {
 						if (v_block != nullptr) {
@@ -1008,79 +554,19 @@ PW_NAMESPACE_SRT
 						return;
 					}
 					if (TRY_LINE SetConsoleCursorPosition(m_console_output, p_position) == FALSE) {
-						std::wstring v_win_error = Console_Error::Windows_Last_Error();
-
-						if (v_win_error != std::wstring()) {
-							if (v_win_error.find(L"FormatMessageW Function Failure: Error Code: ") == std::wstring::npos) {
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function SetConsoleCursorPosition: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Draw_Text_Line"));
-								return;
-							}
-							else {
-								pw::er::Error_State::Handle_Error();
-
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function SetConsoleCursorPosition: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Draw_Text_Line"));
-								return;
-							}
-						}
+						Console_Error::Handle_Windows_Error(L"SetConsoleCursorPosition", L"Draw_Text_Line");
+						return;
 					}
 					if (TRY_LINE SetConsoleTextAttribute(m_console_output, p_color.Return_Color()) == FALSE) {
-						std::wstring v_win_error = Console_Error::Windows_Last_Error();
-
-						if (v_win_error != std::wstring()) {
-							if (v_win_error.find(L"FormatMessageW Function Failure: Error Code: ") == std::wstring::npos) {
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function SetConsoleTextAttribute: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Draw_Text_Line"));
-								return;
-							}
-							else {
-								pw::er::Error_State::Handle_Error();
-
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function SetConsoleTextAttribute: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Draw_Text_Line"));
-								return;
-							}
-						}
+						Console_Error::Handle_Windows_Error(L"SetConsoleTextAttribute", L"Draw_Text_Line");
+						return;
 					}
 
 					DWORD v_characters_written{ 0 };
 
 					if (TRY_LINE WriteConsoleW(m_console_output, p_block.c_str(), static_cast<DWORD>(p_block.size()), &v_characters_written, nullptr) == FALSE) {
-						std::wstring v_win_error = Console_Error::Windows_Last_Error();
-
-						if (v_win_error != std::wstring()) {
-							if (v_win_error.find(L"FormatMessageW Function Failure: Error Code: ") == std::wstring::npos) {
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function WriteConsoleW: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Draw_Text_Line"));
-								return;
-							}
-							else {
-								pw::er::Error_State::Handle_Error();
-
-								SET_ERROR_STATE(PW_WIN_FUNCTION_ERROR);
-
-								std::wstring v_total_error = { L"Function WriteConsoleW: " + v_win_error };
-
-								SET_ERROR_TYPE(pw::er::Severe_Error(L"pw::co::cn::Console_Manip", v_total_error, ERROR_LINE, __FILEW__, L"Draw_Text_Line"));
-								return;
-							}
-						}
+						Console_Error::Handle_Windows_Error(L"WriteConsoleW", L"Draw_Text_Line");
+						return;
 					}
 				}
 				void Console_Manip::Draw_Line(const COORD& p_start, const COORD& p_end, const wchar_t& p_character, const Console_Color& p_color) {

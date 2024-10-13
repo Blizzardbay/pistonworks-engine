@@ -220,13 +220,13 @@ PW_NAMESPACE_SRT
 			Model::Model() :
 					m_texture{ NULL }, m_position{ NULL }, m_last_position{ std::numeric_limits<float>::quiet_NaN() }, m_rotation{ NULL },
 					m_size{ NULL }, m_mesh{ nullptr }, m_type{ Geometry_Types::UNINIT }, m_is_colored{ false },
-					m_is_text{ NULL }, m_color{ NULL }, m_matrix{}, m_id{ NULL }, m_render_index{ NULL }, m_offset{ NULL }, m_last_rotation{ 0.0f },
+				m_is_text{ NULL }, m_color{ NULL }, m_matrix{}, m_id{ NULL }, m_render_index{ NULL }, m_model_matrix_index{ NULL }, m_offset{ NULL }, m_last_rotation{ 0.0f },
 					m_repeats{ false }, m_attached{ false }, m_fixed_rotation{ false }, m_is_copy{ false }, m_changed{ true } {
 			}
-			Model::Model(const Geometry_Types& p_type, st::Texture* p_texture, const glm::vec2& p_position, const float& p_rotation, const glm::vec2& p_size, const bool& p_repeats, const bool& p_fixed_rotation, int32_t p_is_text) :
-					m_texture{ p_texture }, m_position{ pw::co::Memory::Allocate_Args<glm::vec2>(p_position) },
+			Model::Model(const Geometry_Types& p_type, st::Texture* p_texture, const glm::vec2& p_position, const float p_rotation, const glm::vec2& p_size, const bool p_repeats, const bool p_fixed_rotation, int32_t p_is_text) :
+					m_texture{ p_texture }, m_position{ nullptr },
 					m_last_position{ std::numeric_limits<float>::quiet_NaN() }, m_rotation{ p_rotation }, m_size{ p_size }, m_mesh{ nullptr }, m_type{ p_type }, m_is_colored{ false },
-					m_is_text{ p_is_text }, m_color{ glm::vec4(0.0f, 0.0f, 0.0f, 0.0f) }, m_matrix{}, m_id{ ++Model::m_model_id_assigner }, m_render_index{ 0 },
+					m_is_text{ p_is_text }, m_color{ glm::vec4(0.0f, 0.0f, 0.0f, 0.0f) }, m_matrix{}, m_id{ ++Model::m_model_id_assigner }, m_render_index{ NULL }, m_model_matrix_index{ NULL },
 					m_offset{ NULL }, m_last_rotation{ 0.0f },
 					m_repeats{ p_repeats }, m_attached{ false }, m_fixed_rotation{ p_fixed_rotation }, m_is_copy{ false }, m_changed{ true } {
 				if (p_texture == nullptr) {
@@ -234,6 +234,9 @@ PW_NAMESPACE_SRT
 					SET_ERROR_TYPE(pw::er::Warning_Error(L"pw::st::Model", L"Invalid Parameter: p_texture was nullptr", ERROR_LINE, __FILEW__, L"Model"));
 					return;
 				}
+				// Allocate after possible nullptr
+				PW_CALL(m_position = pw::co::Memory::Allocate_Args<glm::vec2>(p_position), true);
+
 				if (m_repeats == true) {
 					st::Mesh::Non_Colored v_non_colored{};
 					v_non_colored.m_size = m_size;
@@ -247,7 +250,9 @@ PW_NAMESPACE_SRT
 					if (v_found != m_geometry_holder_noc.end()) {
 						m_mesh = v_found->second;
 
-						m_render_index = m_mesh->Add(v_non_colored);
+						std::pair<uint32_t, uint32_t> v_temp = m_mesh->Add(v_non_colored);
+						m_render_index = v_temp.first;
+						m_model_matrix_index = v_temp.second;
 					}
 				}
 				else {
@@ -263,22 +268,27 @@ PW_NAMESPACE_SRT
 					if (v_found != m_geometry_holder_noc.end()) {
 						m_mesh = v_found->second;
 
-						m_render_index = m_mesh->Add(v_non_colored);
+						std::pair<uint32_t, uint32_t> v_temp = m_mesh->Add(v_non_colored);
+						m_render_index = v_temp.first;
+						m_model_matrix_index = v_temp.second;
 					}
 				}
 				
 				Model::m_model_counter = Model::m_model_counter + 1;
 			}
-			Model::Model(const Geometry_Types& p_type, st::Texture* p_texture, const glm::vec2& p_position, const float& p_rotation, const glm::vec2& p_size, const glm::vec4& p_color, const bool& p_repeats, const bool& p_fixed_rotation, int32_t p_is_text) :
-					m_texture{ p_texture }, m_position{ pw::co::Memory::Allocate_Args<glm::vec2>(p_position) },
+			Model::Model(const Geometry_Types& p_type, st::Texture* p_texture, const glm::vec2& p_position, const float p_rotation, const glm::vec2& p_size, const glm::vec4& p_color, const bool p_repeats, const bool p_fixed_rotation, int32_t p_is_text) :
+					m_texture{ p_texture }, m_position{ nullptr },
 					m_last_position{ std::numeric_limits<float>::quiet_NaN() }, m_rotation{ p_rotation }, m_size{ p_size }, m_mesh{ nullptr }, m_type{ p_type }, m_is_colored{ true },
-					m_is_text{ p_is_text }, m_color{ p_color }, m_matrix{}, m_id{ ++Model::m_model_id_assigner }, m_render_index{ 0 }, m_offset{ NULL }, m_last_rotation{ 0.0f },
+					m_is_text{ p_is_text }, m_color{ p_color }, m_matrix{}, m_id{ ++Model::m_model_id_assigner }, m_render_index{ NULL }, m_model_matrix_index{ NULL }, m_offset{ NULL }, m_last_rotation{ 0.0f },
 					m_repeats{ p_repeats }, m_attached{ false }, m_fixed_rotation{ p_fixed_rotation }, m_is_copy{ false }, m_changed{ true } {
 				if (p_texture == nullptr) {
 					SET_ERROR_STATE(PW_NULL_PARAMETER_W);
 					SET_ERROR_TYPE(pw::er::Warning_Error(L"pw::st::Model", L"Invalid Parameter: p_texture was nullptr", ERROR_LINE, __FILEW__, L"Model"));
 					return;
 				}
+				// Allocate after possible nullptr
+				PW_CALL(m_position = pw::co::Memory::Allocate_Args<glm::vec2>(p_position), true);
+
 				if (m_repeats == true) {
 					st::Mesh::Colored v_colored{};
 					v_colored.m_size = m_size;
@@ -293,7 +303,9 @@ PW_NAMESPACE_SRT
 					if (v_found != m_geometry_holder_c.end()) {
 						m_mesh = v_found->second;
 
-						m_render_index = m_mesh->Add(v_colored);
+						std::pair<uint32_t, uint32_t> v_temp = m_mesh->Add(v_colored);
+						m_render_index = v_temp.first;
+						m_model_matrix_index = v_temp.second;
 					}
 				}
 				else {
@@ -310,7 +322,9 @@ PW_NAMESPACE_SRT
 					if (v_found != m_geometry_holder_c.end()) {
 						m_mesh = v_found->second;
 
-						m_render_index = m_mesh->Add(v_colored);
+						std::pair<uint32_t, uint32_t> v_temp = m_mesh->Add(v_colored);
+						m_render_index = v_temp.first;
+						m_model_matrix_index = v_temp.second;
 					}
 				}
 				
@@ -358,10 +372,10 @@ PW_NAMESPACE_SRT
 					Model::m_model_counter = Model::m_model_counter - 1;
 				}
 				if (m_mesh != nullptr) {
-					m_mesh->Remove(m_render_index);
+					m_mesh->Remove(m_render_index, m_model_matrix_index);
 				}
 			}
-			void Model::Render(const uint32_t& p_layer) {
+			void Model::Render(const uint32_t p_layer) {
 				if (TRY_LINE m_texture == nullptr) {
 					SET_ERROR_STATE(PW_NULL_PARAMETER_W);
 					SET_ERROR_TYPE(pw::er::Warning_Error(L"pw::st::Model", L"Invalid Parameter: m_texture was nullptr", ERROR_LINE, __FILEW__, L"Render"));
@@ -376,7 +390,7 @@ PW_NAMESPACE_SRT
 
 				PW_CALL(m_mesh->Render(m_render_index), false);
 			}
-			void Model::Render(const uint32_t& p_layer, b2Body* p_model_body) {
+			void Model::Render(const uint32_t p_layer, b2Body* p_model_body) {
 				if (TRY_LINE m_texture == nullptr) {
 					SET_ERROR_STATE(PW_NULL_PARAMETER_W);
 					SET_ERROR_TYPE(pw::er::Warning_Error(L"pw::st::Model", L"Invalid Parameter: m_texture was nullptr", ERROR_LINE, __FILEW__, L"Render"));
@@ -408,7 +422,7 @@ PW_NAMESPACE_SRT
 				m_position->x = p_position.x;
 				m_position->y = p_position.y;
 			}
-			void Model::Update_Position(const float& x_pos, const float& y_pos) {
+			void Model::Update_Position(const float x_pos, const float y_pos) {
 				m_changed = true;
 
 				m_position->x = x_pos;
@@ -433,15 +447,15 @@ PW_NAMESPACE_SRT
 
 				m_position = p_position;
 			}
-			void Model::Set_Size_X(const float& p_size_x) {
+			void Model::Set_Size_X(const float p_size_x) {
 				m_changed = true;
 
 				m_size.x = p_size_x;
 			}
-			void Model::Set_Size_Y(const float& p_size_y) {
+			void Model::Set_Size_Y(const float p_size_y) {
 				m_changed = true;
 
-				m_size.x = p_size_y;
+				m_size.y = p_size_y;
 			}
 			void Model::Set_Size(const glm::vec2& p_size_px) {
 				m_changed = true;
@@ -453,12 +467,12 @@ PW_NAMESPACE_SRT
 
 				m_offset = p_offset;
 			}
-			void Model::Set_Rotation(const float& p_new_rotation) {
+			void Model::Set_Rotation(const float p_new_rotation) {
 				m_changed = true;
 
 				m_rotation = p_new_rotation;
 			}
-			void Model::Set_Rotation(const float& p_new_rotation, b2Body* p_body) {
+			void Model::Set_Rotation(const float p_new_rotation, b2Body* p_body) {
 				if (p_body != nullptr) {
 					p_body->SetTransform(p_body->GetTransform().p, glm::radians(p_new_rotation));
 				}
@@ -481,6 +495,9 @@ PW_NAMESPACE_SRT
 			}
 			const int32_t& Model::Is_Text() const {
 				return m_is_text;
+			}
+			const bool& Model::Is_Attached() const {
+				return m_attached;
 			}
 			glm::vec2 Model::Position() {
 				if (m_position != nullptr) {
@@ -633,7 +650,7 @@ PW_NAMESPACE_SRT
 					PW_CALL(i->second->Draw_Transparent(), true);
 				}
 			}
-			void Model::Update_Matrix(const uint32_t& p_layer) {
+			void Model::Update_Matrix(const uint32_t p_layer) {
 				if (m_changed == true || m_offset.y != 0.0f || m_offset.x != 0.0f) {
 					m_matrix = glm::mat4(1.0f);
 
@@ -645,19 +662,41 @@ PW_NAMESPACE_SRT
 					glm::vec2 v_tile_center = glm::vec2(m_position->x + m_offset.x + (m_size.x / 2), m_position->y + m_offset.y - (m_size.y / 2));
 
 					glm::vec2 v_model_difference = glm::vec2(m_position->x + m_offset.x, m_position->y + m_offset.y) - v_tile_center;
+					
+					glm::vec2 v_result = glm::vec2(m_position->x + m_offset.x, m_position->y + m_offset.y) - v_model_difference;
+					// If the rotation is 0 then no need to glm::rotate
+					if (m_rotation != 0.0f) {
+						// Since we are not re-translating a translated matrix theres no need to multiply using glm::translate
+						m_matrix[3].x = v_result.x;
+						m_matrix[3].y = v_result.y;
+						m_matrix[3].z = TO_FLOAT(p_layer);
 
-					m_matrix = glm::translate(m_matrix, glm::vec3(glm::vec2(m_position->x + m_offset.x, m_position->y + m_offset.y) - v_model_difference, p_layer));
+						m_matrix = glm::rotate(m_matrix, glm::radians(m_rotation), glm::vec3(0.0f, 0.0f, 1.0f));
 
-					m_matrix = glm::rotate(m_matrix, glm::radians(m_rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+						// Since we are not re-sizing a sized matrix theres no need to multiply using glm::scale
+						m_matrix[0] = m_matrix[0] * m_size.x;
+						m_matrix[1] = m_matrix[1] * m_size.y;
+						m_matrix[2] = m_matrix[2] * 0.0f;
+					}
+					else {
+						// Since we are not re-translating a translated matrix theres no need to multiply using glm::translate
+						m_matrix[3].x = v_result.x;
+						m_matrix[3].y = v_result.y;
+						m_matrix[3].z = TO_FLOAT(p_layer);
 
-					m_matrix = glm::scale(m_matrix, glm::vec3(m_size.x, m_size.y, 0.0f));
+						// Since we are not re-sizing a sized matrix theres no need to multiply using glm::scale
+						// And since there is no rotation, theres no need to multiply vector-wise
+						m_matrix[0].x = m_size.x;
+						m_matrix[1].y = m_size.y;
+						m_matrix[2].z = 0.0f;
+					}
 
-					PW_CALL(m_mesh->Change_Matrix_Data(m_render_index, m_matrix), true);
+					PW_CALL(m_mesh->Change_Matrix_Data(m_render_index, m_model_matrix_index, &m_matrix), true);
 					
 					m_changed = false;
 				}
 			}
-			void Model::Update_Matrix(const uint32_t& p_layer, b2Body*& p_model_body) {
+			void Model::Update_Matrix(const uint32_t p_layer, b2Body*& p_model_body) {
 				if (p_model_body != nullptr) {
 					if (m_attached != true) {
 						glm::vec2 v_model_center_position = Calculate_Center();
@@ -682,11 +721,13 @@ PW_NAMESPACE_SRT
 
 						m_matrix = glm::translate(m_matrix, glm::vec3(glm::vec2(m_position->x + m_offset.x, m_position->y + m_offset.y) - v_model_difference, p_layer));
 
-						m_matrix = glm::rotate(m_matrix, glm::radians(m_rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+						if (m_rotation != 0.0f) {
+							m_matrix = glm::rotate(m_matrix, glm::radians(m_rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+						}
 
 						m_matrix = glm::scale(m_matrix, glm::vec3(m_size.x, m_size.y, 0.0f));
 
-						PW_CALL(m_mesh->Change_Matrix_Data(m_render_index, m_matrix), true);
+						PW_CALL(m_mesh->Change_Matrix_Data(m_render_index, m_model_matrix_index, &m_matrix), true);
 					}
 					else {
 						glm::vec2 v_model_center_position = Calculate_Center();
@@ -706,11 +747,13 @@ PW_NAMESPACE_SRT
 
 						m_matrix = glm::translate(m_matrix, glm::vec3(glm::vec2(m_position->x + m_offset.x, m_position->y + m_offset.y) - v_model_difference, p_layer));
 
-						m_matrix = glm::rotate(m_matrix, glm::radians(m_rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+						if (m_rotation != 0.0f) {
+							m_matrix = glm::rotate(m_matrix, glm::radians(m_rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+						}
 
 						m_matrix = glm::scale(m_matrix, glm::vec3(m_size.x, m_size.y, 0.0f));
 
-						PW_CALL(m_mesh->Change_Matrix_Data(m_render_index, m_matrix), true);
+						PW_CALL(m_mesh->Change_Matrix_Data(m_render_index, m_model_matrix_index, &m_matrix), true);
 					}
 				}
 			}

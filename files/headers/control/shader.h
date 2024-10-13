@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021-2023, Darrian Corkadel
+// Copyright(c) 2021-2024, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -57,29 +57,49 @@
 //////////////////////////////////
 // Engine Utility Headers
 //////////////////////////////////
+
+PW_NAMESPACE_SRT
+	ST_NAMESPACE_SRT
+		class Model;
+	ST_NAMESPACE_END
+PW_NAMESPACE_END
+
 PW_NAMESPACE_SRT
 	CO_NAMESPACE_SRT
+		class Engine_Queue;
+	CO_NAMESPACE_END
+PW_NAMESPACE_END
+
+PW_NAMESPACE_SRT
+	CO_NAMESPACE_SRT
+		class Shader;
 		class Shader_Loader {
+		// Friends
+			friend class pw::co::Shader;
 		// Default Class Structures 
 		public:
 		private:
-		// Protected Functions/Macros  
-		protected:
+		// Private Functions/Macros  
+		private:
 			/* Error List: PW_FILE_NOT_FOUND */
 			static std::wstring Load_Shader(const std::wstring& p_file_name);
 			/* Error List: PW_GL_ERROR, PW_FUNCTION_ERROR, PW_GL_ERROR */
-			static uint32_t Compile_Shader(const std::wstring& p_shader_code, const uint32_t& p_shader_type);
+			static uint32_t Compile_Shader(const std::wstring& p_shader_code, const uint32_t p_shader_type);
 			/* Error List: PW_GL_ERROR */
-			static void Check_Error(const uint32_t& p_object_id, const uint32_t& p_error, const bool& p_is_program, const std::wstring& p_custom_error_msg);
-		// Protected Variables         
-		protected:
+			static void Check_Error(const uint32_t p_object_id, const uint32_t p_error, const bool p_is_program, const std::wstring& p_custom_error_msg);
+		// Private Variables         
+		private:
 		};
-		class Shader : public pw::co::Shader_Loader {
+		class Shader {
+		// Friends
+			friend class pw::co::Control;
+			friend class pw::st::Model;
+			friend class pw::co::Engine_Queue;
 		// Default Class Structures 
 		public:
 		private:
-		// Protected Functions/Macros  
-		protected:
+		// Private Functions/Macros 
+		private:
 			/* Error List: PW_GL_ERROR, PW_FUNCTION_ERROR */
 			static void Create_Shader(const std::wstring& p_vertex_location, const std::wstring& p_fragment_location);
 			/* Error List: PW_GL_ERROR */
@@ -90,10 +110,6 @@ PW_NAMESPACE_SRT
 			static void Update_Projection();
 			/* Error List: NONE */
 			static const uint32_t& Shader_Id();
-		// Protected Variables         
-		protected:
-		// Private Functions/Macros 
-		private:
 		// Private Variables        
 		private:
 			static uint32_t m_program_id;

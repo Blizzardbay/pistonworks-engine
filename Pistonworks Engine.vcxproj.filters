@@ -158,6 +158,8 @@
     <ClInclude Include="files\headers\utility\string.h" />
     <ClInclude Include="files\headers\utility\color.h" />
     <ClInclude Include="files\headers\control\async_timer.h" />
+    <ClInclude Include="files\headers\extensions\user_interface.h" />
+    <ClInclude Include="files\headers\utility\algorithm.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="files\resource\essential\shader\fragment.frag">
@@ -359,5 +361,7 @@
     <ClCompile Include="files\source\utility\string.cpp" />
     <ClCompile Include="files\source\utility\color.cpp" />
     <ClCompile Include="files\source\control\async_timer.cpp" />
+    <ClCompile Include="files\source\extensions\user_interface.cpp" />
+    <ClCompile Include="files\source\utility\algorithm.cpp" />
   </ItemGroup>
 </Project>

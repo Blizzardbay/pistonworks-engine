@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021-2023, Darrian Corkadel
+// Copyright(c) 2021-2024, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -65,6 +65,7 @@
 PW_NAMESPACE_SRT
 	ST_NAMESPACE_SRT
 		class Physics_Object {
+		// Friends
 		// Default Class Structures 
 		public:
 			enum class Object_Type {
@@ -72,16 +73,16 @@ PW_NAMESPACE_SRT
 				CIRCLE
 			};
 			/* Error List: PW_FUNCTION_ERROR, PW_B2SHAPE_INVALID */
-			Physics_Object(st::Model* p_model, const b2BodyType& p_type, b2World* p_world, const bool& p_is_fixed, const float& p_friction, const float& p_restitution, const float& p_density, const Object_Type& p_polygon, const bool& p_is_sensor);
+			Physics_Object(st::Model* p_model, const b2BodyType& p_type, b2World* p_world, const bool p_is_fixed, const float p_friction, const float p_restitution, const float p_density, const Object_Type& p_polygon, const bool p_is_sensor);
 			/* Error List: NONE */
 			~Physics_Object();
 		private:
 			// Public Functions/Macros  
 		public:
 			/* Error List: NONE */
-			int32_t X_Pixels_Position(const int32_t& p_scale_factor = cm::Constant::PW_SCALE_FACTOR);
+			int32_t X_Pixels_Position(const int32_t p_scale_factor = cm::Constant::PW_SCALE_FACTOR);
 			/* Error List: NONE */
-			int32_t Y_Pixels_Position(const int32_t& p_scale_factor = cm::Constant::PW_SCALE_FACTOR);
+			int32_t Y_Pixels_Position(const int32_t p_scale_factor = cm::Constant::PW_SCALE_FACTOR);
 			/* Error List: NONE */
 			b2Body* Body();
 			/* Error List: NONE */
@@ -125,12 +126,13 @@ PW_NAMESPACE_SRT
 			b2Fixture* m_current_fixture;
 		};
 		class Physics_Factory {
+		// Friends
 		// Default Class Structures 
 		public:
 			/* Error List: NONE */
 			Physics_Factory();
 			/* Error List: PW_FUNCTION_ERROR */
-			Physics_Factory(const b2Vec2& p_gravity, const int32_t& p_velocity_it, const int32_t& p_position_it);
+			Physics_Factory(const b2Vec2& p_gravity, const int32_t p_velocity_it, const int32_t p_position_it);
 			
 			/* Error List: NONE */
 			~Physics_Factory();
@@ -142,7 +144,7 @@ PW_NAMESPACE_SRT
 		// Public Variables         
 		public:
 			/* Error List: PW_FUNCTION_ERROR */
-			void Add_Object(st::Model* p_model, const b2BodyType& p_type, const st::Physics_Object::Object_Type& p_polygon, const bool& p_is_sensor, const PW_ID& p_object_id = NULL, const bool& p_is_fixed = false, const float& p_friction = 0.0f, const float& p_restitution = 0.0f, const float& p_density = 0.0f);
+			void Add_Object(st::Model* p_model, const b2BodyType& p_type, const st::Physics_Object::Object_Type& p_polygon, const bool p_is_sensor, const PW_ID& p_object_id = NULL, const bool p_is_fixed = false, const float p_friction = 0.0f, const float p_restitution = 0.0f, const float p_density = 0.0f);
 			/* Error List: NONE */
 			st::Physics_Object* Access_Memeber(const PW_ID& p_id);
 			/* Error List: NONE */

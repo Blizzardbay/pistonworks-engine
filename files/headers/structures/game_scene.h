@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021-2023, Darrian Corkadel
+// Copyright(c) 2021-2024, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -69,6 +69,7 @@
 PW_NAMESPACE_SRT
 	ST_NAMESPACE_SRT
 		class Actor {
+		// Friends
 		// Default Class Structures 
 		public:
 			Actor(const Actor&) = delete;
@@ -77,28 +78,28 @@ PW_NAMESPACE_SRT
 			Actor();
 			
 			/* Error List: NONE */
-			Actor(st::Model* p_model, const int32_t& p_layer = 0);
+			Actor(st::Model* p_model, const int32_t p_layer = 0);
 			/* Error List: NONE */
-			Actor(st::Model* p_model, st::Text* p_text, const int32_t& p_layer = 0);
+			Actor(st::Model* p_model, st::Text* p_text, const int32_t p_layer = 0);
 			/* Error List: NONE */
-			Actor(st::Model* p_model, st::Texture_Structure* p_multi_texture, const int32_t& p_layer = 0);
+			Actor(st::Model* p_model, st::Texture_Structure* p_multi_texture, const int32_t p_layer = 0);
 
 			// Sound Constructors
 			/* Error List: NONE */
-			Actor(st::Model* p_model, st::Sound_Structure* p_sound_deposit, const int32_t& p_layer = 0);
+			Actor(st::Model* p_model, st::Sound_Structure* p_sound_deposit, const int32_t p_layer = 0);
 			/* Error List: NONE */
-			Actor(st::Model* p_model, st::Text* p_text, st::Sound_Structure* p_sound_deposit, const int32_t& p_layer = 0);
+			Actor(st::Model* p_model, st::Text* p_text, st::Sound_Structure* p_sound_deposit, const int32_t p_layer = 0);
 			/* Error List: NONE */
-			Actor(st::Model* p_model, st::Texture_Structure* p_multi_texture, st::Sound_Structure* p_sound_deposit, const int32_t& p_layer = 0);
+			Actor(st::Model* p_model, st::Texture_Structure* p_multi_texture, st::Sound_Structure* p_sound_deposit, const int32_t p_layer = 0);
 
 			/* Error List: NONE */
-			Actor(st::Model* p_model, st::Animation* p_animation, const int32_t& p_layer = 0);
+			Actor(st::Model* p_model, st::Animation* p_animation, const int32_t p_layer = 0);
 			/* Error List: PW_FUNCTION_ERROR */
-			Actor(st::Model* p_model, const std::vector<std::tuple<st::Animation*, st::Texture*>>& p_animations, const std::vector<std::wstring>& p_animation_ids, const int32_t& p_layer = 0);
+			Actor(st::Model* p_model, const std::vector<std::tuple<st::Animation*, st::Texture*>>& p_animations, const std::vector<std::wstring>& p_animation_ids, const int32_t p_layer = 0);
 			/* Error List: NONE */
-			Actor(st::Model* p_model, st::Animation* p_animation, st::Sound_Structure* p_sound_deposit, const int32_t& p_layer = 0);
+			Actor(st::Model* p_model, st::Animation* p_animation, st::Sound_Structure* p_sound_deposit, const int32_t p_layer = 0);
 			/* Error List: PW_FUNCTION_ERROR */
-			Actor(st::Model* p_model, const std::vector<std::tuple<st::Animation*, st::Texture*>>& p_animations, const std::vector<std::wstring>& p_animation_ids, st::Sound_Structure* p_sound_deposit, const int32_t& p_layer = 0);
+			Actor(st::Model* p_model, const std::vector<std::tuple<st::Animation*, st::Texture*>>& p_animations, const std::vector<std::wstring>& p_animation_ids, st::Sound_Structure* p_sound_deposit, const int32_t p_layer = 0);
 
 			/* Error List: NONE */
 			Actor& operator=(Actor&& p_rhs) noexcept;
@@ -152,11 +153,11 @@ PW_NAMESPACE_SRT
 			void Set_Texture(std::wstring p_s_id);
 
 			/* Error List: NONE */
-			void Set_Render_State(const bool& p_state);
+			void Set_Render_State(const bool p_state);
 			/* Error List: PW_FUNCTION_ERROR */
-			void Set_Size_X(const float& p_size_x);
+			void Set_Size_X(const float p_size_x);
 			/* Error List: PW_FUNCTION_ERROR */
-			void Set_Size_Y(const float& p_size_y);
+			void Set_Size_Y(const float p_size_y);
 			/* Error List: PW_FUNCTION_ERROR */
 			void Set_Size(const glm::vec2& p_size_px);
 			/* Error List: PW_FUNCTION_ERROR */
@@ -166,11 +167,13 @@ PW_NAMESPACE_SRT
 			void Set_Text_Color(glm::vec4 p_color);
 			/* Error List: PW_FUNCTION_ERROR */
 			void Set_Color(glm::vec4 p_color);
+			/* Error List: NONE */
+			void Set_Layer(uint32_t p_layer);
 
 			/* Error List: NONE */
 			void Toggle_Render();
 			/* Error List: NONE */
-			void Set_Render_Toggle(const bool& p_state);
+			void Set_Render_Toggle(const bool p_state);
 
 			/* Error List: NONE */
 			st::Model* Model() const;
@@ -183,9 +186,9 @@ PW_NAMESPACE_SRT
 			st::Sound_Structure* Sound_Structure() const;
 			
 			/* Error List: NONE */
-			const bool& Is_Rendered() const;
+			const bool Is_Rendered() const;
 			/* Error List: NONE */
-			const bool& Render_Toggle() const;
+			const bool Render_Toggle() const;
 
 			/* Error List: NONE */
 			const std::wstring& S_Id() const;
@@ -210,18 +213,6 @@ PW_NAMESPACE_SRT
 		public:
 		// Private Functions/Macros 
 		private:
-			/* Error List: PW_FUNCTION_ERROR */
-			void Render_Animation();
-			/* Error List: PW_FUNCTION_ERROR */
-			void Render_Text();
-			/* Error List: PW_FUNCTION_ERROR */
-			void Render_Default();
-			/* Error List: PW_FUNCTION_ERROR */
-			void Render_Animation_Sound();
-			/* Error List: PW_FUNCTION_ERROR */
-			void Render_Text_Sound();
-			/* Error List: PW_FUNCTION_ERROR */
-			void Render_Default_Sound();
 		// Private Variables       
 		private:
 			st::Model* m_model;
@@ -244,15 +235,11 @@ PW_NAMESPACE_SRT
 			int32_t m_layer;
 
 			bool m_is_copy;
-			// There are many different checks in the main render function
-			// so make many different render functions determined by constructor
-			// Even though it may guarantee that members are non-nullptr checks will
-			// still be in place
-			std::function<void()> m_render_function;
 
 			static PW_ID m_global_index;
 		};
 		class Scene_Event {
+		// Friends
 		// Default Class Structures 
 		public:
 			/* Error List: NONE */
@@ -284,7 +271,7 @@ PW_NAMESPACE_SRT
 			/* Error List: NONE */
 			Sub_Scene_Structure();
 			/* Error List: NONE */
-			Sub_Scene_Structure(const std::wstring& p_sub_scene_id, const std::vector<st::Actor*>& p_scene_repository, const bool& p_should_render);
+			Sub_Scene_Structure(const std::wstring& p_sub_scene_id, const std::vector<st::Actor*>& p_scene_repository, const bool p_should_render);
 			/* Error List: NONE */
 			~Sub_Scene_Structure();
 		private:
@@ -296,16 +283,16 @@ PW_NAMESPACE_SRT
 			void De_Render(quadtree::Quadtree<st::Actor*, std::function<quadtree::Box<float>(st::Actor*)>>& p_quadtree_renderer);
 
 			/* Error List: NONE */
-			void Set_Render_State(const bool& p_is_rendering);
+			void Set_Render_State(const bool p_is_rendering);
 			/* Error List: NONE */
 			void Set_Render_Toggle(bool p_render_structure);
 			/* Error List: NONE */
 			void Push_Screen_Models(std::vector<st::Actor*>& p_screen_models);
 
 			/* Error List: NONE */
-			const bool& Is_Rendered();
+			const bool Is_Rendered();
 			/* Error List: NONE */
-			const bool& Should_Render();
+			const bool Should_Render();
 			/* Error List: NONE */
 			std::vector<st::Actor*>& Scenes();
 			/* Error List: NONE */
@@ -325,6 +312,7 @@ PW_NAMESPACE_SRT
 			bool m_should_render;
 		};
 		class Game_Scene : public pw::co::Listener {
+		// Friends
 		// Default Class Structures
 		public:
 			Game_Scene(const Game_Scene&) = delete;
@@ -355,7 +343,7 @@ PW_NAMESPACE_SRT
 			/* Error List: PW_FUNCTION_ERROR */
 			template<class type, class ...args>
 			void Create_Event(const std::wstring& p_event_holder_id, const PW_EVENT_ID& p_event_type, const PW_BUTTON_CODE& p_button, const PW_STATE& p_state, st::Actor* p_test_pointer,
-						st::Actor* p_id_pointer, const std::shared_ptr<std::function<type(args...)>>& p_trigger_function, const bool& p_play_once, args... p_arguments) {
+						st::Actor* p_id_pointer, const std::shared_ptr<std::function<type(args...)>>& p_trigger_function, const bool p_play_once, args... p_arguments) {
 				if (p_trigger_function != nullptr) {
 					switch (p_event_type) {
 						case pw::cm::Constant::PW_ANIMATION_START_EVENT:
@@ -703,7 +691,7 @@ PW_NAMESPACE_SRT
 			/* Error List: PW_FUNCTION_ERROR */
 			template<class type, class ...args>
 			void Create_Event(const std::wstring& p_event_holder_id, const std::wstring& p_sound_id, const PW_EVENT_ID& p_event_type, const PW_STATE& p_state, st::Actor* p_model_pointer,
-				const std::shared_ptr<std::function<type(args...)>>& p_trigger_function, const bool& p_play_once, args... p_arguments) {
+				const std::shared_ptr<std::function<type(args...)>>& p_trigger_function, const bool p_play_once, args... p_arguments) {
 				if (p_trigger_function != nullptr) {
 					if (m_scene_alt_events.count(p_event_holder_id) < 1) {
 						std::map<PW_ID, Scene_Event*> v_id_event{};
@@ -836,7 +824,7 @@ PW_NAMESPACE_SRT
 			/* Error List: PW_FUNCTION_ERROR */
 			template<class type, class ...args>
 			void Create_Event(const std::wstring& p_event_holder_id, const std::wstring& p_collider_s_id, const std::wstring& p_object_s_id, 
-					const std::shared_ptr<std::function<type(args...)>>& p_trigger_function, const bool& p_play_once, args... p_arguments) {
+					const std::shared_ptr<std::function<type(args...)>>& p_trigger_function, const bool p_play_once, args... p_arguments) {
 				 if (p_trigger_function != nullptr) {
 					 if (m_scene_collision_events.count(p_event_holder_id) < 1) {
 						 std::map<PW_ID, Scene_Event*> v_id_event{};
@@ -982,7 +970,7 @@ PW_NAMESPACE_SRT
 			/* Error List: NONE */
 			void Toggle_Render(std::wstring p_s_id);
 			/* Error List: NONE */
-			void Toggle_Render(const std::wstring& p_s_id, const bool& p_state);
+			void Toggle_Render(const std::wstring& p_s_id, const bool p_state);
 			// Your model must have an id to be deleted
 			// Error List: NONE 
 			void Remove_Model(const std::wstring& p_s_id);
@@ -998,7 +986,7 @@ PW_NAMESPACE_SRT
 			/* Error List: NONE */
 			st::Actor* Access_Model(const std::wstring& p_s_id);
 			/* Error List: NONE */
-			void Set_Sub_Scene_State(const std::wstring& p_sub_scene, const bool& p_state);
+			void Set_Sub_Scene_State(const std::wstring& p_sub_scene, const bool p_state);
 			/* Error List: NONE */
 			std::function<void(const PW_EVENT_ID&, const PW_BUTTON_CODE&, const PW_STATE&)> Event_Callback();
 			/* Error List: NONE */

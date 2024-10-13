@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021-2023, Darrian Corkadel
+// Copyright(c) 2021-2024, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -54,6 +54,11 @@
 // This function returns the state of if it properly worked
 // represented by a true / false value.
 #define PW_RETURN_STATE_TF						0x0000U
+// This function returns non-zero on success.
+#define PW_RETURN_VALUE							0x0000U
+// This function returns non-zero on success.
+#define PW_FAILURE_VALUE						0x0000U
+#define PW_SUCCESS_VALUE						0x0001U
 // The function was called with a invalid parameter.
 // The value of the variable is wrong or cannot be used.
 // Find the function call and check passed parameters.
@@ -186,9 +191,20 @@
 #define PW_FI_FILE_LOAD_FAILURE					0x001FU
 // The file that was loaded has no pixel data.
 #define PW_FI_NO_PIXELS							0x0020U
-// The file that was loaded has no pixel data.
+// The file type of the given file is unsupported by
+// FreeImage.
 #define PW_UNSUPPORTED_ANIMATION_EXTENSION		0x0021U
 // There is a chance that the function may give an error,
 // or not. It is user implementation defined.
 #define PW_POSSIBLE_ERROR						0x0022U
+// The standard filesystem had an error.
+#define PW_FILESYSTEM_ERROR						0x0023U
+// The layer provided does not meet the requirement
+// of the function.
+#define PW_INVALID_LAYER						0x0024U
+// The size provided does not meet the requirement
+// of the function.
+#define PW_INVALID_SIZE							0x0025U
+// The function returns nullptr if failure occurs.
+#define PW_NULL_RETURN							0x0026U
 #endif // !H_ERROR_VALUES

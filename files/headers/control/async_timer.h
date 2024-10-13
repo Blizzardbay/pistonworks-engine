@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021-2022, Darrian Corkadel
+// Copyright(c) 2021-2024, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -58,18 +58,11 @@
 PW_NAMESPACE_SRT
 	CO_NAMESPACE_SRT
 		class Async_Timer {
+		// Friends
+			friend class pw::co::Control;
 		// Default Class Structures
 		public:
 		private:
-		// Protected Functions/Macros 
-		protected:
-			/* Error List: PW_FUNCTION_ERROR */
-			static void Initialize();
-			/* Error List: NONE */
-			static void Release();
-			// Polls all of the timers stored in m_timers
-			// Error List: NONE 
-			static void Poll();
 		// Public Functions/Macros 
 		public:
 			/* Error List: NONE */
@@ -80,6 +73,13 @@ PW_NAMESPACE_SRT
 		public:
 		// Private Functions/Macros
 		private:
+			/* Error List: PW_FUNCTION_ERROR */
+			static void Initialize();
+			/* Error List: NONE */
+			static void Release();
+			// Polls all of the timers stored in m_timers
+			// Error List: NONE 
+			static void Poll();
 		// Private Variables
 		private:
 			static std::map<std::wstring, std::pair<pw::st::Manual_Timer<std::chrono::milliseconds>*, pw::st::Event_Base*>>* m_timers;

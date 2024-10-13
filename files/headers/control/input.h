@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021-2023, Darrian Corkadel
+// Copyright(c) 2021-2024, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -63,8 +63,35 @@
 // Engine Utility Headers
 //////////////////////////////////
 PW_NAMESPACE_SRT
-	CO_NAMESPACE_SRT
-		class Input {
+CO_NAMESPACE_SRT
+		class Custom_Input {
+		// Friends
+		// Default Class Structures
+		public:
+		private:
+		// Protected Functions/Macros
+		public:
+			/* Error List: NONE */
+			static void Add(const std::wstring& p_identifier, const COMPLEX_FUNCTION_3(PW_EVENT_ID, PW_BUTTON_CODE, PW_STATE)& p_function);
+			/* Error List: NONE */
+			static void Remove(const std::wstring& p_identifier);
+		// Protected Variables       
+		public:
+		// Protected Functions/Macros
+		protected:
+			/* Error List: PW_FUNCTION_ERROR */
+			static void Use(PW_EVENT_ID p_event_id, PW_BUTTON_CODE p_button_code, PW_STATE p_state);
+		// Protected Variables       
+		protected:
+		// Private Functions/Macros 
+		private:
+		// Private Variables
+		private:
+			static std::map<std::wstring, COMPLEX_FUNCTION_3(PW_EVENT_ID, PW_BUTTON_CODE, PW_STATE)> m_custom_handlers;
+		};
+		class Input : public Custom_Input {
+		// Friends
+			friend class pw::co::Control;
 		// Default Class Structures
 		public:
 			/* Error List: NONE */
@@ -78,34 +105,15 @@ PW_NAMESPACE_SRT
 				std::map<PW_SCROLL_ACTION, std::map<PW_ID, st::Event_Base*>> p_scroll_events);
 			/* Error List: NONE */
 			~Input();
-
-			/* Error List: PW_FUNCTION_ERROR */
-			static void Initialize();
-			/* Error List: NONE */
-			static void Release();
 		private:
 		// Public Functions/Macros
 		public:
 			/* Error List: PW_FUNCTION_ERROR */
-			void Poll_Active_Events();
-
+			void Create_Event_Keyboard(const PW_INPUT_TYPE p_action, const PW_KEY_CODE& p_key_code, std::shared_ptr<PW_FUNCTION> p_function_ptr, const bool p_only_play_once = false);
 			/* Error List: PW_FUNCTION_ERROR */
-			static void Handle_Keyboard(GLFWwindow* p_window, int p_key, int p_code, int p_action, int p_mode) noexcept;
-			/* Error List: NONE */
-			static void Handle_Mouse_Movement(GLFWwindow* p_window, double p_mouse_xpos, double p_mouse_ypos) noexcept;
+			void Create_Event_Mouse(const PW_INPUT_TYPE p_action, const PW_BUTTON_CODE& p_code, std::shared_ptr<PW_FUNCTION> p_function_ptr, const bool p_only_play_once = false);
 			/* Error List: PW_FUNCTION_ERROR */
-			static void Handle_Mouse_Button(GLFWwindow* p_window, int p_button, int p_action, int p_mods) noexcept;
-			/* Error List: PW_FUNCTION_ERROR */
-			static void Handle_Mouse_Scroll(GLFWwindow* p_window, double p_xoffset, double p_yoffset) noexcept;
-			/* Error List: PW_GL_ERROR, PW_FUNCTION_ERROR */
-			static void Handle_Resize(GLFWwindow* p_window, int p_window_width, int p_window_height) noexcept;
-
-			/* Error List: PW_FUNCTION_ERROR */
-			void Create_Event_Keyboard(const PW_INPUT_TYPE& p_action, const PW_KEY_CODE& p_key_code, std::shared_ptr<PW_FUNCTION> p_function_ptr, const bool& p_only_play_once = false);
-			/* Error List: PW_FUNCTION_ERROR */
-			void Create_Event_Mouse(const PW_INPUT_TYPE& p_action, const PW_BUTTON_CODE& p_code, std::shared_ptr<PW_FUNCTION> p_function_ptr, const bool& p_only_play_once = false);
-			/* Error List: PW_FUNCTION_ERROR */
-			void Create_Event_Scroll(const PW_SCROLL_ACTION& p_action, std::shared_ptr<PW_FUNCTION> p_function_ptr, const bool& p_only_play_once = false);
+			void Create_Event_Scroll(const PW_SCROLL_ACTION& p_action, std::shared_ptr<PW_FUNCTION> p_function_ptr, const bool p_only_play_once = false);
 			
 			/* Error List: NONE */
 			static void Register_Function(const std::wstring& p_function_name, std::shared_ptr<PW_FUNCTION> p_function);
@@ -125,6 +133,24 @@ PW_NAMESPACE_SRT
 		public:
 		// Private Functions/Macros 
 		private:
+			/* Error List: PW_FUNCTION_ERROR */
+			void Poll_Active_Events();
+
+			/* Error List: PW_FUNCTION_ERROR */
+			static void Handle_Keyboard(GLFWwindow* p_window, int p_key, int p_code, int p_action, int p_mode) noexcept;
+			/* Error List: NONE */
+			static void Handle_Mouse_Movement(GLFWwindow* p_window, double p_mouse_xpos, double p_mouse_ypos) noexcept;
+			/* Error List: PW_FUNCTION_ERROR */
+			static void Handle_Mouse_Button(GLFWwindow* p_window, int p_button, int p_action, int p_mods) noexcept;
+			/* Error List: PW_FUNCTION_ERROR */
+			static void Handle_Mouse_Scroll(GLFWwindow* p_window, double p_xoffset, double p_yoffset) noexcept;
+			/* Error List: PW_GL_ERROR, PW_FUNCTION_ERROR */
+			static void Handle_Resize(GLFWwindow* p_window, int p_window_width, int p_window_height) noexcept;
+
+			/* Error List: PW_FUNCTION_ERROR */
+			static void Initialize();
+			/* Error List: NONE */
+			static void Release();
 		// Private Variables
 		private:
 			std::vector<st::Event_Base*> m_current_key_events;

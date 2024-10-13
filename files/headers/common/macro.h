@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021-2023, Darrian Corkadel
+// Copyright(c) 2021-2024, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -72,6 +72,9 @@
 // Utility namespace
 #define UTIL_NAMESPACE_SRT namespace util {
 #define UTIL_NAMESPACE_END }
+// Extensions namespace
+#define EX_NAMESPACE_SRT namespace ex {
+#define EX_NAMESPACE_END }
 
 #define TO_INT16(x)											static_cast<int16_t>(x)
 #define TO_INT32(x)											static_cast<int32_t>(x)
@@ -124,5 +127,13 @@
 #define EXPRESSION_STRING(x)								#x
 #define EXPRESSION_WSTRING(x)								_CRT_WIDE(#x)
 #define EXPRESSION_TO_WSTRING(x)							_CRT_WIDE(x)
+
+PW_NAMESPACE_SRT
+	CO_NAMESPACE_SRT
+		class Control;
+	CO_NAMESPACE_END
+PW_NAMESPACE_END
+
+#define GIVE_ACCESS(class_type) friend class class_type
 
 #endif // !H_MACRO

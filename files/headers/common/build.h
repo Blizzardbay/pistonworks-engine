@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021-2023, Darrian Corkadel
+// Copyright(c) 2021-2024, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -69,20 +69,29 @@
 	#define _NODISCARD [[nodiscard]]
 #endif // !_NODISCARD
 
+#ifndef _NORETURN
 // If The Function Terminates In A Non-Normal Way
 // Ex. Throws Before Return Guaranteed
 // Ex. Terminates Program In Anyway
 #define _NORETURN [[noreturn]]
+#endif // !_NORETURN
 
+#ifndef _FALLTHROUGH
 // Stop Compiler Warnings Involving
 // Case A: [[fallthrough]] <- Stops Warning About A
 // Case B: { ...; break; }
 #define _FALLTHROUGH [[fallthrough]];
+#endif // !_FALLTHROUGH
 
+#ifndef _MAYBE_UNUSED
 // Specifies If A Parameter May Go Unused In A Function Execution
 #define _MAYBE_UNUSED [[maybe_unused]]
+#endif // !_MAYBE_UNUSED
 
 // MSVC force inline
+// MSVC already inlines most functions but
+// being able to force the complier to inline could
+// be useful in some cases
 #define F_INLINE __forceinline
 
 #endif // !H_BUILD

@@ -12,13 +12,11 @@ PW_NAMESPACE_SRT
 			// Static Declarations
 			// Class Members
 				Text_Renderer::Character::Character(const wchar_t& p_type, BYTE* p_character_data, const glm::ivec2& p_character_size, const glm::ivec2& p_baseline_offset,
-					const uint32_t& p_spacing) :
+					const uint32_t p_spacing) :
 						m_type{ p_type }, m_character_data{ nullptr },
-						m_character_size{ TO_INT32((float)(p_character_size.x) / cm::Constant::PW_FONT_RESOLUTION * cm::Constant::PW_SCALE_FACTOR),
-								TO_INT32((float)(p_character_size.y) / cm::Constant::PW_FONT_RESOLUTION * cm::Constant::PW_SCALE_FACTOR) },
-						m_baseline_offset{ TO_INT32((float)(p_baseline_offset.x) / cm::Constant::PW_FONT_RESOLUTION * cm::Constant::PW_SCALE_FACTOR),
-								TO_INT32((float)(p_baseline_offset.y) / cm::Constant::PW_FONT_RESOLUTION * cm::Constant::PW_SCALE_FACTOR) },
-						m_spacing{ TO_UINT32((float)(p_spacing / 64) / cm::Constant::PW_FONT_RESOLUTION * cm::Constant::PW_SCALE_FACTOR) } {
+						m_character_size{ p_character_size.x, p_character_size.y },
+						m_baseline_offset{ p_baseline_offset.x, p_baseline_offset.y },
+						m_spacing{ p_spacing / 64 } {
 					if (p_character_data == NULL) {
 						PW_CALL(m_character_data = pw::co::Memory::Allocate<st::Texture>(), false);
 					}
@@ -75,6 +73,8 @@ PW_NAMESPACE_SRT
 
 			m_default_font_ids.push_back(L"arial");
 			m_default_font_names.push_back(L"arial 1.ttf");
+			m_default_font_ids.push_back(L"consolas");
+			m_default_font_names.push_back(L"consola.ttf");
 		}
 		void Text_Renderer::Load_Engine_Fonts_Default() {
 			std::wstring v_font_location = pw::cm::Constant::Pistonworks_Path().generic_wstring() + L"/files/resource/essential/font";
@@ -95,7 +95,7 @@ PW_NAMESPACE_SRT
 					PW_FT_CALL(FT_Load_Char(v_face, j, FT_LOAD_RENDER), true);
 
 					// Images are not flipped when loaded, so they need to be formated.
-					// Flip across the horizontal axis{
+					// Flip across the horizontal axis
 					if (v_face->glyph->bitmap.rows % 2 == 0) {
 						for (size_t k = 0; k < (v_face->glyph->bitmap.rows) / 2; k++) {
 							for (size_t o = 0; o < v_face->glyph->bitmap.width; o++) {

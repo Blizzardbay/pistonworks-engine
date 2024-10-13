@@ -16,45 +16,42 @@ PW_NAMESPACE_SRT
 					m_raw_text_position{ p_position }, m_raw_text_size{ p_size }, m_is_copy{ false } {
 				float v_max_height = 0.0f;
 
-				float v_y_scale = p_size.y / (float)pw::cm::Constant::PW_SCALE_FACTOR;
-				float v_x_scale = p_size.x / (float)pw::cm::Constant::PW_SCALE_FACTOR;
-
-
+				int32_t v_char_x_size{ 0 };
+				int32_t v_char_y_size{ 0 };
+				glm::vec2 v_baseline_size{ 0 };
+				int32_t v_char_spacing{ 0 };
+				pw::co::Text_Renderer::Character* v_current_char = nullptr;
 				for (size_t i = 0; i < p_text.size(); i++) {
-					Text_Renderer::Character* v_current_char = Text_Renderer::Create_Character(p_text[i], p_font_type);
+					v_current_char = pw::co::Text_Renderer::Create_Character(p_text[i], p_font_type);
 
-					float v_character_height = (float)v_current_char->Character_Size().y * v_y_scale;
+					if (v_current_char == nullptr) {
+						continue;
+					}
+					
+					v_char_x_size = TO_INT32(((float)v_current_char->Character_Size().x / pw::cm::Constant::PW_FONT_RESOLUTION) * p_size.x);
+					v_char_y_size = TO_INT32(((float)v_current_char->Character_Size().y / pw::cm::Constant::PW_FONT_RESOLUTION) * p_size.y);
+					v_baseline_size = glm::vec2(
+						(((float)v_current_char->Baseline_Offset().x / pw::cm::Constant::PW_FONT_RESOLUTION) * p_size.x),
+						(((float)v_current_char->Baseline_Offset().y / pw::cm::Constant::PW_FONT_RESOLUTION) * p_size.y)
+					);
+					v_char_spacing = TO_INT32(((float)v_current_char->Spacing() / pw::cm::Constant::PW_FONT_RESOLUTION) * p_size.x);
 
 					st::Model* v_char_model{ nullptr };
 
-					// Getting characters for most fonts ideally positioned does not really work
-					// for the way positions are calculated, so we will have to separate the lower
-					// baseline characters, may cause problems for some fonts
-					// TODO : Add opt out for normal calculation method
-					if (p_text[i] == L'g' || p_text[i] == L'p' || p_text[i] == L'y') {
-						PW_CALL(v_char_model = pw::co::Memory::Allocate_Args<Model>(Geometry_Types::SQUARE, v_current_char->Character_Data(),
-							glm::vec2(m_text_position.x + ((float)v_current_char->Baseline_Offset().x * v_x_scale),
-								m_text_position.y - (p_size.y - ((float)v_current_char->Baseline_Offset().y * v_y_scale))),
-							0.0f, glm::vec2(((float)v_current_char->Character_Size().x * v_x_scale),
-								(v_character_height)),
-							p_color, false, false, 1), true);
-					}
-					else {
-						PW_CALL(v_char_model = pw::co::Memory::Allocate_Args<Model>(Geometry_Types::SQUARE, v_current_char->Character_Data(),
-							glm::vec2(m_text_position.x + ((float)v_current_char->Baseline_Offset().x * v_x_scale),
-								m_text_position.y - (p_size.y - (((float)v_current_char->Baseline_Offset().y + ((float)v_current_char->Character_Size().y - (float)v_current_char->Baseline_Offset().y)) * v_y_scale))),
-							0.0f, glm::vec2(((float)v_current_char->Character_Size().x * v_x_scale),
-								(v_character_height)),
-							p_color, false, false, 1), true);
-					}
+					PW_CALL(v_char_model = pw::co::Memory::Allocate_Args<Model>(Geometry_Types::SQUARE, v_current_char->Character_Data(),
+						glm::vec2(m_text_position.x + v_baseline_size.x,
+							m_text_position.y - (p_size.y - v_char_y_size) - (v_char_y_size - v_baseline_size.y)),
+						0.0f, glm::vec2(v_char_x_size, v_char_y_size),
+						p_color, false, false, 1), true
+					);
 
-					if (v_character_height > v_max_height) {
-						v_max_height = v_character_height;
+					if (v_char_y_size > v_max_height) {
+						v_max_height = TO_FLOAT(v_char_y_size);
 					}
 
 					m_text_string.push_back(v_char_model);
-					m_text_position.x = m_text_position.x + TO_INT32((float)v_current_char->Spacing() * v_x_scale);
-					m_text_size.x = m_text_size.x + TO_INT32((float)v_current_char->Spacing() * v_x_scale);
+					m_text_position.x = m_text_position.x + v_char_spacing;
+					m_text_size.x = m_text_size.x + v_char_spacing;
 				}
 				m_text_position.y = m_text_position.y - (m_text_size.y - v_max_height);
 				m_text_size.y = v_max_height;
@@ -65,8 +62,10 @@ PW_NAMESPACE_SRT
 				m_raw_text_position{ p_position }, m_raw_text_size{ p_size }, m_is_copy{ false } {
 				float v_max_height = 0.0f;
 
-				float v_y_scale = p_size.y / (float)pw::cm::Constant::PW_SCALE_FACTOR;
-				float v_x_scale = p_size.x / (float)pw::cm::Constant::PW_SCALE_FACTOR;
+				int32_t v_char_x_size{ 0 };
+				int32_t v_char_y_size{ 0 };
+				glm::vec2 v_baseline_size{ 0 };
+				int32_t v_char_spacing{ 0 };
 
 				if (p_colors.empty() == true) {
 					this->Text::Text(p_text, p_position, p_size, p_default_color, p_font_type);
@@ -81,80 +80,56 @@ PW_NAMESPACE_SRT
 						std::vector<glm::vec4>::const_iterator v_current_color = p_colors.begin();
 
 						for (size_t i = 0; i < p_text.size(); i++) {
-							Text_Renderer::Character* v_current_char = Text_Renderer::Create_Character(p_text[i], p_font_type);
+							pw::co::Text_Renderer::Character* v_current_char = pw::co::Text_Renderer::Create_Character(p_text[i], p_font_type);
 
-							float v_character_height = (float)v_current_char->Character_Size().y * v_y_scale;
+							if (v_current_char == nullptr) {
+								continue;
+							}
+
+							v_char_x_size = TO_INT32(((float)v_current_char->Character_Size().x / pw::cm::Constant::PW_FONT_RESOLUTION) * p_size.x);
+							v_char_y_size = TO_INT32(((float)v_current_char->Character_Size().y / pw::cm::Constant::PW_FONT_RESOLUTION) * p_size.y);
+							v_baseline_size = glm::vec2(
+								(((float)v_current_char->Baseline_Offset().x / pw::cm::Constant::PW_FONT_RESOLUTION) * p_size.x),
+								(((float)v_current_char->Baseline_Offset().y / pw::cm::Constant::PW_FONT_RESOLUTION) * p_size.y)
+							);
+							v_char_spacing = TO_INT32(((float)v_current_char->Spacing() / pw::cm::Constant::PW_FONT_RESOLUTION) * p_size.x);
 
 							st::Model* v_char_model{ nullptr };
 
-							// Getting characters for most fonts ideally positioned does not really work
-							// for the way positions are calculated, so we will have to separate the lower
-							// baseline characters, may cause problems for some fonts
-							// TODO : Add opt out for normal calculation method
-							if (p_text[i] == L'g' || p_text[i] == L'p' || p_text[i] == L'y') {
-								if (v_current_delimiter != v_delimiters.end()) {
-									if (i == (*v_current_delimiter)) {
-										PW_CALL(v_char_model = pw::co::Memory::Allocate_Args<Model>(Geometry_Types::SQUARE, v_current_char->Character_Data(),
-											glm::vec2(m_text_position.x + ((float)v_current_char->Baseline_Offset().x * v_x_scale),
-												m_text_position.y - (p_size.y - ((float)v_current_char->Baseline_Offset().y * v_y_scale))),
-											0.0f, glm::vec2(((float)v_current_char->Character_Size().x * v_x_scale),
-												(v_character_height)),
-											p_default_color, false, false, 1), true);
-									}
-									else {
-										PW_CALL(v_char_model = pw::co::Memory::Allocate_Args<Model>(Geometry_Types::SQUARE, v_current_char->Character_Data(),
-											glm::vec2(m_text_position.x + ((float)v_current_char->Baseline_Offset().x * v_x_scale),
-												m_text_position.y - (p_size.y - ((float)v_current_char->Baseline_Offset().y * v_y_scale))),
-											0.0f, glm::vec2(((float)v_current_char->Character_Size().x * v_x_scale),
-												(v_character_height)),
-											(*v_current_color), false, false, 1), true);
-									}
+							if (v_current_delimiter != v_delimiters.end()) {
+								if (i == (*v_current_delimiter)) {
+									PW_CALL(v_char_model = pw::co::Memory::Allocate_Args<Model>(Geometry_Types::SQUARE, v_current_char->Character_Data(),
+										glm::vec2(m_text_position.x + v_baseline_size.x,
+											m_text_position.y - (p_size.y - v_char_y_size) - (v_char_y_size - v_baseline_size.y)),
+										0.0f, glm::vec2(v_char_x_size, v_char_y_size),
+										p_default_color, false, false, 1), true
+									);
 								}
 								else {
 									PW_CALL(v_char_model = pw::co::Memory::Allocate_Args<Model>(Geometry_Types::SQUARE, v_current_char->Character_Data(),
-										glm::vec2(m_text_position.x + ((float)v_current_char->Baseline_Offset().x * v_x_scale),
-											m_text_position.y - (p_size.y - ((float)v_current_char->Baseline_Offset().y * v_y_scale))),
-										0.0f, glm::vec2(((float)v_current_char->Character_Size().x * v_x_scale),
-											(v_character_height)),
-										(*v_current_color), false, false, 1), true);
+										glm::vec2(m_text_position.x + v_baseline_size.x,
+											m_text_position.y - (p_size.y - v_char_y_size) - (v_char_y_size - v_baseline_size.y)),
+										0.0f, glm::vec2(v_char_x_size, v_char_y_size),
+										(*v_current_color), false, false, 1), true
+									);
 								}
 							}
 							else {
-								if (v_current_delimiter != v_delimiters.end()) {
-									if (i == (*v_current_delimiter)) {
-										PW_CALL(v_char_model = pw::co::Memory::Allocate_Args<Model>(Geometry_Types::SQUARE, v_current_char->Character_Data(),
-											glm::vec2(m_text_position.x + ((float)v_current_char->Baseline_Offset().x * v_x_scale),
-												m_text_position.y - (p_size.y - (((float)v_current_char->Baseline_Offset().y + ((float)v_current_char->Character_Size().y - (float)v_current_char->Baseline_Offset().y)) * v_y_scale))),
-											0.0f, glm::vec2(((float)v_current_char->Character_Size().x * v_x_scale),
-												(v_character_height)),
-											p_default_color, false, false, 1), true);
-									}
-									else {
-										PW_CALL(v_char_model = pw::co::Memory::Allocate_Args<Model>(Geometry_Types::SQUARE, v_current_char->Character_Data(),
-											glm::vec2(m_text_position.x + ((float)v_current_char->Baseline_Offset().x * v_x_scale),
-												m_text_position.y - (p_size.y - (((float)v_current_char->Baseline_Offset().y + ((float)v_current_char->Character_Size().y - (float)v_current_char->Baseline_Offset().y)) * v_y_scale))),
-											0.0f, glm::vec2(((float)v_current_char->Character_Size().x * v_x_scale),
-												(v_character_height)),
-											(*v_current_color), false, false, 1), true);
-									}
-								}
-								else {
-									PW_CALL(v_char_model = pw::co::Memory::Allocate_Args<Model>(Geometry_Types::SQUARE, v_current_char->Character_Data(),
-										glm::vec2(m_text_position.x + ((float)v_current_char->Baseline_Offset().x * v_x_scale),
-											m_text_position.y - (p_size.y - (((float)v_current_char->Baseline_Offset().y + ((float)v_current_char->Character_Size().y - (float)v_current_char->Baseline_Offset().y)) * v_y_scale))),
-										0.0f, glm::vec2(((float)v_current_char->Character_Size().x * v_x_scale),
-											(v_character_height)),
-										(*v_current_color), false, false, 1), true);
-								}
+								PW_CALL(v_char_model = pw::co::Memory::Allocate_Args<Model>(Geometry_Types::SQUARE, v_current_char->Character_Data(),
+									glm::vec2(m_text_position.x + v_baseline_size.x,
+										m_text_position.y - (p_size.y - v_char_y_size) - (v_char_y_size - v_baseline_size.y)),
+									0.0f, glm::vec2(v_char_x_size, v_char_y_size),
+									(*v_current_color), false, false, 1), true
+								);
 							}
 
-							if (v_character_height > v_max_height) {
-								v_max_height = v_character_height;
+							if (v_char_y_size > v_max_height) {
+								v_max_height = TO_FLOAT(v_char_y_size);
 							}
 
 							m_text_string.push_back(v_char_model);
-							m_text_position.x = m_text_position.x + TO_INT32((float)v_current_char->Spacing() * v_x_scale);
-							m_text_size.x = m_text_size.x + TO_INT32((float)v_current_char->Spacing() * v_x_scale);
+							m_text_position.x = m_text_position.x + v_char_spacing;
+							m_text_size.x = m_text_size.x + v_char_spacing;
 							if (v_current_delimiter != v_delimiters.end()) {
 								if (i == (*v_current_delimiter)) {
 									if ((v_current_delimiter + 1) != v_delimiters.end()) {
@@ -228,41 +203,36 @@ PW_NAMESPACE_SRT
 									}
 								}
 							}
+							pw::co::Text_Renderer::Character* v_current_char = pw::co::Text_Renderer::Create_Character(p_text[i], p_font_type);
 
-							Text_Renderer::Character* v_current_char = Text_Renderer::Create_Character(p_text[i], p_font_type);
+							if (v_current_char == nullptr) {
+								continue;
+							}
 
-							float v_character_height = (float)v_current_char->Character_Size().y * v_y_scale;
+							v_char_x_size = TO_INT32(((float)v_current_char->Character_Size().x / pw::cm::Constant::PW_FONT_RESOLUTION) * p_size.x);
+							v_char_y_size = TO_INT32(((float)v_current_char->Character_Size().y / pw::cm::Constant::PW_FONT_RESOLUTION) * p_size.y);
+							v_baseline_size = glm::vec2(
+								(((float)v_current_char->Baseline_Offset().x / pw::cm::Constant::PW_FONT_RESOLUTION) * p_size.x),
+								(((float)v_current_char->Baseline_Offset().y / pw::cm::Constant::PW_FONT_RESOLUTION) * p_size.y)
+							);
+							v_char_spacing = TO_INT32(((float)v_current_char->Spacing() / pw::cm::Constant::PW_FONT_RESOLUTION) * p_size.x);
 
 							st::Model* v_char_model{ nullptr };
 
-							// Getting characters for most fonts ideally positioned does not really work
-							// for the way positions are calculated, so we will have to separate the lower
-							// baseline characters, may cause problems for some fonts
-							// TODO : Add opt out for normal calculation method
-							if (p_text[i] == L'g' || p_text[i] == L'p' || p_text[i] == L'y') {
-								PW_CALL(v_char_model = pw::co::Memory::Allocate_Args<Model>(Geometry_Types::SQUARE, v_current_char->Character_Data(),
-									glm::vec2(m_text_position.x + ((float)v_current_char->Baseline_Offset().x * v_x_scale),
-										m_text_position.y - (p_size.y - ((float)v_current_char->Baseline_Offset().y * v_y_scale))),
-									0.0f, glm::vec2(((float)v_current_char->Character_Size().x * v_x_scale),
-										(v_character_height)),
-									v_color, false, false, 1), true);
-							}
-							else {
-								PW_CALL(v_char_model = pw::co::Memory::Allocate_Args<Model>(Geometry_Types::SQUARE, v_current_char->Character_Data(),
-									glm::vec2(m_text_position.x + ((float)v_current_char->Baseline_Offset().x * v_x_scale),
-										m_text_position.y - (p_size.y - (((float)v_current_char->Baseline_Offset().y + ((float)v_current_char->Character_Size().y - (float)v_current_char->Baseline_Offset().y)) * v_y_scale))),
-									0.0f, glm::vec2(((float)v_current_char->Character_Size().x * v_x_scale),
-										(v_character_height)),
-									v_color, false, false, 1), true);
-							}
+							PW_CALL(v_char_model = pw::co::Memory::Allocate_Args<Model>(Geometry_Types::SQUARE, v_current_char->Character_Data(),
+								glm::vec2(m_text_position.x + v_baseline_size.x,
+									m_text_position.y - (p_size.y - v_char_y_size) - (v_char_y_size - v_baseline_size.y)),
+								0.0f, glm::vec2(v_char_x_size, v_char_y_size),
+								v_color, false, false, 1), true
+							);
 
-							if (v_character_height > v_max_height) {
-								v_max_height = v_character_height;
+							if (v_char_y_size > v_max_height) {
+								v_max_height = TO_FLOAT(v_char_y_size);
 							}
 
 							m_text_string.push_back(v_char_model);
-							m_text_position.x = m_text_position.x + TO_INT32((float)v_current_char->Spacing() * v_x_scale);
-							m_text_size.x = m_text_size.x + TO_INT32((float)v_current_char->Spacing() * v_x_scale);
+							m_text_position.x = m_text_position.x + v_char_spacing;
+							m_text_size.x = m_text_size.x + v_char_spacing;
 						}
 						break;
 					}
@@ -313,45 +283,42 @@ PW_NAMESPACE_SRT
 				}
 				float v_max_height = 0.0f;
 
-				float v_y_scale = p_size.y / (float)pw::cm::Constant::PW_SCALE_FACTOR;
-				float v_x_scale = p_size.x / (float)pw::cm::Constant::PW_SCALE_FACTOR;
-
+				int32_t v_char_x_size{ 0 };
+				int32_t v_char_y_size{ 0 };
+				glm::vec2 v_baseline_size{ 0 };
+				int32_t v_char_spacing{ 0 };
 
 				for (size_t i = 0; i < p_text.size(); i++) {
-					Text_Renderer::Character* v_current_char = Text_Renderer::Create_Character(p_text[i], p_font_type);
+					pw::co::Text_Renderer::Character* v_current_char = pw::co::Text_Renderer::Create_Character(p_text[i], p_font_type);
 
-					float v_character_height = (float)v_current_char->Character_Size().y * v_y_scale;
+					if (v_current_char == nullptr) {
+						continue;
+					}
+
+					v_char_x_size = TO_INT32(((float)v_current_char->Character_Size().x / pw::cm::Constant::PW_FONT_RESOLUTION) * p_size.x);
+					v_char_y_size = TO_INT32(((float)v_current_char->Character_Size().y / pw::cm::Constant::PW_FONT_RESOLUTION) * p_size.y);
+					v_baseline_size = glm::vec2(
+						(((float)v_current_char->Baseline_Offset().x / pw::cm::Constant::PW_FONT_RESOLUTION) * p_size.x),
+						(((float)v_current_char->Baseline_Offset().y / pw::cm::Constant::PW_FONT_RESOLUTION) * p_size.y)
+					);
+					v_char_spacing = TO_INT32(((float)v_current_char->Spacing() / pw::cm::Constant::PW_FONT_RESOLUTION) * p_size.x);
 
 					st::Model* v_char_model{ nullptr };
 
-					// Getting characters for most fonts ideally positioned does not really work
-					// for the way positions are calculated, so we will have to separate the lower
-					// baseline characters, may cause problems for some fonts
-					// TODO : Add opt out for normal calculation method
-					if (p_text[i] == L'g' || p_text[i] == L'p' || p_text[i] == L'y') {
-						PW_CALL(v_char_model = pw::co::Memory::Allocate_Args<Model>(Geometry_Types::SQUARE, v_current_char->Character_Data(),
-							glm::vec2(m_text_position.x + ((float)v_current_char->Baseline_Offset().x * v_x_scale),
-								m_text_position.y - (p_size.y - ((float)v_current_char->Baseline_Offset().y * v_y_scale))),
-							0.0f, glm::vec2(((float)v_current_char->Character_Size().x * v_x_scale),
-								(v_character_height)),
-							(*v_colors[i]), false, false, 1), true);
-					}
-					else {
-						PW_CALL(v_char_model = pw::co::Memory::Allocate_Args<Model>(Geometry_Types::SQUARE, v_current_char->Character_Data(),
-							glm::vec2(m_text_position.x + ((float)v_current_char->Baseline_Offset().x * v_x_scale),
-								m_text_position.y - (p_size.y - (((float)v_current_char->Baseline_Offset().y + ((float)v_current_char->Character_Size().y - (float)v_current_char->Baseline_Offset().y)) * v_y_scale))),
-							0.0f, glm::vec2(((float)v_current_char->Character_Size().x * v_x_scale),
-								(v_character_height)),
-							(*v_colors[i]), false, false, 1), true);
-					}
+					PW_CALL(v_char_model = pw::co::Memory::Allocate_Args<Model>(Geometry_Types::SQUARE, v_current_char->Character_Data(),
+						glm::vec2(m_text_position.x + v_baseline_size.x,
+							m_text_position.y - (p_size.y - v_char_y_size) - (v_char_y_size - v_baseline_size.y)),
+						0.0f, glm::vec2(v_char_x_size, v_char_y_size),
+						(*v_colors[i]), false, false, 1), true
+					);
 
-					if (v_character_height > v_max_height) {
-						v_max_height = v_character_height;
+					if (v_char_y_size > v_max_height) {
+						v_max_height = TO_FLOAT(v_char_y_size);
 					}
 
 					m_text_string.push_back(v_char_model);
-					m_text_position.x = m_text_position.x + TO_INT32((float)v_current_char->Spacing() * v_x_scale);
-					m_text_size.x = m_text_size.x + TO_INT32((float)v_current_char->Spacing() * v_x_scale);
+					m_text_position.x = m_text_position.x + v_char_spacing;
+					m_text_size.x = m_text_size.x + v_char_spacing;
 				}
 				m_text_position.y = m_text_position.y - (m_text_size.y - v_max_height);
 				m_text_size.y = v_max_height;
@@ -387,12 +354,17 @@ PW_NAMESPACE_SRT
 					}
 				}
 			}
-			void Text::Render(const uint32_t& p_layer) {
+			void Text::Render(const uint32_t p_layer) {
 				for (size_t i = 0; i < m_text_string.size(); i++) {
 					PW_CALL(m_text_string.at(i)->Render(p_layer), true);
 				}
 			}
 			void Text::Set_Position(const glm::vec2& p_new_position) {
+				if (m_text_string.size() > 0) {
+					if (m_text_string.at(0)->Is_Attached() == true) {
+						return;
+					}
+				}
 				if (m_raw_text_position != p_new_position) {
 					float v_difference_x_overall = p_new_position.x - m_raw_text_position.x;
 					float v_difference_y_overall = p_new_position.y - m_raw_text_position.y;
@@ -409,14 +381,19 @@ PW_NAMESPACE_SRT
 					m_raw_text_position = p_new_position;
 				}
 			}
-			void Text::Set_Offset(const glm::vec3& p_from) {
+			void Text::Attach_To(glm::vec2* p_position) {
 				for (auto i = m_text_string.begin(); i != m_text_string.end(); i++) {
 
 					glm::vec2 v_origin = (*i)->Position();
 
-					(*i)->Set_Position(p_from);
+					(*i)->Attach_To(p_position);
 
-					(*i)->Set_Offset(glm::vec2(v_origin.x, v_origin.y - (float)pw::cm::Constant::Window_Height()));
+					(*i)->Set_Offset(glm::vec2(v_origin.x - p_position->x, v_origin.y - p_position->y));
+				}
+			}
+			void Text::Set_Offset(const glm::vec2& p_offset) {
+				for (auto i = m_text_string.begin(); i != m_text_string.end(); i++) {
+					(*i)->Set_Offset((*i)->Offset() + p_offset);
 				}
 			}
 			void Text::Set_Text(const std::wstring& p_new_text) {
@@ -494,6 +471,77 @@ PW_NAMESPACE_SRT
 			}
 			const std::vector<st::Model*>& Text::Models() const {
 				return m_text_string;
+			}
+			glm::vec2 Text::Predict_Size_Top_Y(std::wstring p_font, glm::vec2 p_size, std::wstring p_text, bool p_include_last_space) {
+				glm::vec2 v_predicted_size{};
+				float v_max_height = 0.0f;
+
+				int32_t v_char_y_size{ 0 };
+				glm::vec2 v_baseline_size{ 0 };
+				int32_t v_char_spacing{ 0 };
+
+				for (size_t i = 0; i < p_text.size(); i++) {
+					pw::co::Text_Renderer::Character* v_current_char = pw::co::Text_Renderer::Create_Character(p_text[i], p_font);
+
+					if (v_current_char == nullptr) {
+						continue;
+					}
+
+					v_char_y_size = TO_INT32(((float)v_current_char->Character_Size().y / pw::cm::Constant::PW_FONT_RESOLUTION) * p_size.y);
+					v_baseline_size = glm::vec2(
+						(((float)v_current_char->Baseline_Offset().x / pw::cm::Constant::PW_FONT_RESOLUTION) * p_size.x),
+						(((float)v_current_char->Baseline_Offset().y / pw::cm::Constant::PW_FONT_RESOLUTION) * p_size.y)
+					);
+					v_char_spacing = TO_INT32(((float)v_current_char->Spacing() / pw::cm::Constant::PW_FONT_RESOLUTION) * p_size.x);
+
+					if (v_char_y_size > v_max_height) {
+						v_max_height = TO_FLOAT(v_char_y_size);
+					}
+
+					if (i != p_text.size() - 1 || p_include_last_space == true) {
+						v_predicted_size.x = v_predicted_size.x + v_char_spacing;
+					}
+				}
+				v_predicted_size.y = v_max_height;
+
+				return v_predicted_size;
+			}
+			glm::vec2 Text::Predict_Size_Bottom_Y(std::wstring p_font, glm::vec2 p_size, std::wstring p_text, bool p_include_last_space) {
+				glm::vec2 v_predicted_size{};
+				float v_lowest_height = 0.0f;
+
+				int32_t v_char_y_size{ 0 };
+				glm::vec2 v_baseline_size{ 0 };
+				int32_t v_char_spacing{ 0 };
+
+				for (size_t i = 0; i < p_text.size(); i++) {
+					pw::co::Text_Renderer::Character* v_current_char = pw::co::Text_Renderer::Create_Character(p_text[i], p_font);
+
+					if (v_current_char == nullptr) {
+						continue;
+					}
+
+					v_char_y_size = TO_INT32(((float)v_current_char->Character_Size().y / pw::cm::Constant::PW_FONT_RESOLUTION) * p_size.y);
+					v_baseline_size = glm::vec2(
+						(((float)v_current_char->Baseline_Offset().x / pw::cm::Constant::PW_FONT_RESOLUTION) * p_size.x),
+						(((float)v_current_char->Baseline_Offset().y / pw::cm::Constant::PW_FONT_RESOLUTION) * p_size.y)
+					);
+					v_char_spacing = TO_INT32(((float)v_current_char->Spacing() / pw::cm::Constant::PW_FONT_RESOLUTION) * p_size.x);
+
+
+					float v_t1 = (p_size.y - v_char_y_size);
+					float v_t2 = TO_FLOAT(v_char_y_size - v_baseline_size.y);
+					if (0.0f - v_t1 - v_t2 < v_lowest_height) {
+						v_lowest_height = v_t1 - v_t2;
+					}
+
+					if (i != p_text.size() - 1 || p_include_last_space == true) {
+						v_predicted_size.x = v_predicted_size.x + v_char_spacing;
+					}
+				}
+				v_predicted_size.y = v_lowest_height;
+
+				return v_predicted_size;
 			}
 	ST_NAMESPACE_END
 PW_NAMESPACE_END

@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021-2023, Darrian Corkadel
+// Copyright(c) 2021-2024, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -59,6 +59,7 @@ PW_NAMESPACE_SRT
 	CO_NAMESPACE_SRT
 		CN_NAMESPACE_SRT
 			class Console_Error {
+			// Friends
 			// Default Class Structures
 			public:
 			private:
@@ -66,6 +67,8 @@ PW_NAMESPACE_SRT
 			public:
 				/* Error List: PW_WIN_FUNCTION_ERROR */
 				_NODISCARD static std::wstring Windows_Last_Error() noexcept;
+				/* Error List: PW_WIN_FUNCTION_ERROR */
+				static void Handle_Windows_Error(const std::wstring& p_function, const std::wstring& p_caller) noexcept;
 			// Public Variables
 			public:
 			// Private Functions/Macros
@@ -120,6 +123,7 @@ PW_NAMESPACE_SRT
 				E_CONSOLE_OUT
 			};
 			class Console_Color {
+			// Friends
 			// Default Class Structures
 			public:
 				/* Error List: NONE */
@@ -140,6 +144,7 @@ PW_NAMESPACE_SRT
 				uint16_t m_color_attribute;
 			};
 			class Console_Msg {
+			// Friends
 			// Default Class Structures
 			public:
 				Console_Msg() = delete;
@@ -169,25 +174,21 @@ PW_NAMESPACE_SRT
 			private:
 			};
 			class Console_Manip {
+			// Friends
+				friend class pw::co::Control;
 			// Default Class Structures
 			public:
 			private:
 				// Public Functions/Macros
 			public:
-				/* Error List: PW_WIN_FUNCTION_ERROR, PW_FUNCTION_ERROR */
-				static void Set_Up_Console();
-				/* Error List: PW_FUNCTION_ERROR */
-				static void Initialize();
 				/* Error List: PW_WIN_FUNCTION_ERROR */
-				static void Resize(const uint32_t& p_size_x, const uint32_t& p_size_y);
-				/* Error List: PW_FUNCTION_ERROR, PW_WIN_FUNCTION_ERROR */
-				static void Draw_Screen();
+				static void Resize(const uint32_t p_size_x, const uint32_t p_size_y);
 				/* Error List: PW_FUNCTION_ERROR */
 				static void Print_Info(const std::wstring& p_from, const std::wstring& p_msg, const uint16_t& p_line);
 				/* Error List: PW_FUNCTION_ERROR, PW_WIN_FUNCTION_ERROR */
-				static void Print_Console(const std::wstring& p_from, const std::wstring& p_msg, const pw::co::cn::Msg_Types& p_msg_type, const bool& p_block_msg);
+				static void Print_Console(const std::wstring& p_from, const std::wstring& p_msg, const pw::co::cn::Msg_Types& p_msg_type, const bool p_block_msg);
 				/* Error List: PW_FUNCTION_ERROR, PW_WIN_FUNCTION_ERROR */
-				static void Print_Console(const Console_Msg& p_msg, const bool& p_block_msg);
+				static void Print_Console(const Console_Msg& p_msg, const bool p_block_msg);
 				/* Error List: PW_FUNCTION_ERROR */
 				static void Clear_Console();
 				/* Error List: PW_INVAILD_PARAMETER_W, PW_WIN_FUNCTION_ERROR */
@@ -202,8 +203,6 @@ PW_NAMESPACE_SRT
 				static void Draw_Rectangle_Vertical(const COORD& p_top_left, const COORD& p_size, const wchar_t& p_character, const Console_Color& p_color);
 				/* Error List: PW_FUNCTION_ERROR */
 				static void Draw_Rectangle_Horizontal(const COORD& p_top_left, const COORD& p_size, const wchar_t& p_character, const Console_Color& p_color);
-				/* Error List: NONE */
-				static void Release();
 
 				#define CLEAR_MSG pw::co::cn::Msg_Types::E_CLEAR
 				#define DEFAULT_MSG pw::co::cn::Msg_Types::E_DEFAULT
@@ -239,6 +238,15 @@ PW_NAMESPACE_SRT
 			public:
 				// Private Functions/Macros
 			private:
+				/* Error List: PW_WIN_FUNCTION_ERROR, PW_FUNCTION_ERROR */
+				static void Set_Up_Console();
+				/* Error List: PW_FUNCTION_ERROR */
+				static void Initialize();
+				/* Error List: PW_FUNCTION_ERROR, PW_WIN_FUNCTION_ERROR */
+				static void Draw_Screen();
+				/* Error List: NONE */
+				static void Release();
+
 				/* Error List: PW_FUNCTION_ERROR */
 				static void Draw_Line_Low(const COORD& p_start, const COORD& p_end, const wchar_t& p_character, const Console_Color& p_color);
 				/* Error List: PW_FUNCTION_ERROR */

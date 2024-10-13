@@ -15,7 +15,7 @@ PW_NAMESPACE_SRT
 					m_font_complete{ false }, m_queue_complete{ false }, 
 					m_alut_complete{ false }, m_main_window{} {
 			}
-			void Control::Initialize_Engine(int argc, char* argv[], const std::wstring& p_window_name, const int32_t& p_window_width, const int32_t& p_window_height, const bool& p_require_game_path) {
+			void Control::Initialize_Engine(int argc, char* argv[], const std::wstring& p_window_name, const int32_t p_window_width, const int32_t p_window_height, const bool p_require_game_path) {
 				//////////////////////////////////
 				// Engine Initialization
 				//////////////////////////////////
@@ -130,9 +130,11 @@ PW_NAMESPACE_SRT
 				//////////////////////////////////
 				// For creating a window to use for the application
 				TRY_LINE m_main_window = std::unique_ptr<GLFWwindow, cm::Destroy_GLFW>(glfwCreateWindow(
-					p_window_width, p_window_height,
-					TO_STRING(p_window_name).c_str(),
-					NULL, NULL));
+						p_window_width, p_window_height,
+						TO_STRING(p_window_name).c_str(),
+						NULL, NULL
+					)
+				);
 				// For checking if any errors occurred
 				if (!m_main_window) {
 					SET_ERROR_STATE(PW_GLFW_ERROR);
@@ -183,21 +185,25 @@ PW_NAMESPACE_SRT
 				PW_GLFW_VOID_CALL(glfwGetFramebufferSize(&*m_main_window, &buffer_width, &buffer_height), false);
 				PW_SET_RET(m_no_error, true);
 
-				PW_CALL(cm::Constant::Set_Window_Width(std::move<uint32_t>(TO_UINT32(buffer_width))), false);
+				PW_CALL(cm::Constant::Set_Window_Width(TO_UINT32(buffer_width)), false);
 				PW_SET_RET(m_no_error, true);
-				PW_CALL(cm::Constant::Set_Window_Height(std::move<uint32_t>(TO_UINT32(buffer_height))), false);
+				PW_CALL(cm::Constant::Set_Window_Height(TO_UINT32(buffer_height)), false);
 				PW_SET_RET(m_no_error, true);
 
 				buffer_width = buffer_width / 2;
-				PW_CALL(cm::Constant::Set_Hafe_Window_Width(std::move<uint32_t>(TO_UINT32(buffer_width))), false);
+				PW_CALL(cm::Constant::Set_Hafe_Window_Width(TO_UINT32(buffer_width)), false);
 				PW_SET_RET(m_no_error, true);
 				buffer_height = buffer_height / 2;
-				PW_CALL(cm::Constant::Set_Hafe_Window_Height(std::move<uint32_t>(TO_UINT32(buffer_height))), false);
+				PW_CALL(cm::Constant::Set_Hafe_Window_Height(TO_UINT32(buffer_height)), false);
 				PW_SET_RET(m_no_error, true);
 				PW_CALL(cm::Constant::Set_Window_Name(p_window_name), false);
 				PW_SET_RET(m_no_error, true);
 
-				GLFWmonitor* v_monitor = glfwGetPrimaryMonitor();
+				PW_GLFW_VOID_CALL(GLFWmonitor* v_monitor = glfwGetPrimaryMonitor(), false);
+
+				if (v_monitor == NULL) {
+					PW_SET_RET(m_no_error, true);
+				}
 
 				cm::Constant::Set_Refresh_Rate(glfwGetVideoMode(v_monitor)->refreshRate);
 
@@ -250,8 +256,9 @@ PW_NAMESPACE_SRT
 					}
 				}
 				//////////////////////////////////
-				// Finish Up Program Things
+				// Final Settings Pass & Shader
 				//////////////////////////////////
+				// Mesh must be initialized after glew is initialized
 				PW_CALL(pw::st::Mesh::Initialize(), false);
 				PW_SET_RET(m_no_error, true);
 				// For setting up view port size
@@ -286,8 +293,19 @@ PW_NAMESPACE_SRT
 					std::bind(&Control::Pre_Scene_Change, this, std::placeholders::_1),
 					std::bind(&Control::Post_Scene_Change, this, std::placeholders::_1),
 					std::bind(&Control::Pre_Scene_Removal, this, std::placeholders::_1),
-					std::bind(&Control::Post_Scene_Removal, this, std::placeholders::_1));
+					std::bind(&Control::Post_Scene_Removal, this, std::placeholders::_1)
+				);
 
+				PW_CALL(pw::co::Shader::Create_Shader(
+						L"/files/resource/essential/shader/vertex.vert",
+						L"/files/resource/essential/shader/fragment.frag"
+					), false
+				);
+				PW_SET_RET(m_no_error, true);
+
+				PW_CALL(pw::st::Model::Initialize(), false);
+				PW_SET_RET(m_no_error, true);
+				
 				// Set debug function if in debug mode
 				#ifdef PW_DEBUG_MODE
 					cm::Constant::Set_Debug_Function(pw::co::Engine_Queue::Print_Debug_Stats);
@@ -295,13 +313,16 @@ PW_NAMESPACE_SRT
 			}
 			void Control::Run_Engine() {
 				//////////////////////////////////
-				// Init Key Engine Objects
+				// Load UI Extension
 				//////////////////////////////////
-				PW_CALL(pw::co::Shader::Create_Shader(L"/files/resource/essential/shader/vertex.vert",
-					L"/files/resource/essential/shader/fragment.frag"), true);
-
-				PW_CALL(pw::st::Model::Initialize(), true);
-
+				PW_CALL(pw::ex::ui::User_Interface::Initialize(
+						pw::co::File_Loader::Load_Texture_File(L"Empty.png", false, false, true),
+						pw::co::File_Loader::Load_Texture_File(L"White.png", false, false, true)
+					), true
+				);
+				//////////////////////////////////
+				// Load Scene Data
+				//////////////////////////////////
 				PW_CALL(Pre_Load(), true);
 
 				if (m_require_game_path == true) {
@@ -447,7 +468,7 @@ PW_NAMESPACE_SRT
 			bool Control::Should_Close() const {
 				return !glfwWindowShouldClose(&*m_main_window);
 			}
-			const bool& Control::No_Error() const {
+			const bool Control::No_Error() const {
 				return m_no_error;
 			}
 	CO_NAMESPACE_END

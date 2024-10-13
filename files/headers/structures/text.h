@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021-2023, Darrian Corkadel
+// Copyright(c) 2021-2024, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -49,7 +49,8 @@
 //////////////////////////////////
 PW_NAMESPACE_SRT
 	ST_NAMESPACE_SRT
-		class Text : public pw::co::Text_Renderer {
+		class Text {
+		// Friends
 		// Default Class Structures
 		public:
 			enum class Color_Settings {
@@ -80,11 +81,13 @@ PW_NAMESPACE_SRT
 		// Public Variables   
 		public:
 			/* Error List: PW_FUNCTION_ERROR */
-			void Render(const uint32_t& p_layer);
+			void Render(uint32_t p_layer);
 			/* Error List: NONE */
 			void Set_Position(const glm::vec2& p_new_position);
 			/* Error List: NONE */
-			void Set_Offset(const glm::vec3& p_from);
+			void Attach_To(glm::vec2* p_position);
+			/* Error List: NONE */
+			void Set_Offset(const glm::vec2& p_offset);
 			/* Error List: PW_FUNCTION_ERROR */
 			void Set_Text(const std::wstring& p_new_text);
 			/* Error List: NONE */
@@ -103,6 +106,11 @@ PW_NAMESPACE_SRT
 			const std::wstring& String() const;
 			/* Error List: NONE */
 			const std::vector<st::Model*>& Models() const;
+
+			/* Error List: NONE */
+			static glm::vec2 Predict_Size_Top_Y(std::wstring p_font, glm::vec2 p_size, std::wstring p_text, bool p_include_last_space);
+			/* Error List: NONE */
+			static glm::vec2 Predict_Size_Bottom_Y(std::wstring p_font, glm::vec2 p_size, std::wstring p_text, bool p_include_last_space);
 		// Private Functions/Macros 
 		private:
 		// Private Variables  

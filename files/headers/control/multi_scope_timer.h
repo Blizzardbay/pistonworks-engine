@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021-2023, Darrian Corkadel
+// Copyright(c) 2021-2024, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -54,6 +54,8 @@
 PW_NAMESPACE_SRT
 	CO_NAMESPACE_SRT
 		class Multi_Scope_Timer {
+		// Friends
+			friend class pw::co::Control;
 		// Default Class Structures
 		public:
 			/* Error List: NONE */
@@ -63,26 +65,22 @@ PW_NAMESPACE_SRT
 			/* Error List: NONE */
 			~Multi_Scope_Timer();
 		private:
-		// Protected Functions/Macros 
-		protected:
-			/* Error List: PW_FUNCTION_ERROR */
-			static void Initialize();
-			/* Error List: NONE */
-			static void Release();
-		// Protected Variables
-		protected:
 		// Public Functions/Macros
 		public:
 			/* Error List: NONE */
 			template<class duration, class precision>
-			const precision End(const std::wstring& p_identifier);
+			static const precision End(const std::wstring& p_identifier);
 			/* Error List: PW_FUNCTION_ERROR, PW_WIN_FUNCTION_ERROR */
 			template<class duration, class precision>
-			const std::optional<precision> Print_End(const std::wstring& p_identifier, const pw::co::cn::Console_Msg& p_msg, bool p_return_time = false);
+			static const std::optional<precision> Print_End(const std::wstring& p_identifier, const pw::co::cn::Console_Msg& p_msg, bool p_return_time = false);
 		// Public Variables
 		public:
 		// Private Functions/Macros
 		private:
+			/* Error List: PW_FUNCTION_ERROR */
+			static void Initialize();
+			/* Error List: NONE */
+			static void Release();
 		// Private Variables
 		private:
 			static std::map<std::wstring, std::chrono::steady_clock::time_point>* m_timer_pool;

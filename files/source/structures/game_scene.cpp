@@ -8,22 +8,19 @@ PW_NAMESPACE_SRT
 		// Class Members
 			Actor::Actor() :
 					m_model{ nullptr }, m_body{ nullptr }, m_multi_texture{ nullptr }, m_sound_deposit{ nullptr }, m_is_rendered{ false }, m_render_toggle{ true }, m_s_id{},
-					m_text{ nullptr }, m_current_animation{ nullptr }, m_animations{ nullptr }, m_layer{ 0 }, m_is_copy{ false }, m_render_function{} {
-				m_render_function = *std::make_shared<PW_FUNCTION>(std::bind(static_cast<void(st::Actor::*)()>(&st::Actor::Render_Default), this));
+					m_text{ nullptr }, m_current_animation{ nullptr }, m_animations{ nullptr }, m_layer{ 0 }, m_is_copy{ false } {
 			}
-			Actor::Actor(st::Model* p_model, const int32_t& p_layer) :
+			Actor::Actor(st::Model* p_model, const int32_t p_layer) :
 					m_model{ p_model }, m_body{ nullptr }, m_multi_texture{ nullptr }, m_sound_deposit{ nullptr }, m_is_rendered{ false }, m_render_toggle{ true }, m_s_id{},
-					m_text{ nullptr }, m_current_animation{ nullptr }, m_animations{ nullptr }, m_layer{ p_layer }, m_is_copy{ false }, m_render_function{} {
-				m_render_function = *std::make_shared<PW_FUNCTION>(std::bind(static_cast<void(st::Actor::*)()>(&st::Actor::Render_Default), this));
+					m_text{ nullptr }, m_current_animation{ nullptr }, m_animations{ nullptr }, m_layer{ p_layer }, m_is_copy{ false } {
 			}
-			Actor::Actor(st::Model* p_model, st::Text* p_text, const int32_t& p_layer) :
+			Actor::Actor(st::Model* p_model, st::Text* p_text, const int32_t p_layer) :
 					m_model{ p_model }, m_body{ nullptr }, m_multi_texture{ nullptr }, m_sound_deposit{ nullptr }, m_is_rendered{ false }, m_render_toggle{ true }, m_s_id{},
-					m_text{ p_text }, m_current_animation{ nullptr }, m_animations{ nullptr }, m_layer{ p_layer }, m_is_copy{ false }, m_render_function{} {
-				m_render_function = *std::make_shared<PW_FUNCTION>(std::bind(static_cast<void(st::Actor::*)()>(&st::Actor::Render_Text), this));
+					m_text{ p_text }, m_current_animation{ nullptr }, m_animations{ nullptr }, m_layer{ p_layer }, m_is_copy{ false } {
 			}
-			Actor::Actor(st::Model* p_model, st::Texture_Structure* p_multi_texture, const int32_t& p_layer) :
+			Actor::Actor(st::Model* p_model, st::Texture_Structure* p_multi_texture, const int32_t p_layer) :
 					m_model{ p_model }, m_body{ nullptr }, m_multi_texture{ p_multi_texture }, m_sound_deposit{ nullptr }, m_is_rendered{ false }, m_render_toggle{ true }, m_s_id{},
-					m_text{ nullptr }, m_current_animation{ nullptr }, m_animations{ nullptr }, m_layer{ p_layer }, m_is_copy{ false }, m_render_function{} {
+					m_text{ nullptr }, m_current_animation{ nullptr }, m_animations{ nullptr }, m_layer{ p_layer }, m_is_copy{ false } {
 				// Make sure to give st::Mesh all of the possible handles to see if the index needs to be stored 
 				std::vector<uint64_t> v_texture_handles{};
 				for (auto i = m_multi_texture->Textures().begin(); i != m_multi_texture->Textures().end(); i++) {
@@ -31,32 +28,28 @@ PW_NAMESPACE_SRT
 				}
 				// Check
 				pw::st::Mesh::Validate_Multitex(m_model->Render_Index(), v_texture_handles);
-
-				m_render_function = *std::make_shared<PW_FUNCTION>(std::bind(static_cast<void(st::Actor::*)()>(&st::Actor::Render_Default), this));
 			}
-			Actor::Actor(st::Model* p_model, st::Sound_Structure* p_sound_deposit, const int32_t& p_layer) :
+			Actor::Actor(st::Model* p_model, st::Sound_Structure* p_sound_deposit, const int32_t p_layer) :
 					m_model{ p_model }, m_body{ nullptr }, m_multi_texture{ nullptr }, m_sound_deposit{ p_sound_deposit }, m_is_rendered{ false }, m_render_toggle{ true }, m_s_id{},
-					m_text{ nullptr }, m_current_animation{ nullptr }, m_animations{ nullptr }, m_layer{ p_layer }, m_is_copy{ false }, m_render_function{} {
+					m_text{ nullptr }, m_current_animation{ nullptr }, m_animations{ nullptr }, m_layer{ p_layer }, m_is_copy{ false } {
 				if (m_sound_deposit->All_Sounds() != nullptr) {
 					for (auto i = m_sound_deposit->All_Sounds()->begin(); i != m_sound_deposit->All_Sounds()->end(); i++) {
 						i->second->Attach(std::bind(&st::Model::Calculate_Center, m_model));
 					}
 				}
-				m_render_function = *std::make_shared<PW_FUNCTION>(std::bind(static_cast<void(st::Actor::*)()>(&st::Actor::Render_Default_Sound), this));
 			}
-			Actor::Actor(st::Model* p_model, st::Text* p_text, st::Sound_Structure* p_sound_deposit, const int32_t& p_layer) :
+			Actor::Actor(st::Model* p_model, st::Text* p_text, st::Sound_Structure* p_sound_deposit, const int32_t p_layer) :
 					m_model{ p_model }, m_body{ nullptr }, m_multi_texture{ nullptr }, m_sound_deposit{ p_sound_deposit }, m_is_rendered{ false }, m_render_toggle{ true }, m_s_id{},
-					m_text{ p_text }, m_current_animation{ nullptr }, m_animations{ nullptr }, m_layer{ p_layer }, m_is_copy{ false }, m_render_function{} {
+					m_text{ p_text }, m_current_animation{ nullptr }, m_animations{ nullptr }, m_layer{ p_layer }, m_is_copy{ false } {
 				if (m_sound_deposit->All_Sounds() != nullptr) {
 					for (auto i = m_sound_deposit->All_Sounds()->begin(); i != m_sound_deposit->All_Sounds()->end(); i++) {
 						i->second->Attach(std::bind(&st::Model::Calculate_Center, m_model));
 					}
 				}
-				m_render_function = *std::make_shared<PW_FUNCTION>(std::bind(static_cast<void(st::Actor::*)()>(&st::Actor::Render_Text_Sound), this));
 			}
-			Actor::Actor(st::Model* p_model, st::Texture_Structure* p_multi_texture, st::Sound_Structure* p_sound_deposit, const int32_t& p_layer) :
+			Actor::Actor(st::Model* p_model, st::Texture_Structure* p_multi_texture, st::Sound_Structure* p_sound_deposit, const int32_t p_layer) :
 					m_model{ p_model }, m_body{ nullptr }, m_multi_texture{ p_multi_texture }, m_sound_deposit{ p_sound_deposit }, m_is_rendered{ false }, m_render_toggle{ true }, m_s_id{},
-					m_text{ nullptr }, m_current_animation{ nullptr }, m_animations{ nullptr }, m_layer{ p_layer }, m_is_copy{ false }, m_render_function{} {
+					m_text{ nullptr }, m_current_animation{ nullptr }, m_animations{ nullptr }, m_layer{ p_layer }, m_is_copy{ false } {
 				if (m_sound_deposit->All_Sounds() != nullptr) {
 					for (auto i = m_sound_deposit->All_Sounds()->begin(); i != m_sound_deposit->All_Sounds()->end(); i++) {
 						i->second->Attach(std::bind(&st::Model::Calculate_Center, m_model));
@@ -69,19 +62,16 @@ PW_NAMESPACE_SRT
 				}
 				// Check
 				pw::st::Mesh::Validate_Multitex(m_model->Render_Index(), v_texture_handles);
-
-				m_render_function = *std::make_shared<PW_FUNCTION>(std::bind(static_cast<void(st::Actor::*)()>(&st::Actor::Render_Default_Sound), this));
 			}
-			Actor::Actor(st::Model* p_model, st::Animation* p_animation, const int32_t& p_layer) :
+			Actor::Actor(st::Model* p_model, st::Animation* p_animation, const int32_t p_layer) :
 					m_model{ p_model }, m_body{ nullptr }, m_multi_texture{ nullptr }, m_sound_deposit{ nullptr }, m_is_rendered{ false }, m_render_toggle{ true }, m_s_id{},
-					m_text{ nullptr }, m_current_animation{ p_animation }, m_animations{ nullptr }, m_layer{ p_layer }, m_is_copy{ false }, m_render_function{} {
-				m_render_function = *std::make_shared<PW_FUNCTION>(std::bind(static_cast<void(st::Actor::*)()>(&st::Actor::Render_Animation), this));
+					m_text{ nullptr }, m_current_animation{ p_animation }, m_animations{ nullptr }, m_layer{ p_layer }, m_is_copy{ false } {
 			}
-			Actor::Actor(st::Model* p_model, const std::vector<std::tuple<st::Animation*, st::Texture*>>& p_animations, const std::vector<std::wstring>& p_animation_ids, const int32_t& p_layer) :
+			Actor::Actor(st::Model* p_model, const std::vector<std::tuple<st::Animation*, st::Texture*>>& p_animations, const std::vector<std::wstring>& p_animation_ids, const int32_t p_layer) :
 					m_model{ p_model }, m_body{ nullptr }, m_multi_texture{ nullptr }, m_sound_deposit{ nullptr }, m_is_rendered{ false }, m_render_toggle{ true }, m_s_id{},
 					m_text{ nullptr }, m_current_animation{ p_animations.front()._Myfirst._Val },
 					m_animations{ nullptr },
-					m_layer{ p_layer }, m_is_copy{ false }, m_render_function{} {
+					m_layer{ p_layer }, m_is_copy{ false } {
 				PW_CALL(m_animations = pw::co::Memory::Allocate_Args<st::Animation_Structure>(p_animations, p_animation_ids), false);
 
 				// Make sure to give st::Mesh all of the possible handles to see if the index needs to be stored 
@@ -91,10 +81,8 @@ PW_NAMESPACE_SRT
 				}
 				// Check
 				pw::st::Mesh::Validate_Multitex(m_model->Render_Index(), v_texture_handles);
-
-				m_render_function = *std::make_shared<PW_FUNCTION>(std::bind(static_cast<void(st::Actor::*)()>(&st::Actor::Render_Animation), this));
 			}
-			Actor::Actor(st::Model* p_model, st::Animation* p_animation, st::Sound_Structure* p_sound_deposit, const int32_t& p_layer) :
+			Actor::Actor(st::Model* p_model, st::Animation* p_animation, st::Sound_Structure* p_sound_deposit, const int32_t p_layer) :
 					m_model{ p_model }, m_body{ nullptr }, m_multi_texture{ nullptr }, m_sound_deposit{ p_sound_deposit }, m_is_rendered{ false }, m_render_toggle{ true }, m_s_id{},
 					m_text{ nullptr }, m_current_animation{ p_animation }, m_animations{ nullptr }, m_layer{ p_layer }, m_is_copy{ false } {
 				if (m_sound_deposit->All_Sounds() != nullptr) {
@@ -102,13 +90,12 @@ PW_NAMESPACE_SRT
 						i->second->Attach(std::bind(&st::Model::Calculate_Center, m_model));
 					}
 				}
-				m_render_function = *std::make_shared<PW_FUNCTION>(std::bind(static_cast<void(st::Actor::*)()>(&st::Actor::Render_Animation_Sound), this));
 			}
-			Actor::Actor(st::Model* p_model, const std::vector<std::tuple<st::Animation*, st::Texture*>>& p_animations, const std::vector<std::wstring>& p_animation_ids, st::Sound_Structure* p_sound_deposit, const int32_t& p_layer) :
+			Actor::Actor(st::Model* p_model, const std::vector<std::tuple<st::Animation*, st::Texture*>>& p_animations, const std::vector<std::wstring>& p_animation_ids, st::Sound_Structure* p_sound_deposit, const int32_t p_layer) :
 					m_model{ p_model }, m_body{ nullptr }, m_multi_texture{ nullptr }, m_sound_deposit{ p_sound_deposit }, m_is_rendered{ false }, m_render_toggle{ true }, m_s_id{},
 					m_text{ nullptr }, m_current_animation{ p_animations.front()._Myfirst._Val },
 					m_animations{ nullptr },
-					m_layer{ p_layer }, m_is_copy{ false }, m_render_function{} {
+					m_layer{ p_layer }, m_is_copy{ false } {
 				PW_CALL(m_animations = pw::co::Memory::Allocate_Args<st::Animation_Structure>(p_animations, p_animation_ids), false);
 
 				// Make sure to give st::Mesh all of the possible handles to see if the index needs to be stored 
@@ -124,7 +111,6 @@ PW_NAMESPACE_SRT
 						i->second->Attach(std::bind(&st::Model::Calculate_Center, m_model));
 					}
 				}
-				m_render_function = *std::make_shared<PW_FUNCTION>(std::bind(static_cast<void(st::Actor::*)()>(&st::Actor::Render_Animation_Sound), this));
 			}
 			Actor& Actor::operator=(Actor&& p_rhs) noexcept {
 				m_model = p_rhs.m_model;
@@ -190,7 +176,35 @@ PW_NAMESPACE_SRT
 				}
 			}
 			void Actor::Render() {
-				PW_CALL(m_render_function(), false);
+				if (m_current_animation != nullptr) {
+					PW_CALL(Run_Animation(), true);
+				}
+				if (m_text != nullptr) {
+					PW_CALL(m_text->Render(m_layer), true);
+					if (m_model != nullptr) {
+						if (m_body != nullptr) {
+							PW_CALL(m_model->Render(m_layer, m_body->Body()), true);
+						}
+						else {
+							PW_CALL(m_model->Render(m_layer), true);
+						}
+					}
+				}
+				else {
+					if (m_model != nullptr) {
+						if (m_body != nullptr) {
+							PW_CALL(m_model->Render(m_layer, m_body->Body()), true);
+						}
+						else {
+							PW_CALL(m_model->Render(m_layer), true);
+						}
+					}
+				}
+				if (m_sound_deposit != nullptr) {
+					for (auto i = m_sound_deposit->All_Sounds()->begin(); i != m_sound_deposit->All_Sounds()->end(); i++) {
+						PW_CALL(i->second->Update(), true);
+					}
+				}
 			}
 			void Actor::Play_Sound(std::wstring p_sound_s_id, bool p_reset_play) {
 				if (m_sound_deposit != nullptr) {
@@ -313,28 +327,33 @@ PW_NAMESPACE_SRT
 					}
 				}
 			}
-			void Actor::Set_Render_State(const bool& p_state) {
+			void Actor::Set_Render_State(const bool p_state) {
 				m_is_rendered = p_state;
 			}
-			void Actor::Set_Size_X(const float& p_size_x) {
-				m_model->Set_Size_X(p_size_x);
+			void Actor::Set_Size_X(const float p_size_x) {
+				if (m_model != nullptr) {
+					m_model->Set_Size_X(p_size_x);
 
-				if (m_body != nullptr) {
-					PW_CALL(m_body->Set_Size_Px(m_model->Size()), false);
+					if (m_body != nullptr) {
+						PW_CALL(m_body->Set_Size_Px(m_model->Size()), false);
+					}
 				}
 			}
-			void Actor::Set_Size_Y(const float& p_size_y) {
-				m_model->Set_Size_Y(p_size_y);
+			void Actor::Set_Size_Y(const float p_size_y) {
+				if (m_model != nullptr) {
+					m_model->Set_Size_Y(p_size_y);
 
-				if (m_body != nullptr) {
-					PW_CALL(m_body->Set_Size_Px(m_model->Size()), false);
+					if (m_body != nullptr) {
+						PW_CALL(m_body->Set_Size_Px(m_model->Size()), false);
+					}
 				}
 			}
 			void Actor::Set_Size(const glm::vec2& p_size_px) {
-				m_model->Set_Size(p_size_px);
-
-				if (m_body != nullptr) {
-					PW_CALL(m_body->Set_Size_Px(m_model->Size()), false);
+				if (m_model != nullptr) {
+					m_model->Set_Size(p_size_px);
+					if (m_body != nullptr) {
+						PW_CALL(m_body->Set_Size_Px(m_model->Size()), false);
+					}
 				}
 			}
 			void Actor::Set_Text(std::wstring p_new_text) {
@@ -353,10 +372,13 @@ PW_NAMESPACE_SRT
 					PW_CALL(m_model->Set_Model_Color(p_color), false);
 				}
 			}
+			void Actor::Set_Layer(uint32_t p_layer) {
+				m_layer = p_layer;
+			}
 			void Actor::Toggle_Render() {
 				m_render_toggle = !m_render_toggle;
 			}
-			void Actor::Set_Render_Toggle(const bool& p_state) {
+			void Actor::Set_Render_Toggle(const bool p_state) {
 				m_render_toggle = p_state;
 			}
 			st::Model* Actor::Model() const {
@@ -371,10 +393,10 @@ PW_NAMESPACE_SRT
 			st::Sound_Structure* Actor::Sound_Structure() const {
 				return m_sound_deposit;
 			}
-			const bool& Actor::Is_Rendered() const {
+			const bool Actor::Is_Rendered() const {
 				return m_is_rendered;
 			}
-			const bool& Actor::Render_Toggle() const {
+			const bool Actor::Render_Toggle() const {
 				return m_render_toggle;
 			}
 			const std::wstring& Actor::S_Id() const {
@@ -397,93 +419,6 @@ PW_NAMESPACE_SRT
 			}
 			const PW_ID& Actor::Global_ID() {
 				return m_global_index;
-			}
-			void Actor::Render_Animation() {
-				if (m_current_animation != nullptr) {
-					PW_CALL(Run_Animation(), true);
-				}
-				if (m_model != nullptr) {
-					if (m_body != nullptr) {
-						PW_CALL(m_model->Render(m_layer, m_body->Body()), true);
-					}
-					else {
-						PW_CALL(m_model->Render(m_layer), true);
-					}
-				}
-			}
-			void Actor::Render_Text() {
-				if (m_text != nullptr) {
-					PW_CALL(m_text->Render(m_layer), true);
-				}
-				if (m_model != nullptr) {
-					if (m_body != nullptr) {
-						PW_CALL(m_model->Render(m_layer, m_body->Body()), true);
-					}
-					else {
-						PW_CALL(m_model->Render(m_layer), true);
-					}
-				}
-			}
-			void Actor::Render_Default() {
-				if (m_model != nullptr) {
-					if (m_body != nullptr) {
-						PW_CALL(m_model->Render(m_layer, m_body->Body()), true);
-					}
-					else {
-						PW_CALL(m_model->Render(m_layer), true);
-					}
-				}
-			}
-			void Actor::Render_Animation_Sound() {
-				if (m_current_animation != nullptr) {
-					PW_CALL(Run_Animation(), true);
-				}
-				if (m_model != nullptr) {
-					if (m_body != nullptr) {
-						PW_CALL(m_model->Render(m_layer, m_body->Body()), true);
-					}
-					else {
-						PW_CALL(m_model->Render(m_layer), true);
-					}
-				}
-				if (m_sound_deposit != nullptr) {
-					for (auto i = m_sound_deposit->All_Sounds()->begin(); i != m_sound_deposit->All_Sounds()->end(); i++) {
-						PW_CALL(i->second->Update(), true);
-					}
-				}
-			}
-			void Actor::Render_Text_Sound() {
-				if (m_text != nullptr) {
-					PW_CALL(m_text->Render(m_layer), true);
-				}
-				if (m_model != nullptr) {
-					if (m_body != nullptr) {
-						PW_CALL(m_model->Render(m_layer, m_body->Body()), true);
-					}
-					else {
-						PW_CALL(m_model->Render(m_layer), true);
-					}
-				}
-				if (m_sound_deposit != nullptr) {
-					for (auto i = m_sound_deposit->All_Sounds()->begin(); i != m_sound_deposit->All_Sounds()->end(); i++) {
-						PW_CALL(i->second->Update(), true);
-					}
-				}
-			}
-			void Actor::Render_Default_Sound() {
-				if (m_model != nullptr) {
-					if (m_body != nullptr) {
-						PW_CALL(m_model->Render(m_layer, m_body->Body()), true);
-					}
-					else {
-						PW_CALL(m_model->Render(m_layer), true);
-					}
-				}
-				if (m_sound_deposit != nullptr) {
-					for (auto i = m_sound_deposit->All_Sounds()->begin(); i != m_sound_deposit->All_Sounds()->end(); i++) {
-						PW_CALL(i->second->Update(), true);
-					}
-				}
 			}
 			bool Compare_Layer(st::Actor* lhs, st::Actor* rhs) {
 				return lhs->Layer() < rhs->Layer();
@@ -516,7 +451,7 @@ PW_NAMESPACE_SRT
 			Sub_Scene_Structure::Sub_Scene_Structure() :
 					m_sub_scene_id{}, m_scene_repository{}, m_should_render{ false }, m_is_rendered{ false } {
 			}
-			Sub_Scene_Structure::Sub_Scene_Structure(const std::wstring& p_sub_scene_id, const std::vector<st::Actor*>& p_scene_repository, const bool& p_should_render) :
+			Sub_Scene_Structure::Sub_Scene_Structure(const std::wstring& p_sub_scene_id, const std::vector<st::Actor*>& p_scene_repository, const bool p_should_render) :
 					m_sub_scene_id{ p_sub_scene_id }, m_scene_repository { p_scene_repository }, m_should_render{ p_should_render }, m_is_rendered{ false } {
 				// Attach any layer 4+ models to the camera relative to its position
 				for (size_t i = 0; i < m_scene_repository.size(); i++) {
@@ -573,7 +508,7 @@ PW_NAMESPACE_SRT
 					p_quadtree_renderer.remove(m_scene_repository.at(i));
 				}
 			}
-			void Sub_Scene_Structure::Set_Render_State(const bool& p_is_rendering) {
+			void Sub_Scene_Structure::Set_Render_State(const bool p_is_rendering) {
 				m_is_rendered = p_is_rendering;
 			}
 			void Sub_Scene_Structure::Set_Render_Toggle(bool p_render_structure) {
@@ -588,10 +523,10 @@ PW_NAMESPACE_SRT
 					}
 				}
 			}
-			const bool& Sub_Scene_Structure::Is_Rendered() {
+			const bool Sub_Scene_Structure::Is_Rendered() {
 				return m_is_rendered;
 			}
-			const bool& Sub_Scene_Structure::Should_Render() {
+			const bool Sub_Scene_Structure::Should_Render() {
 				return m_should_render;
 			}
 			std::vector<st::Actor*>& Sub_Scene_Structure::Scenes() {
@@ -1234,7 +1169,7 @@ PW_NAMESPACE_SRT
 					v_found->second->Toggle_Render();
 				}
 			}
-			void Game_Scene::Toggle_Render(const std::wstring& p_s_id, const bool& p_state) {
+			void Game_Scene::Toggle_Render(const std::wstring& p_s_id, const bool p_state) {
 				auto v_found = s_id_models.find(p_s_id);
 				if (v_found != s_id_models.end()) {
 					v_found->second->Set_Render_State(p_state);
@@ -1325,7 +1260,7 @@ PW_NAMESPACE_SRT
 					return nullptr;
 				}
 			}
-			void Game_Scene::Set_Sub_Scene_State(const std::wstring& p_sub_scene, const bool& p_state) {
+			void Game_Scene::Set_Sub_Scene_State(const std::wstring& p_sub_scene, const bool p_state) {
 				auto v_found = m_sub_scene_deposit.find(p_sub_scene);
 				if (v_found != m_sub_scene_deposit.end()) {
 					v_found->second->Set_Render_Toggle(p_state);

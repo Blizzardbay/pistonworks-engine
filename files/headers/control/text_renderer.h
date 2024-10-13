@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021-2023, Darrian Corkadel
+// Copyright(c) 2021-2024, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -58,22 +58,39 @@
 //////////////////////////////////
 // Engine Utility Headers
 //////////////////////////////////
+
+PW_NAMESPACE_SRT
+	CO_NAMESPACE_SRT
+		class Engine_Queue;
+	CO_NAMESPACE_END
+PW_NAMESPACE_END
+
+PW_NAMESPACE_SRT
+	ST_NAMESPACE_SRT
+		class Text;
+	ST_NAMESPACE_END
+PW_NAMESPACE_END
+
 PW_NAMESPACE_SRT
 	CO_NAMESPACE_SRT
 		class Text_Renderer {
+		// Friends
+			friend class pw::co::Control;
+			friend class pw::co::Engine_Queue;
+			friend class pw::st::Text;
 		// Default Class Structures
 		public:
 			class Character {
-				// Default Class Structures
+			// Default Class Structures
 			public:
 				/* Error List: PW_FUNCTION_ERROR */
-				Character(const wchar_t& p_type, BYTE* p_character_data, const glm::ivec2& p_character_size, const glm::ivec2& p_baseline_offset, const uint32_t& p_spacing);
+				Character(const wchar_t& p_type, BYTE* p_character_data, const glm::ivec2& p_character_size, const glm::ivec2& p_baseline_offset, const uint32_t p_spacing);
 				/* Error List: NONE */
 				~Character();
 			private:
-				// Public Functions/Macros
+			// Public Functions/Macros
 			public:
-				// Public Variables   
+			// Public Variables   
 			public:
 				/* Error List: NONE */
 				const wchar_t& Type() const;
@@ -89,9 +106,9 @@ PW_NAMESPACE_SRT
 				void Set_Type(const wchar_t& p_type);
 				/* Error List: NONE */
 				void Set_Texture(st::Texture* p_new_texture);
-				// Private Functions/Macros 
+			// Private Functions/Macros 
 			private:
-				// Private Variables  
+			// Private Variables  
 			private:
 				wchar_t m_type;
 				st::Texture* m_character_data;
@@ -100,8 +117,8 @@ PW_NAMESPACE_SRT
 				uint32_t m_spacing;
 			};
 		private:
-		// Protected Functions/Macros
-		protected:
+		// Private Functions/Macros 
+		private:
 			/* Error List: PW_FUNCTION_ERROR */
 			static void Initialize();
 			/* Error List: PW_FT_ERROR, PW_FUNCTION_ERROR */
@@ -110,12 +127,8 @@ PW_NAMESPACE_SRT
 			static void Load_Engine_Fonts(const std::wstring& p_font_location, const std::vector<std::wstring>& p_font_ids, const std::vector<std::wstring>& p_font_names);
 			/* Error List: NONE */
 			static void Release();
-			/* Error List: NONE */
+			/* Error List: PW_NULL_RETURN */
 			static Character* Create_Character(const wchar_t& p_letter_type, const std::wstring& p_font_type);
-		// Protected Variables   
-		protected:
-		// Private Functions/Macros 
-		private:
 		// Private Variables  
 		private:
 			// Default fonts are loaded from engine font directory

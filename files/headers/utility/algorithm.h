@@ -27,8 +27,8 @@
 // CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 // OR TORT(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#ifndef H_COLOR
-#define H_COLOR
+#ifndef H_ALGORITHM
+#define H_ALGORITHM
 //////////////////////////////////
 #include "common\build.h"
 //////////////////////////////////
@@ -37,7 +37,7 @@
 // Project Headers
 #pragma warning(push)
 #pragma warning(disable: PW_ALL_WARNINGS)
-#include <glm\ext\vector_float4.hpp>
+#include <glm\ext\vector_float2.hpp>
 #pragma warning(pop)
 //////////////////////////////////
 // Engine Common Headers
@@ -45,83 +45,25 @@
 //////////////////////////////////
 // Engine Control Headers
 //////////////////////////////////
-// Engine Structures Headers
+// Engine Structures Header
+#include "structures\model.h"
 //////////////////////////////////
 // Engine Utility Headers
 //////////////////////////////////
+
+// Algorithm namespace
+#define ALG_NAMESPACE_SRT namespace alg {
+#define ALG_NAMESPACE_END }
+
 PW_NAMESPACE_SRT
 	UTIL_NAMESPACE_SRT
-		class Color {
-		// Friends
-		// Default Class Structures 
-		public:
-			enum class Default_Colors {
-				//LIT_RED				#ff 80 80 
-				//RED					#ff 00 00 
-				//DRK_RED				#80 00 00	
-				LIGHT_RED, RED, DARK_RED,
-				//LIT_GREEN				#80 ff 80 
-				//GREEN					#00 ff 00 
-				//DRK_GREEN				#00 80 00 
-				LIGHT_GREEN, GREEN, DARK_GREEN,
-				//LIT_BLUE				#80 80 ff 
-				//BLUE					#00 00 ff 
-				//DRK_BLUE				#00 00 80
-				LIGHT_BLUE, BLUE, DARK_BLUE,
-				//LIT_YELLOW			#ff ff 80 
-				//YELLOW				#ff ff 00 
-				//DRK_YELLOW			#80 80 00
-				LIGHT_YELLOW, YELLOW, DARK_YELLOW,
-				//LIT_PINK				#ff 80 ff 
-				//PINK					#ff 00 ff 
-				//DRK_PINK				#80 00 80
-				LIGHT_PINK, PINK, DARK_PINK,
-				//LIT_CYAN				#80 ff ff 
-				//CYAN					#00 ff ff 
-				//DRK_CYAN				#00 80 80
-				LIGHT_CYAN, CYAN, DARK_CYAN,
-				//LIT_LIME				#80 ff 80 
-				//LIME					#80 ff 00 
-				//DRK_LIME				#40 80 00
-				LIGHT_LIME, LIME, DARK_LIME,
-				//LIT_ORANGE			#ff bf 80 
-				//ORANGE				#ff 80 00 
-				//DRK_ORANGE			#cc 60 00
-				LIGHT_ORANGE, ORANGE, DARK_ORANGE,
-				//LIT_AZURE				#80 bf ff 
-				//AZURE					#00 80 ff 
-				//DRK_AZURE				#00 40 80
-				LIGHT_AZURE, AZURE, DARK_AZURE,
-				//LIT_PURPLE			#bf 80 ff 
-				//PURPLE				#80 00 ff 
-				//DRK_PURPLE			#40 00 80
-				LIGHT_PURPLE, PURPLE, DARK_PURPLE,
-				//LIT_BROWN				#80 5c 40 
-				//BROWN					#80 40 00 
-				//DRK_BROWN				#40 20 00
-				LIGHT_BROWN, BROWN, DARK_BROWN,
-				//LIT_GREY				#c0 c0 c0
-				//GREY					#80 80 80 
-				//DRK_GREY				#40 40 40
-				LIGHT_GREY, GREY, DARK_GREY,
-				//WHITE					#ff ff ff
-				//BLACK					#00 00 00
-				//COUNT					38
-				WHITE, BLACK, Color_Count
-			};
-		private:
-		// Public Functions/Macros  
-		public:
-			/* Error List: NONE */
-			static glm::vec4 Default_Color(const Default_Colors& p_color);
-		// Public Variables        
-		public:
-		// Private Functions/Macros  
-		private:
-		// Private Variables        
-		private:
-			static glm::vec4 m_engine_colors[(uint32_t)Default_Colors::Color_Count];
-		};
+		ALG_NAMESPACE_SRT
+			extern bool Line_Intersection(glm::vec2 p_point_1, glm::vec2 p_point_2, glm::vec2 p_point_3, glm::vec2 p_point_4);
+			extern bool Line_Intersection(float p_x1, float p_y1, float p_x2, float p_y2, float p_x3, float p_y3, float p_x4, float p_y4);
+
+			extern bool Point_In_Shape(glm::vec2 p_point, st::Model* p_shape);
+			extern bool Point_In_Shape(float p_x, float p_y, st::Model* p_shape);
+		ALG_NAMESPACE_END
 	UTIL_NAMESPACE_END
 PW_NAMESPACE_END
-#endif // !H_COLOR
+#endif // !H_ALGORITHM

@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021-2023, Darrian Corkadel
+// Copyright(c) 2021-2024, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -52,6 +52,7 @@
 PW_NAMESPACE_SRT
 	CM_NAMESPACE_SRT
 		class Math {
+		// Friends
 		// Default Class Structures
 		public:
 		private:

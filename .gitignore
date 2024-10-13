@@ -338,3 +338,5 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+/dependencies/audio_win64/libsndfile-1.2.2-win64/cmake
+/dependencies/audio_win64/libsndfile-1.2.2-win64/share/doc/libsndfile

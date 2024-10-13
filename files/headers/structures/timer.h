@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021-2023, Darrian Corkadel
+// Copyright(c) 2021-2024, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -52,7 +52,13 @@
 //////////////////////////////////
 PW_NAMESPACE_SRT
 	ST_NAMESPACE_SRT
+		template<class duration>
+		class Time;
 		class Time_Constant {
+		// Friends
+			friend class pw::co::Control;
+			template<class duration>
+			friend class Time;
 		// Default Class Structures
 		public:
 		private:
@@ -60,19 +66,19 @@ PW_NAMESPACE_SRT
 		public:
 		// Public Variables
 		public:
-		// Protected Functions/Macros
-		protected:
+		// Private Functions/Macros
+		private:
 			/* Error List: PW_FUNCTION_ERROR */
 			static void Initialize();
 			/* Error List: NONE */
 			static void Release();
-		// Protected Variables
-		protected:
+		// Private Variables
+		private:
 			static std::map<std::string, std::wstring>* m_time_total;
 			static std::map<std::string, std::wstring>* m_time_postfix;
 		};
 		template<class duration>
-		class Time : protected Time_Constant {
+		class Time {
 			static_assert(std::is_same_v<duration, std::chrono::nanoseconds> ||
 				std::is_same_v<duration, std::chrono::microseconds> ||
 				std::is_same_v<duration, std::chrono::milliseconds> ||
@@ -82,6 +88,7 @@ PW_NAMESPACE_SRT
 				std::is_same_v<duration, std::chrono::days> ||
 				std::is_same_v<duration, std::chrono::months> ||
 				std::is_same_v<duration, std::chrono::years>);
+		// Friends
 		// Default Class Structures
 		public:
 		private:
@@ -100,10 +107,11 @@ PW_NAMESPACE_SRT
 		};
 		template<class duration>
 		class Manual_Timer : public Time<duration> {
+		// Friends
 		// Default Class Structures
 		public:
 			/* Error List: NONE */
-			_NODISCARD Manual_Timer(const uint64_t& p_timer_length, const bool& p_start_ready, const bool& p_reset) noexcept;
+			_NODISCARD Manual_Timer(const uint64_t& p_timer_length, const bool p_start_ready, const bool p_reset) noexcept;
 		private:
 		// Public Functions/Macros 
 		public:
@@ -122,11 +130,11 @@ PW_NAMESPACE_SRT
 			template<class precision>
 			_NODISCARD const precision& Timer_Length() noexcept;
 			/* Error List: NONE */
-			_NODISCARD const bool& Start_Ready() noexcept;
+			_NODISCARD const bool Start_Ready() noexcept;
 			/* Error List: NONE */
-			_NODISCARD const bool& Should_Reset() noexcept;
+			_NODISCARD const bool Should_Reset() noexcept;
 			/* Error List: NONE */
-			_NODISCARD const bool& Reseted() noexcept;
+			_NODISCARD const bool Reseted() noexcept;
 			/* Error List: NONE */
 			_NODISCARD const std::chrono::steady_clock::time_point& Activation_Time() noexcept;
 		// Public Variables
@@ -139,6 +147,7 @@ PW_NAMESPACE_SRT
 			uint64_t m_timer_length;
 
 			bool m_start_ready;
+			bool m_started;
 			bool m_should_reset;
 			bool m_reseted;
 
@@ -149,6 +158,7 @@ PW_NAMESPACE_SRT
 			static_assert(std::is_same_v<precision, int64_t> ||
 				std::is_same_v<precision, float> ||
 				std::is_same_v<precision, double>);
+		// Friends
 		// Default Class Structures
 		public:
 			/* Error List: NONE */

@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021-2023, Darrian Corkadel
+// Copyright(c) 2021-2024, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -57,14 +57,15 @@
 PW_NAMESPACE_SRT
 	ST_NAMESPACE_SRT
 		class Animation {
+		// Friends
 		// Default Class Structures
 		public:
 			/* Error List: NONE */
 			Animation();
 			/* Error List: PW_FUNCTION_ERROR */
-			Animation(const float& p_animation_length, const uint32_t& p_frame_count, const uint32_t& p_frame_size_x, Vertex_Data* p_vertices, const size_t& p_vertices_count, const bool& p_is_async);
+			Animation(const float p_animation_length, const uint32_t p_frame_count, const uint32_t p_frame_size_x, Vertex_Data* p_vertices, const size_t& p_vertices_count, const bool p_is_async);
 			/* Error List: NONE */
-			Animation(const float& p_animation_length, const uint32_t& p_frame_count, const uint32_t& p_frame_size_x, const bool& p_is_async);
+			Animation(const float p_animation_length, const uint32_t p_frame_count, const uint32_t p_frame_size_x, const bool p_is_async);
 			/* Error List: NONE */
 			~Animation();
 			/* Error List: NONE */
@@ -90,13 +91,13 @@ PW_NAMESPACE_SRT
 			Vertex_Data* Vertices();
 			// Returns true if we are at the start
 			// Error List: NONE 
-			const bool& Start();
+			const bool Start();
 			// Returns true if we are at the end
 			// Error List: NONE
-			const bool& End();
+			const bool End();
 			// Returns if the animation should be updated
 			// Error List: NONE
-			const bool& Is_Async();
+			const bool Is_Async();
 		// Public Variables
 		public:
 		// Private Functions/Macros 

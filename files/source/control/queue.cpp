@@ -338,7 +338,7 @@ PW_NAMESPACE_SRT
 				}
 				PW_CALL(Set_Current_Scene(v_first_scene.c_str()), true);
 			}
-			void Engine_Queue::Add_Scene(const std::wstring& p_scene_name, const bool& p_set_current) {
+			void Engine_Queue::Add_Scene(const std::wstring& p_scene_name, const bool p_set_current) {
 				auto v_found = m_scene_directory->find(p_scene_name);
 				// Can't load the same scene twice in once instance
 				if (v_found == m_scene_directory->end()) {
@@ -435,7 +435,7 @@ PW_NAMESPACE_SRT
 			void Engine_Queue::Set_User_Debug_Function(const std::function<void()>& p_debug_function) {
 				m_user_debug_function = p_debug_function;
 			}
-			void Engine_Queue::Set_Sub_Scene_Render(const std::wstring& p_base_scene, const std::wstring& p_sub_scene, const bool& p_state) {
+			void Engine_Queue::Set_Sub_Scene_Render(const std::wstring& p_base_scene, const std::wstring& p_sub_scene, const bool p_state) {
 				auto v_found = m_scene_directory->find(p_base_scene);
 				if (v_found != m_scene_directory->end()) {
 					v_found->second->Set_Sub_Scene_State(p_sub_scene, p_state);

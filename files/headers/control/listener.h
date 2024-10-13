@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021-2023, Darrian Corkadel
+// Copyright(c) 2021-2024, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -56,35 +56,36 @@
 //////////////////////////////////
 // Engine Utility Headers
 //////////////////////////////////
+
+PW_NAMESPACE_SRT
+	CO_NAMESPACE_SRT
+		class File_Loader;
+	CO_NAMESPACE_END
+PW_NAMESPACE_END
+
+PW_NAMESPACE_SRT
+	ST_NAMESPACE_SRT
+		class Game_Scene;
+	ST_NAMESPACE_END
+PW_NAMESPACE_END
+
 PW_NAMESPACE_SRT
 	CO_NAMESPACE_SRT
 		class Listener {
+		// Friends
+			friend class pw::co::Control;
+			friend class pw::co::File_Loader;
+			friend class pw::st::Game_Scene;
 		// Default Class Structures 
 		public:
 		private:
-		// Protected Functions/Macros  
-		protected:
-			// Creates the context for the listener before hand
-			// Error List: PW_AUDIO_SOURCE_NOT_FOUND, PW_AL_ERROR
-			static void Create_Listener(const glm::vec3& p_up_vector = st::Camera::Up_Vector(), glm::vec3& p_at_vector = st::Camera::At_Vector());
-			/* Error List: PW_AUDIO_SOURCE_NOT_FOUND, PW_AL_ERROR */
-			static void Create_Listener(const std::function<glm::vec2()>& p_position_tie,
-				const glm::vec3& p_up_vector = st::Camera::Up_Vector(), glm::vec3& p_at_vector = st::Camera::At_Vector());
-
-			/* Error List: PW_AL_ERROR */
-			static void Update();
-			// Once the listener is deleted it cannot be re-created
-			// Error List: NONE
-			static void Release();
-		// Protected Variables         
-		protected:
 		// Public Functions/Macros  
 		public:
 			/* Error List: PW_AL_ERROR */
 			static void Change_Bound_Listener(const std::function<glm::vec2()>& p_new_position_tie);
 
 			/* Error List: PW_AL_ERROR */
-			static void Set_Volume(const float& p_new_gain, const bool& p_windows_style);
+			static void Set_Volume(const float p_new_gain, const bool p_windows_style);
 			// Sets the current device for audio outputting
 			// Error List: PW_AUDIO_SOURCE_NOT_FOUND
 			static void Set_Device(const std::wstring& p_device_name);
@@ -98,6 +99,18 @@ PW_NAMESPACE_SRT
 		public:
 		// Private Functions/Macros 
 		private:
+			// Creates the context for the listener before hand
+			// Error List: PW_AUDIO_SOURCE_NOT_FOUND, PW_AL_ERROR
+			static void Create_Listener(const glm::vec3& p_up_vector = st::Camera::Up_Vector(), glm::vec3& p_at_vector = st::Camera::At_Vector());
+			/* Error List: PW_AUDIO_SOURCE_NOT_FOUND, PW_AL_ERROR */
+			static void Create_Listener(const std::function<glm::vec2()>& p_position_tie,
+				const glm::vec3& p_up_vector = st::Camera::Up_Vector(), glm::vec3& p_at_vector = st::Camera::At_Vector());
+
+			/* Error List: PW_AL_ERROR */
+			static void Update();
+			// Once the listener is deleted it cannot be re-created
+			// Error List: NONE
+			static void Release();
 		// Private Variables       
 		private:
 			// You can only create one listener per engine instance

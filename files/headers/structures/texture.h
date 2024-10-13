@@ -1,6 +1,6 @@
 // BSD 3 - Clause License
 //
-// Copyright(c) 2021-2023, Darrian Corkadel
+// Copyright(c) 2021-2024, Darrian Corkadel
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -56,14 +56,15 @@
 PW_NAMESPACE_SRT
 	ST_NAMESPACE_SRT
 		class Texture {
+		// Friends
 		// Default Class Structures 
 		public:
 			/* Error List: NONE */
 			Texture();
 			/* Error List: PW_NULL_PARAMETER_W, PW_FUNCTION_ERROR */
-			Texture(BYTE* p_tex_data, const uint32_t& p_texture_width, const uint32_t& p_texture_height, const int32_t& p_internal_format, const int32_t& p_format, const bool& p_repeat = false, const bool& p_linear = true);
+			Texture(BYTE* p_tex_data, const uint32_t p_texture_width, const uint32_t p_texture_height, const int32_t p_internal_format, const int32_t p_format, const bool p_repeat = false, const bool p_linear = true);
 			/* Error List: PW_NULL_PARAMETER_W, PW_FUNCTION_ERROR */
-			Texture(BYTE* p_tex_data, const uint32_t& p_target, const uint32_t& p_texture_width, const uint32_t& p_texture_height, const int32_t& p_internal_format, const int32_t& p_format, const bool& p_repeat = false, const bool& p_linear = true);
+			Texture(BYTE* p_tex_data, const uint32_t p_target, const uint32_t p_texture_width, const uint32_t p_texture_height, const int32_t p_internal_format, const int32_t p_format, const bool p_repeat = false, const bool p_linear = true);
 			/* Error List: NONE */
 			Texture(const Texture& p_other);
 			/* Error List: PW_NULL_PARAMETER_W, PW_FUNCTION_ERROR */
@@ -75,6 +76,7 @@ PW_NAMESPACE_SRT
 			glm::vec2 Size();
 			/* Error List: NONE */
 			const uint64_t& Texture_Handle() const;
+			/* Error List: NONE */
 		// Public Variables         
 		public:
 		// Private Functions/Macros 
@@ -91,6 +93,7 @@ PW_NAMESPACE_SRT
 			uint32_t m_texture_height;
 		};
 		struct Texture_Structure {
+		// Friends
 		// Default Class Structures 
 		public:
 			/* Error List: NONE */

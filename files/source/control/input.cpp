@@ -2,6 +2,29 @@
 
 PW_NAMESPACE_SRT
 	CO_NAMESPACE_SRT
+		// Custom_Input
+		// Static Declarations
+			std::map<std::wstring, COMPLEX_FUNCTION_3(PW_EVENT_ID, PW_BUTTON_CODE, PW_STATE)> Custom_Input::m_custom_handlers{};
+		// Class Members
+			void Custom_Input::Add(const std::wstring& p_identifier, const COMPLEX_FUNCTION_3(PW_EVENT_ID, PW_BUTTON_CODE, PW_STATE)& p_function) {
+				auto v_found = m_custom_handlers.find(p_identifier);
+
+				if(v_found == m_custom_handlers.end()) {
+					m_custom_handlers.insert(std::make_pair(p_identifier, p_function));
+				}
+			}
+			void Custom_Input::Remove(const std::wstring& p_identifier) {
+				auto v_found = m_custom_handlers.find(p_identifier);
+
+				if (v_found != m_custom_handlers.end()) {
+					m_custom_handlers.erase(v_found);
+				}
+			}
+			void Custom_Input::Use(PW_EVENT_ID p_event_id, PW_BUTTON_CODE p_button_code, PW_STATE p_state) {
+				for (auto i = m_custom_handlers.begin(); i != m_custom_handlers.end(); i++) {
+					PW_CALL(i->second(p_event_id, p_button_code, p_state), true);
+				}
+			}
 		// Input
 		// Static Declarations
 			co::Input* Input::m_current_input{ nullptr };
@@ -94,6 +117,7 @@ PW_NAMESPACE_SRT
 						PW_CALL((*i._Ptr)->Trigger_Event(), true);
 					}
 				}
+				PW_CALL(Custom_Input::Use(cm::Constant::PW_HOVER_EVENT, 0, GLFW_PRESS), false);
 			}
 			void Input::Handle_Keyboard(GLFWwindow* p_window, int p_key, int p_code, int p_action, int p_mode) noexcept {
 				// For gaining access to the current window using callbacks
@@ -135,6 +159,7 @@ PW_NAMESPACE_SRT
 				if (m_scene_event_function != nullptr) {
 					PW_CALL(m_scene_event_function(cm::Constant::PW_KEYBOARD_EVENT, p_key, p_action), false);
 				}
+				PW_CALL(Custom_Input::Use(cm::Constant::PW_KEYBOARD_EVENT, p_key, p_action), false);
 			}
 			void Input::Handle_Mouse_Movement(GLFWwindow* p_window, double p_mouse_xpos, double p_mouse_ypos) noexcept {
 				UNUSED(p_window)
@@ -177,6 +202,7 @@ PW_NAMESPACE_SRT
 						}
 					}
 				}
+				PW_CALL(Custom_Input::Use(cm::Constant::PW_MOUSE_EVENT, p_button, p_action), false);
 			}
 			void Input::Handle_Mouse_Scroll(GLFWwindow* p_window, double p_xoffset, double p_yoffset) noexcept {
 				UNUSED(p_window)
@@ -195,6 +221,8 @@ PW_NAMESPACE_SRT
 						}
 					}
 				}
+				PW_CALL(Custom_Input::Use(cm::Constant::PW_SCROLL_WHEEL_FORWARD, 0, GLFW_PRESS), false);
+				PW_CALL(Custom_Input::Use(cm::Constant::PW_SCROLL_WHEEL_BACKWARD, 0, GLFW_PRESS), false);
 			}
 			void Input::Handle_Resize(GLFWwindow* p_main_window, int p_window_width, int p_window_height) noexcept {
 				PW_GL_VOID_CALL(glViewport(0, 0, p_window_width, p_window_height), false, true);
@@ -224,7 +252,7 @@ PW_NAMESPACE_SRT
 
 				PW_GLFW_VOID_CALL(glfwSwapBuffers(p_main_window), false);
 			}
-			void Input::Create_Event_Keyboard(const PW_INPUT_TYPE& p_action, const PW_KEY_CODE& p_key_code, std::shared_ptr<PW_FUNCTION> p_function_ptr, const bool& p_only_play_once) {
+			void Input::Create_Event_Keyboard(const PW_INPUT_TYPE p_action, const PW_KEY_CODE& p_key_code, std::shared_ptr<PW_FUNCTION> p_function_ptr, const bool p_only_play_once) {
 				if (p_function_ptr != nullptr) {
 					if (m_key_events.count(p_action) < 1) {
 						std::map<PW_ID, st::Event_Base*> v_id_event{};
@@ -258,7 +286,7 @@ PW_NAMESPACE_SRT
 					}
 				}
 			}
-			void Input::Create_Event_Mouse(const PW_INPUT_TYPE& p_action, const PW_BUTTON_CODE& p_code, std::shared_ptr<PW_FUNCTION> p_function_ptr, const bool& p_only_play_once) {
+			void Input::Create_Event_Mouse(const PW_INPUT_TYPE p_action, const PW_BUTTON_CODE& p_code, std::shared_ptr<PW_FUNCTION> p_function_ptr, const bool p_only_play_once) {
 				if (p_function_ptr != nullptr) {
 					if (m_mouse_events.count(p_action) < 1) {
 						std::map<PW_ID, st::Event_Base*> v_id_event{};
@@ -293,7 +321,7 @@ PW_NAMESPACE_SRT
 					}
 				}
 			}
-			void Input::Create_Event_Scroll(const PW_SCROLL_ACTION& p_action, std::shared_ptr<PW_FUNCTION> p_function_ptr, const bool& p_only_play_once) {
+			void Input::Create_Event_Scroll(const PW_SCROLL_ACTION& p_action, std::shared_ptr<PW_FUNCTION> p_function_ptr, const bool p_only_play_once) {
 				if (p_function_ptr != nullptr) {
 					if (m_scroll_events.count(p_action) < 1) {															  
 						std::map<PW_ID, st::Event_Base*> v_id_event{};

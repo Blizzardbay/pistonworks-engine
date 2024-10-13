@@ -38,19 +38,19 @@ PW_NAMESPACE_SRT
 			const uint32_t& Vertex_Data::Is_Colored() const {
 				return m_is_colored;
 			}
-			void Vertex_Data::Set_Is_Colored(const uint32_t& p_is_colored) {
+			void Vertex_Data::Set_Is_Colored(const uint32_t p_is_colored) {
 				m_is_colored = p_is_colored;
 			}
 			const uint32_t& Vertex_Data::Is_Text() const {
 				return m_is_text;
 			}
-			void Vertex_Data::Set_Is_Text(const uint32_t& p_is_text) {
+			void Vertex_Data::Set_Is_Text(const uint32_t p_is_text) {
 				m_is_text = p_is_text;
 			}
 			const uint32_t& Vertex_Data::Model_Index() const {
 				return m_model_index;
 			}
-			void Vertex_Data::Set_Model_Index(const uint32_t& p_model_index) {
+			void Vertex_Data::Set_Model_Index(const uint32_t p_model_index) {
 				m_model_index = p_model_index;
 			}
 			const uint64_t& Vertex_Data::Texture_Handle() const {
@@ -72,22 +72,24 @@ PW_NAMESPACE_SRT
 		uint32_t Mesh::m_model_object{ 0 };
 		uint32_t Mesh::m_mo_size{ 0 };
 		uint32_t Mesh::m_mo_max_size{ 1 };
+		glm::mat4* Mesh::m_model_access{ nullptr };
+		GLsync Mesh::m_model_access_sync{ nullptr };
 		uint32_t Mesh::m_mo_size_tframe{ 0 };
 		uint32_t Mesh::m_mo_marr_max_size{ 0 };
 		std::vector<uint32_t> Mesh::m_mo_free_spaces{};
-		std::vector<std::pair<uint32_t, glm::mat4>> Mesh::m_matrix_array_access{};
+		std::vector<Mesh::Matrix_Write> Mesh::m_matrix_array_access{};
 		std::set<uint64_t> Mesh::m_transparent_textures{};
 		std::set<uint32_t> Mesh::m_transparent_indices{};
 		// Class Members    
 			Mesh::Mesh() :
 				m_vertices{ nullptr }, m_vertex_count{ 0 }, m_indice_count{ 0 }, m_array_object{ 0 },
 				m_buffer_object{ 0 }, m_bo_size{ 0 }, m_bo_max_size{ 1 }, m_element_object{ 0 }, m_draw_command_object{ 0 }, m_transparent_draw_command_object{ 0 }, m_dc_size{ 0 }, m_last_dc_size{ 0 }, m_dcv_changed{ false },
-				m_draw_indices{}, m_tdc_size{ 0 }, m_last_tdc_size{ 0 }, m_tdcv_changed{ false }, m_transparent_draw_indices{}, m_render_index_free_spaces{}, m_matrix_index_converter{} {
+				m_draw_indices{}, m_tdc_size{ 0 }, m_last_tdc_size{ 0 }, m_tdcv_changed{ false }, m_transparent_draw_indices{}, m_render_index_free_spaces{} {
 			}
 			Mesh::Mesh(Vertex_Data* p_vertices, const uint16_t& p_vertex_count, const uint32_t* p_indices, const uint16_t& p_indice_count) :
 				m_vertices{ nullptr }, m_vertex_count{ p_vertex_count }, m_indice_count{ p_indice_count }, m_array_object{ 0 },
 				m_buffer_object{ 0 }, m_bo_size{ 0 }, m_bo_max_size{ 1 }, m_element_object{ 0 }, m_draw_command_object{ 0 }, m_transparent_draw_command_object{ 0 }, m_dc_size{ 0 }, m_last_dc_size{ 0 }, m_dcv_changed{ false },
-				m_draw_indices{}, m_tdc_size{ 0 }, m_last_tdc_size{ 0 }, m_tdcv_changed{ false }, m_transparent_draw_indices{}, m_render_index_free_spaces{}, m_matrix_index_converter{} {
+				m_draw_indices{}, m_tdc_size{ 0 }, m_last_tdc_size{ 0 }, m_tdcv_changed{ false }, m_transparent_draw_indices{}, m_render_index_free_spaces{} {
 				m_vertices = p_vertices;
 
 				for (size_t i = 0; i < p_vertex_count; i++) {
@@ -192,12 +194,12 @@ PW_NAMESPACE_SRT
 				PW_GL_VOID_CALL(glDeleteBuffers(1, &m_draw_command_object), true, false);
 				PW_GL_VOID_CALL(glDeleteBuffers(1, &m_transparent_draw_command_object), true, false);
 			}
-			uint32_t Mesh::Add(const Non_Colored& p_data) {
+			std::pair<uint32_t, uint32_t> Mesh::Add(const Non_Colored& p_data) {
 				Vertex_Data* v_vertex_data_arr{ nullptr };
 				PW_CALL(v_vertex_data_arr = pw::co::Memory::Allocate<Vertex_Data>(m_vertex_count), false);
 
 				if (v_vertex_data_arr == nullptr) {
-					return 0;
+					return std::pair<uint32_t, uint32_t>(0, 0);
 				}
 
 				uint32_t v_model_index = Add_Matrix_To_SSBO(&p_data.m_matrix);
@@ -219,11 +221,11 @@ PW_NAMESPACE_SRT
 					v_vertex_data_arr[i].Set_Texture_Handle(p_data.m_texture_handle);
 				}
 
-				PW_GL_CUSTOM_CALL(glBindVertexArray(m_array_object), true, false, uint32_t);
+				PW_GL_CUSTOM_CALL_T(glBindVertexArray(m_array_object), true, false, std::pair<uint32_t, uint32_t>(0, 0));
 
 				Add_To_Buffer(v_vertex_data_arr);
 
-				PW_GL_CUSTOM_CALL(glBindVertexArray(0), true, false, uint32_t);
+				PW_GL_CUSTOM_CALL_T(glBindVertexArray(0), true, false, std::pair<uint32_t, uint32_t>(0, 0));
 
 				if (pw::co::Memory::Deallocate<Vertex_Data>(v_vertex_data_arr) == false) {
 					if (v_vertex_data_arr != nullptr) {
@@ -237,16 +239,13 @@ PW_NAMESPACE_SRT
 
 						m_render_index_free_spaces.erase(m_render_index_free_spaces.begin());
 
-						m_matrix_index_converter.insert(std::make_pair(v_temp_return, v_model_index));
-
 						auto v_found = m_transparent_textures.find(p_data.m_texture_handle);
 
 						if (v_found != m_transparent_textures.end()) {
 							m_transparent_indices.insert(v_temp_return);
 						}
-						return v_temp_return;
+						return std::pair(v_temp_return, v_model_index);
 					}
-					m_matrix_index_converter.insert(std::make_pair(m_bo_size - 1, v_model_index));
 
 					auto v_found = m_transparent_textures.find(p_data.m_texture_handle);
 
@@ -254,19 +253,19 @@ PW_NAMESPACE_SRT
 						m_transparent_indices.insert(m_bo_size - 1);
 					}
 
-					return m_bo_size - 1;
+					return std::pair(m_bo_size - 1, v_model_index);
 				}
 				else {
 					// Something went wrong if the size is not greater than 0
-					return 0;
+					return std::pair<uint32_t, uint32_t>(0, 0);
 				}
 			}
-			uint32_t Mesh::Add(const Colored& p_data) {
+			std::pair<uint32_t, uint32_t> Mesh::Add(const Colored& p_data) {
 				Vertex_Data* v_vertex_data_arr{ nullptr };
 				PW_CALL(v_vertex_data_arr = pw::co::Memory::Allocate<Vertex_Data>(m_vertex_count), false);
 
 				if (v_vertex_data_arr == nullptr) {
-					return 0;
+					return std::pair<uint32_t, uint32_t>(0, 0);
 				}
 
 				uint32_t v_model_index = Add_Matrix_To_SSBO(&p_data.m_matrix);
@@ -288,11 +287,11 @@ PW_NAMESPACE_SRT
 					v_vertex_data_arr[i].Set_Texture_Handle(p_data.m_texture_handle);
 				}
 
-				PW_GL_CUSTOM_CALL(glBindVertexArray(m_array_object), true, false, uint32_t);
+				PW_GL_CUSTOM_CALL_T(glBindVertexArray(m_array_object), true, false, std::pair<uint32_t, uint32_t>(0, 0));
 
 				Add_To_Buffer(v_vertex_data_arr);
 
-				PW_GL_CUSTOM_CALL(glBindVertexArray(0), true, false, uint32_t);
+				PW_GL_CUSTOM_CALL_T(glBindVertexArray(0), true, false, std::pair<uint32_t, uint32_t>(0, 0));
 
 				if (pw::co::Memory::Deallocate<Vertex_Data>(v_vertex_data_arr) == false) {
 					if (v_vertex_data_arr != nullptr) {
@@ -306,31 +305,27 @@ PW_NAMESPACE_SRT
 
 						m_render_index_free_spaces.erase(m_render_index_free_spaces.begin());
 
-						m_matrix_index_converter.insert(std::make_pair(v_temp_return, v_model_index));
-
 						auto v_found = m_transparent_textures.find(p_data.m_texture_handle);
 
 						if (v_found != m_transparent_textures.end()) {
 							m_transparent_indices.insert(v_temp_return);
 						}
-						return v_temp_return;
+						return std::pair(v_temp_return, v_model_index);
 					}
-					m_matrix_index_converter.insert(std::make_pair(m_bo_size - 1, v_model_index));
-
 					auto v_found = m_transparent_textures.find(p_data.m_texture_handle);
 
 					if (v_found != m_transparent_textures.end()) {
 						m_transparent_indices.insert(m_bo_size - 1);
 					}
 
-					return m_bo_size - 1;
+					return std::pair(m_bo_size - 1, v_model_index);
 				}
 				else {
 					// Something went wrong if the size is not greater than 0
-					return 0;
+					return std::pair<uint32_t, uint32_t>(0, 0);
 				}
 			}
-			void Mesh::Remove(uint32_t p_index) {
+			void Mesh::Remove(uint32_t p_index, uint32_t p_model_matrix_index) {
 				constexpr uint32_t v_vertex_size = sizeof(Vertex_Data);
 				// Removing the data from the OpenGL buffer would be
 				// too resource intensive to overwrite the old info
@@ -339,23 +334,13 @@ PW_NAMESPACE_SRT
 
 				std::sort(m_render_index_free_spaces.begin(), m_render_index_free_spaces.end());
 
-				PW_GL_VOID_CALL(glBindBuffer(GL_ARRAY_BUFFER, m_buffer_object), true, false);
-
-				Vertex_Data v_temp{};
-
-				PW_GL_VOID_CALL(glGetBufferSubData(GL_ARRAY_BUFFER, MUL_UINT64(MUL_UINT64(p_index, v_vertex_size), m_vertex_count), v_vertex_size, &v_temp), true, false);
-
-				PW_GL_VOID_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0), true, false);
-
-				m_matrix_index_converter.erase(p_index);
-
 				auto v_found = m_transparent_indices.find(p_index);
 
 				if (v_found != m_transparent_indices.end()) {
 					m_transparent_indices.erase(v_found);
 				}
 
-				m_mo_free_spaces.push_back(v_temp.Model_Index());
+				m_mo_free_spaces.push_back(p_model_matrix_index);
 			}
 			void Mesh::Render(uint32_t p_index) {
 				constexpr uint32_t v_vertex_size = sizeof(Vertex_Data);
@@ -372,9 +357,7 @@ PW_NAMESPACE_SRT
 					v_temp.m_base_vertex = 0;
 					v_temp.m_base_instance = 0;
 
-					auto v_found = m_transparent_indices.find(p_index);
-
-					if (v_found == m_transparent_indices.end()) {
+					if (m_transparent_indices.size() == 0) {
 						if (m_draw_indices.size() > m_dc_size) {
 							if (p_index * m_indice_count != m_draw_indices[m_dc_size].m_first_index) {
 								m_dcv_changed = true;
@@ -388,17 +371,34 @@ PW_NAMESPACE_SRT
 						m_dc_size = m_dc_size + 1;
 					}
 					else {
-						if (m_transparent_draw_indices.size() > m_tdc_size) {
-							if (p_index * m_indice_count != m_transparent_draw_indices[m_tdc_size].m_first_index) {
-								m_tdcv_changed = true;
-								m_transparent_draw_indices[m_tdc_size] = v_temp;
+						auto v_found = m_transparent_indices.find(p_index);
+
+						if (v_found == m_transparent_indices.end()) {
+							if (m_draw_indices.size() > m_dc_size) {
+								if (p_index * m_indice_count != m_draw_indices[m_dc_size].m_first_index) {
+									m_dcv_changed = true;
+									m_draw_indices[m_dc_size] = v_temp;
+								}
 							}
+							else {
+								m_dcv_changed = true;
+								m_draw_indices.push_back(v_temp);
+							}
+							m_dc_size = m_dc_size + 1;
 						}
 						else {
-							m_tdcv_changed = true;
-							m_transparent_draw_indices.push_back(v_temp);
+							if (m_transparent_draw_indices.size() > m_tdc_size) {
+								if (p_index * m_indice_count != m_transparent_draw_indices[m_tdc_size].m_first_index) {
+									m_tdcv_changed = true;
+									m_transparent_draw_indices[m_tdc_size] = v_temp;
+								}
+							}
+							else {
+								m_tdcv_changed = true;
+								m_transparent_draw_indices.push_back(v_temp);
+							}
+							m_tdc_size = m_tdc_size + 1;
 						}
-						m_tdc_size = m_tdc_size + 1;
 					}
 				}
 			}
@@ -406,17 +406,14 @@ PW_NAMESPACE_SRT
 				constexpr uint32_t v_unit_size = sizeof(Draw_Command);
 
 				if (m_mo_size_tframe > 0) {
-					PW_GL_VOID_CALL(glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_model_object), true, false);
+					Start_Sync_GPU();
 
-					PW_GL_VOID_CALL(glm::mat4 * v_temp_mo_access = static_cast<glm::mat4*>(glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY)), true, false);
-
+					// Write to the buffer
 					for (uint32_t i = 0; i < m_mo_size_tframe; i++) {
-						v_temp_mo_access[m_matrix_array_access[i].first] = m_matrix_array_access[i].second;
+						m_model_access[m_matrix_array_access[i].m_index] = *m_matrix_array_access[i].m_matrix;
 					}
 
-					PW_GL_VOID_CALL(glUnmapBuffer(GL_SHADER_STORAGE_BUFFER), true, false);
-
-					PW_GL_VOID_CALL(glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0), true, false);
+					End_Sync_GPU();
 
 					m_mo_marr_max_size = TO_UINT32(m_matrix_array_access.size());
 					m_mo_size_tframe = 0;
@@ -531,26 +528,21 @@ PW_NAMESPACE_SRT
 					PW_GL_VOID_CALL(glBindBuffer(GL_ARRAY_BUFFER, 0), true, false);
 				}
 			}
-			void Mesh::Change_Matrix_Data(uint32_t p_index, const glm::mat4& p_matrix) {
+			void Mesh::Change_Matrix_Data(uint32_t p_index, uint32_t p_model_matrix_index, const glm::mat4* const p_matrix) {
 				constexpr uint32_t v_vertex_size = sizeof(Vertex_Data);
 				constexpr uint32_t v_unit_size = sizeof(glm::mat4);
 				if (p_index < m_bo_size) {
 					if (m_matrix_array_access.size() > m_mo_size_tframe) {
-						auto v_found = m_matrix_index_converter.find(p_index);
-
-						if (v_found != m_matrix_index_converter.end()) {
-							m_matrix_array_access[m_mo_size_tframe] = std::make_pair(v_found->second, p_matrix);
-							m_mo_size_tframe = m_mo_size_tframe + 1;
-						}
+						m_matrix_array_access[m_mo_size_tframe].m_index = p_model_matrix_index;
+						m_matrix_array_access[m_mo_size_tframe].m_matrix = p_matrix;
+						m_mo_size_tframe = m_mo_size_tframe + 1;
 					}
 					else {
-						auto v_found = m_matrix_index_converter.find(p_index);
-
-						if (v_found != m_matrix_index_converter.end()) {
-							m_matrix_array_access.push_back(std::make_pair(v_found->second, p_matrix));
-							m_mo_size_tframe = m_mo_size_tframe + 1;
-						}
-
+						Matrix_Write v_temp{};
+						v_temp.m_index = p_model_matrix_index;
+						v_temp.m_matrix = p_matrix;
+						m_matrix_array_access.push_back(v_temp);
+						m_mo_size_tframe = m_mo_size_tframe + 1;
 					}
 				}
 			}
@@ -597,17 +589,23 @@ PW_NAMESPACE_SRT
 				PW_GL_VOID_CALL(glGenBuffers(1, &m_model_object), true, false);
 				PW_GL_VOID_CALL(glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_model_object), true, false);
 
-				PW_GL_VOID_CALL(
-					glBufferData(GL_SHADER_STORAGE_BUFFER, TO_INT64(sizeof(glm::mat4)) * m_mo_max_size, nullptr, GL_DYNAMIC_DRAW),
+				uint32_t v_ssbo_storage_flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
+
+				PW_GL_VOID_CALL(glBufferStorage(GL_SHADER_STORAGE_BUFFER, TO_INT64(sizeof(glm::mat4)) * m_mo_max_size, 0, v_ssbo_storage_flags),
 					true, false
 				);
+				PW_GL_VOID_CALL(m_model_access = (glm::mat4*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, TO_INT64(sizeof(glm::mat4)) * m_mo_max_size, v_ssbo_storage_flags),
+					true, false
+				);
+				PW_GL_CALL((m_model_access_sync = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0)) != nullptr, true);
+
 				PW_GL_VOID_CALL(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, m_model_object), true, false);
 
 				PW_GL_VOID_CALL(glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0), true, false);
 			}
 			void Mesh::Release() {
+				PW_GL_VOID_CALL(glUnmapBuffer(GL_SHADER_STORAGE_BUFFER), true, false);
 				PW_GL_VOID_CALL(glDeleteBuffers(1, &m_model_object), true, false);
-
 				m_matrix_array_access.clear();
 				m_mo_free_spaces.clear();
 			}
@@ -734,18 +732,15 @@ PW_NAMESPACE_SRT
 				constexpr uint32_t v_unit_size = sizeof(glm::mat4);
 
 				if (m_mo_free_spaces.size() > 0) {
-					PW_GL_CUSTOM_CALL(glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_model_object), true, false, uint32_t);
+					Start_Sync_GPU();
 
-					PW_GL_CUSTOM_CALL(
-						glBufferSubData(GL_SHADER_STORAGE_BUFFER, MUL_UINT64(m_mo_free_spaces[0], v_unit_size), v_unit_size, &p_data[0]),
-						true, false, uint32_t
-					);
+					m_model_access[m_mo_free_spaces[0]] = p_data[0];
+
+					End_Sync_GPU();
 
 					uint32_t v_temp = m_mo_free_spaces[0];
 
 					m_mo_free_spaces.erase(m_mo_free_spaces.begin());
-
-					PW_GL_CUSTOM_CALL(glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0), true, false, uint32_t);
 
 					return v_temp;
 				}
@@ -753,36 +748,25 @@ PW_NAMESPACE_SRT
 				if (m_mo_size < m_mo_max_size) {
 					m_mo_size = m_mo_size + 1;
 
-					PW_GL_CUSTOM_CALL(glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_model_object), true, false, uint32_t);
+					Start_Sync_GPU();
 
-					PW_GL_CUSTOM_CALL(
-						glBufferSubData(GL_SHADER_STORAGE_BUFFER, MUL_UINT64(m_mo_size - 1, v_unit_size), v_unit_size, &p_data[0]),
-						true, false, uint32_t
-					);
+					m_model_access[m_mo_size - 1] = p_data[0];
 
-					PW_GL_CUSTOM_CALL(glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0), true, false, uint32_t);
+					End_Sync_GPU();
 
 					return m_mo_size - 1;
 				}
 				else {
+					Start_Sync_GPU();
+
 					// m_size >= m_max_size
 					// Allocate new buffer
 					uint32_t v_new_buffer_size = m_mo_max_size + TO_UINT32(m_mo_max_size * glm::golden_ratio<double>());
 
-					PW_GL_CUSTOM_CALL(
-						glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_model_object),
-						true, false, uint32_t
-					);
-
 					PW_CUSTOM_CALL(glm::mat4* v_read_buffer = pw::co::Memory::Allocate<glm::mat4>(v_new_buffer_size), true, uint32_t);
 
-					PW_GL_CUSTOM_CALL(
-						glm::mat4* v_temp_read_buffer = static_cast<glm::mat4*>(glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY)),
-						true, false, uint32_t
-					);
-
 					for (uint32_t i = 0; i < m_mo_max_size; i++) {
-						v_read_buffer[i] = v_temp_read_buffer[i];
+						v_read_buffer[i] = m_model_access[i];
 					}
 					v_read_buffer[m_mo_max_size] = *p_data;
 					for (uint32_t i = (m_mo_max_size + 1); i < v_new_buffer_size; i++) {
@@ -791,13 +775,21 @@ PW_NAMESPACE_SRT
 
 					m_mo_size = m_mo_size + 1;
 
-					PW_GL_CUSTOM_CALL(glUnmapBuffer(GL_SHADER_STORAGE_BUFFER),
+					PW_GL_CUSTOM_CALL(glUnmapBuffer(GL_SHADER_STORAGE_BUFFER), true, false, uint32_t);
+					PW_GL_CUSTOM_CALL(glDeleteBuffers(1, &m_model_object), true, false, uint32_t);
+
+					PW_GL_CUSTOM_CALL(glGenBuffers(1, &m_model_object), true, false, uint32_t);
+					PW_GL_CUSTOM_CALL(glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_model_object), true, false, uint32_t);
+
+					uint32_t v_ssbo_storage_flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
+					PW_GL_CUSTOM_CALL(glBufferStorage(GL_SHADER_STORAGE_BUFFER, MUL_UINT64(v_unit_size, v_new_buffer_size), &v_read_buffer[0], v_ssbo_storage_flags),
 						true, false, uint32_t
 					);
-					PW_GL_CUSTOM_CALL(
-						glBufferData(GL_SHADER_STORAGE_BUFFER, MUL_UINT64(v_unit_size, v_new_buffer_size), &v_read_buffer[0], GL_DYNAMIC_DRAW),
+					PW_GL_CUSTOM_CALL(m_model_access = (glm::mat4*)glMapBufferRange(GL_SHADER_STORAGE_BUFFER, 0, MUL_UINT64(v_unit_size, v_new_buffer_size), v_ssbo_storage_flags),
 						true, false, uint32_t
 					);
+
+					PW_GL_CUSTOM_CALL(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, m_model_object), true, false, uint32_t);
 
 					PW_GL_CUSTOM_CALL(glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0), true, false, uint32_t);
 
@@ -808,10 +800,27 @@ PW_NAMESPACE_SRT
 						}
 					}
 
+					End_Sync_GPU();
+
 					m_mo_max_size = v_new_buffer_size;
 
 					return m_mo_size - 1;
 				}
+			}
+			void Mesh::Start_Sync_GPU() {
+				// Wait for the GPU to stop using the buffer
+				uint32_t v_signal = GL_UNSIGNALED;
+				while (v_signal != GL_ALREADY_SIGNALED && v_signal != GL_CONDITION_SATISFIED) {
+					// Wait on the sync object to become signaled then write to the buffer
+					PW_GL_VOID_CALL(v_signal = glClientWaitSync(m_model_access_sync, GL_SYNC_FLUSH_COMMANDS_BIT, 1),
+						true, false
+					);
+				}
+			}
+			void Mesh::End_Sync_GPU() {
+				// Reset sync object for next frame
+				PW_GL_VOID_CALL(glDeleteSync(m_model_access_sync), true, false);
+				PW_GL_CALL((m_model_access_sync = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0)) != nullptr, true);
 			}
 	ST_NAMESPACE_END
 PW_NAMESPACE_END
